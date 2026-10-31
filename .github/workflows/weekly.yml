@@ -1,0 +1,31 @@
+name: weekly
+on:
+  schedule: [{ cron: "0 5 * * 1" }]
+  workflow_dispatch:
+concurrency: { group: data, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with: { repository: kaibranca/crtlab-standalone, ref: rebuild-integration, path: site, ssh-key: "${{ secrets.SITE_DEPLOY_KEY }}", sparse-checkout: lib }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Search Console → titles, gaps, outcomes
+        run: node scripts/gsc.mjs
+        env: { GSC_SA_JSON: "${{ secrets.GSC_SA_JSON }}" }
+      - run: node scripts/summary.mjs
+      - name: Publish title fixes to the site (deploys on Railway)
+        run: |
+          cd site
+          git config user.name "crtlab-growth-bot"; git config user.email "bot@crtlab.pro"
+          git add lib/seo-overrides.json
+          git commit -qm "SEO: weekly Search Console title fixes (growth bot)" && git push -q || echo "no title changes"
+      - name: Save bot data
+        run: |
+          git config user.name "crtlab-growth-bot"; git config user.email "bot@crtlab.pro"
+          git add data; git commit -qm "weekly $(date -u +%F)" || exit 0
+          git pull -q --rebase && git push -q
