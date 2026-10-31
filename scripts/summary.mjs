@@ -12,11 +12,20 @@ for (const a of ai) { const day = a.to.slice(0, 10); byDay[day] = byDay[day] || 
 const pages = {};
 for (const a of ai.filter((x) => new Date(x.to) >= since(7))) for (const v of Object.values(a.bots)) for (const [p, n] of v.top) pages[p] = (pages[p] || 0) + n;
 const last = wd[wd.length - 1];
+// ACTIVITY: one line per thing the bot did, newest first — the Control board's live log
+const act = [];
+for (const w of wd) { const bad = w.results.filter((r) => !r.ok); const avg = Math.round(w.results.reduce((a, r) => a + r.ms, 0) / w.results.length);
+  act.push({ at: w.at, job: "watchdog", ok: !bad.length, text: bad.length ? `${bad.length} of ${w.results.length} checks FAILED: ${bad.map((r) => r.name).join(", ")}` : `${w.results.length}/${w.results.length} checks pass · avg ${avg} ms` }); }
+for (const a of ai) { const e = Object.entries(a.bots).sort((x, y) => y[1].hits - x[1].hits), n = e.reduce((s2, [, v]) => s2 + v.hits, 0);
+  act.push({ at: a.to, job: "ai-crawl", ok: true, text: n ? `${n} crawler visits · ${e.slice(0, 4).map(([b, v]) => `${b} ${v.hits}`).join(" · ")}` : "no crawler visits this hour" }); }
+for (const x of ix) act.push({ at: x.at, job: "indexnow", ok: !/HTTP [45]/.test(x.status), text: x.submitted ? `submitted ${x.submitted} changed pages · ${x.status}` : "no changed pages to submit" });
+act.sort((x, y) => (x.at < y.at ? 1 : -1));
 fs.writeFileSync("data/summary.json", JSON.stringify({
   updated: new Date().toISOString(),
   watchdog: { up24h: up(1), up7d: up(7), up30d: up(30), last, incidents: wd.filter((x) => !x.ok).slice(-20).map((x) => ({ at: x.at, failed: x.results.filter((r) => !r.ok).map((r) => `${r.name} ${r.status}`) })),
     speed: Object.fromEntries((last?.results || []).map((r) => [r.name, r.ms])) },
   aicrawl: { byDay: Object.fromEntries(Object.entries(byDay).sort().slice(-30)), topPages7d: Object.entries(pages).sort((a, b) => b[1] - a[1]).slice(0, 20) },
+  activity: act.slice(0, 80),
   indexnow: ix.slice(-30).map((x) => ({ at: x.at, submitted: x.submitted, status: x.status })),
 }, null, 1));
 console.log("summary written");
