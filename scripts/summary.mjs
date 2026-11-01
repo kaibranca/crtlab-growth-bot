@@ -5,6 +5,7 @@ const months = [month(new Date(Date.now() - 32 * 86400000)), month()].filter((v,
 const wd = months.flatMap((m) => readLines(`data/watchdog/${m}.jsonl`));
 const ai = months.flatMap((m) => readLines(`data/aicrawl/${m}.jsonl`));
 const ix = readLines("data/indexnow.jsonl");
+const rr = readLines("data/recap-runs.jsonl");
 const seo = readLines("data/seo-changes.jsonl"), gw = readLines("data/gsc-weekly.jsonl");
 const gaps = fs.existsSync("data/gaps.json") ? JSON.parse(fs.readFileSync("data/gaps.json", "utf8")).gaps : [];
 const since = (d) => Date.now() - d * 86400000;
@@ -22,6 +23,7 @@ for (const a of ai) { const e = Object.entries(a.bots).sort((x, y) => y[1].hits 
   act.push({ at: a.to, job: "ai-crawl", ok: true, text: n ? `${n} crawler visits · ${e.slice(0, 4).map(([b, v]) => `${b} ${v.hits}`).join(" · ")}` : "no crawler visits this hour" }); }
 for (const g of gw) act.push({ at: g.at, job: "search-console", ok: true, text: `${g.impr.toLocaleString()} impressions · ${g.clicks} clicks (28d) · ${g.changes} titles rewritten · ${g.gaps} gaps found` });
 for (const c of seo) act.push({ at: c.at, job: c.kind === "change" ? "seo.title" : "seo.outcome", ok: c.verdict !== "reverted", text: c.kind === "change" ? `${c.path} → "${c.after.title ?? c.before.title}" (for "${c.query}")` : `${c.path}: CTR ${(c.ctrBefore * 100).toFixed(1)}% → ${(c.ctrAfter * 100).toFixed(1)}% · ${c.verdict}` });
+for (const r of rr) act.push({ at: r.at, job: "recap", ok: !!r.latest, text: r.latest ? `published ${r.latest.date} · ${r.latest.headline}` : "no closed day to publish" });
 for (const x of ix) act.push({ at: x.at, job: "indexnow", ok: !/HTTP [45]/.test(x.status), text: x.submitted ? `submitted ${x.submitted} changed pages · ${x.status}` : "no changed pages to submit" });
 act.sort((x, y) => (x.at < y.at ? 1 : -1));
 fs.writeFileSync("data/summary.json", JSON.stringify({
