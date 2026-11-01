@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-01T13:47:12.204Z",
+ "updated": "2026-11-01T15:00:06.601Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -265,6 +265,18 @@
  },
  "activity": [
   {
+   "at": "2026-11-01T14:59:56.216Z",
+   "job": "health",
+   "ok": false,
+   "text": "✓ database size · ✓ signups flowing · ✗ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
+   "at": "2026-11-01T14:59:19.573Z",
+   "job": "links",
+   "ok": true,
+   "text": "267 sitemap pages checked · 0 broken"
+  },
+  {
    "at": "2026-11-01T13:47:12.145Z",
    "job": "indexnow",
    "ok": true,
@@ -380,6 +392,105 @@
     "pos": 87.11428571428571
    }
   ]
+ },
+ "health": {
+  "at": "2026-11-01T14:59:56.216Z",
+  "alerts": [
+   "guest-drop"
+  ],
+  "checks": [
+   {
+    "name": "database size",
+    "ok": true,
+    "note": "225 MB"
+   },
+   {
+    "name": "signups flowing",
+    "ok": true,
+    "note": "ok"
+   },
+   {
+    "name": "visitors vs last week",
+    "ok": false,
+    "note": "down >50%"
+   },
+   {
+    "name": "payments",
+    "ok": true,
+    "note": "ok"
+   },
+   {
+    "name": "nightly backup",
+    "ok": true,
+    "note": "12h old · 27.0 MB"
+   },
+   {
+    "name": "market data fresh",
+    "ok": true,
+    "note": "newest candle 13d old"
+   }
+  ],
+  "db": {
+   "mb": 225,
+   "tables": [
+    [
+     "user_events",
+     82
+    ],
+    [
+     "ui_events",
+     39
+    ],
+    [
+     "meter_identities",
+     39
+    ],
+    [
+     "user_stores",
+     33
+    ],
+    [
+     "guest_presence",
+     3
+    ]
+   ]
+  },
+  "backup": {
+   "at": "2026-11-01T03:00:25.478Z",
+   "mb": 27,
+   "count": 31
+  },
+  "data": {
+   "newestDays": 13
+  },
+  "weight": {
+   "home": {
+    "kb": 2819,
+    "scripts": 22,
+    "ttfbMs": 177
+   },
+   "backtest": {
+    "kb": 1368,
+    "scripts": 14,
+    "ttfbMs": 178
+   },
+   "chart app": {
+    "kb": 2819,
+    "scripts": 22,
+    "ttfbMs": 417
+   },
+   "statistics": {
+    "kb": 1229,
+    "scripts": 15,
+    "ttfbMs": 165
+   }
+  },
+  "heavier": []
+ },
+ "links": {
+  "at": "2026-11-01T14:59:19.573Z",
+  "checked": 267,
+  "broken": []
  },
  "indexnow": [
   {
