@@ -51,5 +51,5 @@ jobs:
         run: node reels/daily/post.mjs reels/out/reel.mp4 reels/out/pick.json ${{ steps.slot.outputs.slot }}
       - run: |
           git config user.name "crtlab-growth-bot"; git config user.email "bot@crtlab.pro"
-          git add data/reels 2>/dev/null; git commit -qm "reel $(date -u +%F) slot ${{ steps.slot.outputs.slot }}" || exit 0
+          [ -d data/reels ] || exit 0; git add data/reels; git commit -qm "reel $(date -u +%F) slot ${{ steps.slot.outputs.slot }}" || exit 0
           git pull -q --rebase && git push -q
