@@ -17,6 +17,10 @@ jobs:
       - name: Search Console → titles, gaps, outcomes
         run: node scripts/gsc.mjs
         env: { GSC_SA_JSON: "${{ secrets.GSC_SA_JSON }}" }
+      - name: Link check (every sitemap URL)
+        run: node scripts/linkcheck.mjs
+        timeout-minutes: 6
+        continue-on-error: true
       - run: node scripts/summary.mjs
       - name: Publish title fixes to the site (deploys on Railway)
         run: |

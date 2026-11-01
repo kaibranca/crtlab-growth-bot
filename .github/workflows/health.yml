@@ -1,0 +1,31 @@
+name: health
+on:
+  schedule: [{ cron: "41 */3 * * *" }]
+  workflow_dispatch:
+concurrency: { group: data, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm i pg@8 --no-save --no-package-lock --silent
+      - name: Health (read-only; emails Kai on a problem)
+        run: node scripts/health.mjs
+        env:
+          ANALYTICS_DB_URL: ${{ secrets.ANALYTICS_DB_URL }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ALERT_TO: ${{ secrets.ALERT_TO }}
+      - run: node scripts/summary.mjs
+      - name: Save
+        run: |
+          git config user.name "crtlab-growth-bot"; git config user.email "bot@crtlab.pro"
+          git add data; git commit -qm "health $(date -u +%FT%H:%M)" || exit 0
+          git pull -q --rebase && git push -q
