@@ -29,9 +29,14 @@ let PROP = "sc-domain:crtlab.pro", rows = await query(PROP, { startDate: day(30)
 if (!rows) { PROP = "https://crtlab.pro/"; rows = await query(PROP, { startDate: day(30), endDate: day(3), dimensions: ["page", "query"], rowLimit: 25000 }); }
 if (!rows) throw new Error("Search Console refused — is the service account added as a user on the property?");
 
-// per page
+// BRAND searches ("crtlab") land on the homepage; a sub-page showing for them with a low CTR is normal, not a fault.
+// They are left out of every page's numbers, and pages whose titles are hand-set (home, legal, indexes) are never touched.
+const BRAND = /crt\s*-?\s*lab|crtlab/i;
+const NEVER = /^\/(|terms|privacy|risk|refund|third-party|cookies|blog|tools|statistics|hub|pricing|features|faq|reference|login|signup|auth.*|account.*|extension-privacy|discord-privacy|partnerships|unsubscribe)$/;
+// per page (non-brand searches only)
 const pages = new Map();
 for (const r of rows) {
+  if (BRAND.test(r.keys[1])) continue;
   const path = new URL(r.keys[0]).pathname.replace(/\/$/, "") || "/";
   const p = pages.get(path) ?? { path, impr: 0, clicks: 0, posW: 0, queries: [] };
   p.impr += r.impressions; p.clicks += r.clicks; p.posW += r.position * r.impressions; p.queries.push({ q: r.keys[1], impr: r.impressions, clicks: r.clicks, pos: r.position });
@@ -56,14 +61,14 @@ for (const c of log.filter((x) => x.kind === "change" && stamp - new Date(x.at).
 const recent = new Set(log.filter((x) => x.kind === "change" && stamp - new Date(x.at).getTime() < 28 * 86400000).map((x) => x.path));
 const title = (s) => s.replace(/\b\w/g, (c) => c.toUpperCase()).replace(/\b(Xauusd|Nas100|Us30|Sp500|Eurusd|Gbpusd|Usdjpy|Btc|Ict|Smc|Crt|Fvg|Adr|Tradingview)\b/gi, (w) => w.toUpperCase().replace("TRADINGVIEW", "TradingView"));
 const cut = (s, n) => (s.length <= n ? s : s.slice(0, s.lastIndexOf(" ", n - 1)).replace(/[\s,·|–-]+$/, ""));
-const cands = [...pages.values()].filter((p) => p.impr >= 100 && p.pos <= 15 && p.ctr < expected(p.pos) * 0.6 && !recent.has(p.path) && !p.path.startsWith("/api"))
+const cands = [...pages.values()].filter((p) => !NEVER.test(p.path) && p.impr >= 100 && p.pos <= 15 && p.ctr < expected(p.pos) * 0.6 && !recent.has(p.path) && !p.path.startsWith("/api"))
   .sort((a, b) => b.impr * (expected(b.pos) - b.ctr) - a.impr * (expected(a.pos) - a.ctr)).slice(0, 8);
 const changes = [];
 for (const p of cands) {
   const html = (await get(SITE + p.path, { headers: { "user-agent": "Googlebot/2.1" } })).body;
   const curT = (html.match(/<title[^>]*>([^<]*)<\/title>/)?.[1] ?? "").replace(/&amp;/g, "&").replace(/\s*\|\s*CRTLAB\s*$/, "");
   const curD = (html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? "").replace(/&amp;/g, "&");
-  const q = p.queries.find((x) => x.q.length >= 6 && x.q.split(" ").length <= 6)?.q; if (!q || !curT) continue;
+  const q = p.queries.find((x) => !BRAND.test(x.q) && x.impr >= 20 && x.q.length >= 6 && x.q.split(" ").length <= 6)?.q; if (!q || !curT) continue;
   const has = (s) => q.toLowerCase().split(" ").every((w) => s.toLowerCase().includes(w));
   const next = { ...(ov[p.path] ?? {}) };
   if (!has(curT)) { const core = curT.split("|").map((x) => x.trim()).find((x) => !has(x) && x.length > 4) ?? ""; next.title = cut(`${title(q)}${core ? " | " + core : ""}`, 55); }
@@ -76,7 +81,7 @@ for (const p of cands) {
 fs.writeFileSync(OV_FILE, JSON.stringify(ov, null, 1) + "\n");
 // 4. GAPS — searched, shown low, and no page title covers it
 const titles = [...pages.keys()].join(" ").toLowerCase().replace(/[-/]/g, " ");
-const byQ = new Map(); for (const r of rows) { const x = byQ.get(r.keys[1]) ?? { q: r.keys[1], impr: 0, pos: 99 }; x.impr += r.impressions; x.pos = Math.min(x.pos, r.position); byQ.set(r.keys[1], x); }
+const byQ = new Map(); for (const r of rows) { if (BRAND.test(r.keys[1])) continue; const x = byQ.get(r.keys[1]) ?? { q: r.keys[1], impr: 0, pos: 99 }; x.impr += r.impressions; x.pos = Math.min(x.pos, r.position); byQ.set(r.keys[1], x); }
 const gaps = [...byQ.values()].filter((x) => x.impr >= 20 && x.pos > 15 && !x.q.split(" ").filter((w) => w.length > 3).every((w) => titles.includes(w))).sort((a, b) => b.impr - a.impr).slice(0, 40);
 fs.writeFileSync("data/gaps.json", JSON.stringify({ at, gaps }, null, 1));
 // totals for the board's trend
