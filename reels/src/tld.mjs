@@ -8,14 +8,14 @@ export function build(d) {
   const lv = [d.hi, d.lo, d.level], span = Math.max(...lv) - Math.min(...lv), HI = Math.max(...lv) + span * .07, LO = Math.min(...lv) - span * .07;
   const BW = (PR - PL) / (N + 1), X = (i) => PL + BW * (i + .5), Y = (v) => PT + (HI - v) / (HI - LO) * (PB - PT);
   // when each bar starts / ends forming
-  const sch = [], hookOut = 1.35, tb = 1.75;
+  const sch = [], hookOut = 1.6, tb = .1; // candles move from the first frames, under the hook (a still opening = a scroll)
   const dtS = d.kb ? cl(2.0 / d.kb, .035, .13) : 0;
   for (let i = 0; i < d.kb; i++) sch[i] = [tb + i * dtS, tb + (i + 1) * dtS - .004];
   const tS = tb + d.kb * dtS;
   const T = { hookOut, tb, tS };
   if (d.story === "asia") { T.lock = sch[d.a1][1]; T.cap1 = T.lock + .15; }
-  else { T.lv0 = 1.3; T.lv1 = 1.85; T.cap1 = 1.75; }
-  const Tk = Math.max(tS + .3, T.cap1 + 1.25), keyDur = 1.6, nk = B[d.kb].p.length;
+  else { T.lv0 = .05; T.lv1 = .55; T.cap1 = Math.max(1.75, tS - .9); }
+  const Tk = Math.max(tS + .12, T.cap1 + .95), keyDur = 1.6, nk = B[d.kb].p.length;
   sch[d.kb] = [Tk, Tk + keyDur];
   const cross = Tk + keyDur * (d.keyMin + 1) / nk;
   const rest = N - d.kb - 1, Tr0 = Tk + keyDur + .12, Tr = cl(rest * .032, 1.7, 2.8), dtR = Tr / rest;
