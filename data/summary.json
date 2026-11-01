@@ -1,15 +1,175 @@
 {
- "updated": "2026-11-01T00:27:45.177Z",
+ "updated": "2026-11-01T00:32:20.636Z",
  "watchdog": {
-  "up24h": null,
-  "up7d": null,
-  "up30d": null,
+  "up24h": 100,
+  "up7d": 100,
+  "up30d": 100,
+  "last": {
+   "at": "2026-10-31T23:58:13.022Z",
+   "ok": true,
+   "results": [
+    {
+     "name": "home",
+     "path": "/",
+     "status": 200,
+     "ms": 399,
+     "ok": true
+    },
+    {
+     "name": "backtest page",
+     "path": "/backtest",
+     "status": 200,
+     "ms": 234,
+     "ok": true
+    },
+    {
+     "name": "pricing",
+     "path": "/pricing",
+     "status": 200,
+     "ms": 215,
+     "ok": true
+    },
+    {
+     "name": "chart app",
+     "path": "/backtester",
+     "status": 200,
+     "ms": 211,
+     "ok": true
+    },
+    {
+     "name": "statistics",
+     "path": "/statistics/nas100",
+     "status": 200,
+     "ms": 198,
+     "ok": true
+    },
+    {
+     "name": "calculator",
+     "path": "/tools/position-size-calculator",
+     "status": 200,
+     "ms": 224,
+     "ok": true
+    },
+    {
+     "name": "candles API",
+     "path": "/api/candles?pair=nas100&tf=1hour&limit=50&v=q8",
+     "status": 200,
+     "ms": 225,
+     "ok": true
+    },
+    {
+     "name": "llms.txt",
+     "path": "/llms.txt",
+     "status": 200,
+     "ms": 213,
+     "ok": true
+    },
+    {
+     "name": "robots.txt",
+     "path": "/robots.txt",
+     "status": 200,
+     "ms": 227,
+     "ok": true
+    },
+    {
+     "name": "sitemap",
+     "path": "/sitemap.xml",
+     "status": 200,
+     "ms": 210,
+     "ok": true
+    },
+    {
+     "name": "AI: GPTBot",
+     "path": "/backtest",
+     "status": 200,
+     "ms": 226,
+     "ok": true
+    },
+    {
+     "name": "AI: OAI-SearchBot",
+     "path": "/backtest",
+     "status": 200,
+     "ms": 215,
+     "ok": true
+    },
+    {
+     "name": "AI: ChatGPT-User",
+     "path": "/backtest",
+     "status": 200,
+     "ms": 232,
+     "ok": true
+    },
+    {
+     "name": "AI: ClaudeBot",
+     "path": "/backtest",
+     "status": 200,
+     "ms": 203,
+     "ok": true
+    },
+    {
+     "name": "AI: PerplexityBot",
+     "path": "/backtest",
+     "status": 200,
+     "ms": 209,
+     "ok": true
+    },
+    {
+     "name": "AI: Googlebot",
+     "path": "/backtest",
+     "status": 200,
+     "ms": 210,
+     "ok": true
+    },
+    {
+     "name": "AI: bingbot",
+     "path": "/backtest",
+     "status": 200,
+     "ms": 211,
+     "ok": true
+    },
+    {
+     "name": "AI: Applebot",
+     "path": "/backtest",
+     "status": 200,
+     "ms": 209,
+     "ok": true
+    }
+   ]
+  },
   "incidents": [],
-  "speed": {}
+  "speed": {
+   "home": 399,
+   "backtest page": 234,
+   "pricing": 215,
+   "chart app": 211,
+   "statistics": 198,
+   "calculator": 224,
+   "candles API": 225,
+   "llms.txt": 213,
+   "robots.txt": 227,
+   "sitemap": 210,
+   "AI: GPTBot": 226,
+   "AI: OAI-SearchBot": 215,
+   "AI: ChatGPT-User": 232,
+   "AI: ClaudeBot": 203,
+   "AI: PerplexityBot": 209,
+   "AI: Googlebot": 210,
+   "AI: bingbot": 211,
+   "AI: Applebot": 209
+  }
  },
  "aicrawl": {
-  "byDay": {},
-  "topPages7d": []
+  "byDay": {
+   "2026-10-31": {
+    "OAI-SearchBot": 1
+   }
+  },
+  "topPages7d": [
+   [
+    "/tools/asian-range-statistics",
+    1
+   ]
+  ]
  },
  "activity": [
   {
@@ -29,6 +189,36 @@
    "job": "search-console",
    "ok": true,
    "text": "6,808 impressions · 1164 clicks (28d) · 0 titles rewritten · 1 gaps found"
+  },
+  {
+   "at": "2026-10-31T23:58:13.022Z",
+   "job": "watchdog",
+   "ok": true,
+   "text": "18/18 checks pass · avg 226 ms"
+  },
+  {
+   "at": "2026-10-31T23:58:08.724Z",
+   "job": "ai-crawl",
+   "ok": true,
+   "text": "no crawler visits this hour"
+  },
+  {
+   "at": "2026-10-31T23:51:40.384Z",
+   "job": "watchdog",
+   "ok": true,
+   "text": "18/18 checks pass · avg 138 ms"
+  },
+  {
+   "at": "2026-10-31T23:51:37.731Z",
+   "job": "ai-crawl",
+   "ok": true,
+   "text": "1 crawler visits · OAI-SearchBot 1"
+  },
+  {
+   "at": "2026-10-31T23:44:22.075Z",
+   "job": "watchdog",
+   "ok": true,
+   "text": "18/18 checks pass · avg 163 ms"
   }
  ],
  "seo": {

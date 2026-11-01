@@ -1,7 +1,8 @@
 // builds data/summary.json — the one small file the Control "Growth" board reads
 import fs from "node:fs";
 import { readLines, month } from "./lib.mjs";
-const months = [month(new Date(Date.now() - 32 * 86400000)), month()].filter((v, i, a) => a.indexOf(v) === i);
+// every month touched by the last 35 days (on 1 November that is Sep, Oct AND Nov — the old two-point pick skipped October)
+const months = [...new Set(Array.from({ length: 36 }, (_, i) => month(new Date(Date.now() - i * 86400000))))].sort();
 const wd = months.flatMap((m) => readLines(`data/watchdog/${m}.jsonl`));
 const ai = months.flatMap((m) => readLines(`data/aicrawl/${m}.jsonl`));
 const ix = readLines("data/indexnow.jsonl");
