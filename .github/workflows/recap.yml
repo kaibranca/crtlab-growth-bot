@@ -16,6 +16,9 @@ jobs:
       - run: node scripts/recap.mjs
         env: { DATABENTO_API_KEY: "${{ secrets.DATABENTO_API_KEY }}" }
       - run: node scripts/summary.mjs
+      # the reel engine renders from these same 1-minute bars (no second data bill)
+      - uses: actions/upload-artifact@v4
+        with: { name: bars, path: .cache/, retention-days: 5, include-hidden-files: true }
       - run: |
           git config user.name "crtlab-growth-bot"; git config user.email "bot@crtlab.pro"
           git add data; git commit -qm "recap $(date -u +%F)" || exit 0
