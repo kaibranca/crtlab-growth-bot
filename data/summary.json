@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-02T01:02:13.874Z",
+ "updated": "2026-11-02T01:20:11.042Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -265,6 +265,24 @@
  },
  "activity": [
   {
+   "at": "2026-11-02T01:20:10.973Z",
+   "job": "links",
+   "ok": true,
+   "text": "623 sitemap pages checked · 0 broken"
+  },
+  {
+   "at": "2026-11-02T01:19:06.352Z",
+   "job": "bing",
+   "ok": true,
+   "text": "Bing: 0 impressions · 0 clicks (28d) · 0 buyer-intent searches · 0 titles rewritten"
+  },
+  {
+   "at": "2026-11-02T01:19:05.032Z",
+   "job": "search-console",
+   "ok": true,
+   "text": "316 impressions · 3 clicks (28d) · 0 titles rewritten · 1 gaps found"
+  },
+  {
    "at": "2026-11-02T01:02:09.937Z",
    "job": "health",
    "ok": true,
@@ -293,12 +311,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "224 crawler visits · OAI-SearchBot 169 · Bytespider 24 · PerplexityBot 14 · ChatGPT-User 6"
-  },
-  {
-   "at": "2026-11-01T14:59:19.573Z",
-   "job": "links",
-   "ok": true,
-   "text": "267 sitemap pages checked · 0 broken"
   },
   {
    "at": "2026-11-01T13:47:12.145Z",
@@ -386,6 +398,17 @@
   }
  ],
  "seo": {
+  "bing": [
+   {
+    "at": "2026-11-02T01:19:06.352Z",
+    "pages": 0,
+    "impr": 0,
+    "clicks": 0,
+    "buyerQueries": 0,
+    "changes": 0,
+    "gaps": 0
+   }
+  ],
   "weekly": [
    {
     "at": "2026-11-01T00:06:19.259Z",
@@ -405,6 +428,15 @@
     "clicks": 3,
     "changes": 0,
     "gaps": 1
+   },
+   {
+    "at": "2026-11-02T01:19:05.032Z",
+    "prop": "sc-domain:crtlab.pro",
+    "pages": 10,
+    "impr": 316,
+    "clicks": 3,
+    "changes": 0,
+    "gaps": 1
    }
   ],
   "changes": [],
@@ -412,8 +444,8 @@
   "gaps": [
    {
     "q": "back date testing software",
-    "impr": 35,
-    "pos": 87.11428571428571
+    "impr": 33,
+    "pos": 87.42424242424242
    }
   ]
  },
@@ -510,8 +542,8 @@
   "heavier": []
  },
  "links": {
-  "at": "2026-11-01T14:59:19.573Z",
-  "checked": 267,
+  "at": "2026-11-02T01:20:10.973Z",
+  "checked": 623,
   "broken": []
  },
  "indexnow": [
