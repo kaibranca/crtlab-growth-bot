@@ -6,7 +6,7 @@
 //  4. searches CRTLAB shows up for with no page that answers them → data/gaps.json (what to build next)
 import fs from "node:fs";
 import crypto from "node:crypto";
-import { SITE, get, append, readLines, now } from "./lib.mjs";
+import { append, readLines, now, BRAND, NEVER, expected, liveMeta, rewrite } from "./lib.mjs";
 
 const SA = JSON.parse(process.env.GSC_SA_JSON || "{}");
 if (!SA.client_email) { console.log("GSC_SA_JSON not set — skipping (see README: connect Search Console)"); process.exit(0); }
@@ -29,10 +29,7 @@ let PROP = "sc-domain:crtlab.pro", rows = await query(PROP, { startDate: day(30)
 if (!rows) { PROP = "https://crtlab.pro/"; rows = await query(PROP, { startDate: day(30), endDate: day(3), dimensions: ["page", "query"], rowLimit: 25000 }); }
 if (!rows) throw new Error("Search Console refused — is the service account added as a user on the property?");
 
-// BRAND searches ("crtlab") land on the homepage; a sub-page showing for them with a low CTR is normal, not a fault.
-// They are left out of every page's numbers, and pages whose titles are hand-set (home, legal, indexes) are never touched.
-const BRAND = /crt\s*-?\s*lab|crtlab/i;
-const NEVER = /^\/(|terms|privacy|risk|refund|third-party|cookies|blog|tools|statistics|hub|pricing|features|faq|reference|login|signup|auth.*|account.*|extension-privacy|discord-privacy|partnerships|unsubscribe)$/;
+// brand searches are left out of every page's numbers; hand-set pages are never touched (BRAND / NEVER in lib.mjs)
 // per page (non-brand searches only)
 const pages = new Map();
 for (const r of rows) {
@@ -43,15 +40,13 @@ for (const r of rows) {
   pages.set(path, p);
 }
 for (const p of pages.values()) { p.ctr = p.impr ? p.clicks / p.impr : 0; p.pos = p.impr ? p.posW / p.impr : 99; p.queries.sort((a, b) => b.impr - a.impr); }
-// what a result at this position normally gets (rough industry curve)
-const expected = (pos) => (pos < 1.5 ? 0.28 : pos < 2.5 ? 0.15 : pos < 3.5 ? 0.1 : pos < 4.5 ? 0.07 : pos < 5.5 ? 0.05 : pos < 10.5 ? 0.03 : pos < 15.5 ? 0.015 : 0.005);
 
 const ov = fs.existsSync(OV_FILE) ? JSON.parse(fs.readFileSync(OV_FILE, "utf8")) : {};
 const log = readLines("data/seo-changes.jsonl");
 const at = now().toISOString(), stamp = Date.now();
 // 3. MEASURE changes made 28+ days ago, once
 const done = new Set(log.filter((x) => x.kind === "outcome").map((x) => x.path + x.changedAt));
-for (const c of log.filter((x) => x.kind === "change" && stamp - new Date(x.at).getTime() > 28 * 86400000 && !done.has(x.path + x.at))) {
+for (const c of log.filter((x) => x.kind === "change" && x.source !== "bing" && stamp - new Date(x.at).getTime() > 28 * 86400000 && !done.has(x.path + x.at))) {
   const p = pages.get(c.path); if (!p || p.impr < 50) continue;
   const better = p.ctr >= c.before.ctr, worse = p.ctr < c.before.ctr * 0.8;
   if (worse) delete ov[c.path];
@@ -59,23 +54,15 @@ for (const c of log.filter((x) => x.kind === "change" && stamp - new Date(x.at).
 }
 // 2. FIX titles
 const recent = new Set(log.filter((x) => x.kind === "change" && stamp - new Date(x.at).getTime() < 28 * 86400000).map((x) => x.path));
-const title = (s) => s.replace(/\b\w/g, (c) => c.toUpperCase()).replace(/\b(Xauusd|Nas100|Us30|Sp500|Eurusd|Gbpusd|Usdjpy|Btc|Ict|Smc|Crt|Fvg|Adr|Tradingview)\b/gi, (w) => w.toUpperCase().replace("TRADINGVIEW", "TradingView"));
-const cut = (s, n) => (s.length <= n ? s : s.slice(0, s.lastIndexOf(" ", n - 1)).replace(/[\s,·|–-]+$/, ""));
 const cands = [...pages.values()].filter((p) => !NEVER.test(p.path) && p.impr >= 100 && p.pos <= 15 && p.ctr < expected(p.pos) * 0.6 && !recent.has(p.path) && !p.path.startsWith("/api"))
   .sort((a, b) => b.impr * (expected(b.pos) - b.ctr) - a.impr * (expected(a.pos) - a.ctr)).slice(0, 8);
 const changes = [];
 for (const p of cands) {
-  const html = (await get(SITE + p.path, { headers: { "user-agent": "Googlebot/2.1" } })).body;
-  const curT = (html.match(/<title[^>]*>([^<]*)<\/title>/)?.[1] ?? "").replace(/&amp;/g, "&").replace(/\s*\|\s*CRTLAB\s*$/, "");
-  const curD = (html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? "").replace(/&amp;/g, "&");
-  const q = p.queries.find((x) => !BRAND.test(x.q) && x.impr >= 20 && x.q.length >= 6 && x.q.split(" ").length <= 6)?.q; if (!q || !curT) continue;
-  const has = (s) => q.toLowerCase().split(" ").every((w) => s.toLowerCase().includes(w));
-  const next = { ...(ov[p.path] ?? {}) };
-  if (!has(curT)) { const core = curT.split("|").map((x) => x.trim()).find((x) => !has(x) && x.length > 4) ?? ""; next.title = cut(`${title(q)}${core ? " | " + core : ""}`, 55); }
-  if (curD && !has(curD)) next.description = cut(`${title(q)}: ${curD}`, 155);
-  if (!next.title && !next.description) continue;
+  const cur = await liveMeta(p.path);
+  const q = p.queries.find((x) => !BRAND.test(x.q) && x.impr >= 20 && x.q.length >= 6 && x.q.split(" ").length <= 6)?.q; if (!q || !cur.title) continue;
+  const next = rewrite(q, cur, ov[p.path]); if (!next) continue;
   ov[p.path] = next;
-  const c = { kind: "change", at, path: p.path, query: q, before: { title: curT, impr: p.impr, clicks: p.clicks, ctr: +p.ctr.toFixed(4), pos: +p.pos.toFixed(1) }, after: next };
+  const c = { kind: "change", at, path: p.path, query: q, source: "google", before: { title: cur.title, impr: p.impr, clicks: p.clicks, ctr: +p.ctr.toFixed(4), pos: +p.pos.toFixed(1) }, after: next };
   append("data/seo-changes.jsonl", c); changes.push(c);
 }
 fs.writeFileSync(OV_FILE, JSON.stringify(ov, null, 1) + "\n");

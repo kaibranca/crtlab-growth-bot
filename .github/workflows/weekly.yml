@@ -17,6 +17,10 @@ jobs:
       - name: Search Console → titles, gaps, outcomes
         run: node scripts/gsc.mjs
         env: { GSC_SA_JSON: "${{ secrets.GSC_SA_JSON }}" }
+      - name: Bing Webmaster → Bing/ChatGPT pipeline, buyer-intent searches, titles, gaps
+        run: node scripts/bing.mjs
+        env: { BING_API_KEY: "${{ secrets.BING_API_KEY }}" }
+        continue-on-error: true
       - name: Link check (every sitemap URL)
         run: node scripts/linkcheck.mjs
         timeout-minutes: 6
@@ -27,7 +31,7 @@ jobs:
           cd site
           git config user.name "crtlab-growth-bot"; git config user.email "bot@crtlab.pro"
           git add lib/seo-overrides.json
-          git commit -qm "SEO: weekly Search Console title fixes (growth bot)" && git push -q || echo "no title changes"
+          git commit -qm "SEO: weekly Search Console + Bing title fixes (growth bot)" && git push -q || echo "no title changes"
       - name: Save bot data
         run: |
           git config user.name "crtlab-growth-bot"; git config user.email "bot@crtlab.pro"
