@@ -23,6 +23,15 @@ jobs:
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           ALERT_TO: ${{ secrets.ALERT_TO }}
+      - name: Security watch (read-only; emails Kai on a sign of a break-in)
+        run: node scripts/security.mjs
+        continue-on-error: true
+        env:
+          ANALYTICS_DB_URL: ${{ secrets.ANALYTICS_DB_URL }}
+          OPS_KEY: ${{ secrets.OPS_KEY }}
+          STRIPE_READ_KEY: ${{ secrets.STRIPE_READ_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ALERT_TO: ${{ secrets.ALERT_TO }}
       - run: node scripts/summary.mjs
       - name: Save
         run: |

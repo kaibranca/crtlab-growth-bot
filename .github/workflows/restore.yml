@@ -1,0 +1,31 @@
+name: restore-test
+on:
+  schedule: [{ cron: "17 5 * * 0" }]
+  workflow_dispatch:
+concurrency: { group: data, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm i pg@8 --no-save --no-package-lock --silent
+      - name: Restore newest backup into a throwaway database (production untouched)
+        run: node scripts/restore-test.mjs
+        env:
+          PG_MAJOR: "18"
+          ANALYTICS_DB_URL: ${{ secrets.ANALYTICS_DB_URL }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ALERT_TO: ${{ secrets.ALERT_TO }}
+      - name: Save
+        run: |
+          git config user.name "crtlab-growth-bot"; git config user.email "bot@crtlab.pro"
+          git add data; git commit -qm "restore test $(date -u +%F)" || exit 0
+          git pull -q --rebase && git push -q
