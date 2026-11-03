@@ -1,7 +1,7 @@
 {
- "at": "2026-11-03T17:52:20.600Z",
+ "at": "2026-11-03T17:53:17.512Z",
  "ok": false,
  "step": "start database",
- "error": "Command failed: docker run -d --name r -e POSTGRES_PASSWORD=x postgres:18\nUnable to find image 'postgres:18' locally\n18: Pulling from library/postgres\n6fc242d221a6: Pulling fs layer\nd06edb2e3f43: Pulling fs layer\n3795839385bc: Pulling fs layer\ncea4f0db46a6: Pulling fs layer\n9b1a18996a22: Pulling fs ",
+ "error": "Command failed: docker run -d --name r -e POSTGRES_PASSWORD=x postgres:18\ndocker: Error response from daemon: Invalid container name (r), only [a-zA-Z0-9][a-zA-Z0-9_.-] are allowed\n\nRun 'docker run --help' for more information\n",
  "minutes": 0.2
 }
