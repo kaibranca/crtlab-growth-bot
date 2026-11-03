@@ -18,13 +18,13 @@ try {
   sh(`aws s3 cp s3://${bucket}/backups/${newest} /tmp/d.dump ${ep}`);
   result.step = "start database";
   sh(`docker pull -q postgres:${process.env.PG_MAJOR}`);
-  sh(`docker run -d --name r -e POSTGRES_PASSWORD=x postgres:${process.env.PG_MAJOR}`);
-  for (let i = 0; i < 40; i++) { try { sh(`docker exec r pg_isready -U postgres`); break; } catch { await new Promise((r) => setTimeout(r, 2000)); } }
+  sh(`docker run -d --name rt1 -e POSTGRES_PASSWORD=x postgres:${process.env.PG_MAJOR}`);
+  for (let i = 0; i < 40; i++) { try { sh(`docker exec rt1 pg_isready -U postgres`); break; } catch { await new Promise((r) => setTimeout(r, 2000)); } }
   result.step = "restore";
-  sh(`docker cp /tmp/d.dump r:/d.dump`);
-  try { sh(`docker exec r pg_restore -U postgres -d postgres --no-owner --no-acl /d.dump`); } catch { /* warnings exit non-zero; the row check below decides */ }
+  sh(`docker cp /tmp/d.dump rt1:/d.dump`);
+  try { sh(`docker exec rt1 pg_restore -U postgres -d postgres --no-owner --no-acl /d.dump`); } catch { /* warnings exit non-zero; the row check below decides */ }
   result.step = "check rows";
-  const count = (t) => +sh(`docker exec r psql -U postgres -d postgres -tAc "select count(*) from ${t}"`).trim();
+  const count = (t) => +sh(`docker exec rt1 psql -U postgres -d postgres -tAc "select count(*) from ${t}"`).trim();
   const live = new pg.Client({ connectionString: process.env.ANALYTICS_DB_URL, ssl: { rejectUnauthorized: false } });
   await live.connect();
   for (const t of ["users", "subscriptions", "user_stores"]) {
