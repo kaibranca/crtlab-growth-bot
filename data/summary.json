@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-03T17:03:20.141Z",
+ "updated": "2026-11-03T17:20:50.633Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -297,6 +297,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-03T17:20:41.734Z",
+   "job": "health",
+   "ok": false,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-03T17:03:20.081Z",
    "job": "watchdog",
    "ok": true,
@@ -307,12 +313,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "106 crawler visits · ClaudeBot 106"
-  },
-  {
-   "at": "2026-11-03T16:35:15.111Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-03T16:00:43.133Z",
@@ -848,8 +848,10 @@
   ]
  },
  "health": {
-  "at": "2026-11-03T16:35:15.111Z",
-  "alerts": [],
+  "at": "2026-11-03T17:20:41.734Z",
+  "alerts": [
+   "payment-failed"
+  ],
   "checks": [
    {
     "name": "database size",
@@ -868,8 +870,8 @@
    },
    {
     "name": "payments",
-    "ok": true,
-    "note": "ok"
+    "ok": false,
+    "note": "failed payment"
    },
    {
     "name": "nightly backup",
@@ -919,22 +921,22 @@
    "home": {
     "kb": 2612,
     "scripts": 22,
-    "ttfbMs": 226
+    "ttfbMs": 205
    },
    "backtest": {
     "kb": 1380,
     "scripts": 14,
-    "ttfbMs": 214
+    "ttfbMs": 199
    },
    "chart app": {
     "kb": 2612,
     "scripts": 22,
-    "ttfbMs": 833
+    "ttfbMs": 510
    },
    "statistics": {
     "kb": 1231,
     "scripts": 15,
-    "ttfbMs": 199
+    "ttfbMs": 229
    }
   },
   "heavier": []
