@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-03T16:00:43.195Z",
+ "updated": "2026-11-03T16:35:26.966Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -297,6 +297,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-03T16:35:15.111Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-03T16:00:43.133Z",
    "job": "watchdog",
    "ok": true,
@@ -343,12 +349,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "37 crawler visits · ChatGPT-User 14 · Bingbot 10 · Amazonbot 5 · Googlebot 3"
-  },
-  {
-   "at": "2026-11-03T13:30:47.676Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-03T13:04:15.961Z",
@@ -848,13 +848,13 @@
   ]
  },
  "health": {
-  "at": "2026-11-03T13:30:47.676Z",
+  "at": "2026-11-03T16:35:15.111Z",
   "alerts": [],
   "checks": [
    {
     "name": "database size",
     "ok": true,
-    "note": "237 MB"
+    "note": "238 MB"
    },
    {
     "name": "signups flowing",
@@ -874,7 +874,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "10h old · 28.1 MB"
+    "note": "14h old · 28.1 MB"
    },
    {
     "name": "market data fresh",
@@ -883,7 +883,7 @@
    }
   ],
   "db": {
-   "mb": 237,
+   "mb": 238,
    "tables": [
     [
      "user_events",
@@ -895,7 +895,7 @@
     ],
     [
      "meter_identities",
-     42
+     43
     ],
     [
      "user_stores",
@@ -917,24 +917,24 @@
   },
   "weight": {
    "home": {
-    "kb": 2605,
+    "kb": 2612,
     "scripts": 22,
-    "ttfbMs": 155
+    "ttfbMs": 226
    },
    "backtest": {
-    "kb": 1381,
+    "kb": 1380,
     "scripts": 14,
-    "ttfbMs": 182
+    "ttfbMs": 214
    },
    "chart app": {
-    "kb": 2605,
+    "kb": 2612,
     "scripts": 22,
-    "ttfbMs": 265
+    "ttfbMs": 833
    },
    "statistics": {
     "kb": 1231,
     "scripts": 15,
-    "ttfbMs": 125
+    "ttfbMs": 199
    }
   },
   "heavier": []
