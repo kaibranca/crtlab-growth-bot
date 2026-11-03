@@ -17,6 +17,7 @@ try {
   result.step = "download";
   sh(`aws s3 cp s3://${bucket}/backups/${newest} /tmp/d.dump ${ep}`);
   result.step = "start database";
+  sh(`docker pull -q postgres:${process.env.PG_MAJOR}`);
   sh(`docker run -d --name r -e POSTGRES_PASSWORD=x postgres:${process.env.PG_MAJOR}`);
   for (let i = 0; i < 40; i++) { try { sh(`docker exec r pg_isready -U postgres`); break; } catch { await new Promise((r) => setTimeout(r, 2000)); } }
   result.step = "restore";
@@ -32,7 +33,7 @@ try {
   }
   await live.end();
   result.ok = true; result.step = "done";
-} catch (e) { result.error = String(e.message || e).replace(/s3:\/\/\S+|https:\/\/\S+/g, "…").slice(0, 300); }
+} catch (e) { result.error = String(e.message || e).replace(/s3:\/\/\S+|https:\/\/\S+/g, "…").slice(-300); }
 fs.rmSync("/tmp/d.dump", { force: true });
 result.minutes = +((Date.now() - started) / 6e4).toFixed(1);
 fs.writeFileSync("data/restore.json", JSON.stringify(result, null, 1));
