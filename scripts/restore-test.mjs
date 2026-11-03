@@ -4,7 +4,7 @@ import fs from "node:fs";
 import { execSync } from "node:child_process";
 import pg from "pg";
 
-const sh = (c) => execSync(c, { stdio: ["ignore", "pipe", "ignore"], encoding: "utf8" });
+const sh = (c) => execSync(c, { stdio: ["ignore", "pipe", "pipe"], encoding: "utf8" });
 const started = Date.now();
 const result = { at: new Date().toISOString(), ok: false, step: "start" };
 try {
@@ -32,7 +32,7 @@ try {
   }
   await live.end();
   result.ok = true; result.step = "done";
-} catch (e) { result.error = String(e.message || e).replace(/s3:\/\/\S+|https:\/\/\S+/g, "…").slice(0, 120); }
+} catch (e) { result.error = String(e.message || e).replace(/s3:\/\/\S+|https:\/\/\S+/g, "…").slice(0, 300); }
 fs.rmSync("/tmp/d.dump", { force: true });
 result.minutes = +((Date.now() - started) / 6e4).toFixed(1);
 fs.writeFileSync("data/restore.json", JSON.stringify(result, null, 1));
