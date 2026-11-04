@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-04T04:04:18.295Z",
+ "updated": "2026-11-04T04:32:21.599Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -310,6 +310,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-04T04:32:11.208Z",
+   "job": "health",
+   "ok": false,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-04T04:04:18.230Z",
    "job": "watchdog",
    "ok": true,
@@ -344,12 +350,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "3727 crawler visits · OAI-SearchBot 3709 · Bingbot 5 · ChatGPT-User 3 · Googlebot 3"
-  },
-  {
-   "at": "2026-11-04T01:34:38.136Z",
-   "job": "health",
-   "ok": false,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-04T01:05:07.332Z",
@@ -861,7 +861,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-04T01:34:38.136Z",
+  "at": "2026-11-04T04:32:11.208Z",
   "alerts": [
    "payment-failed"
   ],
@@ -889,7 +889,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "23h old · 28.1 MB"
+    "note": "1h old · 28.5 MB"
    },
    {
     "name": "market data fresh",
@@ -910,7 +910,7 @@
     ],
     [
      "meter_identities",
-     43
+     44
     ],
     [
      "user_stores",
@@ -923,9 +923,9 @@
    ]
   },
   "backup": {
-   "at": "2026-11-03T03:04:16.912Z",
-   "mb": 28.1,
-   "count": 30
+   "at": "2026-11-04T03:02:37.189Z",
+   "mb": 28.5,
+   "count": 31
   },
   "data": {
    "newestDays": 2
@@ -934,22 +934,22 @@
    "home": {
     "kb": 2548,
     "scripts": 21,
-    "ttfbMs": 118
+    "ttfbMs": 216
    },
    "backtest": {
     "kb": 1313,
     "scripts": 12,
-    "ttfbMs": 141
+    "ttfbMs": 203
    },
    "chart app": {
     "kb": 2548,
     "scripts": 21,
-    "ttfbMs": 292
+    "ttfbMs": 458
    },
    "statistics": {
     "kb": 1162,
     "scripts": 13,
-    "ttfbMs": 116
+    "ttfbMs": 187
    }
   },
   "heavier": []
