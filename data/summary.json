@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-04T01:05:07.378Z",
+ "updated": "2026-11-04T01:34:45.426Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -309,6 +309,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-04T01:34:38.136Z",
+   "job": "health",
+   "ok": false,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-04T01:05:07.332Z",
    "job": "watchdog",
    "ok": true,
@@ -343,12 +349,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "120 crawler visits · OAI-SearchBot 84 · ChatGPT-User 20 · Bingbot 6 · Claude-User 3"
-  },
-  {
-   "at": "2026-11-03T23:41:49.250Z",
-   "job": "health",
-   "ok": false,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-03T23:01:13.350Z",
@@ -860,7 +860,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-03T23:41:49.250Z",
+  "at": "2026-11-04T01:34:38.136Z",
   "alerts": [
    "payment-failed"
   ],
@@ -888,12 +888,12 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "21h old · 28.1 MB"
+    "note": "23h old · 28.1 MB"
    },
    {
     "name": "market data fresh",
     "ok": true,
-    "note": "newest candle 1d old"
+    "note": "newest candle 2d old"
    }
   ],
   "db": {
@@ -927,28 +927,28 @@
    "count": 30
   },
   "data": {
-   "newestDays": 1
+   "newestDays": 2
   },
   "weight": {
    "home": {
     "kb": 2548,
     "scripts": 21,
-    "ttfbMs": 263
+    "ttfbMs": 118
    },
    "backtest": {
     "kb": 1313,
     "scripts": 12,
-    "ttfbMs": 218
+    "ttfbMs": 141
    },
    "chart app": {
     "kb": 2548,
     "scripts": 21,
-    "ttfbMs": 507
+    "ttfbMs": 292
    },
    "statistics": {
     "kb": 1162,
     "scripts": 13,
-    "ttfbMs": 251
+    "ttfbMs": 116
    }
   },
   "heavier": []
