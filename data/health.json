@@ -1,5 +1,5 @@
 {
- "at": "2026-11-04T23:55:56.737Z",
+ "at": "2026-11-05T01:30:14.951Z",
  "checks": [
   {
    "name": "database size",
@@ -24,12 +24,12 @@
   {
    "name": "nightly backup",
    "ok": true,
-   "note": "21h old · 28.5 MB"
+   "note": "22h old · 28.5 MB"
   },
   {
    "name": "market data fresh",
    "ok": true,
-   "note": "newest candle 2d old"
+   "note": "newest candle 3d old"
   }
  ],
  "db": {
@@ -63,28 +63,28 @@
   "count": 31
  },
  "data": {
-  "newestDays": 2
+  "newestDays": 3
  },
  "weight": {
   "home": {
-   "kb": 2556,
+   "kb": 2559,
    "scripts": 21,
-   "ttfbMs": 211
+   "ttfbMs": 224
   },
   "backtest": {
    "kb": 1315,
    "scripts": 12,
-   "ttfbMs": 235
+   "ttfbMs": 185
   },
   "chart app": {
-   "kb": 2556,
+   "kb": 2559,
    "scripts": 21,
-   "ttfbMs": 680
+   "ttfbMs": 476
   },
   "statistics": {
    "kb": 1162,
    "scripts": 13,
-   "ttfbMs": 198
+   "ttfbMs": 179
   }
  },
  "heavier": [],
