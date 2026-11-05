@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-05T17:03:04.746Z",
+ "updated": "2026-11-05T17:39:45.269Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -327,6 +327,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-05T17:39:35.024Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-05T17:03:04.671Z",
    "job": "watchdog",
    "ok": true,
@@ -337,12 +343,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "69 crawler visits · OAI-SearchBot 56 · ChatGPT-User 9 · Bingbot 2 · PerplexityBot 1"
-  },
-  {
-   "at": "2026-11-05T16:33:01.826Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-05T16:03:23.276Z",
@@ -878,7 +878,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-05T16:33:01.826Z",
+  "at": "2026-11-05T17:39:35.024Z",
   "alerts": [],
   "checks": [
    {
@@ -904,7 +904,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "14h old · 29.0 MB"
+    "note": "15h old · 29.0 MB"
    },
    {
     "name": "market data fresh",
@@ -949,22 +949,22 @@
    "home": {
     "kb": 2559,
     "scripts": 21,
-    "ttfbMs": 219
+    "ttfbMs": 227
    },
    "backtest": {
-    "kb": 1315,
+    "kb": 1314,
     "scripts": 12,
-    "ttfbMs": 209
+    "ttfbMs": 226
    },
    "chart app": {
     "kb": 2559,
     "scripts": 21,
-    "ttfbMs": 568
+    "ttfbMs": 413
    },
    "statistics": {
     "kb": 1162,
     "scripts": 13,
-    "ttfbMs": 204
+    "ttfbMs": 205
    }
   },
   "heavier": []
