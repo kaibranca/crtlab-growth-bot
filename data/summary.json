@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-05T13:04:42.884Z",
+ "updated": "2026-11-05T13:32:41.876Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -327,6 +327,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-05T13:32:30.970Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-05T13:04:42.807Z",
    "job": "watchdog",
    "ok": true,
@@ -373,12 +379,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "78 crawler visits · ChatGPT-User 35 · OAI-SearchBot 27 · Bingbot 6 · Googlebot 4"
-  },
-  {
-   "at": "2026-11-05T10:32:03.971Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-05T10:04:35.871Z",
@@ -878,13 +878,13 @@
   ]
  },
  "health": {
-  "at": "2026-11-05T10:32:03.971Z",
+  "at": "2026-11-05T13:32:30.970Z",
   "alerts": [],
   "checks": [
    {
     "name": "database size",
     "ok": true,
-    "note": "244 MB"
+    "note": "245 MB"
    },
    {
     "name": "signups flowing",
@@ -904,7 +904,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "8h old · 29.0 MB"
+    "note": "11h old · 29.0 MB"
    },
    {
     "name": "market data fresh",
@@ -913,7 +913,7 @@
    }
   ],
   "db": {
-   "mb": 244,
+   "mb": 245,
    "tables": [
     [
      "user_events",
@@ -921,7 +921,7 @@
     ],
     [
      "ui_events",
-     46
+     47
     ],
     [
      "meter_identities",
@@ -949,22 +949,22 @@
    "home": {
     "kb": 2559,
     "scripts": 21,
-    "ttfbMs": 194
+    "ttfbMs": 252
    },
    "backtest": {
     "kb": 1315,
     "scripts": 12,
-    "ttfbMs": 191
+    "ttfbMs": 176
    },
    "chart app": {
     "kb": 2559,
     "scripts": 21,
-    "ttfbMs": 419
+    "ttfbMs": 397
    },
    "statistics": {
     "kb": 1162,
     "scripts": 13,
-    "ttfbMs": 194
+    "ttfbMs": 160
    }
   },
   "heavier": []
