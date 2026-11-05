@@ -1,5 +1,5 @@
 {
- "at": "2026-11-05T22:33:56.887Z",
+ "at": "2026-11-05T23:50:59.337Z",
  "checks": [
   {
    "name": "database size",
@@ -18,13 +18,13 @@
   },
   {
    "name": "payments",
-   "ok": true,
-   "note": "ok"
+   "ok": false,
+   "note": "failed payment"
   },
   {
    "name": "nightly backup",
    "ok": true,
-   "note": "20h old · 29.0 MB"
+   "note": "21h old · 29.0 MB"
   },
   {
    "name": "market data fresh",
@@ -69,24 +69,27 @@
   "home": {
    "kb": 2559,
    "scripts": 21,
-   "ttfbMs": 176
+   "ttfbMs": 167
   },
   "backtest": {
    "kb": 1314,
    "scripts": 12,
-   "ttfbMs": 162
+   "ttfbMs": 149
   },
   "chart app": {
    "kb": 2559,
    "scripts": 21,
-   "ttfbMs": 361
+   "ttfbMs": 364
   },
   "statistics": {
    "kb": 1162,
    "scripts": 13,
-   "ttfbMs": 151
+   "ttfbMs": 144
   }
  },
  "heavier": [],
- "alerts": []
+ "alerts": [
+  "payment-failed"
+ ],
+ "emailed": 200
 }
