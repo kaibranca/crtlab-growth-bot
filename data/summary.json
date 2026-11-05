@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-05T06:00:25.698Z",
+ "updated": "2026-11-05T06:33:50.004Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -324,6 +324,12 @@
   ]
  },
  "activity": [
+  {
+   "at": "2026-11-05T06:33:49.951Z",
+   "job": "indexnow",
+   "ok": true,
+   "text": "submitted 27 changed pages · HTTP 200"
+  },
   {
    "at": "2026-11-05T06:00:25.628Z",
    "job": "watchdog",
@@ -797,12 +803,6 @@
    "job": "watchdog",
    "ok": true,
    "text": "18/18 checks pass · avg 454 ms"
-  },
-  {
-   "at": "2026-11-03T20:04:40.773Z",
-   "job": "ai-crawl",
-   "ok": true,
-   "text": "521 crawler visits · OAI-SearchBot 496 · Bingbot 8 · Amazonbot 7 · ChatGPT-User 4"
   }
  ],
  "seo": {
@@ -1006,6 +1006,11 @@
   {
    "at": "2026-11-04T14:52:41.740Z",
    "submitted": 28,
+   "status": "HTTP 200"
+  },
+  {
+   "at": "2026-11-05T06:33:49.951Z",
+   "submitted": 27,
    "status": "HTTP 200"
   }
  ]
