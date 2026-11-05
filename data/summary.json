@@ -1,88 +1,88 @@
 {
- "updated": "2026-11-05T02:29:23.661Z",
+ "updated": "2026-11-05T03:01:03.251Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
   "up30d": 100,
   "last": {
-   "at": "2026-11-05T02:29:23.591Z",
+   "at": "2026-11-05T03:01:03.178Z",
    "ok": true,
    "results": [
     {
      "name": "home",
      "path": "/",
      "status": 200,
-     "ms": 252,
+     "ms": 288,
      "ok": true
     },
     {
      "name": "backtest page",
      "path": "/backtest",
      "status": 200,
-     "ms": 128,
+     "ms": 153,
      "ok": true
     },
     {
      "name": "pricing",
      "path": "/pricing",
      "status": 200,
-     "ms": 149,
+     "ms": 144,
      "ok": true
     },
     {
      "name": "chart app",
      "path": "/backtester",
      "status": 200,
-     "ms": 123,
+     "ms": 185,
      "ok": true
     },
     {
      "name": "statistics",
      "path": "/statistics/nas100",
      "status": 200,
-     "ms": 133,
+     "ms": 139,
      "ok": true
     },
     {
      "name": "calculator",
      "path": "/tools/position-size-calculator",
      "status": 200,
-     "ms": 145,
+     "ms": 150,
      "ok": true
     },
     {
      "name": "candles API",
      "path": "/api/candles?pair=nas100&tf=1hour&limit=50&v=q8",
      "status": 200,
-     "ms": 137,
+     "ms": 162,
      "ok": true
     },
     {
      "name": "llms.txt",
      "path": "/llms.txt",
      "status": 200,
-     "ms": 110,
+     "ms": 175,
      "ok": true
     },
     {
      "name": "robots.txt",
      "path": "/robots.txt",
      "status": 200,
-     "ms": 151,
+     "ms": 146,
      "ok": true
     },
     {
      "name": "sitemap",
      "path": "/sitemap.xml",
      "status": 200,
-     "ms": 134,
+     "ms": 238,
      "ok": true
     },
     {
      "name": "AI: GPTBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 146,
+     "ms": 133,
      "ok": true
     },
     {
@@ -96,66 +96,66 @@
      "name": "AI: ChatGPT-User",
      "path": "/backtest",
      "status": 200,
-     "ms": 151,
+     "ms": 134,
      "ok": true
     },
     {
      "name": "AI: ClaudeBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 122,
+     "ms": 140,
      "ok": true
     },
     {
      "name": "AI: PerplexityBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 327,
+     "ms": 134,
      "ok": true
     },
     {
      "name": "AI: Googlebot",
      "path": "/backtest",
      "status": 200,
-     "ms": 135,
+     "ms": 330,
      "ok": true
     },
     {
      "name": "AI: bingbot",
      "path": "/backtest",
      "status": 200,
-     "ms": 140,
+     "ms": 161,
      "ok": true
     },
     {
      "name": "AI: Applebot",
      "path": "/backtest",
      "status": 200,
-     "ms": 141,
+     "ms": 166,
      "ok": true
     }
    ]
   },
   "incidents": [],
   "speed": {
-   "home": 252,
-   "backtest page": 128,
-   "pricing": 149,
-   "chart app": 123,
-   "statistics": 133,
-   "calculator": 145,
-   "candles API": 137,
-   "llms.txt": 110,
-   "robots.txt": 151,
-   "sitemap": 134,
-   "AI: GPTBot": 146,
+   "home": 288,
+   "backtest page": 153,
+   "pricing": 144,
+   "chart app": 185,
+   "statistics": 139,
+   "calculator": 150,
+   "candles API": 162,
+   "llms.txt": 175,
+   "robots.txt": 146,
+   "sitemap": 238,
+   "AI: GPTBot": 133,
    "AI: OAI-SearchBot": 130,
-   "AI: ChatGPT-User": 151,
-   "AI: ClaudeBot": 122,
-   "AI: PerplexityBot": 327,
-   "AI: Googlebot": 135,
-   "AI: bingbot": 140,
-   "AI: Applebot": 141
+   "AI: ChatGPT-User": 134,
+   "AI: ClaudeBot": 140,
+   "AI: PerplexityBot": 134,
+   "AI: Googlebot": 330,
+   "AI: bingbot": 161,
+   "AI: Applebot": 166
   }
  },
  "aicrawl": {
@@ -227,51 +227,51 @@
     "CCBot": 1
    },
    "2026-11-05": {
-    "GPTBot": 3,
-    "OAI-SearchBot": 205,
-    "ChatGPT-User": 11,
-    "ClaudeBot": 3,
-    "PerplexityBot": 6,
-    "Googlebot": 6,
-    "Bingbot": 33,
-    "Applebot": 3,
+    "GPTBot": 4,
+    "OAI-SearchBot": 249,
+    "ChatGPT-User": 13,
+    "ClaudeBot": 4,
+    "PerplexityBot": 8,
+    "Googlebot": 10,
+    "Bingbot": 41,
+    "Applebot": 4,
     "Amazonbot": 8,
-    "CCBot": 3,
+    "CCBot": 10,
     "YandexBot": 6
    }
   },
   "topPages7d": [
    [
     "/",
-    1137
+    1144
    ],
    [
     "/backtest",
-    1002
+    1013
    ],
    [
     "/pricing",
-    468
+    470
    ],
    [
     "/partnerships",
-    430
+    432
    ],
    [
     "/blog",
-    416
+    419
    ],
    [
     "/features",
-    377
+    379
    ],
    [
     "/tools",
-    349
+    352
    ],
    [
     "/recap",
-    176
+    177
    ],
    [
     "/tools/best-time-to-trade",
@@ -283,11 +283,11 @@
    ],
    [
     "/tools/position-size-calculator",
-    107
+    111
    ],
    [
     "/answers",
-    105
+    106
    ],
    [
     "/faq",
@@ -319,11 +319,23 @@
    ],
    [
     "/backtest-gold",
-    46
+    47
    ]
   ]
  },
  "activity": [
+  {
+   "at": "2026-11-05T03:01:03.178Z",
+   "job": "watchdog",
+   "ok": true,
+   "text": "18/18 checks pass · avg 173 ms"
+  },
+  {
+   "at": "2026-11-05T03:00:59.882Z",
+   "job": "ai-crawl",
+   "ok": true,
+   "text": "70 crawler visits · OAI-SearchBot 44 · Bingbot 8 · CCBot 7 · Googlebot 4"
+  },
   {
    "at": "2026-11-05T02:29:23.591Z",
    "job": "watchdog",
@@ -791,18 +803,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "492 crawler visits · ClaudeBot 255 · OAI-SearchBot 232 · Bingbot 3 · Amazonbot 2"
-  },
-  {
-   "at": "2026-11-03T17:03:20.081Z",
-   "job": "watchdog",
-   "ok": true,
-   "text": "18/18 checks pass · avg 195 ms"
-  },
-  {
-   "at": "2026-11-03T17:03:16.381Z",
-   "job": "ai-crawl",
-   "ok": true,
-   "text": "106 crawler visits · ClaudeBot 106"
   }
  ],
  "seo": {
