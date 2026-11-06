@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-06T16:32:48.506Z",
+ "updated": "2026-11-06T16:56:46.177Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -345,7 +345,7 @@
  },
  "activity": [
   {
-   "at": "2026-11-06T16:32:42.141Z",
+   "at": "2026-11-06T16:56:35.262Z",
    "job": "health",
    "ok": false,
    "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
@@ -896,7 +896,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-06T16:32:42.141Z",
+  "at": "2026-11-06T16:56:35.262Z",
   "alerts": [
    "payment-failed"
   ],
@@ -924,7 +924,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "13h old · 29.3 MB"
+    "note": "14h old · 29.3 MB"
    },
    {
     "name": "market data fresh",
@@ -969,22 +969,22 @@
    "home": {
     "kb": 2553,
     "scripts": 21,
-    "ttfbMs": 142
+    "ttfbMs": 162
    },
    "backtest": {
     "kb": 1314,
     "scripts": 12,
-    "ttfbMs": 126
+    "ttfbMs": 162
    },
    "chart app": {
     "kb": 2553,
     "scripts": 21,
-    "ttfbMs": 310
+    "ttfbMs": 409
    },
    "statistics": {
     "kb": 1162,
     "scripts": 13,
-    "ttfbMs": 107
+    "ttfbMs": 177
    }
   },
   "heavier": []
