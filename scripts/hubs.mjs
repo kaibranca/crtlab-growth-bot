@@ -62,8 +62,12 @@ const groups = new Map(); for (const e of cal) { const g = groups.get(e.t) ?? []
 const idxF = "data/events/index.json", idx = fs.existsSync(idxF) ? JSON.parse(fs.readFileSync(idxF, "utf8")) : [];
 const recapOf = (d) => recs.find((r) => r.date === d);
 for (const [t, evs] of groups) {
-  const { date, hm } = ny(t), fams = [...new Set(evs.map((e) => e.fam))], slug = `${fams.join("-")}-${date}`;
-  if (idx.some((x) => x.slug === slug)) continue;
+  const { date, hm } = ny(t), fams = [...new Set(evs.map((e) => e.fam))];
+  // 11-07: a same-day page (live-news.mjs, crypto only, partial) for this minute is completed ON ITS OWN URL — the one
+  // Google and the AI crawlers saw in the afternoon. A full page for the minute is never redone.
+  const ex = idx.find((x) => x.date === date && x.time === hm) ?? idx.find((x) => x.slug === `${fams.join("-")}-${date}`);
+  if (ex && !ex.partial) continue;
+  const slug = ex?.slug ?? `${fams.join("-")}-${date}`;
   const rec = recapOf(date); if (!rec) continue; // only once the day's recap (and its bars) exist
   const out = [];
   for (const m of rec.markets) {
@@ -87,9 +91,13 @@ for (const [t, evs] of groups) {
   out.sort((a, b) => (b.ofDay ?? 0) - (a.ofDay ?? 0));
   const mk = famMk(fams), top = out.find((m) => m.id === mk) ?? out[0], fmt = (x) => (top.unit === "$" ? `$${x}` : `${x} ${top.unit}`), title = evs.map((e) => e.title).join(" · "), famName = [...new Set(evs.map((e) => e.famName))].join(" & ");
   const headline = `${famName}: ${top.name} moved ${fmt(top.range60)} in the first hour${top.ofDay ? ` — ${top.ofDay}% of a normal day` : ""}`;
-  const ev = { slug, date, time: hm, t, fams, famName, title, releases: evs.map((e) => ({ title: e.title, forecast: e.forecast, previous: e.previous })), headline, markets: out };
+  // the same-day page knew the actuals (TradingView); the ForexFactory feed here only has forecast/previous — keep them
+  const prevDay = ex ? JSON.parse(fs.readFileSync(`data/events/${slug}.json`, "utf8")) : null;
+  const releases = prevDay?.releases?.length ? prevDay.releases : evs.map((e) => ({ title: e.title, forecast: e.forecast, previous: e.previous }));
+  const ev = { slug, date, time: hm, t, fams: ex?.fams ?? fams, famName: ex?.famName ?? famName, title: ex?.title ?? title, releases, headline, markets: out };
   fs.writeFileSync(`data/events/${slug}.json`, JSON.stringify(ev));
-  idx.push({ slug, date, time: hm, fams, famName, title, headline });
+  if (ex) idx.splice(idx.indexOf(ex), 1);
+  idx.push({ slug, date, time: hm, fams: ev.fams, famName: ev.famName, title: ev.title, headline });
   console.log("news", slug, "·", headline);
 }
 idx.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
