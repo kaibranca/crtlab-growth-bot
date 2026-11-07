@@ -26,6 +26,4 @@ jobs:
           ALERT_TO: ${{ secrets.ALERT_TO }}
       - name: Save
         run: |
-          git config user.name "crtlab-growth-bot"; git config user.email "bot@crtlab.pro"
-          git add data; git commit -qm "restore test $(date -u +%F)" || exit 0
-          git pull -q --rebase && git push -q
+          bash scripts/push.sh "restore test $(date -u +%F)"

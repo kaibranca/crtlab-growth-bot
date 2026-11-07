@@ -19,12 +19,16 @@ jobs:
         id: wd
         continue-on-error: true
         run: node scripts/watchdog.mjs
+      - name: Calendar (actuals land within the hour)
+        continue-on-error: true
+        run: node scripts/upcoming.mjs
+      - name: IndexNow (only URLs whose lastmod moved)
+        continue-on-error: true
+        run: node scripts/indexnow.mjs
       - run: node scripts/summary.mjs
       - name: Save
         run: |
-          git config user.name "crtlab-growth-bot"; git config user.email "bot@crtlab.pro"
-          git add data; git commit -qm "hourly $(date -u +%FT%H:%M)" || exit 0
-          git pull -q --rebase && git push -q
+          bash scripts/push.sh "hourly $(date -u +%FT%H:%M)"
       - name: Alert on failure
         if: steps.wd.outcome == 'failure'
         run: echo "::error::Watchdog failed — see the table above" && exit 1

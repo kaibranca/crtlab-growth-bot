@@ -7,14 +7,16 @@ permissions: { contents: write }
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
+      - run: node scripts/upcoming.mjs
+        continue-on-error: true
+      - run: node scripts/cal-history.mjs
+        continue-on-error: true
       - run: node scripts/indexnow.mjs
       - run: node scripts/summary.mjs
       - run: |
-          git config user.name "crtlab-growth-bot"; git config user.email "bot@crtlab.pro"
-          git add data; git commit -qm "daily $(date -u +%F)" || exit 0
-          git pull -q --rebase && git push -q
+          bash scripts/push.sh "daily $(date -u +%F)"

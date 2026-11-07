@@ -32,8 +32,17 @@ const hm = (t) => { const n = ny(t); return `${String(n.h).padStart(2, "0")}:${S
 const session = (t) => { const h = ny(t).h; return h < 2 ? "Asia" : h < 7 ? "London" : h < 12 ? "the New York morning" : "the New York afternoon"; };
 
 // ── data ──
+// 11-07: one 504 from Databento dropped a market for the day (XAGUSD 11-06, USDJPY 11-05). Retry 429/5xx/network errors;
+// Databento only bills a request that returns data, so a retry never pays twice.
+async function rfetch(url, opts) {
+  for (let i = 0; ; i++) {
+    try { const r = await fetch(url, opts); if (r.ok || (r.status !== 429 && r.status < 500) || i === 3) return r; console.error("retry", r.status, url.slice(0, 60)); }
+    catch (e) { if (i === 3) throw e; console.error("retry", String(e).slice(0, 80)); }
+    await new Promise((res) => setTimeout(res, [5000, 15000, 30000][i]));
+  }
+}
 async function databento(sym, start, end) {
-  const r = await fetch("https://hist.databento.com/v0/timeseries.get_range", { method: "POST",
+  const r = await rfetch("https://hist.databento.com/v0/timeseries.get_range", { method: "POST",
     headers: { Authorization: "Basic " + Buffer.from(KEY + ":").toString("base64"), "content-type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ dataset: "GLBX.MDP3", schema: "ohlcv-1m", stype_in: "continuous", symbols: sym, start, end, encoding: "json", pretty_px: "true", pretty_ts: "true" }) });
   if (!r.ok) throw new Error(`databento ${sym} ${r.status}: ${(await r.text()).slice(0, 200)}`);
@@ -43,7 +52,7 @@ async function coinbase(prod, startSec, endSec) {
   const out = [];
   for (let a = startSec; a < endSec; a += 300 * 900) {
     const b = Math.min(endSec, a + 300 * 900);
-    const r = await fetch(`https://api.exchange.coinbase.com/products/${prod}/candles?granularity=900&start=${new Date(a * 1000).toISOString()}&end=${new Date(b * 1000).toISOString()}`, { headers: { "user-agent": "crtlab-growth-bot" } });
+    const r = await rfetch(`https://api.exchange.coinbase.com/products/${prod}/candles?granularity=900&start=${new Date(a * 1000).toISOString()}&end=${new Date(b * 1000).toISOString()}`, { headers: { "user-agent": "crtlab-growth-bot" } });
     if (!r.ok) throw new Error(`coinbase ${prod} ${r.status}`);
     for (const [t, l, h, o, c] of await r.json()) out.push({ t, o, h, l, c });
     await new Promise((res) => setTimeout(res, 250));

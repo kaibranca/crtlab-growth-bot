@@ -34,6 +34,4 @@ jobs:
           git commit -qm "SEO: weekly Search Console + Bing title fixes (growth bot)" && git push -q || echo "no title changes"
       - name: Save bot data
         run: |
-          git config user.name "crtlab-growth-bot"; git config user.email "bot@crtlab.pro"
-          git add data; git commit -qm "weekly $(date -u +%F)" || exit 0
-          git pull -q --rebase && git push -q
+          bash scripts/push.sh "weekly $(date -u +%F)"

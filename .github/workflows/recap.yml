@@ -16,8 +16,8 @@ jobs:
       - run: node scripts/recap.mjs
         env: { DATABENTO_API_KEY: "${{ secrets.DATABENTO_API_KEY }}" }
       - run: node scripts/hubs.mjs
+      - run: node scripts/upcoming.mjs
+        continue-on-error: true
       - run: node scripts/summary.mjs
       - run: |
-          git config user.name "crtlab-growth-bot"; git config user.email "bot@crtlab.pro"
-          git add data; git commit -qm "recap $(date -u +%F)" || exit 0
-          git pull -q --rebase && git push -q
+          bash scripts/push.sh "recap $(date -u +%F)"
