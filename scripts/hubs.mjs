@@ -93,7 +93,10 @@ for (const [t, evs] of groups) {
   const headline = `${famName}: ${top.name} moved ${fmt(top.range60)} in the first hour${top.ofDay ? ` — ${top.ofDay}% of a normal day` : ""}`;
   // the same-day page knew the actuals (TradingView); the ForexFactory feed here only has forecast/previous — keep them
   const prevDay = ex ? JSON.parse(fs.readFileSync(`data/events/${slug}.json`, "utf8")) : null;
-  const releases = prevDay?.releases?.length ? prevDay.releases : evs.map((e) => ({ title: e.title, forecast: e.forecast, previous: e.previous }));
+  // 11-07: the ForexFactory feed has no actuals — take them from the TradingView calendar (upcoming.json, same minute)
+  const tv = fs.existsSync("data/events/upcoming.json") ? JSON.parse(fs.readFileSync("data/events/upcoming.json", "utf8")).events.filter((x) => Math.floor(x.t / 1000) === t && x.actual != null) : [];
+  const releases = prevDay?.releases?.length ? prevDay.releases : tv.length ? tv.map((x) => ({ title: x.title, actual: x.actual, forecast: x.forecast, previous: x.previous }))
+    : evs.map((e) => ({ title: e.title, forecast: e.forecast, previous: e.previous }));
   const ev = { slug, date, time: hm, t, fams: ex?.fams ?? fams, famName: ex?.famName ?? famName, title: ex?.title ?? title, releases, headline, markets: out };
   fs.writeFileSync(`data/events/${slug}.json`, JSON.stringify(ev));
   if (ex) idx.splice(idx.indexOf(ex), 1);
