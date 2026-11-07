@@ -52,13 +52,17 @@ let made = 0, skipped = 0;
 for (const [t, evs] of [...groups].sort((a, b) => a[0] - b[0])) {
   const { date, hm } = ny(t), fams = [...new Set(evs.map((e) => e.fam))], slug = `${fams.join("-")}-${date}`;
   // a release time that already has a page (e.g. claims at 8:30 on a CPI day) keeps that page: no second page for the same hour
+  if (!idx.some((x) => x.slug === slug) && fs.existsSync(`data/events/${slug}.json`)) { // measured by a run that stopped early
+    const d = JSON.parse(fs.readFileSync(`data/events/${slug}.json`, "utf8")); idx.push({ slug, date: d.date, time: d.time, fams: d.fams, famName: d.famName, title: d.title, headline: d.headline }); made++; continue;
+  }
   if (idx.some((x) => x.slug === slug || (x.date === date && x.time === hm)) || fs.existsSync(`data/events/${slug}.json`)) { skipped++; continue; }
   // a release after 17:00 New York (Australia, Japan) belongs to the NEXT trading day — its bars end 17:00 tomorrow (11-07 fix:
   // the day used to end before the release, so every AU jobs/CPI and most BoJ releases were skipped as "no bars")
   const late = +hm.slice(0, 2) >= 17, dayEnd = nyTime(late ? new Date(Date.parse(date + "T12:00:00Z") + 86400e3).toISOString().slice(0, 10) : date, 17), dayStart = dayEnd - 86400, prevStart = dayStart - 86400;
   const out = [];
-  // the 12 markets' bars in parallel (was one at a time: ~12 round trips per release)
-  const got = await Promise.all(MK.map(([id]) => getJ(`${BARS}/candles?pair=${id.toLowerCase()}&tf=1min&from=${prevStart}&to=${dayEnd}&limit=5000`)));
+  // one market at a time (11-07: 12 in parallel tripped the local candle server's 300/min limit — 429s skipped releases
+  // and froze the localhost chart for everyone else using it)
+  const got = []; for (const [id] of MK) { await new Promise((r) => setTimeout(r, 250)); got.push(await getJ(`${BARS}/candles?pair=${id.toLowerCase()}&tf=1min&from=${prevStart}&to=${dayEnd}&limit=5000`)); }
   for (const [k, [id, name, unit]] of MK.entries()) {
     const d = got[k];
     const B = (d?.candles ?? []).map(([bt, o, h, l, c]) => ({ t: bt, o, h, l, c }));
