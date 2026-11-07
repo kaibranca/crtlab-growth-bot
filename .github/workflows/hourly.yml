@@ -15,6 +15,10 @@ jobs:
       - name: AI crawler counts
         run: node scripts/aicrawl.mjs
         env: { OPS_KEY: "${{ secrets.OPS_KEY }}" }
+      - name: Load alert (emails Kai if even one chart load was turned away, failed or slow in the last hour)
+        continue-on-error: true
+        run: node scripts/load-alert.mjs
+        env: { OPS_KEY: "${{ secrets.OPS_KEY }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
       - name: Watchdog
         id: wd
         continue-on-error: true
