@@ -5,6 +5,7 @@
 //                    how 12 markets moved in the first 15 / 60 minutes, from the 1-minute bars (site: /news/<slug>, /news/<type>)
 //   node scripts/hubs.mjs
 import fs from "node:fs";
+import { xfamFf, famMk } from "./fams.mjs";
 
 // ── 1. market hubs ──
 const files = fs.readdirSync("data/recaps").filter((f) => /^\d{4}-\d\d-\d\d\.json$/.test(f)).sort();
@@ -35,8 +36,9 @@ for (const u of ["https://nfs.faireconomy.media/ff_calendar_thisweek.json", "htt
   try {
     const r = await fetch(u, { headers: { "user-agent": "crtlab-growth-bot" } }); if (!r.ok) { console.log("calendar", u, r.status); continue; }
     for (const e of await r.json()) {
-      if (e.country !== "USD" || e.impact !== "High") continue;
-      const f = FAM.find(([re]) => re.test(e.title)); if (!f || /Press Conference/i.test(e.title)) continue;
+      if (e.impact !== "High" || /Press Conference/i.test(e.title)) continue;
+      const x = e.country === "USD" ? null : xfamFf(e.country, e.title); // 11-07: GBP/EUR/JPY/AUD headline releases too
+      const f = e.country === "USD" ? FAM.find(([re]) => re.test(e.title)) : x && [x.ff, x.fam, x.name]; if (!f) continue;
       const t = Math.floor(Date.parse(e.date) / 1000), key = `${t}|${e.title}`;
       if (!cal.some((x) => x.key === key)) cal.push({ key, t, title: e.title, fam: f[1], famName: f[2], forecast: e.forecast || null, previous: e.previous || null });
     }
@@ -83,7 +85,7 @@ for (const [t, evs] of groups) {
   }
   if (out.length < 6) continue;
   out.sort((a, b) => (b.ofDay ?? 0) - (a.ofDay ?? 0));
-  const top = out[0], fmt = (x) => (top.unit === "$" ? `$${x}` : `${x} ${top.unit}`), title = evs.map((e) => e.title).join(" · "), famName = [...new Set(evs.map((e) => e.famName))].join(" & ");
+  const mk = famMk(fams), top = out.find((m) => m.id === mk) ?? out[0], fmt = (x) => (top.unit === "$" ? `$${x}` : `${x} ${top.unit}`), title = evs.map((e) => e.title).join(" · "), famName = [...new Set(evs.map((e) => e.famName))].join(" & ");
   const headline = `${famName}: ${top.name} moved ${fmt(top.range60)} in the first hour${top.ofDay ? ` — ${top.ofDay}% of a normal day` : ""}`;
   const ev = { slug, date, time: hm, t, fams, famName, title, releases: evs.map((e) => ({ title: e.title, forecast: e.forecast, previous: e.previous })), headline, markets: out };
   fs.writeFileSync(`data/events/${slug}.json`, JSON.stringify(ev));

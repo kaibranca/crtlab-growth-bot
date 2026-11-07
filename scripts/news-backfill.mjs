@@ -7,6 +7,7 @@
 // Day context the nightly recap normally supplies (yesterday's high/low, the Asian range, the close, a normal day's range)
 // is computed here from the same bars. Existing slugs are never overwritten. Usage: node scripts/news-backfill.mjs [fromYear]
 import fs from "node:fs";
+import { xfamTv, famMk } from "./fams.mjs";
 
 const SITE = "https://crtlab.pro", BARS = process.env.BARS || "http://localhost:4010";
 const FROM_YEAR = +(process.argv[2] || 2016);
@@ -14,6 +15,10 @@ const MK = [["XAUUSD", "Gold", "$"], ["XAGUSD", "Silver", "$"], ["USOIL", "Oil",
   ["EURUSD", "EURUSD", "pips"], ["GBPUSD", "GBPUSD", "pips"], ["USDJPY", "USDJPY", "pips"], ["AUDUSD", "AUDUSD", "pips"], ["BTCUSD", "Bitcoin", "$"], ["ETHUSD", "Ethereum", "$"]];
 const FAM = [[/^(Core )?Inflation Rate (MoM|YoY)$|^CPI/i, "cpi", "CPI"], [/^Non Farm Payrolls$/i, "nfp", "NFP"], [/^Fed Interest Rate Decision$/i, "fomc", "FOMC"],
   [/PCE Price Index/i, "pce", "PCE"], [/^GDP Growth Rate/i, "gdp", "GDP"]];
+// 11-07: the five families the live bot already tracks (hubs.mjs) but this backfill never measured, so /news/ppi etc. 404'd.
+// TradingView rates them medium, so they match on exact title at any impact. Claims are weekly: from 2025 only.
+const FAM2 = [[/^(Core )?PPI MoM$/i, "ppi", "PPI"], [/^Retail Sales (Ex Autos )?MoM$/i, "retail-sales", "Retail Sales"], [/^ISM (Manufacturing|Services) PMI$/i, "ism", "ISM"],
+  [/^JOLTs Job Openings$/i, "jolts", "JOLTS"], [/^Initial Jobless Claims$/i, "claims", "Jobless Claims", Date.UTC(2025, 0, 1)]];
 
 const NYF = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
 const ny = (t) => { const p = Object.fromEntries(NYF.formatToParts(new Date(t * 1000)).map((x) => [x.type, x.value])); return { date: `${p.year}-${p.month}-${p.day}`, hm: `${p.hour}:${p.minute}`, h: +p.hour }; };
@@ -25,10 +30,11 @@ const getJ = async (u) => { for (let i = 0; i < 4; i++) { try { const r = await 
 const cal = [];
 for (let y = FROM_YEAR; y <= 2026; y++) for (let m = 0; m < 12; m++) {
   const a = Date.UTC(y, m, 1), b = Date.UTC(y, m + 1, 1); if (a > Date.now()) break;
-  const d = await getJ(`${SITE}/api/econ-calendar?from=${a}&to=${b}`);
+  const d = await getJ(`${SITE}/api/econ-calendar?from=${a}&to=${b}&countries=US,GB,EU,JP,AU`);
   for (const e of d?.events ?? []) {
-    if (e.impact !== "high" || e.time > Date.now() - 2 * 86400e3) continue;
-    const f = FAM.find(([re]) => re.test(e.title)); if (!f) continue;
+    if (e.time > Date.now() - 2 * 86400e3) continue;
+    const x = e.currency === "USD" ? null : xfamTv(e.currency, e.title);
+    const f = e.currency === "USD" ? (e.impact === "high" && FAM.find(([re]) => re.test(e.title))) || FAM2.find(([re, , , from]) => re.test(e.title) && (!from || e.time >= from)) : x && [x.tv, x.fam, x.name]; if (!f) continue;
     cal.push({ t: Math.floor(e.time / 1000), title: e.title, fam: f[1], famName: f[2], actual: e.actual ?? null, forecast: e.forecast ?? null, previous: e.previous ?? null });
   }
   process.stdout.write(`\rcalendar ${y}-${String(m + 1).padStart(2, "0")} · ${cal.length} releases`);
@@ -45,11 +51,14 @@ const pr = (x) => +(+x).toPrecision(8);
 let made = 0, skipped = 0;
 for (const [t, evs] of [...groups].sort((a, b) => a[0] - b[0])) {
   const { date, hm } = ny(t), fams = [...new Set(evs.map((e) => e.fam))], slug = `${fams.join("-")}-${date}`;
-  if (idx.some((x) => x.slug === slug) || fs.existsSync(`data/events/${slug}.json`)) { skipped++; continue; }
+  // a release time that already has a page (e.g. claims at 8:30 on a CPI day) keeps that page: no second page for the same hour
+  if (idx.some((x) => x.slug === slug || (x.date === date && x.time === hm)) || fs.existsSync(`data/events/${slug}.json`)) { skipped++; continue; }
   const dayEnd = nyTime(date, 17), dayStart = dayEnd - 86400, prevStart = dayStart - 86400;
   const out = [];
-  for (const [id, name, unit] of MK) {
-    const d = await getJ(`${BARS}/candles?pair=${id.toLowerCase()}&tf=1min&from=${prevStart}&to=${dayEnd}&limit=5000`);
+  // the 12 markets' bars in parallel (was one at a time: ~12 round trips per release)
+  const got = await Promise.all(MK.map(([id]) => getJ(`${BARS}/candles?pair=${id.toLowerCase()}&tf=1min&from=${prevStart}&to=${dayEnd}&limit=5000`)));
+  for (const [k, [id, name, unit]] of MK.entries()) {
+    const d = got[k];
     const B = (d?.candles ?? []).map(([bt, o, h, l, c]) => ({ t: bt, o, h, l, c }));
     const i0 = B.findIndex((b) => b.t >= t); if (i0 < 0 || B[i0].t - t > 120) continue;
     const w = B.filter((b) => b.t >= t && b.t < t + 3600), pre = B.filter((b) => b.t >= t - 3600 && b.t < t);
@@ -75,7 +84,7 @@ for (const [t, evs] of [...groups].sort((a, b) => a[0] - b[0])) {
   }
   if (out.length < 6) { skipped++; continue; }
   out.sort((a, b) => (b.ofDay ?? 0) - (a.ofDay ?? 0));
-  const top = out[0], fmt = (x) => (top.unit === "$" ? `$${x}` : `${x} ${top.unit}`), title = evs.map((e) => e.title).join(" · "), famName = [...new Set(evs.map((e) => e.famName))].join(" & ");
+  const mk = famMk(fams), top = out.find((m) => m.id === mk) ?? out[0], fmt = (x) => (top.unit === "$" ? `$${x}` : `${x} ${top.unit}`), title = evs.map((e) => e.title).join(" · "), famName = [...new Set(evs.map((e) => e.famName))].join(" & ");
   const headline = `${famName}: ${top.name} moved ${fmt(top.range60)} in the first hour${top.ofDay ? ` — ${top.ofDay}% of a normal day` : ""}`;
   const ev = { slug, date, time: hm, t, fams, famName, title, releases: evs.map((e) => ({ title: e.title, actual: e.actual, forecast: e.forecast, previous: e.previous })), headline, markets: out };
   fs.writeFileSync(`data/events/${slug}.json`, JSON.stringify(ev));

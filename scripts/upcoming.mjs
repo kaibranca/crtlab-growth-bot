@@ -6,6 +6,7 @@
 // each release type, measured from the bot's own news-day files. Rewritten ONLY when something really changed (a date, an
 // actual landing): `changed` moves with it and is the site's lastmod, so it is never a fake "updated".
 import fs from "node:fs";
+import { XFAM } from "./fams.mjs";
 const OUT = "data/events/upcoming.json";
 const FAM = [ // US headline row per release type → its /news/<type> page
   [/^Inflation Rate YoY$/, "cpi", "CPI"], [/^Non Farm Payrolls$/, "nfp", "NFP"], [/^Core PCE Price Index MoM$/, "pce", "PCE"],
@@ -31,13 +32,14 @@ let tvOk = 0;
 for (let a = FROM; a < nowMs + 100 * DAY; a += 7 * DAY) {
   const near = a < NEAR;
   try {
-    const r = await fetch(`https://economic-calendar.tradingview.com/events?from=${iso(a)}T00:00:00.000Z&to=${iso(a + 7 * DAY)}T00:00:00.000Z&countries=${near ? COUNTRIES : "US"}`, { headers: { origin: "https://www.tradingview.com", "user-agent": "Mozilla/5.0 (crtlab-growth-bot)" } });
+    const r = await fetch(`https://economic-calendar.tradingview.com/events?from=${iso(a)}T00:00:00.000Z&to=${iso(a + 7 * DAY)}T00:00:00.000Z&countries=${COUNTRIES}`, { headers: { origin: "https://www.tradingview.com", "user-agent": "Mozilla/5.0 (crtlab-growth-bot)" } });
     if (!r.ok) { console.log("tv", r.status); continue; }
     tvOk++;
     for (const e of (await r.json()).result ?? []) {
       const t = Date.parse(e.date); if (!(t >= FROM)) continue;
-      const f = e.country === "US" ? FAM.find(([re]) => re.test(e.title)) : null;
-      if (e.importance < 0 || NOISE.test(e.title) || (!near || t > NEAR) && !f) continue; // far ahead: headline US releases only
+      const xf = XFAM.find((x) => x.cc === e.country && x.tv.test(e.title));
+      const f = e.country === "US" ? FAM.find(([re]) => re.test(e.title)) : xf ? [xf.tv, xf.fam, xf.name] : null;
+      if (e.importance < 0 || NOISE.test(e.title) || (!near || t > NEAR) && !f) continue; // far ahead: headline releases only
       const row = { t, ...ny(t), cur: e.currency, imp: e.importance === 1 ? 2 : 1, title: e.title, fam: f?.[1] ?? null, famName: f?.[2] ?? null,
         period: e.period ?? null, actual: fmt(e.actual, e), forecast: fmt(e.forecast, e), previous: fmt(e.previous, e) };
       if (!events.some((x) => key(x) === key(row))) events.push(row);
