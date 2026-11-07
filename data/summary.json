@@ -1,161 +1,161 @@
 {
- "updated": "2026-11-07T13:34:51.289Z",
+ "updated": "2026-11-07T14:02:16.835Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
   "up30d": 100,
   "last": {
-   "at": "2026-11-07T13:04:11.666Z",
+   "at": "2026-11-07T14:02:09.085Z",
    "ok": true,
    "results": [
     {
      "name": "home",
      "path": "/",
      "status": 200,
-     "ms": 261,
+     "ms": 633,
      "ok": true
     },
     {
      "name": "backtest page",
      "path": "/backtest",
      "status": 200,
-     "ms": 261,
+     "ms": 478,
      "ok": true
     },
     {
      "name": "pricing",
      "path": "/pricing",
      "status": 200,
-     "ms": 226,
+     "ms": 314,
      "ok": true
     },
     {
      "name": "chart app",
      "path": "/backtester",
      "status": 200,
-     "ms": 231,
+     "ms": 351,
      "ok": true
     },
     {
      "name": "statistics",
      "path": "/statistics/nas100",
      "status": 200,
-     "ms": 215,
+     "ms": 417,
      "ok": true
     },
     {
      "name": "calculator",
      "path": "/tools/position-size-calculator",
      "status": 200,
-     "ms": 159,
+     "ms": 381,
      "ok": true
     },
     {
      "name": "candles API",
      "path": "/api/candles?pair=nas100&tf=1hour&limit=50&v=q8",
      "status": 200,
-     "ms": 133,
+     "ms": 295,
      "ok": true
     },
     {
      "name": "llms.txt",
      "path": "/llms.txt",
      "status": 200,
-     "ms": 131,
+     "ms": 564,
      "ok": true
     },
     {
      "name": "robots.txt",
      "path": "/robots.txt",
      "status": 200,
-     "ms": 131,
+     "ms": 769,
      "ok": true
     },
     {
      "name": "sitemap",
      "path": "/sitemap.xml",
      "status": 200,
-     "ms": 144,
+     "ms": 737,
      "ok": true
     },
     {
      "name": "AI: GPTBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 121,
+     "ms": 345,
      "ok": true
     },
     {
      "name": "AI: OAI-SearchBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 128,
+     "ms": 301,
      "ok": true
     },
     {
      "name": "AI: ChatGPT-User",
      "path": "/backtest",
      "status": 200,
-     "ms": 133,
+     "ms": 326,
      "ok": true
     },
     {
      "name": "AI: ClaudeBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 125,
+     "ms": 403,
      "ok": true
     },
     {
      "name": "AI: PerplexityBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 128,
+     "ms": 362,
      "ok": true
     },
     {
      "name": "AI: Googlebot",
      "path": "/backtest",
      "status": 200,
-     "ms": 120,
+     "ms": 376,
      "ok": true
     },
     {
      "name": "AI: bingbot",
      "path": "/backtest",
      "status": 200,
-     "ms": 155,
+     "ms": 395,
      "ok": true
     },
     {
      "name": "AI: Applebot",
      "path": "/backtest",
      "status": 200,
-     "ms": 194,
+     "ms": 381,
      "ok": true
     }
    ]
   },
   "incidents": [],
   "speed": {
-   "home": 261,
-   "backtest page": 261,
-   "pricing": 226,
-   "chart app": 231,
-   "statistics": 215,
-   "calculator": 159,
-   "candles API": 133,
-   "llms.txt": 131,
-   "robots.txt": 131,
-   "sitemap": 144,
-   "AI: GPTBot": 121,
-   "AI: OAI-SearchBot": 128,
-   "AI: ChatGPT-User": 133,
-   "AI: ClaudeBot": 125,
-   "AI: PerplexityBot": 128,
-   "AI: Googlebot": 120,
-   "AI: bingbot": 155,
-   "AI: Applebot": 194
+   "home": 633,
+   "backtest page": 478,
+   "pricing": 314,
+   "chart app": 351,
+   "statistics": 417,
+   "calculator": 381,
+   "candles API": 295,
+   "llms.txt": 564,
+   "robots.txt": 769,
+   "sitemap": 737,
+   "AI: GPTBot": 345,
+   "AI: OAI-SearchBot": 301,
+   "AI: ChatGPT-User": 326,
+   "AI: ClaudeBot": 403,
+   "AI: PerplexityBot": 362,
+   "AI: Googlebot": 376,
+   "AI: bingbot": 395,
+   "AI: Applebot": 381
   }
  },
  "aicrawl": {
@@ -261,16 +261,16 @@
     "CCBot": 134
    },
    "2026-11-07": {
-    "GPTBot": 14,
-    "OAI-SearchBot": 5590,
-    "ChatGPT-User": 68,
-    "ClaudeBot": 11438,
-    "PerplexityBot": 1292,
-    "Googlebot": 54,
-    "Bingbot": 292,
-    "Applebot": 14,
+    "GPTBot": 15,
+    "OAI-SearchBot": 5627,
+    "ChatGPT-User": 71,
+    "ClaudeBot": 11439,
+    "PerplexityBot": 1294,
+    "Googlebot": 62,
+    "Bingbot": 295,
+    "Applebot": 15,
     "CCBot": 39,
-    "Amazonbot": 38,
+    "Amazonbot": 42,
     "YandexBot": 67,
     "YouBot": 1,
     "Bytespider": 1,
@@ -281,11 +281,11 @@
   "topPages7d": [
    [
     "/",
-    13917
+    13921
    ],
    [
     "/backtest",
-    1921
+    1929
    ],
    [
     "/pricing",
@@ -325,7 +325,7 @@
    ],
    [
     "/answers",
-    219
+    220
    ],
    [
     "/prop-firm-challenge-simulator",
@@ -349,7 +349,7 @@
    ],
    [
     "/tools/margin-calculator",
-    90
+    91
    ],
    [
     "/news/nfp",
@@ -362,6 +362,24 @@
   ]
  },
  "activity": [
+  {
+   "at": "2026-11-07T14:02:16.754Z",
+   "job": "indexnow",
+   "ok": true,
+   "text": "submitted 1 changed pages · HTTP 200"
+  },
+  {
+   "at": "2026-11-07T14:02:09.085Z",
+   "job": "watchdog",
+   "ok": true,
+   "text": "18/18 checks pass · avg 435 ms"
+  },
+  {
+   "at": "2026-11-07T14:02:01.069Z",
+   "job": "ai-crawl",
+   "ok": true,
+   "text": "60 crawler visits · OAI-SearchBot 37 · Googlebot 8 · Amazonbot 4 · ChatGPT-User 3"
+  },
   {
    "at": "2026-11-07T13:34:42.065Z",
    "job": "health",
@@ -823,24 +841,6 @@
    "job": "watchdog",
    "ok": true,
    "text": "18/18 checks pass · avg 135 ms"
-  },
-  {
-   "at": "2026-11-06T09:05:00.218Z",
-   "job": "ai-crawl",
-   "ok": true,
-   "text": "73 crawler visits · Amazonbot 27 · ChatGPT-User 20 · Googlebot 15 · Bingbot 4"
-  },
-  {
-   "at": "2026-11-06T08:03:41.195Z",
-   "job": "watchdog",
-   "ok": true,
-   "text": "18/18 checks pass · avg 160 ms"
-  },
-  {
-   "at": "2026-11-06T08:03:38.120Z",
-   "job": "ai-crawl",
-   "ok": true,
-   "text": "74 crawler visits · OAI-SearchBot 42 · Amazonbot 10 · Googlebot 9 · Bingbot 4"
   }
  ],
  "seo": {
@@ -1105,6 +1105,11 @@
   },
   {
    "at": "2026-11-07T11:02:18.282Z",
+   "submitted": 1,
+   "status": "HTTP 200"
+  },
+  {
+   "at": "2026-11-07T14:02:16.754Z",
    "submitted": 1,
    "status": "HTTP 200"
   }
