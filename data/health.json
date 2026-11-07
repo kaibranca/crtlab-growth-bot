@@ -1,10 +1,10 @@
 {
- "at": "2026-11-07T13:34:42.065Z",
+ "at": "2026-11-07T16:33:02.916Z",
  "checks": [
   {
    "name": "database size",
    "ok": true,
-   "note": "256 MB"
+   "note": "258 MB"
   },
   {
    "name": "signups flowing",
@@ -24,7 +24,7 @@
   {
    "name": "nightly backup",
    "ok": true,
-   "note": "11h old · 29.7 MB"
+   "note": "13h old · 29.7 MB"
   },
   {
    "name": "market data fresh",
@@ -33,19 +33,19 @@
   }
  ],
  "db": {
-  "mb": 256,
+  "mb": 258,
   "tables": [
    [
     "user_events",
-    83
+    84
    ],
    [
     "ui_events",
-    51
+    52
    ],
    [
     "meter_identities",
-    49
+    50
    ],
    [
     "user_stores",
@@ -69,22 +69,22 @@
   "home": {
    "kb": 2557,
    "scripts": 21,
-   "ttfbMs": 251
+   "ttfbMs": 218
   },
   "backtest": {
    "kb": 1324,
    "scripts": 12,
-   "ttfbMs": 218
+   "ttfbMs": 212
   },
   "chart app": {
    "kb": 2557,
    "scripts": 21,
-   "ttfbMs": 537
+   "ttfbMs": 378
   },
   "statistics": {
    "kb": 1173,
    "scripts": 13,
-   "ttfbMs": 214
+   "ttfbMs": 184
   }
  },
  "heavier": [],
