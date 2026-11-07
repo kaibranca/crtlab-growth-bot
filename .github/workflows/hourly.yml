@@ -26,6 +26,9 @@ jobs:
       - name: Calendar (actuals land within the hour)
         continue-on-error: true
         run: node scripts/upcoming.mjs
+      - name: Indicator pages (every release since 2016; rewrites only indicators that just released)
+        continue-on-error: true
+        run: node scripts/indicators.mjs
       - name: Same-day news pages (actual vs forecast + Bitcoin/Ethereum, free; the rest fills in overnight)
         continue-on-error: true
         run: node scripts/live-news.mjs
