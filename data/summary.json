@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-08T01:04:18.705Z",
+ "updated": "2026-11-08T01:34:11.495Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -375,6 +375,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-08T01:34:02.606Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-08T01:04:07.014Z",
    "job": "watchdog",
    "ok": true,
@@ -385,12 +391,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "216 crawler visits · OAI-SearchBot 186 · Bingbot 11 · ChatGPT-User 10 · Amazonbot 3"
-  },
-  {
-   "at": "2026-11-08T00:54:56.891Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-08T00:02:00.127Z",
@@ -926,7 +926,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-08T00:54:56.891Z",
+  "at": "2026-11-08T01:34:02.606Z",
   "alerts": [],
   "checks": [
    {
@@ -997,22 +997,22 @@
    "home": {
     "kb": 2557,
     "scripts": 21,
-    "ttfbMs": 189
+    "ttfbMs": 204
    },
    "backtest": {
     "kb": 1324,
     "scripts": 12,
-    "ttfbMs": 199
+    "ttfbMs": 237
    },
    "chart app": {
     "kb": 2557,
     "scripts": 21,
-    "ttfbMs": 418
+    "ttfbMs": 370
    },
    "statistics": {
     "kb": 1173,
     "scripts": 13,
-    "ttfbMs": 186
+    "ttfbMs": 180
    }
   },
   "heavier": []
