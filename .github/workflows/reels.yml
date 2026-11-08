@@ -58,6 +58,8 @@ jobs:
             reels/out/qa.json
       - name: alert on failure
         if: failure()
-        run: node -e 'import("./reels/engine/alert.mjs").then(m=>m.send([["render-'$(date -u +%F)'","Reel render/QA FAILED today — nothing will post. Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"]]))'
+        env: { RUN_URL: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" }
+        run: |
+          node -e 'import("./reels/engine/alert.mjs").then((m) => m.send([["render-" + new Date().toISOString().slice(0, 10), "Reel render or QA FAILED today, nothing will post. Run log: " + process.env.RUN_URL]]))'
       - run: bash scripts/push.sh "reels plan $(date -u +%F)"
         if: always()
