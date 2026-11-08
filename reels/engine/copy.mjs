@@ -49,34 +49,47 @@ export function copy(s, fam, avoid = new Set()) {
 // IG: the first line is all the feed shows → hook line; short story; one comment question; save line; 3–5 hashtags (IG caps at 5).
 // FB: Reels on FB push to non-followers on watch time + shares; keywords in plain text matter more than tags → longer plain story, 2–3 tags.
 const MTAG = { XAUUSD: "#xauusd", XAGUSD: "#silver", USOIL: "#crudeoil", NAS100: "#nasdaq", SP500: "#sp500", US30: "#us30", EURUSD: "#eurusd", GBPUSD: "#gbpusd", USDJPY: "#usdjpy", AUDUSD: "#audusd", BTCUSD: "#bitcoin", ETHUSD: "#ethereum" };
-const CTAG = { ob: "#orderblock", fvg: "#fairvaluegap", crt: "#crt", asia: "#asiansession", break: "#liquidity", news: "#forexnews", nyopen: "#openingrange" };
-export const TAGPOOLS = { smc: ["#smc", "#ict"], day: ["#daytrading", "#trading"], fx: ["#forex", "#forextrader"], pa: ["#priceaction", "#tradingview"], bt: ["#backtesting", "#tradingstrategy"] };
+const CTAG = { ob: "#orderblock", fvg: "#fairvaluegap", crt: "#candlerangetheory", asia: "#asiansession", break: "#liquidity", news: "#forexnews", nyopen: "#openingrange" };
+export const TAGPOOLS = { smc: ["#smc", "#ict"], day: ["#daytrading", "#trading"], fx: ["#forex", "#forextrading"], pa: ["#priceaction", "#tradingview"], bt: ["#backtesting", "#tradingstrategy"] };
 const EXPLAIN = {
-  ob: (s) => `An order block is the last opposite candle before price breaks structure. ${nice(s.mk)} broke structure, pulled back into it, and paid 2R.`,
-  fvg: (s) => `A fair value gap is a 3-candle imbalance. ${nice(s.mk)} left one, came back into it, and paid 2R.`,
+  ob: (s) => `An order block is the last opposite candle before price breaks structure. ${nice(s.mk)} broke structure, then pulled back into it.`,
+  fvg: (s) => `A fair value gap is a 3-candle imbalance. ${nice(s.mk)} left one, then came back to it.`,
   crt: (s) => `Candle range theory: price takes yesterday's ${s.side}, closes back inside, and runs the other way.`,
   asia: (s) => `The Asian session sets a range. On ${s.wdLong}, ${nice(s.mk)} broke the ${s.side} first and the other side never broke.`,
   break: (s) => `${nice(s.mk)} took yesterday's ${s.side} and never closed back inside.`,
   news: (s) => `${s.event?.name} printed at ${s.event?.time} New York${s.event?.actual != null && s.event?.forecast != null ? ` (actual ${s.event.actual} vs ${s.event.forecast} forecast)` : ""}. ${nice(s.mk)} moved ${s.ofDay}% of a normal day.`,
   nyopen: (s) => `The first 15 minutes of New York set the opening range. One side broke and ${nice(s.mk)} never came back.`,
 };
+// one plain rule per model: what a trader would actually write (no arrow lists, no emoji, no dashes)
+const RULE = {
+  ob: "The rule: wait for structure to break, mark the last opposite candle before the break, and enter only when price comes back to it. Stop beyond the block.",
+  fvg: "The rule: let the gap form, wait for price to trade back into it, and keep the stop beyond the far side of the gap.",
+  crt: (s) => `The rule: mark yesterday's high and low. A sweep only counts if the candle closes back inside the range.`,
+  asia: "The rule: mark the Asian high and low before London opens, then watch which side breaks first.",
+  break: (s) => `The rule: mark yesterday's high and low. A close beyond the level that never gets reclaimed is the signal.`,
+  news: "The rule: know the release time, stay flat into the print, and let the first candle show the direction.",
+  nyopen: "The rule: mark the high and low of 9:30 to 9:45 New York, then trade the first clean break.",
+};
+const LONG = { ob: () => "order block", fvg: () => "fair value gap", crt: (s) => `sweep of yesterday's ${s.side}`, asia: () => "Asian range break",
+  break: (s) => `break of yesterday's ${s.side}`, news: (s) => `${s.event?.name} release`, nyopen: () => "New York opening range break" };
 const Q = {
-  ob: ["Do you wait for the BOS before the OB?", "Would you take this entry?", "OB or no OB — what do you see?"],
-  fvg: ["Do you trade the gap fill?", "Would you enter at the top of the gap or the middle?", "FVG entry or wait for confirmation?"],
-  crt: ["Would you take the sweep?", "Do you wait for the close back inside?", "Do you mark yesterday's high and low?"],
-  asia: ["Do you mark the Asian range?", "Asia high or low — which do you trade?", "Would you take the break?"],
-  break: ["Retest or break — how do you trade it?", "Would you have faded it?", "Do you mark yesterday's high and low?"],
-  news: ["Do you trade the release or wait?", "Would you fade the spike?", "Flat into news or in it?"],
-  nyopen: ["Do you trade the opening range?", "Break or fakeout — what's your rule?", "First 15 minutes: trade or wait?"],
+  ob: ["Do you wait for the break of structure before marking the block?", "Would you have taken this entry?", "Where would you put your stop on this one?"],
+  fvg: ["Do you enter at the top of the gap or the middle?", "Would you have taken this entry?", "Do you wait for confirmation inside the gap?"],
+  crt: ["Would you have taken the sweep?", "Do you wait for the close back inside?", "Do you mark yesterday's high and low?"],
+  asia: ["Do you mark the Asian range?", "Do you trade the first break or wait for a retest?", "Would you have taken the break?"],
+  break: ["Do you trade the break or wait for the retest?", "Would you have faded it?", "Do you mark yesterday's high and low?"],
+  news: ["Do you trade the release or wait it out?", "Would you have faded the spike?", "Are you flat into news or in a position?"],
+  nyopen: ["Do you trade the opening range?", "How do you tell a real break from a fakeout?", "Do you trade the first 15 minutes or wait?"],
 };
 export function captions(s, cp, tagset, les) {
   const h = hash(s.id + "c"); s.wdLong = DAYN[s.wd];
-  const hook = `${cp.title.join(" ").replace(/\s+/g, " ")} — ${nice(s.mk)}, ${cp.when}`;
+  const d = new Date(s.date + "T12:00:00Z"), day = `${DAYN[s.wd]} ${d.getUTCDate()} ${MON[d.getUTCMonth()]}`;
+  const mv = s.measure ? money(s, s.measure.to - s.measure.from) : null, res = s.trade ? "2R to target." : mv ? `${mv} move.` : "";
+  const hook = `${nice(s.mk)} ${LONG[s.model](s)}, ${day}. ${res}`.trim();
+  const rule = typeof RULE[s.model] === "function" ? RULE[s.model](s) : RULE[s.model];
   const pool = TAGPOOLS[tagset] || TAGPOOLS.smc, igTags = [MTAG[s.mk] || "#trading", CTAG[s.model], ...pool, "#crtlab"].slice(0, 5);
-  const q = Q[s.model][h % 3], save = ["Save this for your next session.", "Save it and replay it yourself.", "Save this — it repeats."][h % 3];
-  // the lesson's steps as a short how-to (what people save, and what search + AI crawlers read)
-  const how = (les?.steps || []).filter((x) => x.cap && !x.show?.includes("result")).map((x) => `→ ${x.cap.replace(/…/g, "")}`).join("\n");
-  const ig = `${hook}\n\n${EXPLAIN[s.model](s)}\n\n${how ? `The steps:\n${how}\n\n` : ""}${q} 👇\n${save}\n\nReal 1-minute data. Replay this exact day bar by bar at crtlab.pro (link in bio).\n\n${igTags.join(" ")}`;
-  const fb = `${hook}\n\n${EXPLAIN[s.model](s)} Real 1-minute data, New York time.\n\n${how ? `${how}\n\n` : ""}${q}\n\nReplay this exact day bar by bar, free: https://crtlab.pro\n\n${[MTAG[s.mk] || "#trading", CTAG[s.model], "#trading"].join(" ")}`;
+  const q = Q[s.model][h % 3], save = ["Save it for your next backtest.", "Save it for later.", "Save it for your next session."][h % 3];
+  const ig = `${hook}\n\n${EXPLAIN[s.model](s)}\n\n${rule}\n\n${q}\n${save}\n\nReal 1-minute data. Replay this day bar by bar at crtlab.pro (link in bio).\n\n${igTags.join(" ")}`;
+  const fb = `${hook}\n\n${EXPLAIN[s.model](s)} Real 1-minute data, New York time.\n\n${rule}\n\n${q}\n\nReplay this day bar by bar, free: https://crtlab.pro\n\n${[MTAG[s.mk] || "#trading", CTAG[s.model], "#trading"].join(" ")}`;
   return { ig, fb, tags: igTags };
 }
