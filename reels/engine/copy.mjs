@@ -6,20 +6,22 @@ const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct
 const DAYN = { Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday", Sat: "Saturday", Sun: "Sunday" };
 const NICE = { XAUUSD: "Gold", XAGUSD: "Silver", USOIL: "Oil", NAS100: "Nasdaq", SP500: "S&P 500", US30: "Dow", EURUSD: "EURUSD", GBPUSD: "GBPUSD", USDJPY: "USDJPY", AUDUSD: "AUDUSD", BTCUSD: "Bitcoin", ETHUSD: "Ethereum" };
 export const nice = (mk) => NICE[mk] || mk;
-const money = (s, x) => (s.unit === "$" ? "$" + Math.abs(x).toLocaleString("en-US", { maximumFractionDigits: x >= 100 ? 0 : 2 }) : s.unit === "pips" ? Math.round(Math.abs(x) / (s.mk.includes("JPY") ? .01 : .0001)) + " pips" : Math.round(Math.abs(x)).toLocaleString("en-US") + " pts");
+const money = (s, x) => (s.unit === "$" ? "$" + Math.abs(x).toLocaleString("en-US", { maximumFractionDigits: Math.abs(x) >= 100 ? 0 : 2 }) : s.unit === "pips" ? Math.round(Math.abs(x) / (s.mk.includes("JPY") ? .01 : .0001)) + " pips" : Math.round(Math.abs(x)).toLocaleString("en-US") + " pts");
 const NAME = { ob: ["OB", "ENTRY"], fvg: ["FVG", "ENTRY"], crt: ["CRT", "SETUP"], asia: ["ASIA", "RANGE"], break: ["PDH", "BREAK"], news: ["NEWS", "SPIKE"], nyopen: ["NY OPEN", "BREAK"] };
 
 export function titleOptions(s, fam) {
   const nm = [...NAME[s.model]]; if (s.model === "break" && s.side === "low") nm[0] = "PDL"; if (s.model === "news") nm[0] = s.event.name;
   const mv = (s.trade ? "+2R" : money(s, s.measure.to - s.measure.from)).toUpperCase(), n = nice(s.mk).toUpperCase();
+  const trade = !!s.trade, verb = { asia: "BROKE", break: "BROKE", nyopen: "BROKE", crt: "SWEPT", news: "DROPPED" }[s.model];
   const F = {
-    name: [nm, [nm[0], `${nm[1]} · ${n}`.replace(/ · (.{9,})$/, "")], [`${n}`, `${nm[0]}`]],
-    result: [[mv, nm.join(" ")], [mv, nm[0]], [nm[0], `→ ${mv}`]],
-    question: [[nm[0], "OR TRAP?"], ["WOULD YOU", "TAKE THIS?"], ["TAKE THIS", `${nm[0]}?`]],
-    pov: [["POV:", `YOU MARKED THE ${nm[0]}`], ["POV:", `${nm[0]} TAPPED`], ["POV:", "YOU WAITED"]],
-    time: [[s.when9 || nm[0], nm.join(" ")], [DAYN[s.wd]?.toUpperCase() || "", nm.join(" ")], [`${n}`, s.when9 || nm[1]]],
+    name: [nm, [nm[0], `${nm[1]} · ${n}`], [n, nm.join(" ")], [n, nm[0]]],
+    result: trade ? [[mv, nm.join(" ")], [nm[0], `→ ${mv}`]] : [[nm[0], `→ ${mv}`], [`${n} ${nm[0]}`, `→ ${mv}`]],
+    question: trade ? [[nm[0], "OR TRAP?"], ["WOULD YOU", "TAKE THIS?"], ["TAKE THIS", `${nm[0]}?`]] : [[nm[0], "OR TRAP?"], ["WOULD YOU", "TRADE THIS?"]],
+    pov: trade ? [["POV:", `${nm[0]} TAPPED`], ["POV:", "YOU WAITED"]] : [["POV:", `${nm[0]} ${verb}`], ["POV:", "YOU MARKED IT"]],
+    time: s.when9 ? [[s.when9, nm.join(" ")]] : [[DAYN[s.wd]?.toUpperCase() || n, nm.join(" ")]],
   }[fam] || [nm];
-  return F.filter((x) => x[0] && (x[0] + " " + x[1]).length <= 20);
+  // never a doubled word ("FVG FVG ENTRY"), never too long for one clean line
+  return F.filter((x) => { if (!x[0]) return false; const w = (x[0] + " " + (x[1] || "")).toUpperCase().split(/\s+/).filter((y) => /[A-Z]/.test(y)); return new Set(w).size === w.length && (x[0] + " " + x[1]).length <= 20; });
 }
 
 export function copy(s, fam, avoid = new Set()) {
