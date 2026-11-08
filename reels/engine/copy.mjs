@@ -67,12 +67,14 @@ const Q = {
   news: ["Do you trade the release or wait?", "Would you fade the spike?", "Flat into news or in it?"],
   nyopen: ["Do you trade the opening range?", "Break or fakeout — what's your rule?", "First 15 minutes: trade or wait?"],
 };
-export function captions(s, cp, tagset) {
+export function captions(s, cp, tagset, les) {
   const h = hash(s.id + "c"); s.wdLong = DAYN[s.wd];
   const hook = `${cp.title.join(" ").replace(/\s+/g, " ")} — ${nice(s.mk)}, ${cp.when}`;
   const pool = TAGPOOLS[tagset] || TAGPOOLS.smc, igTags = [MTAG[s.mk] || "#trading", CTAG[s.model], ...pool, "#crtlab"].slice(0, 5);
   const q = Q[s.model][h % 3], save = ["Save this for your next session.", "Save it and replay it yourself.", "Save this — it repeats."][h % 3];
-  const ig = `${hook}\n\n${EXPLAIN[s.model](s)}\n\n${q} 👇\n${save}\n\nReal 1-minute data. Replay this exact day bar by bar at crtlab.pro (link in bio).\n\n${igTags.join(" ")}`;
-  const fb = `${hook}\n\n${EXPLAIN[s.model](s)} Real 1-minute data, New York time.\n\n${q}\n\nReplay this exact day bar by bar, free: https://crtlab.pro\n\n${[MTAG[s.mk] || "#trading", CTAG[s.model], "#trading"].join(" ")}`;
+  // the lesson's steps as a short how-to (what people save, and what search + AI crawlers read)
+  const how = (les?.steps || []).filter((x) => x.cap && !x.show?.includes("result")).map((x) => `→ ${x.cap.replace(/…/g, "")}`).join("\n");
+  const ig = `${hook}\n\n${EXPLAIN[s.model](s)}\n\n${how ? `The steps:\n${how}\n\n` : ""}${q} 👇\n${save}\n\nReal 1-minute data. Replay this exact day bar by bar at crtlab.pro (link in bio).\n\n${igTags.join(" ")}`;
+  const fb = `${hook}\n\n${EXPLAIN[s.model](s)} Real 1-minute data, New York time.\n\n${how ? `${how}\n\n` : ""}${q}\n\nReplay this exact day bar by bar, free: https://crtlab.pro\n\n${[MTAG[s.mk] || "#trading", CTAG[s.model], "#trading"].join(" ")}`;
   return { ig, fb, tags: igTags };
 }

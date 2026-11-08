@@ -23,7 +23,7 @@ export function build(d) {
   for (const [si, st] of steps.entries()) {
     const to = Math.min(N - 1, st.to ?? cur), n = to - cur;
     if (n > 0) {
-      const slowLast = st.slow ? 1 : 0, fastN = n - slowLast, v = Math.min(.085, 2.6 / Math.max(1, fastN)) * pace;
+      const slowLast = st.slow ? 1 : 0, fastN = n - slowLast, v = Math.min(.1, 2.8 / Math.max(1, fastN)) * pace;
       for (let i = cur + 1; i <= to - slowLast; i++) { sch[i] = [t, t + v - .004]; t += v; }
       if (slowLast) { const kd = 1.25 * pace; sch[to] = [t + .12, t + .12 + kd]; t += .12 + kd; }
       cur = to;
@@ -33,15 +33,15 @@ export function build(d) {
     t += .1 + hold;
   }
   // the key minute inside the slow bar (the entry tap / the sweep / the break), for the hit sound + marker
-  const kbS = sch[d.kb], tCross = kbS ? kbS[0] + (kbS[1] - kbS[0]) * (d.keyMin + 1) / B[d.kb].p.length : beats[0].t;
-  const tPay = d.trade && sch[d.trade.iX] ? sch[d.trade.iX][0] + (sch[d.trade.iX][1] - sch[d.trade.iX][0]) * (d.trade.jX + 1) / B[d.trade.iX].p.length : null;
+  const kbS = sch[d.kb], tCross = kbS ? kbS[0] + (kbS[1] - kbS[0]) * touchQ(B[d.kb], d.level) : beats[0].t;
+  const tPay = d.trade && sch[d.trade.iX] ? sch[d.trade.iX][0] + (sch[d.trade.iX][1] - sch[d.trade.iX][0]) * touchQ(B[d.trade.iX], d.trade.target) : null;
   const last = cur, tEnd0 = t;
   // camera states: each beat may focus a region (bars i0..i1 + prices) → ease there; the final beats ease back to the full chart
   const cams = beats.map((b) => ({ t: b.t - .35, f: b.focus || null }));
   // the end: dim, type the domain, show the result row, fade back to the empty chart = frame 0
   const T = { tCross, tPay, last, dim: tEnd0 + .15 };
   const k0 = T.dim + .5, KEY = .1; T.keys = [...Array(10)].map((_, i) => [k0 + i * KEY, i + 1]);
-  T.typed = T.keys.at(-1)[0]; T.row = T.typed + .2; T.out = T.row + 1.25; T.end = T.out + .6;
+  T.typed = T.keys.at(-1)[0]; T.row = T.typed + .2; T.ptr = T.row + .25; T.click = T.ptr + .85; T.out = T.click + .1; T.end = T.out + .55;
   const DUR = Math.ceil((T.end + .03) * FPS);
   return { N, B, HI, LO, BW, cw, X, Y, sch, T, beats, cams, DUR, pace };
 }
@@ -66,19 +66,19 @@ export function camera(G, t) {
   return { s: a.s + (b.s - a.s) * k, cx: a.cx + (b.cx - a.cx) * k, cy: a.cy + (b.cy - a.cy) * k };
 }
 
-// a candle forming along its real minutes, smoothly (no jitter): the close follows a Catmull-Rom curve through the real minute
-// closes (lightly smoothed), the wicks only ever grow and ease out to each new extreme. At q = 1 it is exactly the real OHLC.
-const SM = (u) => u * u * (3 - 2 * u);
+// ONE-WAY formation (the style approved on the FVG reel): the wick that printed first (from the real minutes) reaches out
+// while the body waits at the open; then the body grows straight to its close — never reversing — and the other wick follows.
+// Calm, no flicker, no back-and-forth. At q = 1 it is exactly the real OHLC.
+const SM = (u) => { u = Math.max(0, Math.min(1, u)); return u * u * (3 - 2 * u); };
+const firstLow = (b) => { let mh = 0, ml = 0; b.p.forEach((m, k) => { if (m[0] > b.p[mh][0]) mh = k; if (m[1] < b.p[ml][1]) ml = k; }); return ml < mh; };
 export function partial(b, q) {
-  const n = b.p.length; if (q <= 0) return null; if (q >= 1) return [b.o, b.h, b.l, b.c];
-  const c = [b.o, ...b.p.map((m) => m[2])], P = (j) => c[Math.max(0, Math.min(n, j))];
-  const x = q * n, k = Math.min(n - 1, Math.floor(x)), u = x - k;
-  const p0 = P(k - 1), p1 = P(k), p2 = P(k + 1), p3 = P(k + 2);
-  let close = .5 * (2 * p1 + (-p0 + p2) * u + (2 * p0 - 5 * p1 + 4 * p2 - p3) * u * u + (-p0 + 3 * p1 - 3 * p2 + p3) * u * u * u);
-  close = Math.max(Math.min(close, Math.max(p1, p2)), Math.min(p1, p2));                       // no overshoot past real prices
-  let h = b.o, l = b.o; for (let j = 0; j < k; j++) { h = Math.max(h, b.p[j][0]); l = Math.min(l, b.p[j][1]); }
-  const e = SM(u), nh = Math.max(h, b.p[k][0]), nl = Math.min(l, b.p[k][1]);
-  h = Math.max(h + (nh - h) * e, close); l = Math.min(l + (nl - l) * e, close);
-  return [b.o, h, l, close];
+  if (q <= 0) return null; if (q >= 1) return [b.o, b.h, b.l, b.c];
+  const P1 = .36, fl = firstLow(b), a = SM(q / P1), body = SM((q - P1) / (1 - P1));
+  const c = b.o + (b.c - b.o) * body;
+  let h = b.o, l = b.o;
+  if (fl) { l = b.o + (b.l - b.o) * a; h = b.o + (b.h - b.o) * body; } else { h = b.o + (b.h - b.o) * a; l = b.o + (b.l - b.o) * body; }
+  return [b.o, Math.max(h, c, b.o), Math.min(l, c, b.o), c];
 }
+// the moment a forming candle first touches a price (for the tap / sweep / break cue)
+export function touchQ(b, price) { for (let i = 1; i <= 200; i++) { const x = partial(b, i / 200); if (x && x[2] <= price && x[1] >= price) return i / 200; } return 1; }
 export const prog = (s, t) => (!s ? 0 : t < s[0] ? 0 : cl((t - s[0]) / (s[1] - s[0])));

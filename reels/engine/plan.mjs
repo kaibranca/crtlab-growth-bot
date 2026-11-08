@@ -50,8 +50,7 @@ for (const [k, s] of chosen.entries()) {
   if (!cp) { fam = "name"; angle = angle || "rule"; cp = copy(s, "name", new Set()); }
   titles.add(cp.title.join(" "));
   const tagset = pick("tagset", ARMS.tagset, r, { plat: "ig", B });
-  const caps = captions(s, cp, tagset);
-  const props = { ...s, copy: cp, lesson: lesson(s, angle), look: { pace } };
+  const les = lesson(s, angle), caps = captions(s, cp, tagset, les), props = { ...s, copy: cp, lesson: les, look: { pace } };
   fs.writeFileSync(new URL(`../out/reel-${k}.json`, import.meta.url), JSON.stringify(props));
   plan.reels.push({ k, story: s.id, date: s.date, mk: s.mk, model: s.model, title: cp.title.join(" "), fam, angle, pace, tagset,
     cycle: k === 0 ? WDN : "brain", ig: { at: at(igH[k], k), hour: igH[k], caption: caps.ig }, fb: { at: at(fbH[k], k), hour: fbH[k], caption: caps.fb } });

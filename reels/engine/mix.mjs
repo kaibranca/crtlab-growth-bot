@@ -17,10 +17,11 @@ export function mix(d) {
   }
   const pitch = .9 + rnd() * .22; let last = -1; // each reel gets its own tick character
   for (let i = 0; i <= T.last; i++) { const s = sch[i]; if (!s) continue; const slow = s[1] - s[0] > .5;
-    if (slow) { for (const j of [.34, .67, 1]) tick(s[0] + (s[1] - s[0]) * j, .28 * (.85 + .3 * rnd()), pitch * 1.06, .2); last = s[1]; continue; }
-    if (s[1] - last < .13) continue; last = s[1]; tick(s[1], .4 * (.8 + .4 * rnd()), pitch * (.97 + .06 * rnd()), (rnd() - .5) * .6); }
+    if (slow) { for (const j of [.34, .67, 1]) tick(s[0] + (s[1] - s[0]) * j, .22 * (.85 + .3 * rnd()), pitch * 1.06, .2); last = s[1]; continue; }
+    if (s[1] - last < .13) continue; last = s[1]; tick(s[1], .3 * (.8 + .4 * rnd()), pitch * (.97 + .06 * rnd()), (rnd() - .5) * .6); }
   // ── 2. cues ────────────────────────────────────────────────────────────────────────────────────────────────────────
-  T.keys.forEach(([s], i) => tick(s, .16 * (.8 + .4 * rnd()), pitch * 1.5 + .08 * rnd(), (i / 9 - .5) * .4));
+  T.keys.forEach(([s], i) => tick(s, .11 * (.8 + .4 * rnd()), pitch * 1.5 + .08 * rnd(), (i / 9 - .5) * .4));
+  tick(T.click, .2, pitch * .8, 0); // the cursor click
   const bell = (t0, f, vol) => { const s0 = Math.floor(t0 * SR); for (let i = 0; i < SR * 1.6 && s0 + i < Ls; i++) { const u = i / SR, e = Math.min(1, u / .004) * Math.exp(-u * 3.2);
     const v = vol * e * (Math.sin(2 * Math.PI * f * u) + .25 * Math.sin(2 * Math.PI * f * 2.01 * u) * Math.exp(-u * 6) + .08 * Math.sin(2 * Math.PI * f * 3.02 * u) * Math.exp(-u * 9)); Lc[s0 + i] += v; Rc[s0 + i] += v; } };
   const pay = beats.find((b) => b.show?.includes("result") || b.show?.includes("measure"));
