@@ -19,6 +19,10 @@ jobs:
         continue-on-error: true
         run: node scripts/load-alert.mjs
         env: { OPS_KEY: "${{ secrets.OPS_KEY }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
+      - name: Shield (ban repeat attackers 7 days at Cloudflare; Under Attack mode during a flood)
+        continue-on-error: true
+        run: node scripts/shield.mjs
+        env: { CF_API_TOKEN: "${{ secrets.CF_API_TOKEN }}", CF_ZONE_ID: "${{ secrets.CF_ZONE_ID }}", CF_ACCOUNT_ID: "${{ secrets.CF_ACCOUNT_ID }}", CF_BAN_LIST: "${{ secrets.CF_BAN_LIST }}", OPS_KEY: "${{ secrets.OPS_KEY }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
       - name: Watchdog
         id: wd
         continue-on-error: true
