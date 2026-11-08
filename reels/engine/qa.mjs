@@ -21,7 +21,8 @@ export function qa(mp4, props) {
       const X = x * S, Y = y * S, danger = Y < SAFE.top - 20 || Y > SAFE.bottom + 10 || (Y > SAFE.rightFrom && X > SAFE.right + 8);
       if (danger && p > 40) hit++; }
     if (hit > 6) zoneHits++;
-    blank = lit < 400 ? blank + 1 : 0; maxBlank = Math.max(maxBlank, blank);
+    // the sign-off (last ~20%) is meant to be sparse now: the title fades out under the domain (Kai 11-09)
+    blank = lit < 400 && f < n * .8 ? blank + 1 : 0; maxBlank = Math.max(maxBlank, blank);
     if (f === 0) lit0 = lit; peak = Math.max(peak, lit);
   }
   if (zoneHits) problems.push(`safe-zone breach in ${zoneHits} frames`);

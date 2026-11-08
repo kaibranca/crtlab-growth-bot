@@ -46,8 +46,8 @@ jobs:
           D="${{ github.event.inputs.date }}"; [ -z "$D" ] && D=$(date -u +%F)
           # render only if today's props exist (plan may have been made earlier); props are rebuilt from the plan file otherwise
           ls reels/out/reel-*.json >/dev/null 2>&1 || { echo "plan existed, nothing to render"; exit 0; }
+          echo "D=$D" >> "$GITHUB_ENV"   # set first so a QA failure still uploads the videos to look at
           node reels/engine/make.mjs
-          echo "D=$D" >> "$GITHUB_ENV"
       - uses: actions/upload-artifact@v4
         if: always() && env.D != ''
         with:
