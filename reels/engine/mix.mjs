@@ -20,19 +20,24 @@ export function mix(d) {
     if (slow) { for (const j of [.34, .67, 1]) tick(s[0] + (s[1] - s[0]) * j, .22 * (.85 + .3 * rnd()), pitch * 1.06, .2); last = s[1]; continue; }
     if (s[1] - last < .13) continue; last = s[1]; tick(s[1], .3 * (.8 + .4 * rnd()), pitch * (.97 + .06 * rnd()), (rnd() - .5) * .6); }
   // ── 2. cues ────────────────────────────────────────────────────────────────────────────────────────────────────────
-  T.keys.forEach(([s], i) => tick(s, .11 * (.8 + .4 * rnd()), pitch * 1.5 + .08 * rnd(), (i / 9 - .5) * .4));
-  tick(T.click, .2, pitch * .8, 0); // the cursor click
+  T.keys.forEach(([s], i) => tick(s, .06 * (.8 + .4 * rnd()), pitch * 1.5 + .08 * rnd(), (i / 9 - .5) * .4));
+  // a real mouse click: press + release, two tight band-passed noise transients ~75 ms apart (not a pitched candle tick)
+  const click = (t0, vol) => { for (const [dt, v, fc] of [[0, 1, 3800], [.075, .55, 4600]]) { const s0 = Math.floor((t0 + dt) * SR), n = Math.floor(.006 * SR);
+    let lp = 0, hp = 0, prev = 0; const a = Math.exp(-2 * Math.PI * fc / SR), b = Math.exp(-2 * Math.PI * 1800 / SR);
+    for (let i = 0; i < n && s0 + i < Ls; i++) { const x = (rnd() * 2 - 1) * Math.exp(-i / (.0011 * SR)); lp = (1 - a) * x + a * lp; hp = b * (hp + lp - prev); prev = lp;
+      const y = vol * v * hp; Lc[s0 + i] += y; Rc[s0 + i] += y; } } };
+  click(T.click, .05);
   const bell = (t0, f, vol) => { const s0 = Math.floor(t0 * SR); for (let i = 0; i < SR * 1.6 && s0 + i < Ls; i++) { const u = i / SR, e = Math.min(1, u / .004) * Math.exp(-u * 3.2);
     const v = vol * e * (Math.sin(2 * Math.PI * f * u) + .25 * Math.sin(2 * Math.PI * f * 2.01 * u) * Math.exp(-u * 6) + .08 * Math.sin(2 * Math.PI * f * 3.02 * u) * Math.exp(-u * 9)); Lc[s0 + i] += v; Rc[s0 + i] += v; } };
   const pay = beats.find((b) => b.show?.includes("result") || b.show?.includes("measure"));
-  if (pay) { const t = d.trade && T.tPay ? Math.max(T.tPay, pay.t) : pay.t + .5; bell(t, 1318.5, .0035); bell(t + .09, 1975.5, .0025); }
+  if (pay) { const t = d.trade && T.tPay ? Math.max(T.tPay, pay.t) : pay.t + .5; bell(t, 1318.5, .002); bell(t + .09, 1975.5, .0014); }
   // no music: Kai 11-08 — clean picture + subtle ticks reads better (and no audio-claim risk). Ticks + 2 cues only.
   const endN = Math.floor(G.DUR / FPS * SR);
   return { L: Lc.subarray(0, endN), R: Rc.subarray(0, endN) };
 }
 export function wav(file, { L, R }) {
   let pk = 1e-9; for (let i = 0; i < L.length; i++) pk = Math.max(pk, Math.abs(L[i]), Math.abs(R[i]));
-  const g = Math.min(1, .5 / pk), n = L.length, b = Buffer.alloc(44 + n * 4);
+  const g = Math.min(1, .15 / pk) // never boost: the old .5 normalise pushed faint ticks to half volume, n = L.length, b = Buffer.alloc(44 + n * 4);
   b.write("RIFF", 0); b.writeUInt32LE(36 + n * 4, 4); b.write("WAVEfmt ", 8); b.writeUInt32LE(16, 16); b.writeUInt16LE(1, 20); b.writeUInt16LE(2, 22); b.writeUInt32LE(SR, 24); b.writeUInt32LE(SR * 4, 28); b.writeUInt16LE(4, 32); b.writeUInt16LE(16, 34); b.write("data", 36); b.writeUInt32LE(n * 4, 40);
   for (let i = 0; i < n; i++) { b.writeInt16LE(Math.max(-32767, Math.min(32767, Math.round(L[i] * g * 32767))), 44 + i * 4); b.writeInt16LE(Math.max(-32767, Math.min(32767, Math.round(R[i] * g * 32767))), 46 + i * 4); }
   fs.writeFileSync(file, b);
