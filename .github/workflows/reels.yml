@@ -24,10 +24,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
-      - name: 1-minute bars from the latest recap (no second data bill)
+      - name: 1-minute bars from the last 7 recaps (each recap saves ~2 days; merged = a full week of setups, no second data bill)
         run: |
-          RUN=$(gh run list -w recap.yml -s success -L 5 --json databaseId -q '.[].databaseId' | while read r; do gh api repos/${{ github.repository }}/actions/runs/$r/artifacts -q '.artifacts[]|select(.name=="bars" and .expired==false)|.id' | grep -q . && { echo $r; break; }; done)
-          [ -n "$RUN" ] && gh run download "$RUN" -n bars -D .cache || echo "no bars artifact"
+          mkdir -p .cache
+          for r in $(gh run list -w recap.yml -s success -L 10 --json databaseId -q '.[].databaseId'); do
+            gh api repos/${{ github.repository }}/actions/runs/$r/artifacts -q '.artifacts[]|select(.name=="bars" and .expired==false)|.id' | grep -q . || continue
+            gh run download "$r" -n bars -D ".cache/r$r" && mv .cache/r$r/*.json .cache/ 2>/dev/null; rm -rf ".cache/r$r"
+          done
+          ls .cache | wc -l
       - run: brew list ffmpeg >/dev/null 2>&1 || brew install ffmpeg
       - run: cd reels && (npm ci --no-audit --no-fund || npm install --no-audit --no-fund)
       - name: learn
