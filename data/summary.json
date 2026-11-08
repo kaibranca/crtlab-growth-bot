@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-08T07:04:20.906Z",
+ "updated": "2026-11-08T07:31:18.579Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -376,6 +376,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-08T07:31:11.831Z",
+   "job": "health",
+   "ok": false,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-08T07:04:10.938Z",
    "job": "watchdog",
    "ok": true,
@@ -410,12 +416,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "793 crawler visits · PerplexityBot 694 · OAI-SearchBot 72 · Bingbot 11 · ChatGPT-User 8"
-  },
-  {
-   "at": "2026-11-08T04:32:02.547Z",
-   "job": "health",
-   "ok": false,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-08T04:03:18.135Z",
@@ -927,7 +927,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-08T04:32:02.547Z",
+  "at": "2026-11-08T07:31:11.831Z",
   "alerts": [
    "payment-failed"
   ],
@@ -935,7 +935,7 @@
    {
     "name": "database size",
     "ok": true,
-    "note": "260 MB"
+    "note": "263 MB"
    },
    {
     "name": "signups flowing",
@@ -955,7 +955,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "2h old · 30.6 MB"
+    "note": "4h old · 30.6 MB"
    },
    {
     "name": "market data fresh",
@@ -964,7 +964,7 @@
    }
   ],
   "db": {
-   "mb": 260,
+   "mb": 263,
    "tables": [
     [
      "user_events",
@@ -972,7 +972,7 @@
     ],
     [
      "ui_events",
-     53
+     54
     ],
     [
      "meter_identities",
@@ -980,7 +980,7 @@
     ],
     [
      "user_stores",
-     37
+     39
     ],
     [
      "guest_presence",
@@ -1000,22 +1000,22 @@
    "home": {
     "kb": 2557,
     "scripts": 21,
-    "ttfbMs": 151
+    "ttfbMs": 144
    },
    "backtest": {
     "kb": 1324,
     "scripts": 12,
-    "ttfbMs": 149
+    "ttfbMs": 142
    },
    "chart app": {
     "kb": 2557,
     "scripts": 21,
-    "ttfbMs": 372
+    "ttfbMs": 275
    },
    "statistics": {
     "kb": 1173,
     "scripts": 13,
-    "ttfbMs": 152
+    "ttfbMs": 140
    }
   },
   "heavier": []
