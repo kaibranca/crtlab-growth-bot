@@ -145,7 +145,7 @@ export const Reel = (d) => {
         {live ? <g opacity={chartA}>{marks}</g> : null}
       </svg>
       {live ? <div style={{ position: "absolute", inset: 0, opacity: chartA }}>{callouts}</div> : null}
-      <Title d={d} />
+      <Title d={d} o={1 - dim * (1 - ein(t, T.out, .45))} />
       <div style={{ position: "absolute", top: L.chip, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "center", gap: 12, opacity: axisA }}>
         <Img src={staticFile(`m/${d.mk}.webp`)} style={{ width: 36, height: 36 }} />
         <span style={{ color: C.text, fontSize: 29, fontWeight: 650 }}>{d.mk}</span>
@@ -170,10 +170,10 @@ function Callout({ t, sp, x, y, o }) {
   if (mode === 3) return <div style={box}>{words.map((w, i) => { const q = OUT((u - i * .07) / .35); return <span key={i} style={{ display: "inline-block", opacity: q, transform: `translateY(${(1 - q) * 10}px)`, marginRight: i < words.length - 1 ? ".26em" : 0 }}>{w}</span>; })}</div>;
   return <div style={{ ...box, letterSpacing: mix(6, -.3, k), opacity: box.opacity * k }}>{b.cap}</div>;
 }
-// the title — the hook. Identical on every frame (it is the loop seam). One line, sized to fit.
-function Title({ d }) {
+// the title — the hook. Fades out while the domain types (Kai 11-09) and comes back as the click opens the loop. One line, sized to fit.
+function Title({ d, o = 1 }) {
   const [a, b] = d.copy.title, len = (a + (b ? " " + b : "")).length, size = Math.min(96, Math.floor(940 / (len * .64)));
-  return <div style={{ position: "absolute", top: L.title + (96 - size) * .5, left: 40, right: 40, textAlign: "center", whiteSpace: "nowrap", fontFamily: SANS, fontSize: size, fontWeight: 800, letterSpacing: -1.5, lineHeight: 1.05, color: C.text }}>
+  return <div style={{ position: "absolute", top: L.title + (96 - size) * .5, left: 40, right: 40, textAlign: "center", whiteSpace: "nowrap", fontFamily: SANS, fontSize: size, fontWeight: 800, letterSpacing: -1.5, lineHeight: 1.05, color: C.text, opacity: o }}>
     <span style={ACC_TXT}>{a}</span>{b ? <span> {b}</span> : null}</div>;
 }
 // the end: chart dims, crtlab.pro types into a search bar, the CRTLAB result settles under it, a cursor glides over and clicks —

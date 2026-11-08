@@ -35,7 +35,7 @@ export function mix(d) {
 }
 export function wav(file, { L, R }) {
   let pk = 1e-9; for (let i = 0; i < L.length; i++) pk = Math.max(pk, Math.abs(L[i]), Math.abs(R[i]));
-  const g = Math.min(1, .15 / pk) // never boost: the old .5 normalise pushed faint ticks to half volume, n = L.length, b = Buffer.alloc(44 + n * 4);
+  const g = Math.min(1, .15 / pk) /* never boost: the old .5 normalise pushed faint ticks to half volume */, n = L.length, b = Buffer.alloc(44 + n * 4);
   b.write("RIFF", 0); b.writeUInt32LE(36 + n * 4, 4); b.write("WAVEfmt ", 8); b.writeUInt32LE(16, 16); b.writeUInt16LE(1, 20); b.writeUInt16LE(2, 22); b.writeUInt32LE(SR, 24); b.writeUInt32LE(SR * 4, 28); b.writeUInt16LE(4, 32); b.writeUInt16LE(16, 34); b.write("data", 36); b.writeUInt32LE(n * 4, 40);
   for (let i = 0; i < n; i++) { b.writeInt16LE(Math.max(-32767, Math.min(32767, Math.round(L[i] * g * 32767))), 44 + i * 4); b.writeInt16LE(Math.max(-32767, Math.min(32767, Math.round(R[i] * g * 32767))), 46 + i * 4); }
   fs.writeFileSync(file, b);
