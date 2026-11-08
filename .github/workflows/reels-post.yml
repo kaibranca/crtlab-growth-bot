@@ -1,0 +1,36 @@
+name: reels-post
+# HOURLY :11 — post whatever is due (each platform at its own learned time). Ubuntu, ~20s when nothing is due. No rendering here.
+on:
+  schedule: [{ cron: "11 * * * *" }]
+  workflow_dispatch:
+concurrency: { group: reels-post, cancel-in-progress: false }
+permissions: { contents: write, actions: read }
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
+      IG_USER_ID: ${{ secrets.IG_USER_ID }}
+      FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      ALERT_TO: ${{ secrets.ALERT_TO }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: post what's due
+        run: |
+          node reels/engine/due.mjs > due.txt; cat due.txt
+          grep -q '"live": *true' data/reels/live.json 2>/dev/null || { echo "not live"; exit 0; }
+          while read D K P; do
+            [ -f "reels/out/reel-$K.mp4" ] && [ "$(cat .got 2>/dev/null)" = "$D" ] || {
+              rm -rf reels/out; mkdir -p reels/out
+              ID=$(gh api "repos/${{ github.repository }}/actions/artifacts?name=reels-$D" -q '[.artifacts[]|select(.expired==false)][0].id')
+              [ -n "$ID" ] && gh api "repos/${{ github.repository }}/actions/artifacts/$ID/zip" > a.zip && unzip -oq a.zip -d reels/out && echo "$D" > .got || echo "no render for $D"; }
+            # QA gate: only a reel that passed posts
+            node -e "const q=require('./reels/out/qa.json');process.exit(q['$K']?.ok?0:1)" 2>/dev/null || { echo "reel $D/$K failed QA or missing — skip"; echo "{\"at\":\"$(date -u +%FT%TZ)\",\"kind\":\"qa\",\"plat\":\"$P\",\"plan\":\"$D\",\"k\":$K,\"note\":\"not posted: failed QA or no render\"}" >> data/reels/alerts.jsonl; continue; }
+            node reels/engine/post.mjs "$D" "$K" "$P" || true
+          done < due.txt
+      - run: bash scripts/push.sh "reels post $(date -u +%FT%H)"

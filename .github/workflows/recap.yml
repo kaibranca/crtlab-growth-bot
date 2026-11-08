@@ -21,5 +21,8 @@ jobs:
       - run: node scripts/upcoming.mjs
         continue-on-error: true
       - run: node scripts/summary.mjs
+      # the reel engine renders from these same 1-minute bars (no second data bill); 7 days so weekend reels have data
+      - uses: actions/upload-artifact@v4
+        with: { name: bars, path: .cache/, retention-days: 7, include-hidden-files: true }
       - run: |
           bash scripts/push.sh "recap $(date -u +%F)"

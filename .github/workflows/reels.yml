@@ -1,0 +1,59 @@
+name: reels
+# DAILY 08:40 UTC (after the 08:00 recap): learn from the numbers → plan today's 2 reels → render → QA gate → artifact for the poster.
+# macOS runner (free on public repos) so the type renders in the same system font as the approved reels. Nothing touches Railway.
+on:
+  schedule: [{ cron: "40 8 * * *" }]
+  workflow_dispatch:
+    inputs:
+      date: { description: "plan date (blank = today UTC)", default: "" }
+      force: { description: "re-plan even if a plan exists", default: "false" }
+concurrency: { group: reels-make, cancel-in-progress: false }
+permissions: { contents: write, actions: read }
+jobs:
+  make:
+    runs-on: macos-14
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+      META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
+      META_APP_ID: ${{ secrets.META_APP_ID }}
+      META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      ALERT_TO: ${{ secrets.ALERT_TO }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: 1-minute bars from the latest recap (no second data bill)
+        run: |
+          RUN=$(gh run list -w recap.yml -s success -L 5 --json databaseId -q '.[].databaseId' | while read r; do gh api repos/${{ github.repository }}/actions/runs/$r/artifacts -q '.artifacts[]|select(.name=="bars" and .expired==false)|.id' | grep -q . && { echo $r; break; }; done)
+          [ -n "$RUN" ] && gh run download "$RUN" -n bars -D .cache || echo "no bars artifact"
+      - run: brew list ffmpeg >/dev/null 2>&1 || brew install ffmpeg
+      - run: cd reels && (npm ci --no-audit --no-fund || npm install --no-audit --no-fund)
+      - name: learn
+        run: node reels/engine/learn.mjs || true
+      - name: weekly report (Sundays)
+        if: github.event.schedule && (github.event_name == 'schedule')
+        run: '[ "$(date -u +%u)" = "7" ] && node reels/engine/report.mjs || true'
+      - name: plan
+        run: FORCE=$([ "${{ github.event.inputs.force }}" = "true" ] && echo 1 || echo "") node reels/engine/plan.mjs ${{ github.event.inputs.date }}
+      - name: render + QA
+        run: |
+          D="${{ github.event.inputs.date }}"; [ -z "$D" ] && D=$(date -u +%F)
+          # render only if today's props exist (plan may have been made earlier); props are rebuilt from the plan file otherwise
+          ls reels/out/reel-*.json >/dev/null 2>&1 || { echo "plan existed, nothing to render"; exit 0; }
+          node reels/engine/make.mjs
+          echo "D=$D" >> "$GITHUB_ENV"
+      - uses: actions/upload-artifact@v4
+        if: always() && env.D != ''
+        with:
+          name: reels-${{ env.D }}
+          retention-days: 4
+          path: |
+            reels/out/reel-*.mp4
+            reels/out/qa.json
+      - name: alert on failure
+        if: failure()
+        run: node -e 'import("./reels/engine/alert.mjs").then(m=>m.send([["render-'$(date -u +%F)'","Reel render/QA FAILED today — nothing will post. Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"]]))'
+      - run: bash scripts/push.sh "reels plan $(date -u +%F)"
+        if: always()
