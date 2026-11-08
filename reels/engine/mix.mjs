@@ -1,7 +1,7 @@
 // SOUND — node reels/engine/mix.mjs <props.json> <out.wav>   (offline, from the same timeline as the picture)
 // Three layers, all quiet, nothing synthetic-sounding up front:
 //   1. candle ticks — CRTLAB's own app candle sound (cand.f32), one soft tick per close, thinned when the replay runs fast
-//   2. three cues only — a faint key click per typed letter (the same tick, higher), one soft bell when the setup pays
+//   2. real recorded cues only (Kenney CC0, reels/engine/sfx): a mouse press+release on the end click, a soft pluck when the setup pays. No typing, no synth.
 import fs from "node:fs"; import { build, FPS } from "../src/tl.mjs";
 const SR = 48000;
 export function mix(d) {
@@ -17,20 +17,18 @@ export function mix(d) {
   }
   const pitch = .9 + rnd() * .22; let last = -1; // each reel gets its own tick character
   for (let i = 0; i <= T.last; i++) { const s = sch[i]; if (!s) continue; const slow = s[1] - s[0] > .5;
-    if (slow) { for (const j of [.34, .67, 1]) tick(s[0] + (s[1] - s[0]) * j, .22 * (.85 + .3 * rnd()), pitch * 1.06, .2); last = s[1]; continue; }
-    if (s[1] - last < .13) continue; last = s[1]; tick(s[1], .3 * (.8 + .4 * rnd()), pitch * (.97 + .06 * rnd()), (rnd() - .5) * .6); }
+    if (slow) { for (const j of [.34, .67, 1]) tick(s[0] + (s[1] - s[0]) * j, .12 * (.85 + .3 * rnd()), pitch * 1.06, .2); last = s[1]; continue; }
+    if (s[1] - last < .13) continue; last = s[1]; tick(s[1], .16 * (.8 + .4 * rnd()), pitch * (.97 + .06 * rnd()), (rnd() - .5) * .6); }
   // ── 2. cues ────────────────────────────────────────────────────────────────────────────────────────────────────────
-  T.keys.forEach(([s], i) => tick(s, .06 * (.8 + .4 * rnd()), pitch * 1.5 + .08 * rnd(), (i / 9 - .5) * .4));
-  // a real mouse click: press + release, two tight band-passed noise transients ~75 ms apart (not a pitched candle tick)
-  const click = (t0, vol) => { for (const [dt, v, fc] of [[0, 1, 3800], [.075, .55, 4600]]) { const s0 = Math.floor((t0 + dt) * SR), n = Math.floor(.006 * SR);
-    let lp = 0, hp = 0, prev = 0; const a = Math.exp(-2 * Math.PI * fc / SR), b = Math.exp(-2 * Math.PI * 1800 / SR);
-    for (let i = 0; i < n && s0 + i < Ls; i++) { const x = (rnd() * 2 - 1) * Math.exp(-i / (.0011 * SR)); lp = (1 - a) * x + a * lp; hp = b * (hp + lp - prev); prev = lp;
-      const y = vol * v * hp; Lc[s0 + i] += y; Rc[s0 + i] += y; } } };
-  click(T.click, .05);
+  // no typing sound (Kai 11-09: gimmicky). The domain types in silence; the real click lands on the result.
+  // RECORDED mouse press + release (Kenney UI Audio, CC0 — reels/engine/sfx), not a synth: subtle, real
+  const sample = (name) => { const b = fs.readFileSync(new URL(`./sfx/${name}.f32`, import.meta.url)); return new Float32Array(b.buffer, b.byteOffset, b.length / 4); };
+  const place = (buf, t0, vol) => { const s0 = Math.floor(t0 * SR); for (let i = 0; i < buf.length && s0 + i < Ls; i++) { Lc[s0 + i] += buf[i] * vol; Rc[s0 + i] += buf[i] * vol; } };
+  place(sample("mouseclick1"), T.click, .35); place(sample("mouserelease1"), T.click + .085, .25);
   const bell = (t0, f, vol) => { const s0 = Math.floor(t0 * SR); for (let i = 0; i < SR * 1.6 && s0 + i < Ls; i++) { const u = i / SR, e = Math.min(1, u / .004) * Math.exp(-u * 3.2);
     const v = vol * e * (Math.sin(2 * Math.PI * f * u) + .25 * Math.sin(2 * Math.PI * f * 2.01 * u) * Math.exp(-u * 6) + .08 * Math.sin(2 * Math.PI * f * 3.02 * u) * Math.exp(-u * 9)); Lc[s0 + i] += v; Rc[s0 + i] += v; } };
   const pay = beats.find((b) => b.show?.includes("result") || b.show?.includes("measure"));
-  if (pay) { const t = d.trade && T.tPay ? Math.max(T.tPay, pay.t) : pay.t + .5; bell(t, 1318.5, .002); bell(t + .09, 1975.5, .0014); }
+  if (pay) { const tp = d.trade && T.tPay ? Math.max(T.tPay, pay.t) : pay.t + .5; place(sample("pluck_001"), tp, .18); }
   // no music: Kai 11-08 — clean picture + subtle ticks reads better (and no audio-claim risk). Ticks + 2 cues only.
   const endN = Math.floor(G.DUR / FPS * SR);
   return { L: Lc.subarray(0, endN), R: Rc.subarray(0, endN) };
