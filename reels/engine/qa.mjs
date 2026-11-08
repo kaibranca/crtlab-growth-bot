@@ -10,7 +10,7 @@ export function qa(mp4, props) {
   Object.assign(info, { dur: +dur.toFixed(2), mb: +mb.toFixed(1) });
   if (!v || v.width !== 1080 || v.height !== 1920 || v.codec_name !== "h264") problems.push("format");
   if (!a) problems.push("no audio");
-  if (dur < 6 || dur > 20) problems.push(`duration ${dur.toFixed(1)}s`);
+  if (dur < 8 || dur > 26) problems.push(`duration ${dur.toFixed(1)}s`);
   if (mb > 90) problems.push("too big");
   const buf = execSync(`ffmpeg -v error -i "${mp4}" -vf "fps=4,scale=${w}:${h}:flags=area,format=gray" -f rawvideo -`, { maxBuffer: 1 << 28 });
   const n = Math.floor(buf.length / (w * h)), px = (f, x, y) => buf[f * w * h + y * w + x];

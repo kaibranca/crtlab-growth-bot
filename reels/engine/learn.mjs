@@ -45,7 +45,7 @@ for (const plat of ["ig", "fb"]) {
     const rw = reward(M[x.id], x.dur || 10, plat, hist.slice(-30)); if (!rw) continue;
     hist.push(rw.raw); if (hist.length < 4) continue; // need a baseline before scoring
     B.n[plat]++; x.r = rw.r;
-    for (const arm of [...Object.keys(ARMS), "music"]) { const v = x[arm]; if (v == null) continue; const s = ((B[plat][arm] ??= {})[v] ??= { n: 0, sum: 0 }); s.n++; s.sum += rw.r; }
+    for (const arm of Object.keys(ARMS)) { const v = x[arm]; if (v == null) continue; const s = ((B[plat][arm] ??= {})[v] ??= { n: 0, sum: 0 }); s.n++; s.sum += rw.r; }
   }
   // reach collapse: the last 3 settled posts all under 25% of the median of the 10 before → possible suppression / spam flag
   const v = ps.map((x) => (plat === "ig" ? M[x.id].views : M[x.id].plays) ?? 0);

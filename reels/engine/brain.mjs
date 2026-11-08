@@ -14,7 +14,7 @@ export const save = (f, x) => { fs.mkdirSync(DIR, { recursive: true }); fs.write
 export const ARMS = {
   model: ["ob", "fvg", "crt", "asia", "break", "news", "nyopen"],
   fam: ["name", "result", "question", "pov", "time"],
-  cam: ["lean", "push", "still"],
+  angle: ["rule", "why", "mistake", "risk"],          // the lesson angle (engine/lesson.mjs); each model offers a subset
   pace: ["short", "long"],
   tagset: ["smc", "day", "fx", "pa", "bt"],
   // posting hours (UTC). 09–23 + 00–02: London morning through the US evening. The plan picks 2 a day per platform, ≥3h apart.
@@ -68,7 +68,7 @@ export function memory(today) {
     stories: new Set(log.map((x) => x.story)),                                    // a story is never posted twice
     titles: new Set(recent(30).map((x) => x.title)),                               // no title repeats inside 30 days
     mkModel: new Set(recent(5).map((x) => `${x.mk}|${x.model}`)),                  // same market+model rests 5 days
-    lastLook: log.slice(-2).map((x) => `${x.fam}|${x.cam}|${x.pace}`),             // never the same look twice running
+    lastLook: log.slice(-2).map((x) => `${x.fam}|${x.angle}|${x.pace}`),             // never the same look twice running
     mkToday: new Set(log.filter((x) => x.date === today).map((x) => x.mk)),
   };
 }

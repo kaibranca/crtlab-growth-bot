@@ -40,7 +40,7 @@ export function copy(s, fam, avoid = new Set()) {
     nyopen: { cap1: "First 15 minutes set the range.", cap2: `The ${s.side} breaks.`, cap3: [`${mv}`, "from the break."] },
   }[s.model];
   const win = C.win || `${pct >= 0 ? "+" : "−"}${mv} (${Math.abs(pct).toFixed(2)}%)`;
-  return { title, when, cap1: C.cap1, cap2: C.cap2, cap3: C.cap3, win, fam };
+  return { title, when, win, fam, mv: mv || "" };
 }
 
 // ── captions: IG and FB read differently ─────────────────────────────────────────────────────────────────────────────

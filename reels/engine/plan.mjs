@@ -3,7 +3,7 @@
 // Stories come from the last 7 recap days (fresher = better; never one already posted). Each platform gets its own 2 learned hours.
 import fs from "node:fs";
 import { candidates, recapDays, addDays } from "./stories.mjs";
-import { copy, captions } from "./copy.mjs";
+import { copy, captions } from "./copy.mjs"; import { lesson, ANGLES } from "./lesson.mjs";
 import { ARMS, music, rng, pick, cycleModel, fallback, hours, memory, brain, save, DIR } from "./brain.mjs";
 
 const today = process.argv[2] || new Date().toISOString().slice(0, 10);
@@ -41,20 +41,20 @@ const plan = { date: today, wd: WDN, made: new Date().toISOString(), reels: [] }
 fs.mkdirSync(new URL("../out/", import.meta.url), { recursive: true });
 for (const [k, s] of chosen.entries()) {
   // the look: learned arms, never the same look twice in a row
-  let fam, cam, pace, cp = null;
+  let fam, angle, pace, cp = null;
   for (let tries = 0; tries < 12 && !cp; tries++) {
-    fam = pick("fam", ARMS.fam, r, { B, explore: tries ? .5 : .15 }); cam = pick("cam", ARMS.cam, r, { B }); pace = pick("pace", ARMS.pace, r, { B });
-    if (mem.lastLook.includes(`${fam}|${cam}|${pace}`) || plan.reels.some((x) => x.fam === fam && x.cam === cam)) continue;
+    fam = pick("fam", ARMS.fam, r, { B, explore: tries ? .5 : .15 }); angle = pick("angle", ANGLES[s.model], r, { B }); pace = pick("pace", ARMS.pace, r, { B });
+    if (mem.lastLook.includes(`${fam}|${angle}|${pace}`) || plan.reels.some((x) => x.fam === fam && x.angle === angle)) continue;
     cp = copy(s, fam, titles);
   }
-  if (!cp) { fam = "name"; cp = copy(s, "name", new Set()); }
+  if (!cp) { fam = "name"; angle = angle || "rule"; cp = copy(s, "name", new Set()); }
   titles.add(cp.title.join(" "));
-  const tagset = pick("tagset", ARMS.tagset, r, { plat: "ig", B }), mus = pick("music", music(), r, { B, explore: .25 });
+  const tagset = pick("tagset", ARMS.tagset, r, { plat: "ig", B });
   const caps = captions(s, cp, tagset);
-  const props = { ...s, copy: cp, look: { cam, pace }, music: mus === "none" ? null : mus };
+  const props = { ...s, copy: cp, lesson: lesson(s, angle), look: { pace } };
   fs.writeFileSync(new URL(`../out/reel-${k}.json`, import.meta.url), JSON.stringify(props));
-  plan.reels.push({ k, story: s.id, date: s.date, mk: s.mk, model: s.model, title: cp.title.join(" "), fam, cam, pace, tagset, music: mus,
+  plan.reels.push({ k, story: s.id, date: s.date, mk: s.mk, model: s.model, title: cp.title.join(" "), fam, angle, pace, tagset,
     cycle: k === 0 ? WDN : "brain", ig: { at: at(igH[k], k), hour: igH[k], caption: caps.ig }, fb: { at: at(fbH[k], k), hour: fbH[k], caption: caps.fb } });
-  console.log(`reel ${k}: ${s.date} ${s.mk} ${s.model} "${cp.title.join(" ")}" ${fam}/${cam}/${pace} tags:${tagset} music:${mus} · IG ${igH[k]}:xx FB ${fbH[k]}:xx UTC`);
+  console.log(`reel ${k}: ${s.date} ${s.mk} ${s.model} "${cp.title.join(" ")}" ${fam}/${angle}/${pace} tags:${tagset} · IG ${igH[k]}:xx FB ${fbH[k]}:xx UTC`);
 }
 save(`plan-${today}.json`, plan);

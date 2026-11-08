@@ -8,8 +8,8 @@ L.push(`# CRTLAB reels — week to ${new Date().toISOString().slice(0, 10)}`, ""
 for (const plat of ["ig", "fb"]) {
   const ps = wk.filter((x) => x.plat === plat), v = (x) => (plat === "ig" ? M[x.id]?.views : M[x.id]?.plays) ?? 0, tot = ps.reduce((s, x) => s + v(x), 0);
   L.push(`## ${plat === "ig" ? "Instagram" : "Facebook"}: ${ps.length} reels, ${tot.toLocaleString()} views`);
-  for (const x of [...ps].sort((a, b) => v(b) - v(a)).slice(0, 3)) L.push(`- ${v(x)} views · "${x.title}" (${x.mk} ${x.model}, ${x.fam}/${x.cam}/${x.pace}, ${x.hour}:00 UTC) ${x.permalink || ""}`);
-  for (const arm of ["model", "fam", "cam", "pace", "hour", "music"]) {
+  for (const x of [...ps].sort((a, b) => v(b) - v(a)).slice(0, 3)) L.push(`- ${v(x)} views · "${x.title}" (${x.mk} ${x.model}, ${x.fam}/${x.angle}/${x.pace}, ${x.hour}:00 UTC) ${x.permalink || ""}`);
+  for (const arm of ["model", "angle", "fam", "pace", "hour", "music"]) {
     const vals = (arm === "music" ? Object.keys(B[plat]?.music || {}) : ARMS[arm]).map((a) => [a, mean(B, plat, arm, a)]).filter(([, s]) => s.n).sort((a, b) => b[1].avg - a[1].avg);
     if (vals.length) L.push(`  - ${arm}: ${vals.map(([a, s]) => `${a} ${s.avg >= 0 ? "+" : ""}${s.avg.toFixed(2)} (${s.n})`).join(" · ")}`);
   }

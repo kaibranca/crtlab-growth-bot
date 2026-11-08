@@ -43,7 +43,7 @@ async function facebook() {
   return { id: s.video_id, permalink: st?.permalink_url ? `https://www.facebook.com${st.permalink_url}` : null, status: st?.status?.video_status };
 }
 
-const t0 = Date.now(), entry = { plan: D, k: +K, plat: PLAT, story: R.story, date: D, mk: R.mk, model: R.model, title: R.title, fam: R.fam, cam: R.cam, pace: R.pace,
+const t0 = Date.now(), entry = { plan: D, k: +K, plat: PLAT, story: R.story, date: D, mk: R.mk, model: R.model, title: R.title, fam: R.fam, angle: R.angle, pace: R.pace,
   tagset: R.tagset, music: R.music, hour: R[PLAT].hour, cycle: R.cycle, dur: JSON.parse(fs.readFileSync(new URL("../out/qa.json", import.meta.url), "utf8"))[K]?.info?.dur };
 try {
   Object.assign(entry, await (PLAT === "ig" ? instagram() : facebook()));
