@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-08T13:03:29.660Z",
+ "updated": "2026-11-08T13:34:40.557Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -297,15 +297,15 @@
   "topPages7d": [
    [
     "/",
-    18578
+    18464
    ],
    [
     "/backtest",
-    2462
+    2410
    ],
    [
     "/pricing",
-    1174
+    1117
    ],
    [
     "/economic-calendar",
@@ -313,11 +313,11 @@
    ],
    [
     "/tools",
-    1014
+    975
    ],
    [
     "/features",
-    750
+    712
    ],
    [
     "/news",
@@ -325,27 +325,27 @@
    ],
    [
     "/blog",
-    562
+    509
    ],
    [
     "/partnerships",
-    562
+    502
    ],
    [
     "/recap",
-    428
+    383
    ],
    [
     "/prop-firm-challenge-simulator",
-    314
+    313
    ],
    [
     "/tools/best-time-to-trade",
-    312
+    311
    ],
    [
     "/faq",
-    305
+    304
    ],
    [
     "/answers",
@@ -353,31 +353,37 @@
    ],
    [
     "/tools/position-size-calculator",
-    202
+    201
    ],
    [
     "/tools/futures-tick-value-calculator",
     197
    ],
    [
-    "/statistics",
-    144
-   ],
-   [
     "/tools/margin-calculator",
     128
    ],
    [
-    "/backtest-gold",
-    106
+    "/statistics",
+    102
    ],
    [
     "/news/nfp",
     100
+   ],
+   [
+    "/backtest-gold",
+    97
    ]
   ]
  },
  "activity": [
+  {
+   "at": "2026-11-08T13:34:34.153Z",
+   "job": "health",
+   "ok": false,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
+  },
   {
    "at": "2026-11-08T13:03:29.609Z",
    "job": "indexnow",
@@ -419,12 +425,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "134 crawler visits · OAI-SearchBot 111 · Bingbot 8 · ChatGPT-User 7 · PerplexityBot 2"
-  },
-  {
-   "at": "2026-11-08T10:46:48.513Z",
-   "job": "health",
-   "ok": false,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-08T10:24:16.224Z",
@@ -930,7 +930,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-08T10:46:48.513Z",
+  "at": "2026-11-08T13:34:34.153Z",
   "alerts": [
    "payment-failed"
   ],
@@ -938,7 +938,7 @@
    {
     "name": "database size",
     "ok": true,
-    "note": "264 MB"
+    "note": "265 MB"
    },
    {
     "name": "signups flowing",
@@ -958,7 +958,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "8h old · 30.6 MB"
+    "note": "11h old · 30.6 MB"
    },
    {
     "name": "market data fresh",
@@ -967,7 +967,7 @@
    }
   ],
   "db": {
-   "mb": 264,
+   "mb": 265,
    "tables": [
     [
      "user_events",
@@ -1003,22 +1003,22 @@
    "home": {
     "kb": 2557,
     "scripts": 21,
-    "ttfbMs": 234
+    "ttfbMs": 125
    },
    "backtest": {
     "kb": 1324,
     "scripts": 12,
-    "ttfbMs": 221
+    "ttfbMs": 146
    },
    "chart app": {
     "kb": 2557,
     "scripts": 21,
-    "ttfbMs": 573
+    "ttfbMs": 366
    },
    "statistics": {
     "kb": 1173,
     "scripts": 13,
-    "ttfbMs": 228
+    "ttfbMs": 173
    }
   },
   "heavier": []
