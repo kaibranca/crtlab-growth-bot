@@ -55,6 +55,7 @@ jobs:
           retention-days: 4
           path: |
             reels/out/reel-*.mp4
+            reels/out/reel-*.json
             reels/out/qa.json
       - name: alert on failure
         if: failure()
