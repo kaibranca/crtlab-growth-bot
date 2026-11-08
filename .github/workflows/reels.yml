@@ -11,7 +11,7 @@ concurrency: { group: reels-make, cancel-in-progress: false }
 permissions: { contents: write, actions: read }
 jobs:
   make:
-    runs-on: macos-14
+    runs-on: macos-latest
     timeout-minutes: 45
     env:
       GH_TOKEN: ${{ github.token }}
