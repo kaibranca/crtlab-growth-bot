@@ -28,19 +28,19 @@ export function lesson(s, angle) {
       const c = long ? "down" : "up";
       steps = [
         { ...bos, cap: pick({ rule: "Structure breaks", why: "Structure breaks", mistake: "Most traders chase here" }) },
-        { ...obS, cap: pick({ rule: `Last ${c} candle = the OB`, why: "This candle started the move", mistake: "Better: the candle before it" }) },
+        { ...obS, cap: pick({ rule: `Last ${c} candle is the OB`, why: "This candle started the move", mistake: "Use the candle before it" }) },
         { ...back, cap: pick({ rule: "Wait for the pullback", why: s.liq?.length ? `Stops ${long ? "under" : "over"} these get taken` : "Price drifts back", mistake: "Let price come to you" }) },
-        { ...tap, cap: pick({ rule: "Tap = entry", why: "Back into the OB", mistake: "Enter on the tap" }) },
-        { ...risk, cap: pick({ rule: `Stop ${long ? "under" : "over"} the OB`, why: "Risk 1 to make 2", mistake: "Tight stop. 2R target" }) },
+        { ...tap, cap: pick({ rule: "The tap is the entry", why: "Back into the OB", mistake: "Enter on the tap" }) },
+        { ...risk, cap: pick({ rule: `Stop ${long ? "under" : "over"} the OB`, why: "Risk 1 to make 2", mistake: "Tight stop, 2R target" }) },
         { ...res, cap: "Target hit" }];
     } else {
       const mid = z.i0 + 1, three = { to: z.i0 + 2, show: ["three"], focus: around(s, z.i0 - 2, z.i0 + 4, B[mid].h, B[mid].l), point: at(mid, (B[mid].o + B[mid].c) / 2) };
       const gap = { show: ["zone"], focus: three.focus, point: at(z.i0 + 2, (z.top + z.bot) / 2) };
       steps = [
         { ...three, cap: pick({ rule: "One candle moves too fast", risk: "Big candle, no pullback", mistake: "Don't chase this candle" }) },
-        { ...gap, cap: pick({ rule: "Gap: wick 1 → wick 3", risk: "It leaves a gap", mistake: "Mark the gap it left" }) },
-        { ...tap, cap: pick({ rule: "Price returns. Entry", risk: "Back into the gap", mistake: "Wait for the return" }) },
-        { ...risk, cap: pick({ rule: "Stop past the gap", risk: "Full fill = you're wrong", mistake: "Stop past the gap" }) },
+        { ...gap, cap: pick({ rule: "The gap between wick 1 and 3", risk: "It leaves a gap", mistake: "Mark the gap it left" }) },
+        { ...tap, cap: pick({ rule: "Entry on the return", risk: "Back into the gap", mistake: "Wait for the return" }) },
+        { ...risk, cap: pick({ rule: "Stop past the gap", risk: "A full fill means you're wrong", mistake: "Stop past the gap" }) },
         { ...res, cap: "Target hit" }];
     }
   } else {
@@ -52,8 +52,8 @@ export function lesson(s, angle) {
         const kk = Math.min(N, k), f = around(s, s.kb - 6, Math.min(N, kk + 3), s.level, s.side === "low" ? B[s.kb].l : B[s.kb].h);
         steps = [
           { to: 0, show: ["level"], point: lvl, cap: `Yesterday's ${hiLo}`, hold: 1.5 },
-          { ...cross, focus: f, cap: pick({ rule: "Swept…", why: "Stops taken…" }) },
-          { to: kk, focus: f, point: at(kk, B[kk].c), cap: "…closed back inside" },
+          { ...cross, focus: f, cap: pick({ rule: "Swept", why: "Stops taken" }) },
+          { to: kk, focus: f, point: at(kk, B[kk].c), cap: "Then closes back inside" },
           { to: N, show: ["measure"], point: end, tone, cap: pick({ rule: `${mv} the other way`, why: "The sweep was the turn" }), hold: 2 }];
         break;
       }
@@ -61,7 +61,7 @@ export function lesson(s, angle) {
         steps = [
           { to: z.i1, show: ["zone"], focus: around(s, z.i0 - 1, z.i1 + 2, z.top, z.bot), point: at(z.i1, (z.top + z.bot) / 2), cap: pick({ rule: "Asia's range", why: "Quiet Asia builds a range" }) },
           { ...cross, show: ["level", "cross"], focus: around(s, s.kb - 8, s.kb + 3, z.top, z.bot), cap: `${Cap(hiLo)} breaks first` },
-          { to: N, show: ["measure"], point: end, tone, cap: pick({ rule: `${Cap(other)} never breaks`, why: "First break = the day's side" }), hold: 2.2 }];
+          { to: N, show: ["measure"], point: end, tone, cap: pick({ rule: `${Cap(other)} never breaks`, why: "The first break sets the day" }), hold: 2.2 }];
         break;
       case "break":
         steps = [
@@ -72,16 +72,16 @@ export function lesson(s, angle) {
         break;
       case "news":
         steps = [
-          { to: s.kb - 1, show: ["level"], point: at(s.kb - 1, s.level), cap: pick({ rule: `${s.event.name} · ${s.event.time} NY`, why: `Waiting for ${s.event.name}` }) },
+          { to: s.kb - 1, show: ["level"], point: at(s.kb - 1, s.level), cap: pick({ rule: `${s.event.name} at ${s.event.time} New York`, why: `Waiting for ${s.event.name}` }) },
           { ...cross, point: at(s.kb, s.side === "high" ? B[s.kb].h : B[s.kb].l), focus: around(s, s.kb - 6, s.kb + 4, B[s.kb].h, B[s.kb].l),
             cap: s.event.actual != null && s.event.forecast != null ? `${s.event.actual} vs ${s.event.forecast} expected` : "The release" },
-          { to: N, show: ["measure"], point: end, tone, cap: `${mv} · ${s.ofDay}% of a day`, hold: 2.2 }];
+          { to: N, show: ["measure"], point: end, tone, cap: `${mv}, ${s.ofDay}% of a day`, hold: 2.2 }];
         break;
       case "nyopen":
         steps = [
-          { to: z.i1, show: ["zone"], focus: around(s, z.i0 - 3, z.i1 + 3, z.top, z.bot), point: at(z.i1, (z.top + z.bot) / 2), cap: "First 15 min = the range" },
+          { to: z.i1, show: ["zone"], focus: around(s, z.i0 - 3, z.i1 + 3, z.top, z.bot), point: at(z.i1, (z.top + z.bot) / 2), cap: "The first 15 minutes set the range" },
           { ...cross, show: ["level", "cross"], focus: around(s, s.kb - 8, s.kb + 3, z.top, z.bot), cap: pick({ rule: `${Cap(hiLo)} breaks`, mistake: "Wait for the break" }) },
-          { to: N, show: ["measure"], point: end, tone, cap: `${Cap(other)} never trades · ${mv}`, hold: 2.2 }];
+          { to: N, show: ["measure"], point: end, tone, cap: `${Cap(other)} never trades, ${mv}`, hold: 2.2 }];
         break;
     }
   }

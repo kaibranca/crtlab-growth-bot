@@ -14,10 +14,10 @@ export function titleOptions(s, fam) {
   const mv = (s.trade ? "+2R" : money(s, s.measure.to - s.measure.from)).toUpperCase(), n = nice(s.mk).toUpperCase();
   const trade = !!s.trade, verb = { asia: "BROKE", break: "BROKE", nyopen: "BROKE", crt: "SWEPT", news: "DROPPED" }[s.model];
   const F = {
-    name: [nm, [nm[0], `${nm[1]} · ${n}`], [n, nm.join(" ")], [n, nm[0]]],
-    result: trade ? [[mv, nm.join(" ")], [nm[0], `→ ${mv}`]] : [[nm[0], `→ ${mv}`], [`${n} ${nm[0]}`, `→ ${mv}`]],
+    name: [nm, [n, nm.join(" ")], [n, nm[0]]],
+    result: trade ? [[mv, nm.join(" ")], [nm[0], mv]] : [[nm[0], mv], [`${n} ${nm[0]}`, mv]],
     question: trade ? [[nm[0], "OR TRAP?"], ["WOULD YOU", "TAKE THIS?"], ["TAKE THIS", `${nm[0]}?`]] : [[nm[0], "OR TRAP?"], ["WOULD YOU", "TRADE THIS?"]],
-    pov: trade ? [["POV:", `${nm[0]} TAPPED`], ["POV:", "YOU WAITED"]] : [["POV:", `${nm[0]} ${verb}`], ["POV:", "YOU MARKED IT"]],
+    pov: trade ? [["POV", `${nm[0]} TAPPED`], ["POV", "YOU WAITED"]] : [["POV", `${nm[0]} ${verb}`], ["POV", "YOU MARKED IT"]],
     time: s.when9 ? [[s.when9, nm.join(" ")]] : [[DAYN[s.wd]?.toUpperCase() || n, nm.join(" ")]],
   }[fam] || [nm];
   // never a doubled word ("FVG FVG ENTRY"), never too long for one clean line
@@ -36,9 +36,9 @@ export function copy(s, fam, avoid = new Set()) {
     ob: { cap1: "Structure breaks.", cap2: `Price returns to the OB.`, cap3: ["Target hit.", "+2R"], win: "+2R" },
     fvg: { cap1: "Price leaves a gap.", cap2: "It comes back to fill.", cap3: ["Target hit.", "+2R"], win: "+2R" },
     crt: { cap1: `Yesterday's ${s.side}.`, cap2: "Swept. Then back inside.", cap3: [`${mv}`, "from the sweep."] },
-    asia: { cap1: "Asia sets the range.", cap2: `The ${s.side} breaks first.`, cap3: [`${mv}`, `· ${(s.rel / 100).toFixed(1)}× a normal day.`] },
+    asia: { cap1: "Asia sets the range.", cap2: `The ${s.side} breaks first.`, cap3: [`${mv}`, `${(s.rel / 100).toFixed(1)}× a normal day`] },
     break: { cap1: `Yesterday's ${s.side}.`, cap2: "Breaks. Never looks back.", cap3: [`${mv}`, "past the level."] },
-    news: { cap1: `${s.event?.name} at ${s.event?.time} New York.`, cap2: `${kt}. It prints.`, cap3: [`${mv}`, `· ${s.ofDay}% of a day's range.`] },
+    news: { cap1: `${s.event?.name} at ${s.event?.time} New York.`, cap2: `${kt}. It prints.`, cap3: [`${mv}`, `${s.ofDay}% of a day's range`] },
     nyopen: { cap1: "First 15 minutes set the range.", cap2: `The ${s.side} breaks.`, cap3: [`${mv}`, "from the break."] },
   }[s.model];
   const win = C.win || `${pct >= 0 ? "+" : "−"}${mv} (${Math.abs(pct).toFixed(2)}%)`;

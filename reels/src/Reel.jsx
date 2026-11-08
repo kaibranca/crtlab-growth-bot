@@ -5,10 +5,10 @@ import { build, camera, partial, prog, EIO, OUT, FPS, W, L } from "./tl.mjs";
 // 1-minute data, forming one way (no jitter). The camera eases onto each step. Each step's words sit NEXT TO what they describe,
 // with an arrow from the words to it, so the eye never leaves the chart. Every label/callout position is solved ONCE per step
 // against the candles and the other labels (no overlap, no jumping). Ends: type crtlab.pro → click the result → frame 0.
-const C = { bg: "#050506", text: "#f2f2f4", dim: "#8f929b", axis: "#6c6f78", up: "#089981", dn: "#f23645", lvl: "#d1d4dc", tv: "#2962ff", acc: "#9d7bff", acc2: "#7e57c2", pill: "#24252b" };
+const C = { bg: "#050506", text: "#f2f2f4", dim: "#8f929b", axis: "#6c6f78", up: "#089981", dn: "#f23645", lvl: "#d1d4dc", tv: "#2962ff", acc: "#4d8dff", pill: "#24252b" };
 const SANS = '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Roboto, sans-serif';
 const cl = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v)), mix = (a, b, k) => a + (b - a) * k, eo = (t, a, d) => OUT((t - a) / d), ein = (t, a, d) => EIO((t - a) / d);
-const ACC_TXT = { backgroundImage: `linear-gradient(180deg, #c6b2ff, ${C.acc2})`, WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" };
+const ACC_TXT = { color: C.acc }; // solid blue highlight (Kai 11-09: no purple, no gradient text)
 const fmt = (v, dp) => v.toLocaleString("en-US", { minimumFractionDigits: dp, maximumFractionDigits: dp });
 function ticks(lo, hi, n = 7) { const raw = (hi - lo) / n, m = Math.pow(10, Math.floor(Math.log10(raw))); return [1, 2, 2.5, 5, 10].map((k) => k * m).find((k) => k >= raw); }
 const ICON = { // 14px glyphs drawn inside pills
@@ -37,7 +37,7 @@ export const Reel = (d) => {
     const on = (key) => { const b = beats.find((x) => x.show?.includes(key)); return b ? b.t : Infinity; }, S = [];
     const lastX = X(T.last) + BW * .7, z = d.zone;
     if (z && isFinite(on("zone"))) { const range = d.model === "asia" || d.model === "nyopen", icon = range ? "clock" : null, w = pillW(z.label, 18, icon), h = 29, zh = (Y(z.bot) - Y(z.top));
-      S.push({ key: "zone", t0: on("zone") + .2, anchor: [X(z.i0) - BW / 2, Y(z.top)], w, h, cands: (s) => [[0, -h - 6], [0, zh * s + 6], [-w - 8, 0], [6, 6]], draw: (x, y, o) => <Pill x={x} y={y} text={z.label} bg={range ? C.pill : C.acc2} o={o} icon={icon} /> }); }
+      S.push({ key: "zone", t0: on("zone") + .2, anchor: [X(z.i0) - BW / 2, Y(z.top)], w, h, cands: (s) => [[0, -h - 6], [0, zh * s + 6], [-w - 8, 0], [6, 6]], draw: (x, y, o) => <Pill x={x} y={y} text={z.label} bg={range ? C.pill : C.acc} o={o} icon={icon} /> }); }
     if (isFinite(on("level")) && d.model !== "fvg" && d.model !== "ob") { const icon = d.model === "news" ? "bolt" : null, w = pillW(d.levelLabel, 18, icon), h = 29, x0 = d.model === "news" ? X(d.kb) - BW / 2 : X(0) - BW / 2;
       S.push({ key: "level", t0: on("level") + .25, anchor: [x0, Y(d.level)], w, h, hitCol: true, cands: (s) => [[8, -h - 6], [8, 6], [(lastX - x0) * s - w, -h - 6], [(lastX - x0) * s - w, 6]], draw: (x, y, o, hit) => <Pill x={x} y={y} text={d.levelLabel} bg={hit ? (d.side === "high" ? C.up : C.dn) : C.pill} o={o} icon={icon} /> }); }
     if (d.bos) { const w = pillW("BOS", 17), h = 27, mx = (X(d.bos.i0) + X(d.bos.i1)) / 2;
@@ -149,7 +149,7 @@ export const Reel = (d) => {
       <div style={{ position: "absolute", top: L.chip, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "center", gap: 12, opacity: axisA }}>
         <Img src={staticFile(`m/${d.mk}.webp`)} style={{ width: 36, height: 36 }} />
         <span style={{ color: C.text, fontSize: 29, fontWeight: 650 }}>{d.mk}</span>
-        <span style={{ color: C.dim, fontSize: 27, fontWeight: 500 }}>· {d.tf} · {d.copy.when}</span></div>
+        </div>
       <div style={{ position: "absolute", top: L.brand - 8, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "center", gap: 14, opacity: axisA }}>
         <Img src={staticFile("potion-glyph.png")} style={{ width: 42, height: 42 }} />
         <span style={{ color: "#fff", fontSize: 32, fontWeight: 800, letterSpacing: 5 }}>CRTLAB</span></div>
@@ -174,7 +174,7 @@ function Callout({ t, sp, x, y, o }) {
 function Title({ d }) {
   const [a, b] = d.copy.title, len = (a + (b ? " " + b : "")).length, size = Math.min(96, Math.floor(940 / (len * .64)));
   return <div style={{ position: "absolute", top: L.title + (96 - size) * .5, left: 40, right: 40, textAlign: "center", whiteSpace: "nowrap", fontFamily: SANS, fontSize: size, fontWeight: 800, letterSpacing: -1.5, lineHeight: 1.05, color: C.text }}>
-    <span style={{ ...ACC_TXT, paddingBottom: 6 }}>{a}</span>{b ? <span> {b}</span> : null}</div>;
+    <span style={ACC_TXT}>{a}</span>{b ? <span> {b}</span> : null}</div>;
 }
 // the end: chart dims, crtlab.pro types into a search bar, the CRTLAB result settles under it, a cursor glides over and clicks —
 // and the click opens straight into frame 0 (the empty chart under the title): the loop IS the click
