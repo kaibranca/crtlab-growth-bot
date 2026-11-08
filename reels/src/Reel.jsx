@@ -187,11 +187,11 @@ function SignOff({ t, T }) {
     <div style={{ width: 680, height: 92, borderRadius: 46, background: "#18181c", display: "flex", alignItems: "center", gap: 18, padding: "0 32px", boxSizing: "border-box" }}>
       <svg width={30} height={30} viewBox="0 0 24 24" fill="none" stroke="#8d8f99" strokeWidth={2.2} strokeLinecap="round"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 L20.5 20.5" /></svg>
       <div style={{ display: "flex", alignItems: "center", fontSize: 40, fontWeight: 560, color: "#ececf1", whiteSpace: "pre" }}>{"crtlab.pro".slice(0, n)}
-        <span style={{ display: "inline-block", width: 3, height: 42, marginLeft: 3, borderRadius: 2, background: C.acc, opacity: caret }} /></div>
+        <span style={{ display: "inline-block", width: 3, height: 42, marginLeft: 3, borderRadius: 2, background: "#ececf1", opacity: caret }} /></div>
     </div>
     <div style={{ marginTop: 14, width: 680, height: 88, borderRadius: 28, boxSizing: "border-box", display: "flex", alignItems: "center", gap: 20, padding: "0 32px", opacity: row,
       background: `rgb(${mix(24, 34, hover)},${mix(24, 36, hover)},${mix(28, 48, hover)})`, transform: `translateY(${(1 - row) * -10}px) scale(${1 - .018 * press})` }}>
-      <span style={{ fontSize: 31, fontWeight: 760, color: "#5aa9ff" }}>CRTLAB</span>
+      <span style={{ fontSize: 31, fontWeight: 760, color: "#fff" }}>CRTLAB</span>
       <span style={{ width: 2, height: 32, background: "rgba(255,255,255,.14)" }} />
       <span style={{ fontSize: 27, fontWeight: 560, color: "#d9dbe2" }}>Backtesting &amp; Market Replay</span>
     </div>
