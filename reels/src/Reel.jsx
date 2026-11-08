@@ -162,7 +162,7 @@ export const Reel = (d) => {
 // text never moves the same way twice in a row: rise · mask · wipe · words · track
 function Callout({ t, sp, x, y, o }) {
   const b = sp.callout, u = t - sp.t0, k = OUT(u / .45), mode = (b.i + (sp.callout.cap.length % 2)) % 5, col = b.tone === "up" ? "#3fd1a8" : b.tone === "dn" ? "#ff6b7d" : C.text;
-  const box = { position: "absolute", left: x, top: y, width: sp.w, minHeight: sp.h, boxSizing: "border-box", padding: "9px 17px", borderRadius: 14, background: "rgba(5,5,6,.82)", fontFamily: SANS, fontSize: 38, fontWeight: 680, lineHeight: 1.22, letterSpacing: -.3, color: col, textAlign: "center", opacity: o * Math.min(1, u / .12) };
+  const box = { position: "absolute", left: x, top: y, width: sp.w, minHeight: sp.h, boxSizing: "border-box", padding: "9px 17px", borderRadius: 14, background: "transparent", textShadow: "0 2px 10px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.9)", fontFamily: SANS, fontSize: 38, fontWeight: 680, lineHeight: 1.22, letterSpacing: -.3, color: col, textAlign: "center", opacity: o * Math.min(1, u / .12) };
   const words = b.cap.split(" ");
   if (mode === 0) return <div style={{ ...box, transform: `translateY(${(1 - k) * 14}px)`, opacity: box.opacity * k }}>{b.cap}</div>;
   if (mode === 1) return <div style={{ ...box, overflow: "hidden" }}><div style={{ transform: `translateY(${(1 - k) * 110}%)` }}>{b.cap}</div></div>;
