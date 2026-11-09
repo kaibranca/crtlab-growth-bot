@@ -45,17 +45,28 @@ export const Reel = (d) => {
       S.push({ key: "res", t0: a + .05, anchor: [X(d.trade.iX), Y(d.trade.target)], w, h, rise: true, cands: (s) => [[BW * s + 8, -h / 2], [BW * s * .8 + 6, long ? -h - 8 : 8], [-w - BW * s, long ? -h - 8 : 8]], draw: (x, y, o, _h, tn) => <Label x={x} y={y} text={`+${(2 * eo(tn, a, .55)).toFixed(1)}R`} bg={C.up} size={22} o={o} /> }); }
     if (d.measure && isFinite(on("measure"))) { const m = d.measure, up = m.to > m.from, pct = Math.abs((m.to - m.from) / m.from * 100).toFixed(2), txt = `${up ? "+" : "−"}${d.copy.mv} (${pct}%)`, w = labW(txt, 18), h = 28;
       S.push({ key: "meas", t0: on("measure") + .5, anchor: [(X(m.i0) + X(Math.min(m.i1, T.last))) / 2, Y(m.to)], w, h, cands: () => [[-w / 2, up ? -h - 10 : 10], [-w / 2, up ? 10 : -h - 10], [-w - 20, -h / 2], [20, -h / 2]], draw: (x, y, o) => <Label x={x} y={y} text={txt} bg={C.tv} size={18} o={o} /> }); }
+    // CAPTIONS go where the viewer is already looking: next to the thing they describe, only in empty chart space
+    const capsB = beats.filter((b) => b.cap);
+    capsB.forEach((b, j) => { const size = 40, w = Math.min(760, b.cap.length * size * .52 + 24), h = Math.round(size * 1.3), t1 = j + 1 < capsB.length ? capsB[j + 1].t : T.dim + .1;
+      const pi = b.point ? b.point.i : Math.min(b.to ?? T.last, T.last), pp = b.point ? b.point.price : B[pi].c;
+      S.push({ key: "cap" + j, cap: b, j, t0: j ? b.t + .14 : b.t, t1, anchor: [X(pi), Y(pp)], w, h,
+        cands: () => [[-w / 2, -h - 70], [-w / 2, 70], [-w / 2, -h - 130], [-w / 2, 130], [-w - 60, -h / 2], [60, -h / 2], [-w - 40, -h - 60], [40, -h - 60], [-w - 40, 60], [40, 60], [-w / 2, -h - 200], [-w / 2, 200]] }); });
     const done = [];
     for (const sp of S.sort((a, b) => a.t0 - b.t0)) {
       const tRef = Math.min(sp.t0 + 1, (sp.t1 ?? Infinity) - .05), cam = camera(G, tRef), mp = mpOf(cam), [ax, ay] = mp(...sp.anchor);
       const rects = []; for (let i = 0; i <= T.last; i++) { if (prog(G.sch[i], tRef) <= 0) continue; const [cx] = mp(X(i), 0), hw = cw * cam.s / 2 + 6; rects.push([cx - hw, mp(0, Y(B[i].h))[1] - 6, cx + hw, mp(0, Y(B[i].l))[1] + 6]); }
       for (const o of done) if (o.t0 < (sp.t1 ?? Infinity) && (o.t1 ?? Infinity) > sp.t0) { const [ox, oy] = mp(...o.anchor); rects.push([ox + o.off[0] - 6, oy + o.off[1] - 6, ox + o.off[0] + o.w + 6, oy + o.off[1] + o.h + 6]); }
-      const lim = [L.PL - 4, L.PT - 4, L.PR + 4, L.PB + 4];
+      // shaded shapes alive at that moment are obstacles too (zone, position tool, measure)
+      const wr = (x0, y0, x1, y1) => { const [a0, b0] = mp(x0, y0), [a1, b1] = mp(x1, y1); rects.push([Math.min(a0, a1) - 8, Math.min(b0, b1) - 8, Math.max(a0, a1) + 8, Math.max(b0, b1) + 8]); }, lx = X(T.last) + BW * .7;
+      if (z && tRef >= on("zone")) wr(X(z.i0) - BW / 2, Y(z.top), d.model === "asia" || d.model === "nyopen" ? X(z.i1) + BW / 2 : lx, Y(z.bot));
+      if (d.trade && tRef >= on("tool")) wr(X(d.trade.iE) - BW / 2, Y(d.trade.target), lx, Y(d.trade.stop));
+      if (d.measure && tRef >= on("measure")) wr(X(d.measure.i0), Y(d.measure.from), X(Math.min(d.measure.i1, T.last)), Y(d.measure.to));
+      const lim = sp.cap ? [L.PL + 4, L.PT + 6, L.PR - 4, L.PB - 6] : [L.PL - 4, L.PT - 4, L.PR + 4, L.PB + 4];
       const cost = ([dx, dy]) => { const x0 = ax + dx, y0 = ay + dy, x1 = x0 + sp.w, y1 = y0 + sp.h; let c = 0;
         if (x0 < lim[0] || y0 < lim[1] || x1 > lim[2] || y1 > lim[3]) c += 1e6;
         for (const r of rects) { const ix = Math.max(0, Math.min(x1, r[2]) - Math.max(x0, r[0])), iy = Math.max(0, Math.min(y1, r[3]) - Math.max(y0, r[1])); c += ix * iy; } return c; };
       const cs = sp.cands(cam.s); let best = cs[0], bc = Infinity; for (const c of cs) { const v = cost(c); if (v < bc - 1) { bc = v; best = c; } }
-      done.push({ ...sp, off: best });
+      done.push({ ...sp, off: best, fixed: !!sp.cap && bc >= 1e6 }); // no room anywhere → the clean line under the chart
     }
     return done;
   }, [d]);
@@ -98,7 +109,7 @@ export const Reel = (d) => {
         <rect x={13} y={s ? 12 : 24} width={22} height={12} rx={1.5} fill={C.up} /><rect x={13} y={s ? 24 : 12} width={22} height={12} rx={1.5} fill={C.dn} /></g>
       <g opacity={a} transform={`translate(${sx - 5} ${sy - 3}) scale(${1.5 - .12 * press})`}><path d="M5 3 L5 19 L9.5 15 L12.5 21.5 L15 20.4 L12.1 14 L18 14 Z" fill="#fff" stroke="#0b0b0e" strokeWidth={1.2} strokeLinejoin="round" /></g></g>; }
   // the key candle (entry tap / sweep / break) gets a brief soft selection band behind it once it prints
-  if (G.sch[d.kb]) { const k0 = G.sch[d.kb][1], hk = life(t, k0, k0 + 1.4, .25, .5); if (hk > 0) world.unshift(<rect key="hl" x={X(d.kb) - cw * 1.25} y={Y(G.HI)} width={cw * 2.5} height={Y(G.LO) - Y(G.HI)} fill="#ffffff" fillOpacity={.055 * hk} />); }
+  if (G.sch[d.kb]) { const k0 = G.sch[d.kb][1], hk = life(t, k0, k0 + 1.4, .25, .5); if (hk > 0) world.unshift(<rect key="hl" x={X(d.kb) - cw * 1.25} y={Y(G.HI)} width={cw * 2.5} height={Y(G.LO) - Y(G.HI)} fill="#ffffff" fillOpacity={.035 * hk} />); }
   const tm = on("measure");
   if (d.measure && t >= tm) { const m = d.measure, p = ein(t, tm, .7), x0 = X(m.i0), x1 = X(Math.min(m.i1, T.last)), y0 = Y(m.from), y1 = mix(y0, Y(m.to), p), lx = (x0 + x1) / 2;
     world.push(<g key="m" opacity={eo(t, tm, .3)}><rect x={x0} y={Math.min(y0, y1)} width={Math.max(4, x1 - x0)} height={Math.abs(y1 - y0)} fill={C.tv} fillOpacity={.15} /><line x1={lx} x2={lx} y1={y0} y2={y1} stroke={C.tv} strokeWidth={1.5 / cam.s} /></g>); }
@@ -113,7 +124,7 @@ export const Reel = (d) => {
   if (d.trade && t >= Math.max(on("entry"), T.tCross)) { const r = d.trade, b = B[r.iE], [ex, ey0] = mp(X(r.iE), Y(long ? b.l : b.h)), k = eo(t, T.tCross, .45), dy = (1 - k) * (long ? 12 : -12);
     const y = long ? ey0 + 18 + dy : ey0 - 18 + dy, s = long ? 1 : -1; // a clean chevron only: ^ under a buy, v over a sell
     marks.push(<path key="e" opacity={k} d={`M${ex - 10} ${y + 9 * s} L${ex} ${y} L${ex + 10} ${y + 9 * s}`} fill="none" stroke={long ? C.up : C.dn} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />); }
-  for (const sp of specs) { if (t < sp.t0 || (sp.t1 != null && t > sp.t1 + .5)) continue; const [ax, ay] = mp(...sp.anchor), o = life(t, sp.t0, sp.t1 ?? Infinity, .4, .45);
+  for (const sp of specs) { if (sp.cap || t < sp.t0 || (sp.t1 != null && t > sp.t1 + .5)) continue; const [ax, ay] = mp(...sp.anchor), o = life(t, sp.t0, sp.t1 ?? Infinity, .4, .45);
     marks.push(<g key={sp.key} transform={sp.rise ? `translate(0 ${(1 - eo(t, sp.t0, .45)) * 10})` : undefined}>{sp.draw(ax + sp.off[0], ay + sp.off[1], o, hit, t)}</g>); }
 
 
@@ -123,7 +134,6 @@ export const Reel = (d) => {
   const dpA = Math.max(0, Math.min(d.dp, Math.ceil(-Math.log10(step) + .3))), axisA = 1 - .92 * dim * (1 - ein(t, T.out, .5)); // the chart frame never animates in; it is simply there (Kai)
   const edge = (y) => cl((y - L.PT) / 40) * cl((L.PB - y) / 40);
   // captions: ONE fixed line under the chart, cross-faded (the old line eases out while the new one eases in)
-  const caps = beats.filter((b) => b.cap).map((b, j, arr) => { const t1 = j + 1 < arr.length ? arr[j + 1].t : T.dim + .1; return { b, t0: b.t, t1 }; });
   return (
     <AbsoluteFill style={{ background: `radial-gradient(ellipse 80% 45% at 50% 46%, #0d0e12 0%, ${C.bg} 72%)`, fontFamily: SANS }}>
       <svg width={W} height={1920} style={{ position: "absolute", inset: 0 }}>
@@ -143,13 +153,16 @@ export const Reel = (d) => {
             <text x={L.axisX + 40} y={y + 6} fill="#fff" fontSize={17} fontWeight={600} fontFamily={SANS} textAnchor="middle">{fmt(lastB[3], d.dp)}</text></g>; })() : null}
         {live ? <g opacity={chartA}>{marks}{toolCursor}</g> : null}
       </svg>
-      {caps.map(({ b, t0, t1 }, j) => { const o = life(t, j ? t0 + .14 : t0, t1, .32, .18) * (1 - dim); /* the old line is gone before the new one arrives */ if (o <= 0) return null; const k = eo(t, j ? t0 + .14 : t0, .45);
-        const col = b.tone === "up" ? "#22c39b" : b.tone === "dn" ? "#ff5a6e" : C.text, size = Math.min(50, Math.floor(1700 / Math.max(14, b.cap.length)));
-        return <div key={"c" + b.i} style={{ position: "absolute", left: 60, right: 60, top: L.cap, textAlign: "center", whiteSpace: "nowrap", fontSize: size, fontWeight: 700, letterSpacing: -.4, color: col, opacity: o, transform: `translateY(${(1 - k) * 12}px)` }}>{b.cap}</div>; })}
+      {specs.filter((sp) => sp.cap).map((sp) => { const b = sp.cap, o = life(t, sp.t0, sp.t1, .32, .18) * (1 - dim); if (o <= 0) return null; const k = eo(t, sp.t0, .45);
+        const col = b.tone === "up" ? "#22c39b" : b.tone === "dn" ? "#ff5a6e" : C.text;
+        if (sp.fixed) return <div key={sp.key} style={{ position: "absolute", left: 60, right: 60, top: L.cap, textAlign: "center", whiteSpace: "nowrap", fontSize: 44, fontWeight: 700, letterSpacing: -.4, color: col, opacity: o, transform: `translateY(${(1 - k) * 10}px)` }}>{b.cap}</div>;
+        const [ax, ay] = mp(...sp.anchor), x = cl(ax + sp.off[0], L.PL + 4, L.PR - 4 - sp.w), y = cl(ay + sp.off[1], L.PT + 6, L.PB - 6 - sp.h);
+        return <div key={sp.key} style={{ position: "absolute", left: x, top: y, width: sp.w, height: sp.h, display: "flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", fontSize: 40, fontWeight: 700, letterSpacing: -.3, color: col, opacity: o, transform: `translateY(${(1 - k) * 10}px)`,
+          textShadow: "0 0 18px rgba(5,5,6,.95), 0 0 6px rgba(5,5,6,.95), 0 2px 2px rgba(0,0,0,.8)" }}>{b.cap}</div>; })}
       <Title d={d} t={t} o={1 - dim} />
       <div style={{ position: "absolute", top: L.brand, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "center", gap: 12, opacity: (1 - .92 * dim) * END * eo(t, .34, .5) }}>
-        <Img src={staticFile("potion-glyph.png")} style={{ width: 36, height: 36 }} />
-        <span style={{ color: "#fff", fontSize: 27, fontWeight: 800, letterSpacing: 4.5 }}>CRTLAB</span></div>
+        <Img src={staticFile("potion-glyph.png")} style={{ width: 46, height: 46 }} />
+        <span style={{ color: "#fff", fontSize: 35, fontWeight: 800, letterSpacing: 5.5 }}>CRTLAB</span></div>
       <SignOff t={t} T={T} />
     </AbsoluteFill>
   );
@@ -158,9 +171,9 @@ export const Reel = (d) => {
 // the title — the hook. Only the first word is blue. Eases out while the domain types and back in as the click opens the loop.
 const NICE = { XAUUSD: "GOLD", XAGUSD: "SILVER", USOIL: "OIL", NAS100: "NASDAQ", SP500: "S&P 500", US30: "DOW", BTCUSD: "BITCOIN", ETHUSD: "ETHEREUM" };
 function Title({ d, t, o = 1 }) {
-  const [a, b] = d.copy.title, len = (a + (b ? " " + b : "")).length + 1.6, size = Math.min(80, Math.floor(860 / (len * .6)));
+  const [a, b] = d.copy.title, len = (a + (b ? " " + b : "")).length + 1.6, size = Math.min(72, Math.floor(820 / (len * .6)));
   const isPair = a === d.mk || a === NICE[d.mk]; // the pair's name reads in white; its icon carries the colour
-  return <div style={{ position: "absolute", top: L.title + (84 - size) * .5, left: 40, right: 40, textAlign: "center", whiteSpace: "nowrap", fontFamily: SANS, fontSize: size, fontWeight: 750, letterSpacing: -1.6, lineHeight: 1.05, color: C.text, opacity: o, display: "flex", alignItems: "center", justifyContent: "center", gap: size * .28 }}>
+  return <div style={{ position: "absolute", top: L.title + (72 - size) * .5, left: 40, right: 40, textAlign: "center", whiteSpace: "nowrap", fontFamily: SANS, fontSize: size, fontWeight: 750, letterSpacing: -1.6, lineHeight: 1.05, color: C.text, opacity: o, display: "flex", alignItems: "center", justifyContent: "center", gap: size * .28 }}>
     {/* intro: the icon settles in (soft scale), the words rise out of a mask — two different entrances, nothing identical */}
     <Img src={staticFile(`m/${d.mk}.webp`)} style={{ width: size * .92, height: size * .92, opacity: eo(t, .18, .45), transform: `scale(${.82 + .18 * eo(t, .18, .5)})` }} />
     <span style={{ overflow: "hidden", display: "inline-block", paddingBottom: 6 }}><span style={{ display: "inline-block", transform: `translateY(${(1 - eo(t, .04, .55)) * 105}%)` }}>
