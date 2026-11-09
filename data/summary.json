@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-09T01:31:23.749Z",
+ "updated": "2026-11-09T01:35:22.686Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -390,6 +390,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-09T01:35:09.819Z",
+   "job": "health",
+   "ok": false,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-09T01:10:13.000Z",
    "job": "reels",
    "ok": true,
@@ -496,12 +502,6 @@
    "job": "shield",
    "ok": true,
    "text": "Cloudflare blocked 3 attack requests"
-  },
-  {
-   "at": "2026-11-08T22:31:42.577Z",
-   "job": "health",
-   "ok": false,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-08T22:10:42.063Z",
@@ -941,7 +941,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-08T22:31:42.577Z",
+  "at": "2026-11-09T01:35:09.819Z",
   "alerts": [
    "payment-failed"
   ],
@@ -969,12 +969,12 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "20h old · 30.6 MB"
+    "note": "23h old · 30.6 MB"
    },
    {
     "name": "market data fresh",
     "ok": true,
-    "note": "newest candle 6d old"
+    "note": "newest candle 7d old"
    }
   ],
   "db": {
@@ -990,7 +990,7 @@
     ],
     [
      "meter_identities",
-     52
+     53
     ],
     [
      "user_stores",
@@ -1008,28 +1008,28 @@
    "count": 31
   },
   "data": {
-   "newestDays": 6
+   "newestDays": 7
   },
   "weight": {
    "home": {
-    "kb": 2571,
+    "kb": 2572,
     "scripts": 23,
-    "ttfbMs": 124
+    "ttfbMs": 191
    },
    "backtest": {
     "kb": 1360,
     "scripts": 13,
-    "ttfbMs": 133
+    "ttfbMs": 181
    },
    "chart app": {
-    "kb": 2571,
+    "kb": 2572,
     "scripts": 23,
-    "ttfbMs": 277
+    "ttfbMs": 489
    },
    "statistics": {
     "kb": 1210,
     "scripts": 14,
-    "ttfbMs": 132
+    "ttfbMs": 172
    }
   },
   "heavier": []
