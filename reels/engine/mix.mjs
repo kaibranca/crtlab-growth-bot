@@ -3,7 +3,7 @@
 // high-cut so nothing is harsh, and fires on the exact frame its thing happens. Nothing synthesized, nothing for decoration.
 //   candles   — the app tick on EVERY candle close (never skipped); fast runs get softer, not dropped
 //   entry     — the app tick, lower and firmer (same family, dry)
-//   target    — a crisp double app tick, pitched up (dry, no ringing tail)
+//   target    — CRTLAB "three notes" chime (original, TradingView-alert feel), short soft room
 //   typing    — minimal soft keys while crtlab.pro types (4 recordings rotated, slight pitch/level variation)
 //   click     — a warm mouse press + release on the result
 //   music     — if reels/music has tracks (fetched from Mixkit at render time, never committed: public repo): one per reel (picked by story), from 20% in, low under the SFX with a
@@ -29,11 +29,21 @@ export function mix(d) {
   for (let i = 0; i <= T.last; i++) { const s = sch[i]; if (!s) continue; const dur = s[1] - s[0];
     const vol = dur > .5 ? .2 : dur > .09 ? .16 : .1; // the slow key candle is clearest; fast runs are softer, never dropped
     tick(s[1], vol * (.9 + .2 * rnd()), pitch * (.98 + .04 * rnd())); }
+  // ── TP chime: CRTLAB's own "three notes" (TradingView-style alert feel, original): marimba-like C6 E6 G6, 75 ms apart,
+  // mallet partial at 4x that dies fast, gentle exponential decay, and a short soft room (two damped echoes) — no long tail
+  const chime = (t0) => { const notes = [1046.5, 1318.5, 1568], tail = .55;
+    for (const [j, f] of notes.entries()) { const s0 = Math.floor((t0 + j * .075) * SR), n = Math.floor(tail * SR), v = .085 * (1 - j * .08);
+      for (let i = 0; i < n && s0 + i < Ls; i++) { const u = i / SR, att = Math.min(1, u / .003);
+        const x = att * (Math.sin(2 * Math.PI * f * u) * Math.exp(-u * 8) + .28 * Math.sin(2 * Math.PI * f * 3.98 * u) * Math.exp(-u * 32) + .06 * Math.sin(2 * Math.PI * f * 9.9 * u) * Math.exp(-u * 60));
+        for (const [dl, g] of [[0, 1], [.041, .16], [.067, .09]]) { const k = s0 + i + Math.floor(dl * SR); if (k < Ls) { Lc[k] += x * v * g * (dl ? .9 : 1); Rc[k] += x * v * g * (dl ? 1.1 : 1); } } } } };
   // ── entry + target ────────────────────────────────────────────────────────────────────────────────────────────────
   // entry + TP use the SAME family as the candles (Kai: the app tick is perfect; the glass/drop rang = "wet"): dry, branded
   if (d.trade && T.tCross) { tick(T.tCross, .42, pitch * .82); cues.push(T.tCross); }
   const pay = beats.find((b) => b.show?.includes("result") || b.show?.includes("measure"));
-  if (pay) { const tp = d.trade && T.tPay ? T.tPay : pay.t + .4; tick(tp, .4, pitch * 1.22); tick(tp + .075, .34, pitch * 1.42); cues.push(tp); }
+  if (pay) { const tp = d.trade && T.tPay ? T.tPay : pay.t + .4; if (fs.existsSync(new URL("./sfx/tp.f32", import.meta.url))) place(smp("tp"), tp, .38); else chime(tp); /* a TP sound file dropped in as sfx/tp.f32 replaces the double tick */ cues.push(tp); }
+  // ── drawing the position tool: a soft press as the cursor grabs, a release as it lets go ─────────────────────────
+  const tool = beats.find((b) => b.show?.includes("tool"));
+  if (d.trade && tool) { place(smp("click_001"), tool.t, .2); place(smp("click_003"), tool.t + .62, .13); }
   // ── typing: minimal, soft, real keys ──────────────────────────────────────────────────────────────────────────────
   const KEYS = ["click1", "click2", "select_001", "select_002"].map(smp);
   T.keys.forEach(([s], i) => place(KEYS[(i * 3 + (seed & 3)) % 4], s + (rnd() - .5) * .012, .14 * (.8 + .35 * rnd()), .96 + .08 * rnd(), (rnd() - .5) * .3));
@@ -47,7 +57,7 @@ export function mix(d) {
     const raw = execSync(`ffmpeg -v error -i "${f}" -ac 2 -ar ${SR} -f f32le -`, { maxBuffer: 1 << 30 }), M = new Float32Array(raw.buffer, raw.byteOffset, raw.length / 4), frames = M.length / 2;
     const start = Math.floor(frames * .2), need = endN; let rms = 0, cnt = 0;
     for (let i = 0; i < need && start + i < frames; i += 7) { rms += M[(start + i) * 2] ** 2; cnt++; } rms = Math.sqrt(rms / Math.max(1, cnt)) || 1e-4;
-    const g = .075 / rms; // music sits ~-21 dBFS RMS, well under the cues
+    const g = .055 / rms; /* subtle (Kai 11-09) */ // music sits ~-21 dBFS RMS, well under the cues
     for (let i = 0; i < need; i++) { const j = start + (i % Math.max(1, frames - start)), u = i / SR;
       let duck = 1; for (const c of cues) { const dt = u - c; if (dt > -.06 && dt < .7) duck = Math.min(duck, 1 - .35 * (dt < 0 ? (dt + .06) / .06 : 1 - dt / .7)); }
       const fade = Math.min(1, u / .5, (need / SR - u) / .6);

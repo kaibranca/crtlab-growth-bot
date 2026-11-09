@@ -5,7 +5,7 @@
 export const FPS = 60, W = 1080, H = 1920;
 export const SAFE = { top: 250, bottom: 1500, right: 960, rightFrom: 900, left: 64 };
 // v6 (11-09): taller chart, no time axis, one fixed caption line under the chart, symbol top-left like TradingView
-export const L = { title: 318, sym: 438, PT: 492, PB: 1262, PL: 64, PR: 846, axisX: 860, cap: 1300, brand: 1440 };
+export const L = { title: 330, sym: 438, PT: 512, PB: 1262, PL: 64, PR: 846, axisX: 860, cap: 1300, brand: 1440 };
 const cl = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 export const EIO = (t) => { t = cl(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
 export const OUT = (t) => 1 - Math.pow(1 - cl(t), 4);

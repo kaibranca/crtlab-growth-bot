@@ -41,8 +41,8 @@ export const Reel = (d) => {
     if (d.trade && isFinite(on("tool"))) { const tr = d.trade, tT = `TP ${fmt(tr.target, d.dp)}`, tS = `SL ${fmt(tr.stop, d.dp)}`, wT = labW(tT, 17), wS = labW(tS, 17), h = 27;
       S.push({ key: "tgt", t0: on("tool") + .35, t1: T.tPay + .6, anchor: [X(tr.iE) - BW / 2, Y(tr.target)], w: wT, h, cands: (s) => [[4, long ? 4 : -h - 4], [4, long ? -h - 4 : 4], [(X(T.last) + BW * .7 - X(tr.iE) + BW / 2) * s - wT - 4, long ? 4 : -h - 4]], draw: (x, y, o) => <Label x={x} y={y} text={tT} bg={C.up} size={17} o={o} /> });
       S.push({ key: "stop", t0: on("tool") + .35, t1: T.tPay + .6, anchor: [X(tr.iE) - BW / 2, Y(tr.stop)], w: wS, h, cands: (s) => [[4, long ? -h - 4 : 4], [4, long ? 4 : -h - 4], [(X(T.last) + BW * .7 - X(tr.iE) + BW / 2) * s - wS - 4, long ? -h - 4 : 4]], draw: (x, y, o) => <Label x={x} y={y} text={tS} bg={C.dn} size={17} o={o} /> }); }
-    if (d.trade && isFinite(on("result"))) { const w = labW("+2R", 22), h = 34, a = Math.max(on("result"), T.tPay ?? 0);
-      S.push({ key: "res", t0: a + .05, anchor: [X(d.trade.iX), Y(d.trade.target)], w, h, rise: true, cands: (s) => [[BW * s + 8, -h / 2], [BW * s * .8 + 6, long ? -h - 8 : 8], [-w - BW * s, long ? -h - 8 : 8]], draw: (x, y, o) => <Label x={x} y={y} text="+2R" bg={C.up} size={22} o={o} /> }); }
+    if (d.trade && isFinite(on("result"))) { const w = labW("+2.0R", 22), h = 34, a = Math.max(on("result"), T.tPay ?? 0);
+      S.push({ key: "res", t0: a + .05, anchor: [X(d.trade.iX), Y(d.trade.target)], w, h, rise: true, cands: (s) => [[BW * s + 8, -h / 2], [BW * s * .8 + 6, long ? -h - 8 : 8], [-w - BW * s, long ? -h - 8 : 8]], draw: (x, y, o, _h, tn) => <Label x={x} y={y} text={`+${(2 * eo(tn, a, .55)).toFixed(1)}R`} bg={C.up} size={22} o={o} /> }); }
     if (d.measure && isFinite(on("measure"))) { const m = d.measure, up = m.to > m.from, pct = Math.abs((m.to - m.from) / m.from * 100).toFixed(2), txt = `${up ? "+" : "−"}${d.copy.mv} (${pct}%)`, w = labW(txt, 18), h = 28;
       S.push({ key: "meas", t0: on("measure") + .5, anchor: [(X(m.i0) + X(Math.min(m.i1, T.last))) / 2, Y(m.to)], w, h, cands: () => [[-w / 2, up ? -h - 10 : 10], [-w / 2, up ? 10 : -h - 10], [-w - 20, -h / 2], [20, -h / 2]], draw: (x, y, o) => <Label x={x} y={y} text={txt} bg={C.tv} size={18} o={o} /> }); }
     const done = [];
@@ -86,6 +86,19 @@ export const Reel = (d) => {
     world.push(<g key="p" opacity={vk}><rect x={x0} y={Math.min(ye, yt)} width={x1 - x0} height={Math.abs(yt - ye)} fill={C.up} fillOpacity={.2 + .08 * paid} />
       <rect x={x0} y={Math.min(ye, ys)} width={x1 - x0} height={Math.abs(ys - ye)} fill={C.dn} fillOpacity={.2 * (1 - .45 * paid)} />
       <line x1={x0} x2={x1} y1={ye} y2={ye} stroke="#d1d4dc" strokeOpacity={.8} strokeWidth={1.2 / cam.s} /></g>); }
+  // a cursor drags the position tool out, like drawing it on TradingView: appears at the entry, presses, drags, releases, fades
+  let toolCursor = null;
+  // the TradingView way: a long/short position icon appears, the cursor clicks it, glides to the entry, drags the box out
+  if (d.trade && t >= tt0 - 1.05 && t < tt0 + 1.1) { const r = d.trade, k = eo(t, tt0, .6), x0 = X(r.iE) - BW / 2, x1 = mix(x0 + BW, X(T.last) + BW * .7, k), [dx, dy] = mp(x1, Y(r.entry));
+    const chip = [L.PL + 36, L.PT + 30], chipA = eo(t, tt0 - 1.05, .3) * (1 - ein(t, tt0 + .1, .3)), chipOn = t >= tt0 - .62 ? 1 : 0;
+    const travel = ein(t, tt0 - .55, .5), sx = mix(chip[0] + 6, dx, travel), sy = mix(chip[1] + 8, dy, travel);
+    const a = eo(t, tt0 - .95, .25) * (1 - ein(t, tt0 + .72, .35)), press = (t >= tt0 - .66 && t < tt0 - .56) || (t >= tt0 && t < tt0 + .62) ? 1 : 0, s = r.side === "long";
+    toolCursor = <g key="tc">
+      <g opacity={chipA} transform={`translate(${chip[0] - 24} ${chip[1] - 24})`}><rect width={48} height={48} rx={10} fill={chipOn ? "#2a2e39" : "#1b1d24"} />
+        <rect x={13} y={s ? 12 : 24} width={22} height={12} rx={1.5} fill={C.up} /><rect x={13} y={s ? 24 : 12} width={22} height={12} rx={1.5} fill={C.dn} /></g>
+      <g opacity={a} transform={`translate(${sx - 5} ${sy - 3}) scale(${1.5 - .12 * press})`}><path d="M5 3 L5 19 L9.5 15 L12.5 21.5 L15 20.4 L12.1 14 L18 14 Z" fill="#fff" stroke="#0b0b0e" strokeWidth={1.2} strokeLinejoin="round" /></g></g>; }
+  // the key candle (entry tap / sweep / break) gets a brief soft selection band behind it once it prints
+  if (G.sch[d.kb]) { const k0 = G.sch[d.kb][1], hk = life(t, k0, k0 + 1.4, .25, .5); if (hk > 0) world.unshift(<rect key="hl" x={X(d.kb) - cw * 1.25} y={Y(G.HI)} width={cw * 2.5} height={Y(G.LO) - Y(G.HI)} fill="#ffffff" fillOpacity={.055 * hk} />); }
   const tm = on("measure");
   if (d.measure && t >= tm) { const m = d.measure, p = ein(t, tm, .7), x0 = X(m.i0), x1 = X(Math.min(m.i1, T.last)), y0 = Y(m.from), y1 = mix(y0, Y(m.to), p), lx = (x0 + x1) / 2;
     world.push(<g key="m" opacity={eo(t, tm, .3)}><rect x={x0} y={Math.min(y0, y1)} width={Math.max(4, x1 - x0)} height={Math.abs(y1 - y0)} fill={C.tv} fillOpacity={.15} /><line x1={lx} x2={lx} y1={y0} y2={y1} stroke={C.tv} strokeWidth={1.5 / cam.s} /></g>); }
@@ -101,21 +114,22 @@ export const Reel = (d) => {
     const y = long ? ey0 + 18 + dy : ey0 - 18 + dy, s = long ? 1 : -1; // a clean chevron only: ^ under a buy, v over a sell
     marks.push(<path key="e" opacity={k} d={`M${ex - 10} ${y + 9 * s} L${ex} ${y} L${ex + 10} ${y + 9 * s}`} fill="none" stroke={long ? C.up : C.dn} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />); }
   for (const sp of specs) { if (t < sp.t0 || (sp.t1 != null && t > sp.t1 + .5)) continue; const [ax, ay] = mp(...sp.anchor), o = life(t, sp.t0, sp.t1 ?? Infinity, .4, .45);
-    marks.push(<g key={sp.key} transform={sp.rise ? `translate(0 ${(1 - eo(t, sp.t0, .45)) * 10})` : undefined}>{sp.draw(ax + sp.off[0], ay + sp.off[1], o, hit)}</g>); }
+    marks.push(<g key={sp.key} transform={sp.rise ? `translate(0 ${(1 - eo(t, sp.t0, .45)) * 10})` : undefined}>{sp.draw(ax + sp.off[0], ay + sp.off[1], o, hit, t)}</g>); }
 
 
   // price axis follows the camera with one fixed step; labels fade at the edges instead of popping
   const span = (L.PB - L.PT) / 2 / cam.s, pv = (y) => G.HI - (y - L.PT) / (L.PB - L.PT) * (G.HI - G.LO), vTop = pv(cam.cy - span), vBot = pv(cam.cy + span), step = ticks(G.LO, G.HI);
   const tk = []; for (let v = Math.floor(vBot / step) * step; v <= vTop + step; v += step) tk.push(+v.toFixed(10));
-  const dpA = Math.max(0, Math.min(d.dp, Math.ceil(-Math.log10(step) + .3))), axisA = (1 - .92 * dim) * END;
+  const dpA = Math.max(0, Math.min(d.dp, Math.ceil(-Math.log10(step) + .3))), axisA = 1 - .92 * dim * (1 - ein(t, T.out, .5)); // the chart frame never animates in; it is simply there (Kai)
   const edge = (y) => cl((y - L.PT) / 40) * cl((L.PB - y) / 40);
   // captions: ONE fixed line under the chart, cross-faded (the old line eases out while the new one eases in)
   const caps = beats.filter((b) => b.cap).map((b, j, arr) => { const t1 = j + 1 < arr.length ? arr[j + 1].t : T.dim + .1; return { b, t0: b.t, t1 }; });
   return (
-    <AbsoluteFill style={{ background: C.bg, fontFamily: SANS }}>
+    <AbsoluteFill style={{ background: `radial-gradient(ellipse 80% 45% at 50% 46%, #0d0e12 0%, ${C.bg} 72%)`, fontFamily: SANS }}>
       <svg width={W} height={1920} style={{ position: "absolute", inset: 0 }}>
+        <g opacity={.6 * axisA}>{[1, 2, 3, 4, 5].map((j) => { const x = L.PL + (L.PR - L.PL) * j / 6; return <line key={"vg" + j} x1={x} x2={x} y1={L.PT} y2={L.PB} stroke="#fff" strokeOpacity={.03} />; })}</g>
         <defs><clipPath id="plot"><rect x={L.PL - 16} y={L.PT - 8} width={L.PR - L.PL + 32} height={L.PB - L.PT + 16} /></clipPath></defs>
-        {live ? <g opacity={axisA * IN(2)} transform={`translate(0 ${RISE(2)})`}>
+        {live ? <g opacity={axisA}>
           {tk.map((v) => { const y = PCY + (Y(v) - cam.cy) * cam.s, e = edge(y); if (e <= 0) return null;
             return <g key={v} opacity={e}><line x1={L.PL} x2={L.PR} y1={y} y2={y} stroke={C.grid} strokeOpacity={.045} /><text x={L.axisX} y={y + 6} fill={C.axis} fontSize={18} fontFamily={SANS}>{fmt(v, dpA)}</text></g>; })}
         </g> : null}
@@ -127,17 +141,13 @@ export const Reel = (d) => {
         {lastB && live ? (() => { const col = lastB[3] >= lastB[0] ? C.up : C.dn, y = cl(PCY + (Y(lastB[3]) - cam.cy) * cam.s, L.PT + 6, L.PB - 6);
           return <g opacity={chartA * eo(t, .05, .4)}><line x1={L.PL} x2={L.PR} y1={y} y2={y} stroke={col} strokeOpacity={.6} strokeWidth={1.2} strokeDasharray="2 3" /><rect x={L.axisX - 8} y={y - 15} width={96} height={30} rx={3} fill={col} />
             <text x={L.axisX + 40} y={y + 6} fill="#fff" fontSize={17} fontWeight={600} fontFamily={SANS} textAnchor="middle">{fmt(lastB[3], d.dp)}</text></g>; })() : null}
-        {live ? <g opacity={chartA}>{marks}</g> : null}
+        {live ? <g opacity={chartA}>{marks}{toolCursor}</g> : null}
       </svg>
       {caps.map(({ b, t0, t1 }, j) => { const o = life(t, j ? t0 + .14 : t0, t1, .32, .18) * (1 - dim); /* the old line is gone before the new one arrives */ if (o <= 0) return null; const k = eo(t, j ? t0 + .14 : t0, .45);
         const col = b.tone === "up" ? "#22c39b" : b.tone === "dn" ? "#ff5a6e" : C.text, size = Math.min(50, Math.floor(1700 / Math.max(14, b.cap.length)));
         return <div key={"c" + b.i} style={{ position: "absolute", left: 60, right: 60, top: L.cap, textAlign: "center", whiteSpace: "nowrap", fontSize: size, fontWeight: 700, letterSpacing: -.4, color: col, opacity: o, transform: `translateY(${(1 - k) * 12}px)` }}>{b.cap}</div>; })}
-      <Title d={d} o={IN(0) * (1 - dim)} y={RISE(0)} />
-      <div style={{ position: "absolute", top: L.sym, left: L.PL, display: "flex", alignItems: "center", gap: 10, opacity: axisA * IN(1), transform: `translateY(${RISE(1)}px)` }}>
-        <Img src={staticFile(`m/${d.mk}.webp`)} style={{ width: 30, height: 30 }} />
-        <span style={{ color: C.text, fontSize: 25, fontWeight: 600 }}>{d.mk}</span>
-        <span style={{ color: C.dim, fontSize: 23, fontWeight: 500 }}>{d.tf}</span></div>
-      <div style={{ position: "absolute", top: L.brand, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "center", gap: 12, opacity: axisA * IN(3), transform: `translateY(${RISE(3)}px)` }}>
+      <Title d={d} t={t} o={1 - dim} />
+      <div style={{ position: "absolute", top: L.brand, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "center", gap: 12, opacity: (1 - .92 * dim) * END * eo(t, .34, .5) }}>
         <Img src={staticFile("potion-glyph.png")} style={{ width: 36, height: 36 }} />
         <span style={{ color: "#fff", fontSize: 27, fontWeight: 800, letterSpacing: 4.5 }}>CRTLAB</span></div>
       <SignOff t={t} T={T} />
@@ -146,10 +156,15 @@ export const Reel = (d) => {
 };
 
 // the title — the hook. Only the first word is blue. Eases out while the domain types and back in as the click opens the loop.
-function Title({ d, o = 1, y = 0 }) {
-  const [a, b] = d.copy.title, len = (a + (b ? " " + b : "")).length, size = Math.min(84, Math.floor(900 / (len * .6)));
-  return <div style={{ position: "absolute", top: L.title + (84 - size) * .5, left: 40, right: 40, textAlign: "center", whiteSpace: "nowrap", fontFamily: SANS, fontSize: size, fontWeight: 750, letterSpacing: -1.6, lineHeight: 1.05, color: C.text, opacity: o, transform: `translateY(${y}px)` }}>
-    <span style={{ color: C.acc }}>{a}</span>{b ? <span> {b}</span> : null}</div>;
+const NICE = { XAUUSD: "GOLD", XAGUSD: "SILVER", USOIL: "OIL", NAS100: "NASDAQ", SP500: "S&P 500", US30: "DOW", BTCUSD: "BITCOIN", ETHUSD: "ETHEREUM" };
+function Title({ d, t, o = 1 }) {
+  const [a, b] = d.copy.title, len = (a + (b ? " " + b : "")).length + 1.6, size = Math.min(80, Math.floor(860 / (len * .6)));
+  const isPair = a === d.mk || a === NICE[d.mk]; // the pair's name reads in white; its icon carries the colour
+  return <div style={{ position: "absolute", top: L.title + (84 - size) * .5, left: 40, right: 40, textAlign: "center", whiteSpace: "nowrap", fontFamily: SANS, fontSize: size, fontWeight: 750, letterSpacing: -1.6, lineHeight: 1.05, color: C.text, opacity: o, display: "flex", alignItems: "center", justifyContent: "center", gap: size * .28 }}>
+    {/* intro: the icon settles in (soft scale), the words rise out of a mask — two different entrances, nothing identical */}
+    <Img src={staticFile(`m/${d.mk}.webp`)} style={{ width: size * .92, height: size * .92, opacity: eo(t, .18, .45), transform: `scale(${.82 + .18 * eo(t, .18, .5)})` }} />
+    <span style={{ overflow: "hidden", display: "inline-block", paddingBottom: 6 }}><span style={{ display: "inline-block", transform: `translateY(${(1 - eo(t, .04, .55)) * 105}%)` }}>
+      <span style={{ color: isPair ? C.text : C.acc }}>{a}</span>{b ? <span> {b}</span> : null}</span></span></div>;
 }
 // the end: chart dims, crtlab.pro types into a search bar, the CRTLAB result settles under it, a cursor glides in and clicks —
 // and the click opens straight into frame 0 (the empty chart under the title): the loop IS the click. Neutral colours only.
