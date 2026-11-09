@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-09T22:18:05.496Z",
+ "updated": "2026-11-09T22:34:04.803Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -394,6 +394,18 @@
  },
  "activity": [
   {
+   "at": "2026-11-09T22:33:55.200Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
+   "at": "2026-11-09T22:21:24.169Z",
+   "job": "reels",
+   "ok": true,
+   "text": "posted \"POV ASIA BROKE\" (GBPUSD) to Instagram"
+  },
+  {
    "at": "2026-11-09T22:18:05.429Z",
    "job": "indexnow",
    "ok": true,
@@ -440,12 +452,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "912 crawler visits · OAI-SearchBot 864 · ChatGPT-User 22 · Amazonbot 12 · Bingbot 4"
-  },
-  {
-   "at": "2026-11-09T21:41:47.621Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-09T21:18:02.155Z",
@@ -866,12 +872,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "84 crawler visits · OAI-SearchBot 43 · Amazonbot 14 · Bingbot 11 · ChatGPT-User 8"
-  },
-  {
-   "at": "2026-11-09T11:02:15.765Z",
-   "job": "watchdog",
-   "ok": true,
-   "text": "18/18 checks pass · avg 165 ms"
   }
  ],
  "seo": {
@@ -981,13 +981,13 @@
   ]
  },
  "health": {
-  "at": "2026-11-09T21:41:47.621Z",
+  "at": "2026-11-09T22:33:55.200Z",
   "alerts": [],
   "checks": [
    {
     "name": "database size",
     "ok": true,
-    "note": "270 MB"
+    "note": "272 MB"
    },
    {
     "name": "signups flowing",
@@ -1007,7 +1007,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "19h old · 31.6 MB"
+    "note": "20h old · 31.6 MB"
    },
    {
     "name": "market data fresh",
@@ -1016,7 +1016,7 @@
    }
   ],
   "db": {
-   "mb": 270,
+   "mb": 272,
    "tables": [
     [
      "user_events",
@@ -1032,7 +1032,7 @@
     ],
     [
      "user_stores",
-     38
+     40
     ],
     [
      "guest_presence",
@@ -1052,22 +1052,22 @@
    "home": {
     "kb": 2589,
     "scripts": 23,
-    "ttfbMs": 206
+    "ttfbMs": 131
    },
    "backtest": {
     "kb": 1360,
     "scripts": 13,
-    "ttfbMs": 211
+    "ttfbMs": 151
    },
    "chart app": {
     "kb": 2589,
     "scripts": 23,
-    "ttfbMs": 381
+    "ttfbMs": 324
    },
    "statistics": {
     "kb": 1210,
     "scripts": 14,
-    "ttfbMs": 177
+    "ttfbMs": 141
    }
   },
   "heavier": []
@@ -1232,19 +1232,13 @@
  "reels": {
   "live": true,
   "posted7d": {
-   "ig": 4,
+   "ig": 5,
    "fb": 4
   },
   "views7d": 0,
   "site7d": 0,
   "signups7d": 0,
   "next": [
-   {
-    "plat": "ig",
-    "at": "2026-11-09T22:18:00.000Z",
-    "title": "POV ASIA BROKE",
-    "mk": "GBPUSD"
-   },
    {
     "plat": "fb",
     "at": "2026-11-09T23:15:00.000Z",
@@ -1265,6 +1259,15 @@
    }
   ],
   "last": [
+   {
+    "at": "2026-11-09T22:21:24.169Z",
+    "plat": "ig",
+    "title": "POV ASIA BROKE",
+    "mk": "GBPUSD",
+    "views": null,
+    "site": null,
+    "link": "https://www.instagram.com/reel/DfiZCfsAeMW/"
+   },
    {
     "at": "2026-11-09T19:43:12.356Z",
     "plat": "fb",
@@ -1309,15 +1312,6 @@
     "views": null,
     "site": null,
     "link": "https://www.facebook.com/reel/1680767437000212/"
-   },
-   {
-    "at": "2026-11-09T01:01:41.000Z",
-    "plat": "ig",
-    "title": "GBPUSD FVG ENTRY",
-    "mk": "GBPUSD",
-    "views": null,
-    "site": null,
-    "link": "https://www.instagram.com/reel/DfgGl6MCNSo/"
    }
   ]
  },
