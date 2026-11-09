@@ -152,7 +152,7 @@ export const Reel = (d) => {
   // price axis follows the camera with one fixed step; labels fade at the edges instead of popping
   const span = (L.PB - L.PT) / 2 / cam.s, pv = (y) => G.HI - (y - L.PT) / (L.PB - L.PT) * (G.HI - G.LO), vTop = pv(cam.cy - span), vBot = pv(cam.cy + span), step = ticks(G.LO, G.HI);
   const tk = []; for (let v = Math.floor(vBot / step) * step; v <= vTop + step; v += step) tk.push(+v.toFixed(10));
-  const dpA = Math.max(0, Math.min(d.dp, Math.ceil(-Math.log10(step) + .3))), axisA = 1 - .92 * dim * (1 - ein(t, T.out, .5)); // the chart frame never animates in; it is simply there (Kai)
+  const dpA = Math.max(0, Math.min(d.dp, Math.ceil(-Math.log10(step) + .3))), axisA = 1; // the chart frame never animates in OR out; it is simply there (Kai). 11-09 Kai: "price tag dims then undims, doesn't loop perfectly" → the axis no longer dims under the sign-off, so nothing brightens back at the seam
   const edge = (y) => cl((y - L.PT) / 40) * cl((L.PB - y) / 40);
   // captions: ONE fixed line under the chart, cross-faded (the old line eases out while the new one eases in)
   return (
@@ -160,10 +160,11 @@ export const Reel = (d) => {
       <svg width={W} height={1920} style={{ position: "absolute", inset: 0 }}>
         <g opacity={.6 * axisA}>{[1, 2, 3, 4, 5].map((j) => { const x = L.PL + (L.PR - L.PL) * j / 6; return <line key={"vg" + j} x1={x} x2={x} y1={L.PT} y2={L.PB} stroke="#fff" strokeOpacity={.03} />; })}</g>
         <defs><clipPath id="plot"><rect x={L.PL - 16} y={L.PT - 8} width={L.PR - L.PL + 32} height={L.PB - L.PT + 16} /></clipPath></defs>
-        {live ? <g opacity={axisA}>
+        {/* the price axis is ALWAYS drawn (11-09): it used to vanish on the last frame and pop back on frame 0 = a visible loop jump */}
+        <g opacity={axisA}>
           {tk.map((v) => { const y = PCY + (Y(v) - cam.cy) * cam.s, e = edge(y); if (e <= 0) return null;
             return <g key={v} opacity={e}><line x1={L.PL} x2={L.PR} y1={y} y2={y} stroke={C.grid} strokeOpacity={.045} /><text x={L.axisX} y={y + 6} fill={C.axis} fontSize={18} fontFamily={SANS}>{fmt(v, dpA)}</text></g>; })}
-        </g> : null}
+        </g>
         {live ? <g opacity={chartA} clipPath="url(#plot)"><g transform={tr}>
           {world}
           {drawn.map(([i, b]) => { const col = b[3] >= b[0] ? C.up : C.dn, y0 = Y(Math.max(b[0], b[3])), y1 = Y(Math.min(b[0], b[3]));
