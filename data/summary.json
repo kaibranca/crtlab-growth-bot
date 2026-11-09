@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-09T13:31:56.043Z",
+ "updated": "2026-11-09T13:39:49.352Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -393,6 +393,24 @@
  },
  "activity": [
   {
+   "at": "2026-11-09T13:39:49.275Z",
+   "job": "links",
+   "ok": true,
+   "text": "2656 sitemap pages checked · 0 broken"
+  },
+  {
+   "at": "2026-11-09T13:36:28.378Z",
+   "job": "bing",
+   "ok": true,
+   "text": "Bing: 0 impressions · 0 clicks (28d) · 40 buyer-intent searches · 0 titles rewritten"
+  },
+  {
+   "at": "2026-11-09T13:36:26.821Z",
+   "job": "search-console",
+   "ok": true,
+   "text": "332 impressions · 8 clicks (28d) · 0 titles rewritten · 1 gaps found"
+  },
+  {
    "at": "2026-11-09T13:31:47.598Z",
    "job": "health",
    "ok": false,
@@ -553,12 +571,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "118 crawler visits · OAI-SearchBot 48 · Meta 26 · ChatGPT-User 16 · Amazonbot 14"
-  },
-  {
-   "at": "2026-11-09T05:08:36.536Z",
-   "job": "links",
-   "ok": true,
-   "text": "2656 sitemap pages checked · 0 broken"
   },
   {
    "at": "2026-11-09T05:04:10.362Z",
@@ -859,18 +871,6 @@
    "job": "watchdog",
    "ok": true,
    "text": "18/18 checks pass · avg 151 ms"
-  },
-  {
-   "at": "2026-11-08T17:01:20.753Z",
-   "job": "ai-crawl",
-   "ok": true,
-   "text": "215 crawler visits · OAI-SearchBot 179 · ChatGPT-User 12 · Bingbot 8 · Googlebot 6"
-  },
-  {
-   "at": "2026-11-08T16:03:56.323Z",
-   "job": "indexnow",
-   "ok": true,
-   "text": "submitted 4 changed pages · HTTP 200"
   }
  ],
  "seo": {
@@ -895,6 +895,15 @@
    },
    {
     "at": "2026-11-09T05:04:10.362Z",
+    "pages": 0,
+    "impr": 0,
+    "clicks": 0,
+    "buyerQueries": 40,
+    "changes": 0,
+    "gaps": 0
+   },
+   {
+    "at": "2026-11-09T13:36:28.378Z",
     "pages": 0,
     "impr": 0,
     "clicks": 0,
@@ -943,6 +952,15 @@
    },
    {
     "at": "2026-11-09T05:04:09.280Z",
+    "prop": "sc-domain:crtlab.pro",
+    "pages": 25,
+    "impr": 332,
+    "clicks": 8,
+    "changes": 0,
+    "gaps": 1
+   },
+   {
+    "at": "2026-11-09T13:36:26.821Z",
     "prop": "sc-domain:crtlab.pro",
     "pages": 25,
     "impr": 332,
@@ -1056,7 +1074,7 @@
   "heavier": []
  },
  "links": {
-  "at": "2026-11-09T05:08:36.536Z",
+  "at": "2026-11-09T13:39:49.275Z",
   "checked": 2656,
   "broken": []
  },
