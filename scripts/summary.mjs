@@ -31,6 +31,22 @@ for (const r of rr) act.push({ at: r.at, job: "recap", ok: !!r.latest, text: r.l
 for (const x of ix) act.push({ at: x.at, job: "indexnow", ok: !/HTTP [45]/.test(x.status), text: x.submitted ? `submitted ${x.submitted} changed pages · ${x.status}` : "no changed pages to submit" });
 if (health) act.push({ at: health.at, job: "health", ok: !health.alerts.length, text: health.checks.map((c) => `${c.ok ? "✓" : "✗"} ${c.name}`).join(" · ") });
 if (links) act.push({ at: links.at, job: "links", ok: !links.broken.length, text: `${links.checked} sitemap pages checked · ${links.broken.length} broken` });
+// REELS + SHIELD (11-09): counts only (public repo) — the Growth board's "Reels" and "Shield" rows
+const RD = "data/reels", jr = (f) => (fs.existsSync(`${RD}/${f}`) ? JSON.parse(fs.readFileSync(`${RD}/${f}`, "utf8")) : null);
+const rlog = readLines(`${RD}/log.jsonl`).filter((x) => x.id), rmet = jr("metrics.json") || {}, rlive = !!(jr("live.json") || {}).live;
+const plans = fs.existsSync(RD) ? fs.readdirSync(RD).filter((f) => /^plan-\d{4}-\d\d-\d\d\.json$/.test(f)).map((f) => jr(f)) : [];
+const doneK = new Set(readLines(`${RD}/log.jsonl`).map((x) => `${x.plan}|${x.k}|${x.plat}`)), upcoming = [];
+for (const p of plans) for (const r of p.reels || []) for (const plat of ["ig", "fb"]) if (!doneK.has(`${p.date}|${r.k}|${plat}`) && Date.parse(r[plat].at) > Date.now() - 3 * 3.6e6) upcoming.push({ plat, at: r[plat].at, title: r.title, mk: r.mk });
+upcoming.sort((a, b) => a.at.localeCompare(b.at));
+const views = (x) => { const m = rmet[x.id]; return m ? (x.plat === "ig" ? m.views : m.plays) ?? null : null; };
+const r7 = rlog.filter((x) => Date.parse(x.postedAt) >= since(7));
+const reels = { live: rlive, posted7d: { ig: r7.filter((x) => x.plat === "ig").length, fb: r7.filter((x) => x.plat === "fb").length },
+  views7d: r7.reduce((s, x) => s + (views(x) || 0), 0), site7d: +r7.reduce((s, x) => s + (rmet[x.id]?.site || 0), 0).toFixed(1), signups7d: +r7.reduce((s, x) => s + (rmet[x.id]?.signups || 0), 0).toFixed(1),
+  next: upcoming.slice(0, 4), last: rlog.slice(-6).reverse().map((x) => ({ at: x.postedAt, plat: x.plat, title: x.title, mk: x.mk, views: views(x), site: rmet[x.id]?.site ?? null, link: x.permalink })) };
+for (const x of rlog.slice(-30)) act.push({ at: x.postedAt, job: "reels", ok: true, text: `posted "${x.title}" (${x.mk}) to ${x.plat === "ig" ? "Instagram" : "Facebook"}` });
+const sh = fs.existsSync("data/shield.json") ? JSON.parse(fs.readFileSync("data/shield.json", "utf8")) : null;
+const shield = sh && { at: sh.at, lastHour: sh.lastHour, blocked24h: (sh.history || []).filter((h) => Date.parse(h.at) >= since(1)).reduce((s, h) => s + h.blocked, 0), banned7d: (sh.history || []).filter((h) => Date.parse(h.at) >= since(7)).reduce((s, h) => s + h.banned, 0) };
+if (sh) for (const h of (sh.history || []).slice(-24)) if (h.blocked || h.banned) act.push({ at: h.at, job: "shield", ok: true, text: `Cloudflare blocked ${h.blocked} attack request${h.blocked === 1 ? "" : "s"}${h.banned ? ` · banned ${h.banned} IP${h.banned === 1 ? "" : "s"} for 7 days` : ""}` });
 act.sort((x, y) => (x.at < y.at ? 1 : -1));
 fs.writeFileSync("data/summary.json", JSON.stringify({
   updated: new Date().toISOString(),
@@ -42,5 +58,6 @@ fs.writeFileSync("data/summary.json", JSON.stringify({
   health: health && { at: health.at, alerts: health.alerts, checks: health.checks, db: health.db, backup: health.backup, data: health.data, weight: health.weight, heavier: health.heavier },
   links: links && { at: links.at, checked: links.checked, broken: links.broken.slice(0, 20) },
   indexnow: ix.slice(-30).map((x) => ({ at: x.at, submitted: x.submitted, status: x.status })),
+  reels, shield,
 }, null, 1));
 console.log("summary written");
