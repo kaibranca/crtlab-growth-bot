@@ -1,6 +1,6 @@
 name: health
 on:
-  schedule: [{ cron: "41 */3 * * *" }]
+  # was schedule 41 */3 * * *: now started by the Cloudflare cron worker (cron-worker/worker.js). GitHub's own schedule drops runs and doubled them (11-09).
   workflow_dispatch:
 concurrency: { group: data, cancel-in-progress: false }
 permissions: { contents: write }

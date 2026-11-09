@@ -2,7 +2,7 @@ name: reels
 # DAILY 08:40 UTC (after the 08:00 recap): learn from the numbers → plan today's 2 reels → render → QA gate → artifact for the poster.
 # macOS runner (free on public repos) so the type renders in the same system font as the approved reels. Nothing touches Railway.
 on:
-  schedule: [{ cron: "40 8 * * *" }]
+  # was schedule 40 8 * * *: now started by the Cloudflare cron worker (cron-worker/worker.js). GitHub's own schedule drops runs and doubled them (11-09).
   workflow_dispatch:
     inputs:
       date: { description: "plan date (blank = today UTC)", default: "" }

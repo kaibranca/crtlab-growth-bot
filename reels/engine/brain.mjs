@@ -22,7 +22,7 @@ export const ARMS = {
   // the music bed is learned too (Mixkit ids, fetched per run) — including no music at all, so the data decides
   track: ["281", "293", "414", "296", "455", "375", "367", "1102", "none"],
   // posting hours (UTC). 09–23 + 00–02: London morning through the US evening. The plan picks 2 a day per platform, ≥3h apart.
-  hour: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2],
+  hour: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23], // 00–02 UTC REMOVED (Kai 11-09): a "late" 2nd reel landed on the NEXT calendar day, so days got 1 or 3 posts; both now fall inside the same UTC day, ≥10h apart (9–13 + 19–23)
 };
 export const music = () => { const d = new URL("../public/music/", import.meta.url); return ["none", ...(fs.existsSync(d) ? fs.readdirSync(d).filter((f) => /\.(mp3|wav|m4a)$/i.test(f)) : [])]; };
 // the 7-day cycle: slot 1 each day is the day's model (a structured week); slot 2 is the brain's pick. A cycle model that keeps

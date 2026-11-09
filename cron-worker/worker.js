@@ -13,6 +13,7 @@ const JOBS = [
   ["reels.yml", 40, 8, "*"],             // 08:40 plan + render today's reels
   ["restore.yml", 17, 5, 0],             // Sun 05:17 backup restore test
   ["weekly.yml", 0, 5, 1],               // Mon 05:00 weekly SEO
+  ["daily-data.yml", 30, 6, "*", "kaibranca/crtlab-backtester"], // 06:30 daily market data (token needs crtlab-backtester, Actions RW)
 ];
 const hit = (rule, v) => rule === "*" || (typeof rule === "number" ? rule === v : rule.startsWith("*/") ? v % +rule.slice(2) === 0 : rule.includes("-") ? v >= +rule.split("-")[0] && v <= +rule.split("-")[1] : +rule === v);
 
@@ -20,8 +21,8 @@ export default {
   async scheduled(event, env, ctx) {
     const d = new Date(event.scheduledTime), m = d.getUTCMinutes(), h = d.getUTCHours(), w = d.getUTCDay();
     const due = JOBS.filter(([, mm, hh, ww]) => hit(mm, m) && hit(hh, h) && hit(ww, w));
-    for (const [wf] of due) {
-      const r = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/${wf}/dispatches`, {
+    for (const [wf, , , , repo = REPO] of due) {
+      const r = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/${wf}/dispatches`, {
         method: "POST",
         headers: { Authorization: `Bearer ${env.GH_TOKEN}`, Accept: "application/vnd.github+json", "User-Agent": "crtlab-cron", "X-GitHub-Api-Version": "2022-11-28" },
         body: JSON.stringify({ ref: "main" }),

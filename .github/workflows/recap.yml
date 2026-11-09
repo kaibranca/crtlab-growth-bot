@@ -1,7 +1,7 @@
 name: recap
 # 08:00 UTC Tue–Sat: the New York day that closed the evening before is complete in Databento by then (~5¢ a day)
 on:
-  schedule: [{ cron: "0 8 * * 2-6" }]
+  # was schedule 0 8 * * 2-6: now started by the Cloudflare cron worker (cron-worker/worker.js). GitHub's own schedule drops runs and doubled them (11-09).
   workflow_dispatch:
 concurrency: { group: data, cancel-in-progress: false }
 permissions: { contents: write }

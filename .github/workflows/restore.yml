@@ -1,6 +1,6 @@
 name: restore-test
 on:
-  schedule: [{ cron: "17 5 * * 0" }]
+  # was schedule 17 5 * * 0: now started by the Cloudflare cron worker (cron-worker/worker.js). GitHub's own schedule drops runs and doubled them (11-09).
   workflow_dispatch:
 concurrency: { group: data, cancel-in-progress: false }
 permissions: { contents: write }

@@ -1,0 +1,8 @@
+name = "crtlab-cron"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+workers_dev = false
+preview_urls = false
+no_bundle = true
+[triggers]
+crons = ["* * * * *"]
