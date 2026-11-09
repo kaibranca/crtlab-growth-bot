@@ -26,9 +26,11 @@ async function instagram() {
   for (let i = 0; ; i++) { const s = await get(`${G}/${c.id}`, { fields: "status_code,status" }); if (s.status_code === "FINISHED") break;
     if (s.status_code === "ERROR" || i > 60) throw new Error("ig processing: " + (s.status || "timeout")); await wait(5000); }
   if (DRY) return { dry: true, container: c.id };
-  const m = await retry(() => post(`${G}/${IG}/media_publish`, { creation_id: c.id }));
-  // verify: it exists, it's a reel, it's on our account
-  const info = await get(`${G}/${m.id}`, { fields: "permalink,media_product_type,owner,username" });
+  // publish ONCE (never retried: a retry after a slow success is how a reel gets posted twice), then log it immediately
+  const m = await post(`${G}/${IG}/media_publish`, { creation_id: c.id });
+  published(m.id);
+  // verify: it exists, it's a reel, it's on our account (a failed check never un-logs a real post)
+  const info = await retry(() => get(`${G}/${m.id}`, { fields: "permalink,media_product_type,owner,username" })).catch(() => ({}));
   if (info.username && info.username !== "crtlab.pro") throw new Error("posted to unexpected account " + info.username);
   return { id: m.id, permalink: info.permalink, type: info.media_product_type };
 }
@@ -36,20 +38,26 @@ async function facebook() {
   const s = await retry(() => post(`${G}/${PAGE}/video_reels`, { upload_phase: "start" }));
   await retry(() => upload(`https://rupload.facebook.com/video-upload/${V}/${s.video_id}`));
   if (DRY) return { dry: true, video: s.video_id };
-  await retry(() => post(`${G}/${PAGE}/video_reels`, { upload_phase: "finish", video_id: s.video_id, video_state: "PUBLISHED", description: R.fb.caption }));
+  await post(`${G}/${PAGE}/video_reels`, { upload_phase: "finish", video_id: s.video_id, video_state: "PUBLISHED", description: R.fb.caption });
+  published(s.video_id); // logged the moment Facebook accepts it, even if processing is still running
   let st = null; for (let i = 0; i < 24; i++) { st = await get(`${G}/${s.video_id}`, { fields: "status,permalink_url,from" }).catch(() => null);
     if (st?.status?.video_status === "ready" || st?.status?.publishing_phase?.status === "complete") break; if (st?.status?.video_status === "error") throw new Error("fb processing error"); await wait(5000); }
   if (st?.from?.id && st.from.id !== PAGE) throw new Error("posted to unexpected page " + st.from.id);
   return { id: s.video_id, permalink: st?.permalink_url ? `https://www.facebook.com${st.permalink_url}` : null, status: st?.status?.video_status };
 }
 
+// IDEMPOTENCY: the moment a platform accepts the post, it is written to the log, so no later failure can cause a re-post
+let early = false;
+const published = (id) => { if (DRY || early) return; early = true; fs.appendFileSync(`${DIR}/log.jsonl`, JSON.stringify({ ...entry, id, postedAt: new Date().toISOString(), early: true }) + "\n"); };
 const t0 = Date.now(), entry = { plan: D, k: +K, plat: PLAT, story: R.story, date: D, mk: R.mk, model: R.model, title: R.title, fam: R.fam, angle: R.angle, pace: R.pace,
   tagset: R.tagset, music: R.music, hour: R[PLAT].hour, cycle: R.cycle, dur: JSON.parse(fs.readFileSync(new URL("../out/qa.json", import.meta.url), "utf8"))[K]?.info?.dur };
 try {
   Object.assign(entry, await (PLAT === "ig" ? instagram() : facebook()));
   entry.postedAt = new Date().toISOString(); entry.secs = Math.round((Date.now() - t0) / 1000);
   console.log("OK", PLAT, JSON.stringify(entry));
-  if (!DRY) fs.appendFileSync(`${DIR}/log.jsonl`, JSON.stringify(entry) + "\n");
+  if (!DRY) { // replace the early line with the full one (permalink, status)
+    const lines = fs.readFileSync(`${DIR}/log.jsonl`, "utf8").trim().split("\n").filter((l) => { try { const x = JSON.parse(l); return !(x.early && x.plan === D && x.k === +K && x.plat === PLAT); } catch { return true; } });
+    lines.push(JSON.stringify(entry)); fs.writeFileSync(`${DIR}/log.jsonl`, lines.join("\n") + "\n"); }
 } catch (e) {
   console.error("POST FAILED", PLAT, String(e));
   fs.appendFileSync(`${DIR}/alerts.jsonl`, JSON.stringify({ at: new Date().toISOString(), kind: "post", plat: PLAT, plan: D, k: +K, err: String(e).slice(0, 400) }) + "\n");
