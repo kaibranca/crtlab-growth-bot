@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-09T05:03:53.686Z",
+ "updated": "2026-11-09T05:08:36.615Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -392,22 +392,22 @@
  },
  "activity": [
   {
-   "at": "2026-11-09T05:03:43.376Z",
-   "job": "watchdog",
+   "at": "2026-11-09T05:08:36.536Z",
+   "job": "links",
    "ok": true,
-   "text": "18/18 checks pass · avg 135 ms"
+   "text": "2656 sitemap pages checked · 0 broken"
   },
   {
-   "at": "2026-11-09T05:03:40.909Z",
-   "job": "shield",
+   "at": "2026-11-09T05:04:10.362Z",
+   "job": "bing",
    "ok": true,
-   "text": "Cloudflare blocked 3 attack requests"
+   "text": "Bing: 0 impressions · 0 clicks (28d) · 40 buyer-intent searches · 0 titles rewritten"
   },
   {
-   "at": "2026-11-09T05:03:39.352Z",
-   "job": "ai-crawl",
+   "at": "2026-11-09T05:04:09.280Z",
+   "job": "search-console",
    "ok": true,
-   "text": "122 crawler visits · OAI-SearchBot 80 · Amazonbot 22 · ChatGPT-User 9 · Bingbot 3"
+   "text": "332 impressions · 8 clicks (28d) · 0 titles rewritten · 1 gaps found"
   },
   {
    "at": "2026-11-09T04:32:03.577Z",
@@ -891,6 +891,15 @@
     "buyerQueries": 0,
     "changes": 0,
     "gaps": 0
+   },
+   {
+    "at": "2026-11-09T05:04:10.362Z",
+    "pages": 0,
+    "impr": 0,
+    "clicks": 0,
+    "buyerQueries": 40,
+    "changes": 0,
+    "gaps": 0
    }
   ],
   "weekly": [
@@ -930,6 +939,15 @@
     "clicks": 3,
     "changes": 0,
     "gaps": 1
+   },
+   {
+    "at": "2026-11-09T05:04:09.280Z",
+    "prop": "sc-domain:crtlab.pro",
+    "pages": 25,
+    "impr": 332,
+    "clicks": 8,
+    "changes": 0,
+    "gaps": 1
    }
   ],
   "changes": [],
@@ -937,8 +955,8 @@
   "gaps": [
    {
     "q": "back date testing software",
-    "impr": 33,
-    "pos": 87.42424242424242
+    "impr": 25,
+    "pos": 88.28
    }
   ]
  },
@@ -1035,8 +1053,8 @@
   "heavier": []
  },
  "links": {
-  "at": "2026-11-02T13:05:32.858Z",
-  "checked": 623,
+  "at": "2026-11-09T05:08:36.536Z",
+  "checked": 2656,
   "broken": []
  },
  "indexnow": [
