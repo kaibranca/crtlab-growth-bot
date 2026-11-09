@@ -35,7 +35,8 @@ jobs:
       - run: brew list ffmpeg >/dev/null 2>&1 || brew install ffmpeg
       - run: cd reels && (npm ci --no-audit --no-fund || npm install --no-audit --no-fund)
       - name: learn
-        run: node reels/engine/learn.mjs || true
+        run: npm i pg@8 --no-save --no-package-lock --silent && node reels/engine/learn.mjs || true
+        env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}" }
       - name: weekly report (Sundays)
         if: github.event.schedule && (github.event_name == 'schedule')
         run: '[ "$(date -u +%u)" = "7" ] && node reels/engine/report.mjs || true'

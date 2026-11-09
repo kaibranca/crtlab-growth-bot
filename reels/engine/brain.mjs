@@ -17,6 +17,8 @@ export const ARMS = {
   angle: ["rule", "why", "mistake", "risk"],          // the lesson angle (engine/lesson.mjs); each model offers a subset
   pace: ["short", "long"],
   tagset: ["smc", "day", "fx", "pa", "bt"],
+  // caption details, learned PER PLATFORM (IG and FB audiences answer differently): question style, save line, closing line
+  q: [0, 1, 2], save: [0, 1, 2], close: [0, 1, 2],
   // posting hours (UTC). 09–23 + 00–02: London morning through the US evening. The plan picks 2 a day per platform, ≥3h apart.
   hour: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2],
 };
@@ -52,10 +54,12 @@ export function cycleModel(wd, B = brain()) {
 }
 export const fallback = (m) => FALLBACK[m];
 
-// hours for one platform: 2 slots ≥ 3h apart, by Thompson draw (with 15% exploration on each)
+// hours for one platform: 2 slots ≥ 10h apart, by Thompson draw (with 15% exploration on each)
 export function hours(plat, r, B = brain()) {
-  const a = pick("hour", ARMS.hour, r, { plat, B });
-  const ok = ARMS.hour.filter((h) => { const d = Math.abs(((h - a + 24) % 24)); return Math.min(d, 24 - d) >= 3; });
+  const gap = (h, a) => { const d = Math.abs(((h - a + 24) % 24)); return Math.min(d, 24 - d); };
+  const pairable = ARMS.hour.filter((h) => ARMS.hour.some((x) => gap(x, h) >= 10)); // only first slots that HAVE a partner ≥10h away
+  const a = pick("hour", pairable, r, { plat, B });
+  const ok = ARMS.hour.filter((h) => { const d = Math.abs(((h - a + 24) % 24)); return Math.min(d, 24 - d) >= 10; }); /* Kai 11-09: the 2 daily reels ≥ 10h apart so each gets its full run */
   const b = pick("hour", ok, r, { plat, B });
   const ord = (h) => (h < 9 ? h + 24 : h); // 00–02 belong to the end of the posting day
   return [a, b].sort((x, y) => ord(x) - ord(y));
@@ -80,7 +84,9 @@ export function reward(m, dur, plat, hist) {
   if (views == null) return null;
   const watch = plat === "ig" ? (m.avg_watch_ms || 0) / 1000 : (m.avg_watch_ms || 0) / 1000, wr = Math.min(1.2, watch / Math.max(1, dur));
   const eng = ((m.shares || 0) * 3 + (m.saves || 0) * 2.5 + (m.comments || 0) * 1.5 + (m.likes || 0) * .5 + (m.follows || 0) * 5) / reach;
-  const raw = { lv: Math.log1p(views), wr, eng };
-  const z = (k) => { const a = hist.map((h) => h[k]).filter((x) => x != null); if (a.length < 3) return 0; const mu = a.reduce((s, x) => s + x, 0) / a.length, sd = Math.sqrt(a.reduce((s, x) => s + (x - mu) ** 2, 0) / a.length) || 1; return (raw[k] - mu) / sd; };
-  return { raw, r: .45 * z("lv") + .3 * z("wr") + .25 * z("eng") };
+  const site = m.site != null ? Math.log1p((m.site || 0) + 4 * (m.signups || 0)) : null; // visitors to crtlab.pro (+ signups, weighted)
+  const raw = { lv: Math.log1p(views), wr, eng, site };
+  const z = (k) => { if (raw[k] == null) return 0; const a = hist.map((h) => h[k]).filter((x) => x != null); if (a.length < 3) return 0; const mu = a.reduce((s, x) => s + x, 0) / a.length, sd = Math.sqrt(a.reduce((s, x) => s + (x - mu) ** 2, 0) / a.length) || 1; return (raw[k] - mu) / sd; };
+  // views reach people, watch-through + engagement make the algorithm push it, site visits are the point
+  return { raw, r: .35 * z("lv") + .25 * z("wr") + .2 * z("eng") + .2 * z("site") };
 }

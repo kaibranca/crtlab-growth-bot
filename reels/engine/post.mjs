@@ -50,7 +50,7 @@ async function facebook() {
 let early = false;
 const published = (id) => { if (DRY || early) return; early = true; fs.appendFileSync(`${DIR}/log.jsonl`, JSON.stringify({ ...entry, id, postedAt: new Date().toISOString(), early: true }) + "\n"); };
 const t0 = Date.now(), entry = { plan: D, k: +K, plat: PLAT, story: R.story, date: D, mk: R.mk, model: R.model, title: R.title, fam: R.fam, angle: R.angle, pace: R.pace,
-  tagset: R.tagset, music: R.music, hour: R[PLAT].hour, cycle: R.cycle, dur: JSON.parse(fs.readFileSync(new URL("../out/qa.json", import.meta.url), "utf8"))[K]?.info?.dur };
+  tagset: R.tagset, music: R.music, hour: R[PLAT].hour, ...(R[PLAT].arms || {}), cycle: R.cycle, dur: JSON.parse(fs.readFileSync(new URL("../out/qa.json", import.meta.url), "utf8"))[K]?.info?.dur };
 try {
   Object.assign(entry, await (PLAT === "ig" ? instagram() : facebook()));
   entry.postedAt = new Date().toISOString(); entry.secs = Math.round((Date.now() - t0) / 1000);

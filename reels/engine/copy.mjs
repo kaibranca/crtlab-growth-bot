@@ -81,15 +81,18 @@ const Q = {
   news: ["Do you trade the release or wait it out?", "Would you have faded the spike?", "Are you flat into news or in a position?"],
   nyopen: ["Do you trade the opening range?", "How do you tell a real break from a fakeout?", "Do you trade the first 15 minutes or wait?"],
 };
-export function captions(s, cp, tagset, les) {
+export function captions(s, cp, tagset, les, ch = {}) {
   const h = hash(s.id + "c"); s.wdLong = DAYN[s.wd];
   const d = new Date(s.date + "T12:00:00Z"), day = `${DAYN[s.wd]} ${d.getUTCDate()} ${MON[d.getUTCMonth()]}`;
   const mv = s.measure ? money(s, s.measure.to - s.measure.from) : null, res = s.trade ? "2R to target." : mv ? `${mv} move.` : "";
   const hook = `${nice(s.mk)} ${LONG[s.model](s)}, ${day}. ${res}`.trim();
   const rule = typeof RULE[s.model] === "function" ? RULE[s.model](s) : RULE[s.model];
   const pool = TAGPOOLS[tagset] || TAGPOOLS.smc, igTags = [MTAG[s.mk] || "#trading", CTAG[s.model], ...pool, "#crtlab"].slice(0, 5);
-  const q = Q[s.model][h % 3], save = ["Save it for your next backtest.", "Save it for later.", "Save it for your next session."][h % 3];
-  const ig = `${hook}\n\n${EXPLAIN[s.model](s)}\n\n${rule}\n\n${q}\n${save}\n\nReal 1-minute data. Replay this day bar by bar at crtlab.pro (link in bio).\n\n${igTags.join(" ")}`;
-  const fb = `${hook}\n\n${EXPLAIN[s.model](s)} Real 1-minute data, New York time.\n\n${rule}\n\n${q}\n\nReplay this day bar by bar, free: https://crtlab.pro\n\n${[MTAG[s.mk] || "#trading", CTAG[s.model], "#trading"].join(" ")}`;
+  const ci = ch.ig || {}, cf = ch.fb || {}, q = Q[s.model][ci.q ?? h % 3], qf = Q[s.model][cf.q ?? h % 3];
+  const save = ["Save it for your next backtest.", "Save it for later.", "Save it for your next session."][ci.save ?? h % 3];
+  const closeIG = ["Real 1-minute data. Replay this day bar by bar at crtlab.pro (link in bio).", "Replay this exact day bar by bar at crtlab.pro, free (link in bio).", "Backtest it yourself on real data at crtlab.pro (link in bio)."][ci.close ?? 0];
+  const closeFB = ["Replay this day bar by bar, free: https://crtlab.pro", "Backtest this exact day on real data: https://crtlab.pro", "Try the replay yourself, free: https://crtlab.pro"][cf.close ?? 0];
+  const ig = `${hook}\n\n${EXPLAIN[s.model](s)}\n\n${rule}\n\n${q}\n${save}\n\n${closeIG}\n\n${igTags.join(" ")}`;
+  const fb = `${hook}\n\n${EXPLAIN[s.model](s)} Real 1-minute data, New York time.\n\n${rule}\n\n${qf}\n\n${closeFB}\n\n${[MTAG[s.mk] || "#trading", CTAG[s.model], "#trading"].join(" ")}`;
   return { ig, fb, tags: igTags };
 }

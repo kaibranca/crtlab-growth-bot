@@ -62,7 +62,7 @@ export function camera(G, t) {
     let hi = Math.max(f[2], f[3]), lo = Math.min(f[2], f[3]);
     for (let i = f[0]; i <= f[1]; i++) { hi = Math.max(hi, G.B[i].h); lo = Math.min(lo, G.B[i].l); }
     const pad = (hi - lo) * .14, x0 = G.X(f[0]) - G.BW * 1.2, x1 = G.X(f[1]) + G.BW * 1.6, y0 = G.Y(hi + pad), y1 = G.Y(lo - pad);
-    const s = cl(Math.min((L.PR - L.PL) / ((x1 - x0) * 1.25), (L.PB - L.PT) / ((y1 - y0) * 1.1)), 1, 1.7);
+    const s = cl(Math.min((L.PR - L.PL) / ((x1 - x0) * 1.25), (L.PB - L.PT) / ((y1 - y0) * 1.1)) * .95, 1, 1.7); // 5% margin: never touch the edge
     // keep the view inside the chart: no empty margins past the first/last candle or the price range
     const hw = (L.PR - L.PL) / 2 / s, hh = (L.PB - L.PT) / 2 / s;
     return { s, cx: cl((x0 + x1) / 2, L.PL + hw, L.PR - hw), cy: cl((y0 + y1) / 2, L.PT + hh, L.PB - hh) };

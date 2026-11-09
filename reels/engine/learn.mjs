@@ -37,6 +37,20 @@ if (TOK) {
     else if (d.data_access_expires_at && d.data_access_expires_at * 1000 - Date.now() < 21 * 864e5) alerts.push(["token-soon", `Meta data access expires ${new Date(d.data_access_expires_at * 1000).toDateString()} — re-login in Graph API Explorer to renew.`]); }
 }
 
+// TRAFFIC TO CRTLAB: real site visitors (and signups) arriving from Instagram / Facebook in the 48h after each reel, from our own
+// analytics DB. A visitor is split across the reels of that platform that were live in its window. This is what the engine
+// ultimately optimises for: not just views, people who come to crtlab.pro.
+if (process.env.ANALYTICS_DB_URL) { try {
+  const pg = (await import("pg")).default, db = new pg.Client({ connectionString: process.env.ANALYTICS_DB_URL, ssl: { rejectUnauthorized: false } }); await db.connect();
+  const rows = (await db.query(`SELECT created_at, converted_at, lower(coalesce(source,'') || ' ' || coalesce(utm_source,'') || ' ' || coalesce(referrer,'')) s FROM guest_presence
+    WHERE created_at > now() - interval '35 days' AND (coalesce(source,'') || coalesce(utm_source,'') || coalesce(referrer,'')) ~* '(instagram|facebook|fb\\.|l\\.instagram)'`)).rows; await db.end();
+  for (const plat of ["ig", "fb"]) { const re = plat === "ig" ? /instagram/ : /facebook|fb\./, ps = log.filter((x) => x.plat === plat && x.id && x.postedAt);
+    for (const x of ps) if (M[x.id]) { M[x.id].site = 0; M[x.id].signups = 0; }
+    for (const v of rows) { if (!re.test(v.s)) continue; const t = new Date(v.created_at).getTime(), live = ps.filter((x) => { const p = Date.parse(x.postedAt); return t >= p && t < p + 48 * 3.6e6; });
+      for (const x of live) if (M[x.id]) { M[x.id].site += 1 / live.length; if (v.converted_at) M[x.id].signups += 1 / live.length; } } }
+  save("metrics.json", M); console.log("site attribution:", rows.length, "visitors from IG/FB in 35d");
+} catch (e) { console.log("site attribution skipped:", String(e).slice(0, 160)); } }
+
 // rebuild the brain: rewards only from posts ≥ 2 days old (numbers have settled)
 const B = { ig: {}, fb: {}, at: new Date().toISOString(), n: { ig: 0, fb: 0 }, hist: {} };
 for (const plat of ["ig", "fb"]) {
