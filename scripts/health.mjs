@@ -14,7 +14,7 @@ const alerts = []; // [key, text] — key dedupes the email, text is what Kai re
 const check = (name, ok, note) => out.checks.push({ name, ok, note });
 
 // ── 1. DATABASE: size vs the 500 MB volume (pg_database_size is ~60% of the volume; WAL + overhead is the rest) ────────
-const DB_WARN_MB = 290; // ≈ 85% of the volume at today's overhead ratio (215 MB db ↔ 363 MB volume, 11-01)
+const DB_WARN_MB = 1300; // ≈ 75% of the 2 GB volume (11-09: db 254 MB ↔ volume 385 MB, ~130 MB WAL/system overhead). Email well before it fills
 let db;
 try {
   db = new pg.Client({ connectionString: process.env.ANALYTICS_DB_URL, ssl: { rejectUnauthorized: false } });
