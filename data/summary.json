@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-09T13:04:33.338Z",
+ "updated": "2026-11-09T13:31:56.043Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -393,6 +393,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-09T13:31:47.598Z",
+   "job": "health",
+   "ok": false,
+   "text": "✓ database size · ✓ signups flowing · ✗ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-09T13:04:20.322Z",
    "job": "watchdog",
    "ok": true,
@@ -439,12 +445,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "357 crawler visits · OAI-SearchBot 255 · Amazonbot 37 · Meta 23 · ChatGPT-User 22"
-  },
-  {
-   "at": "2026-11-09T10:31:48.993Z",
-   "job": "health",
-   "ok": false,
-   "text": "✓ database size · ✓ signups flowing · ✗ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-09T10:02:46.460Z",
@@ -962,7 +962,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-09T10:31:48.993Z",
+  "at": "2026-11-09T13:31:47.598Z",
   "alerts": [
    "guest-drop"
   ],
@@ -990,7 +990,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "7h old · 31.6 MB"
+    "note": "10h old · 31.6 MB"
    },
    {
     "name": "market data fresh",
@@ -1015,7 +1015,7 @@
     ],
     [
      "user_stores",
-     39
+     38
     ],
     [
      "guest_presence",
@@ -1035,22 +1035,22 @@
    "home": {
     "kb": 2572,
     "scripts": 23,
-    "ttfbMs": 159
+    "ttfbMs": 352
    },
    "backtest": {
     "kb": 1360,
     "scripts": 13,
-    "ttfbMs": 137
+    "ttfbMs": 164
    },
    "chart app": {
     "kb": 2572,
     "scripts": 23,
-    "ttfbMs": 284
+    "ttfbMs": 453
    },
    "statistics": {
     "kb": 1210,
     "scripts": 14,
-    "ttfbMs": 143
+    "ttfbMs": 137
    }
   },
   "heavier": []
