@@ -1,161 +1,161 @@
 {
- "updated": "2026-11-09T12:03:46.420Z",
+ "updated": "2026-11-09T13:04:33.338Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
   "up30d": 100,
   "last": {
-   "at": "2026-11-09T12:03:34.838Z",
+   "at": "2026-11-09T13:04:20.322Z",
    "ok": true,
    "results": [
     {
      "name": "home",
      "path": "/",
      "status": 200,
-     "ms": 351,
+     "ms": 354,
      "ok": true
     },
     {
      "name": "backtest page",
      "path": "/backtest",
      "status": 200,
-     "ms": 218,
+     "ms": 197,
      "ok": true
     },
     {
      "name": "pricing",
      "path": "/pricing",
      "status": 200,
-     "ms": 148,
+     "ms": 198,
      "ok": true
     },
     {
      "name": "chart app",
      "path": "/backtester",
      "status": 200,
-     "ms": 207,
+     "ms": 227,
      "ok": true
     },
     {
      "name": "statistics",
      "path": "/statistics/nas100",
      "status": 200,
-     "ms": 185,
+     "ms": 205,
      "ok": true
     },
     {
      "name": "calculator",
      "path": "/tools/position-size-calculator",
      "status": 200,
-     "ms": 227,
+     "ms": 189,
      "ok": true
     },
     {
      "name": "candles API",
      "path": "/api/candles?pair=nas100&tf=1hour&limit=50&v=q8",
      "status": 200,
-     "ms": 309,
+     "ms": 214,
      "ok": true
     },
     {
      "name": "llms.txt",
      "path": "/llms.txt",
      "status": 200,
-     "ms": 292,
+     "ms": 197,
      "ok": true
     },
     {
      "name": "robots.txt",
      "path": "/robots.txt",
      "status": 200,
-     "ms": 361,
+     "ms": 189,
      "ok": true
     },
     {
      "name": "sitemap",
      "path": "/sitemap.xml",
      "status": 200,
-     "ms": 365,
+     "ms": 170,
      "ok": true
     },
     {
      "name": "AI: GPTBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 188,
+     "ms": 176,
      "ok": true
     },
     {
      "name": "AI: OAI-SearchBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 226,
+     "ms": 190,
      "ok": true
     },
     {
      "name": "AI: ChatGPT-User",
      "path": "/backtest",
      "status": 200,
-     "ms": 240,
+     "ms": 202,
      "ok": true
     },
     {
      "name": "AI: ClaudeBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 224,
+     "ms": 206,
      "ok": true
     },
     {
      "name": "AI: PerplexityBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 207,
+     "ms": 244,
      "ok": true
     },
     {
      "name": "AI: Googlebot",
      "path": "/backtest",
      "status": 200,
-     "ms": 228,
+     "ms": 213,
      "ok": true
     },
     {
      "name": "AI: bingbot",
      "path": "/backtest",
      "status": 200,
-     "ms": 239,
+     "ms": 180,
      "ok": true
     },
     {
      "name": "AI: Applebot",
      "path": "/backtest",
      "status": 200,
-     "ms": 220,
+     "ms": 182,
      "ok": true
     }
    ]
   },
   "incidents": [],
   "speed": {
-   "home": 351,
-   "backtest page": 218,
-   "pricing": 148,
-   "chart app": 207,
-   "statistics": 185,
-   "calculator": 227,
-   "candles API": 309,
-   "llms.txt": 292,
-   "robots.txt": 361,
-   "sitemap": 365,
-   "AI: GPTBot": 188,
-   "AI: OAI-SearchBot": 226,
-   "AI: ChatGPT-User": 240,
-   "AI: ClaudeBot": 224,
-   "AI: PerplexityBot": 207,
-   "AI: Googlebot": 228,
-   "AI: bingbot": 239,
-   "AI: Applebot": 220
+   "home": 354,
+   "backtest page": 197,
+   "pricing": 198,
+   "chart app": 227,
+   "statistics": 205,
+   "calculator": 189,
+   "candles API": 214,
+   "llms.txt": 197,
+   "robots.txt": 189,
+   "sitemap": 170,
+   "AI: GPTBot": 176,
+   "AI: OAI-SearchBot": 190,
+   "AI: ChatGPT-User": 202,
+   "AI: ClaudeBot": 206,
+   "AI: PerplexityBot": 244,
+   "AI: Googlebot": 213,
+   "AI: bingbot": 180,
+   "AI: Applebot": 182
   }
  },
  "aicrawl": {
@@ -294,16 +294,16 @@
     "DuckAssistBot": 1
    },
    "2026-11-09": {
-    "GPTBot": 13,
-    "OAI-SearchBot": 1701,
-    "ChatGPT-User": 149,
-    "ClaudeBot": 13,
-    "PerplexityBot": 47,
-    "Googlebot": 34,
-    "Bingbot": 90,
-    "Applebot": 13,
-    "Amazonbot": 195,
-    "Meta": 135,
+    "GPTBot": 14,
+    "OAI-SearchBot": 1819,
+    "ChatGPT-User": 164,
+    "ClaudeBot": 14,
+    "PerplexityBot": 52,
+    "Googlebot": 36,
+    "Bingbot": 102,
+    "Applebot": 14,
+    "Amazonbot": 211,
+    "Meta": 136,
     "Claude-User": 3,
     "DuckDuckBot": 4
    }
@@ -315,35 +315,35 @@
    ],
    [
     "/backtest",
-    2713
+    2716
    ],
    [
     "/economic-calendar",
-    1199
+    1203
    ],
    [
     "/pricing",
-    1132
+    1122
    ],
    [
     "/tools",
-    953
+    944
    ],
    [
     "/features",
-    791
+    785
    ],
    [
     "/news",
-    764
+    740
    ],
    [
     "/blog",
-    459
+    445
    ],
    [
     "/partnerships",
-    444
+    430
    ],
    [
     "/recap",
@@ -383,15 +383,27 @@
    ],
    [
     "/backtest-gold",
-    114
+    117
    ],
    [
-    "/tools/risk-reward-calculator",
-    111
+    "/help",
+    113
    ]
   ]
  },
  "activity": [
+  {
+   "at": "2026-11-09T13:04:20.322Z",
+   "job": "watchdog",
+   "ok": true,
+   "text": "18/18 checks pass · avg 207 ms"
+  },
+  {
+   "at": "2026-11-09T13:04:14.494Z",
+   "job": "ai-crawl",
+   "ok": true,
+   "text": "172 crawler visits · OAI-SearchBot 118 · Amazonbot 16 · ChatGPT-User 15 · Bingbot 12"
+  },
   {
    "at": "2026-11-09T12:03:34.838Z",
    "job": "watchdog",
@@ -859,18 +871,6 @@
    "job": "indexnow",
    "ok": true,
    "text": "submitted 4 changed pages · HTTP 200"
-  },
-  {
-   "at": "2026-11-08T16:03:44.864Z",
-   "job": "watchdog",
-   "ok": true,
-   "text": "18/18 checks pass · avg 146 ms"
-  },
-  {
-   "at": "2026-11-08T16:03:41.732Z",
-   "job": "ai-crawl",
-   "ok": true,
-   "text": "3 crawler visits · ChatGPT-User 1 · Bingbot 1 · Claude-User 1"
   }
  ],
  "seo": {
@@ -1287,10 +1287,10 @@
   ]
  },
  "shield": {
-  "at": "2026-11-09T12:03:30.349Z",
+  "at": "2026-11-09T13:04:16.537Z",
   "lastHour": {
-   "blocked": 1,
-   "ips": 1,
+   "blocked": 0,
+   "ips": 0,
    "banned": 0,
    "unbanned": 0,
    "listSize": 4,
