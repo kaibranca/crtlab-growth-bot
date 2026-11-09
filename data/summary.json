@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-09T04:04:13.556Z",
+ "updated": "2026-11-09T04:32:13.527Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -391,6 +391,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-09T04:32:03.577Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-09T04:04:02.734Z",
    "job": "watchdog",
    "ok": true,
@@ -443,12 +449,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "8 crawler visits · Bingbot 4 · ChatGPT-User 2 · Meta 1 · Googlebot 1"
-  },
-  {
-   "at": "2026-11-09T01:35:09.819Z",
-   "job": "health",
-   "ok": false,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-09T01:10:13.000Z",
@@ -942,10 +942,8 @@
   ]
  },
  "health": {
-  "at": "2026-11-09T01:35:09.819Z",
-  "alerts": [
-   "payment-failed"
-  ],
+  "at": "2026-11-09T04:32:03.577Z",
+  "alerts": [],
   "checks": [
    {
     "name": "database size",
@@ -964,13 +962,13 @@
    },
    {
     "name": "payments",
-    "ok": false,
-    "note": "failed payment"
+    "ok": true,
+    "note": "ok"
    },
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "23h old · 30.6 MB"
+    "note": "1h old · 31.6 MB"
    },
    {
     "name": "market data fresh",
@@ -1004,8 +1002,8 @@
    ]
   },
   "backup": {
-   "at": "2026-11-08T03:01:27.544Z",
-   "mb": 30.6,
+   "at": "2026-11-09T03:02:34.350Z",
+   "mb": 31.6,
    "count": 31
   },
   "data": {
@@ -1015,22 +1013,22 @@
    "home": {
     "kb": 2572,
     "scripts": 23,
-    "ttfbMs": 191
+    "ttfbMs": 241
    },
    "backtest": {
     "kb": 1360,
     "scripts": 13,
-    "ttfbMs": 181
+    "ttfbMs": 249
    },
    "chart app": {
     "kb": 2572,
     "scripts": 23,
-    "ttfbMs": 489
+    "ttfbMs": 479
    },
    "statistics": {
     "kb": 1210,
     "scripts": 14,
-    "ttfbMs": 172
+    "ttfbMs": 215
    }
   },
   "heavier": []

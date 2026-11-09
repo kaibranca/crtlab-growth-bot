@@ -1,5 +1,5 @@
 {
- "at": "2026-11-09T01:35:09.819Z",
+ "at": "2026-11-09T04:32:03.577Z",
  "checks": [
   {
    "name": "database size",
@@ -18,13 +18,13 @@
   },
   {
    "name": "payments",
-   "ok": false,
-   "note": "failed payment"
+   "ok": true,
+   "note": "ok"
   },
   {
    "name": "nightly backup",
    "ok": true,
-   "note": "23h old · 30.6 MB"
+   "note": "1h old · 31.6 MB"
   },
   {
    "name": "market data fresh",
@@ -58,8 +58,8 @@
   ]
  },
  "backup": {
-  "at": "2026-11-08T03:01:27.544Z",
-  "mb": 30.6,
+  "at": "2026-11-09T03:02:34.350Z",
+  "mb": 31.6,
   "count": 31
  },
  "data": {
@@ -69,27 +69,24 @@
   "home": {
    "kb": 2572,
    "scripts": 23,
-   "ttfbMs": 191
+   "ttfbMs": 241
   },
   "backtest": {
    "kb": 1360,
    "scripts": 13,
-   "ttfbMs": 181
+   "ttfbMs": 249
   },
   "chart app": {
    "kb": 2572,
    "scripts": 23,
-   "ttfbMs": 489
+   "ttfbMs": 479
   },
   "statistics": {
    "kb": 1210,
    "scripts": 14,
-   "ttfbMs": 172
+   "ttfbMs": 215
   }
  },
  "heavier": [],
- "alerts": [
-  "payment-failed"
- ],
- "emailed": 200
+ "alerts": []
 }
