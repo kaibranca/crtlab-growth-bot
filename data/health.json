@@ -1,10 +1,10 @@
 {
- "at": "2026-11-09T07:32:23.669Z",
+ "at": "2026-11-09T10:31:48.993Z",
  "checks": [
   {
    "name": "database size",
    "ok": true,
-   "note": "267 MB"
+   "note": "268 MB"
   },
   {
    "name": "signups flowing",
@@ -13,8 +13,8 @@
   },
   {
    "name": "visitors vs last week",
-   "ok": true,
-   "note": "ok"
+   "ok": false,
+   "note": "down >50%"
   },
   {
    "name": "payments",
@@ -24,7 +24,7 @@
   {
    "name": "nightly backup",
    "ok": true,
-   "note": "4h old · 31.6 MB"
+   "note": "7h old · 31.6 MB"
   },
   {
    "name": "market data fresh",
@@ -33,7 +33,7 @@
   }
  ],
  "db": {
-  "mb": 267,
+  "mb": 268,
   "tables": [
    [
     "user_events",
@@ -49,7 +49,7 @@
    ],
    [
     "user_stores",
-    38
+    39
    ],
    [
     "guest_presence",
@@ -69,24 +69,27 @@
   "home": {
    "kb": 2572,
    "scripts": 23,
-   "ttfbMs": 234
+   "ttfbMs": 159
   },
   "backtest": {
    "kb": 1360,
    "scripts": 13,
-   "ttfbMs": 177
+   "ttfbMs": 137
   },
   "chart app": {
    "kb": 2572,
    "scripts": 23,
-   "ttfbMs": 454
+   "ttfbMs": 284
   },
   "statistics": {
    "kb": 1210,
    "scripts": 14,
-   "ttfbMs": 170
+   "ttfbMs": 143
   }
  },
  "heavier": [],
- "alerts": []
+ "alerts": [
+  "guest-drop"
+ ],
+ "emailed": 200
 }
