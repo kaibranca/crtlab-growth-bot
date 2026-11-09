@@ -70,7 +70,18 @@ export function camera(G, t) {
   let a = full, b = full, k = 1;
   const cs = [...G.cams, { t: G.T.dim - .9, f: null }];
   for (let i = 0; i < cs.length; i++) if (t >= cs[i].t) { a = i ? state(cs[i - 1].f, cs[i - 1].to) : full; b = state(cs[i].f, cs[i].to); k = SMOOTH((t - cs[i].t) / .95); }
-  return { s: a.s + (b.s - a.s) * k, cx: a.cx + (b.cx - a.cx) * k, cy: a.cy + (b.cy - a.cy) * k };
+  let s = a.s + (b.s - a.s) * k, cx = a.cx + (b.cx - a.cx) * k, cy = a.cy + (b.cy - a.cy) * k;
+  // GUARANTEE (Kai's rule): every candle printed by time t is inside the view on THIS frame. Between two framings the blend can
+  // clip a candle, and a new candle can start forming outside — so widen/shift just enough. Candles grow continuously, so this
+  // correction is continuous too (no snaps).
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (let i = 0; i <= G.T.last; i++) { const p = prog(G.sch[i], t); if (p <= 0) continue; const c = partial(G.B[i], p), x = G.X(i);
+    x0 = Math.min(x0, x - G.BW); x1 = Math.max(x1, x + G.BW); y0 = Math.min(y0, G.Y(c[1])); y1 = Math.max(y1, G.Y(c[2])); }
+  if (x0 < x1) { const m = 10, need = Math.min((L.PR - L.PL) / (x1 - x0 + 2 * m), (L.PB - L.PT) / (y1 - y0 + 2 * m));
+    s = Math.max(1, Math.min(s, need)); const hw = (L.PR - L.PL) / 2 / s, hh = (L.PB - L.PT) / 2 / s;
+    cx = cl(cx, x1 + m - hw, x0 - m + hw); cy = cl(cy, y1 + m - hh, y0 - m + hh);
+    if (s === 1) { cx = cl(cx, PCX, PCX); cy = cl(cy, PCY, PCY); } }
+  return { s, cx, cy };
 }
 
 // ONE-WAY formation (the style approved on the FVG reel): the wick that printed first (from the real minutes) reaches out
