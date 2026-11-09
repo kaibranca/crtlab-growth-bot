@@ -90,6 +90,7 @@ export const Reel = (d) => {
   if (d.zone && t >= tz) { const range = d.model === "asia" || d.model === "nyopen", used = d.trade && t >= T.tCross, k = eo(t, tz, .7);
     const x0 = X(d.zone.i0) - BW / 2, xEnd = range ? X(d.zone.i1) + BW / 2 : X(T.last) + BW * .7, x1 = mix(x0 + BW * .5, xEnd, k);
     world.push(<rect key="z" x={x0} y={Y(d.zone.top)} width={x1 - x0} height={Math.max(2, Y(d.zone.bot) - Y(d.zone.top))} fill={range ? "#fff" : "#d1d4dc"} fillOpacity={(range ? .07 : .13) * (used ? .75 : 1) * k} />);
+    if (!range && T.tCross && t >= T.tCross) { const tp = Math.sin(cl((t - T.tCross) / .7) * Math.PI); if (tp > 0) world.push(<rect key="zp" x={x0} y={Y(d.zone.top)} width={x1 - x0} height={Math.max(2, Y(d.zone.bot) - Y(d.zone.top))} fill="#fff" fillOpacity={.12 * tp} stroke="#fff" strokeOpacity={.5 * tp} strokeWidth={1.5 / cam.s} />); }
     zoneTag = { x0, x1, k }; }
   const tl = on("level"), hit = t >= T.tCross && t >= on("cross");
   if (t >= tl && d.model !== "fvg" && d.model !== "ob") { const k = ein(t, tl, .65), y = Y(d.level), x0 = d.model === "news" ? X(d.kb) - BW / 2 : X(0) - BW / 2, hk = hit ? eo(t, T.tCross, .4) : 0;
@@ -113,7 +114,7 @@ export const Reel = (d) => {
     const travel = ein(t, tt0 - .55, .5), sx = mix(chip[0] + 6, dx, travel), sy = mix(chip[1] + 8, dy, travel);
     const a = eo(t, tt0 - .95, .25) * (1 - ein(t, tt0 + .72, .35)), press = (t >= tt0 - .66 && t < tt0 - .56) || (t >= tt0 && t < tt0 + .62) ? 1 : 0, s = r.side === "long";
     toolCursor = <g key="tc">
-      <g opacity={chipA} transform={`translate(${chip[0] - 24} ${chip[1] - 24})`}><rect width={48} height={48} rx={10} fill={chipOn ? "#2a2e39" : "#1b1d24"} />
+      <g opacity={chipA} transform={`translate(${chip[0] - 24} ${chip[1] - 24})`}><rect width={48} height={48} rx={12} fill="#ffffff" fillOpacity={chipOn ? .14 : .08} stroke="#ffffff" strokeOpacity={.16} /><rect x={1} y={1} width={46} height={18} rx={11} fill="#ffffff" fillOpacity={.06} />
         <rect x={13} y={s ? 12 : 24} width={22} height={12} rx={1.5} fill={C.up} /><rect x={13} y={s ? 24 : 12} width={22} height={12} rx={1.5} fill={C.dn} /></g>
       <g opacity={a} transform={`translate(${sx - 5} ${sy - 3}) scale(${1.5 - .12 * press})`}><path d="M5 3 L5 19 L9.5 15 L12.5 21.5 L15 20.4 L12.1 14 L18 14 Z" fill="#fff" stroke="#0b0b0e" strokeWidth={1.2} strokeLinejoin="round" /></g></g>; }
   // the key candle (entry tap / sweep / break) gets a brief soft selection band behind it once it prints
@@ -134,7 +135,10 @@ export const Reel = (d) => {
     const dv = `M${ex - 10} ${y + 9 * s} L${ex} ${y} L${ex + 10} ${y + 9 * s}`;
     marks.push(<g key="e" opacity={k}><path d={dv} fill="none" stroke="#fff" strokeOpacity={.55} strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" /><path d={dv} fill="none" stroke={long ? C.up : C.dn} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" /></g>); }
   if (zoneTag && d.zone) { const [sx0, sy0] = mp(zoneTag.x0, Y(d.zone.top)), [sx1, sy1] = mp(zoneTag.x1, Y(d.zone.bot)), hh = sy1 - sy0, fsz = Math.max(16, Math.min(30, hh * .62));
-    if (hh > 14) marks.push(<text key="zt" x={sx0 + 14} y={sy0 + hh / 2 + fsz * .36} fill="#fff" fillOpacity={.3 * eo(t, tz + .25, .5)} fontSize={fsz} fontWeight={700} fontFamily={SANS} letterSpacing={1}>{d.zone.label}</text>); }
+    // find a gap inside the box where no printed candle crosses the band (the name must never sit on a candle)
+    const tw = d.zone.label.length * fsz * .66 + 8, busy = drawn.filter(([i, b]) => Math.max(b[1], b[2]) >= Math.min(d.zone.top, d.zone.bot) && Math.min(b[1], b[2]) <= Math.max(d.zone.top, d.zone.bot)).map(([i]) => mp(X(i), 0)[0]);
+    let gx = null; for (let x = sx0 + 12; x + tw <= sx1 - 8; x += 8) if (!busy.some((c) => c > x - cw * cam.s - 8 && c < x + tw + cw * cam.s + 8)) { gx = x; break; }
+    if (hh > 14 && gx != null) marks.push(<text key="zt" x={gx} y={sy0 + hh / 2 + fsz * .36} fill="#fff" fillOpacity={.3 * eo(t, tz + .25, .5)} fontSize={fsz} fontWeight={700} fontFamily={SANS} letterSpacing={1}>{d.zone.label}</text>); }
   for (const sp of specs) { if (sp.cap || t < sp.t0 || (sp.t1 != null && t > sp.t1 + .5)) continue; const [ax, ay] = mp(...sp.anchor), o = life(t, sp.t0, sp.t1 ?? Infinity, .4, .45);
     marks.push(<g key={sp.key} transform={sp.rise ? `translate(0 ${(1 - eo(t, sp.t0, .45)) * 10})` : undefined}>{sp.draw(ax + sp.off[0], ay + sp.off[1], o, hit, t)}</g>); }
 
@@ -158,7 +162,7 @@ export const Reel = (d) => {
           {world}
           {drawn.map(([i, b]) => { const col = b[3] >= b[0] ? C.up : C.dn, y0 = Y(Math.max(b[0], b[3])), y1 = Y(Math.min(b[0], b[3]));
             return <g key={i}><line x1={X(i)} x2={X(i)} y1={Y(b[1])} y2={Y(b[2])} stroke={col} strokeWidth={Math.max(1.3, cw * .1) / Math.sqrt(cam.s)} /><rect x={X(i) - cw / 2} y={y0} width={cw} height={Math.max(1.4 / cam.s, y1 - y0)} fill={col} />
-              {i === d.kb && G.sch[i] ? (() => { const fl = life(t, G.sch[i][1], G.sch[i][1] + .55, .06, .45); return fl > 0 ? <rect x={X(i) - cw / 2 - 1} y={y0 - 1} width={cw + 2} height={Math.max(1.4 / cam.s, y1 - y0) + 2} fill="#fff" fillOpacity={.4 * fl} /> : null; })() : null}</g>; })}
+              {i === d.kb && G.sch[i] ? (() => { const fl = life(t, T.tCross ?? G.sch[i][1], (T.tCross ?? G.sch[i][1]) + .55, .06, .45); return fl > 0 ? <rect x={X(i) - cw / 2 - 1} y={y0 - 1} width={cw + 2} height={Math.max(1.4 / cam.s, y1 - y0) + 2} fill="#fff" fillOpacity={.4 * fl} /> : null; })() : null}</g>; })}
         </g></g> : null}
         {lastB && live ? (() => { const col = lastB[3] >= lastB[0] ? C.up : C.dn, y = cl(PCY + (Y(lastB[3]) - cam.cy) * cam.s, L.PT + 6, L.PB - 6);
           return <g opacity={chartA * eo(t, .05, .4)}><line x1={L.PL} x2={L.PR} y1={y} y2={y} stroke={col} strokeOpacity={.6} strokeWidth={1.2} strokeDasharray="2 3" /><rect x={L.axisX - 8} y={y - 15} width={96} height={30} rx={3} fill={col} />
@@ -173,20 +177,19 @@ export const Reel = (d) => {
         const x = cl(sp.sx, L.PL + 4, L.PR - 4 - sp.w), y = cl(sp.sy, L.PT + 6, L.PB - 6 - sp.h);
         // underline: only twice a reel (the first caption + the payoff), drawn left→right under the whole text
         const under = sp.j === 0 || b.tone === "up", ul = under ? ein(t, sp.t0 + .3, .5) : 0;
-        // the arrow: from the caption's nearest edge to exactly what it describes, a gentle curve that draws in
+        // the pointer: a tiny triangle on the caption's edge, aimed at what it describes; eases in and drifts a hair toward it
         let arrow = null;
-        if (b.point) { const [px, py] = mp(...sp.anchor), cx = x + sp.w / 2, side = py >= y - 4 && py <= y + sp.h + 4;
-          const sx = side ? (px < cx ? x - 8 : x + sp.w + 8) : cl(px, x + 30, x + sp.w - 30), sy = side ? y + sp.h / 2 : (py < y ? y - 6 : y + sp.h + 6);
-          const ux = px - sx, uy = py - sy, ln = Math.hypot(ux, uy) || 1;
-          if (ln > 46) { const ex = px - ux / ln * 16, ey = py - uy / ln * 16, bend = (sx < px ? 1 : -1) * Math.min(22, ln * .18), qx = (sx + ex) / 2 - uy / ln * bend, qy = (sy + ey) / 2 + ux / ln * bend, p = OUT((t - sp.t0 - .22) / .42), pts = [];
-            for (let j = 0; j <= Math.round(24 * p); j++) { const u = j / 24, a1 = (1 - u) * (1 - u), b1 = 2 * (1 - u) * u, c1 = u * u; pts.push(`${(a1 * sx + b1 * qx + c1 * ex).toFixed(1)},${(a1 * sy + b1 * qy + c1 * ey).toFixed(1)}`); }
-            const hx = ex - qx, hy = ey - qy, hl = Math.hypot(hx, hy) || 1, dx = hx / hl, dy = hy / hl, hk = cl((p - .82) / .18);
-            if (pts.length > 1) arrow = <svg key={sp.key + "a"} width={W} height={1920} style={{ position: "absolute", inset: 0, opacity: o * .8, pointerEvents: "none" }}>
-              <polyline points={pts.join(" ")} fill="none" stroke={col} strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" />
-              {hk > 0 ? <path d={`M${ex - dx * 10 * hk - dy * 6 * hk} ${ey - dy * 10 * hk + dx * 6 * hk} L${ex + dx * 1.5} ${ey + dy * 1.5} L${ex - dx * 10 * hk + dy * 6 * hk} ${ey - dy * 10 * hk - dx * 6 * hk}`} fill="none" stroke={col} strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" /> : null}</svg>; } }
-        return <React.Fragment key={sp.key}>{arrow}<div style={{ position: "absolute", left: x, top: y, width: sp.w, height: sp.h, display: "flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", fontSize: 40, fontWeight: 700, letterSpacing: -.3, color: col, opacity: o, transform: `translateY(${(1 - k) * 10}px)` }}>
+        if (b.point) { const [px, py] = mp(...sp.anchor), cx = x + sp.w / 2, cy = y + sp.h / 2, side = py >= y - 4 && py <= y + sp.h + 4;
+          const bx = side ? (px < cx ? x - 14 : x + sp.w + 14) : cl(px, x + 24, x + sp.w - 24), by = side ? cy : (py < y ? y - 12 : y + sp.h + 12);
+          const ang = Math.atan2(py - by, px - bx), pa = eo(t, sp.t0 + .3, .35), drift = 3 * Math.sin(cl((t - sp.t0 - .3) / 1.2) * Math.PI);
+          const ox = bx + Math.cos(ang) * drift, oy = by + Math.sin(ang) * drift, rr = 9;
+          const pt = (a, r) => `${(ox + Math.cos(ang + a) * r).toFixed(1)},${(oy + Math.sin(ang + a) * r).toFixed(1)}`;
+          if (Math.hypot(px - bx, py - by) > 24) arrow = <svg key={sp.key + "a"} width={W} height={1920} style={{ position: "absolute", inset: 0, opacity: o * pa * .9, pointerEvents: "none" }}>
+            <polygon points={`${pt(0, rr)} ${pt(2.4, rr * .9)} ${pt(-2.4, rr * .9)}`} fill={col} /></svg>; }
+        return <React.Fragment key={sp.key}>{arrow}<div style={{ position: "absolute", left: x, top: y, width: sp.w, height: sp.h, display: "flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", fontSize: 40, fontWeight: 700, letterSpacing: -.3, color: col, opacity: o }}>
           <span style={{ position: "relative", display: "inline-block" }}>{b.cap.split(" ").map((w, wi, arr) => { const g = /^(2R|target|TP)$/i.test(w) ? C.up : /^(stop|SL)$/i.test(w) ? C.dn : /^(OB|FVG|gap|tap|sweep|break|BOS|range)$/i.test(w) ? "#fff" : null, gk = g ? eo(t, sp.t0 + .35, .4) : 0;
-            return <span key={wi} style={g ? { color: g === "#fff" ? col : g, textShadow: `0 0 ${14 * gk}px ${g === "#fff" ? "rgba(255,255,255,.55)" : g === C.up ? "rgba(8,153,129,.75)" : "rgba(242,54,69,.75)"}` } : undefined}>{w}{wi < arr.length - 1 ? " " : ""}</span>; })}{ul > 0 ? <span style={{ position: "absolute", left: 0, bottom: -5, height: 3, borderRadius: 2, width: `${ul * 100}%`, background: col, opacity: .7 }} /> : null}</span></div></React.Fragment>; })}
+            const wk = eo(t, sp.t0 + wi * .055, .48); /* each word arrives in reading order: blur→sharp, rise, settle */
+            return <span key={wi} style={{ display: "inline-block", whiteSpace: "pre", opacity: Math.min(1, wk * 1.4), filter: `blur(${(1 - wk) * 7}px)`, transform: `translateY(${(1 - wk) * 12}px) scale(${.96 + .04 * wk})`, transformOrigin: "50% 80%", ...(g ? { color: g === "#fff" ? col : g, textShadow: `0 0 ${14 * gk}px ${g === "#fff" ? "rgba(255,255,255,.55)" : g === C.up ? "rgba(8,153,129,.75)" : "rgba(242,54,69,.75)"}` } : {}) }}>{w}{wi < arr.length - 1 ? " " : ""}</span>; })}{ul > 0 ? <span style={{ position: "absolute", left: 0, bottom: -5, height: 3, borderRadius: 2, width: `${ul * 100}%`, background: col, opacity: .7 }} /> : null}</span></div></React.Fragment>; })}
       <Title d={{ ...d, __dim: T.dim }} t={t} o={1} />
       <div style={{ position: "absolute", top: L.brand, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "center", gap: 12, opacity: (1 - .92 * dim) * END * eo(t, .34, .5) }}>
         <Img src={staticFile("potion-glyph.png")} style={{ width: 46, height: 46, transform: `scale(${.85 + .15 * eo(t, .34, .55)})` }} />
@@ -219,13 +222,13 @@ function SignOff({ t, T }) {
   const pm = ein(t, T.ptr, .8), hover = eo(t, T.click - .25, .22), press = t >= T.click ? Math.sin(cl((t - T.click) / .22) * Math.PI) : 0;
   const px = mix(900, 560, pm), py = mix(400, 160, pm);
   return <div style={{ position: "absolute", left: 0, right: 0, top: 720, height: 300, display: "flex", flexDirection: "column", alignItems: "center", fontFamily: SANS, opacity: k * (1 - out), transform: `translateY(${(1 - k) * 12}px) scale(${1 + .03 * out})` }}>
-    <div style={{ width: 680, height: 92, borderRadius: 46, background: "#16161a", display: "flex", alignItems: "center", gap: 18, padding: "0 32px", boxSizing: "border-box" }}>
+    <div style={{ width: 680, height: 92, borderRadius: 46, background: "linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.035))", backdropFilter: "blur(22px) saturate(150%)", WebkitBackdropFilter: "blur(22px) saturate(150%)", border: "1px solid rgba(255,255,255,.13)", boxShadow: "inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(255,255,255,.03), 0 18px 40px rgba(0,0,0,.45)", display: "flex", alignItems: "center", gap: 18, padding: "0 32px", boxSizing: "border-box" }}>
       <svg width={30} height={30} viewBox="0 0 24 24" fill="none" stroke="#8d8f99" strokeWidth={2.2} strokeLinecap="round"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 L20.5 20.5" /></svg>
       <div style={{ display: "flex", alignItems: "center", fontSize: 40, fontWeight: 560, color: "#ececf1", whiteSpace: "pre" }}>{"crtlab.pro".slice(0, n)}
         <span style={{ display: "inline-block", width: 3, height: 42, marginLeft: 3, borderRadius: 2, background: "#ececf1", opacity: caret }} /></div>
     </div>
     <div style={{ marginTop: 14, width: 680, height: 88, borderRadius: 28, boxSizing: "border-box", display: "flex", alignItems: "center", gap: 20, padding: "0 32px", opacity: row,
-      background: `rgb(${mix(22, 34, hover)},${mix(22, 34, hover)},${mix(26, 38, hover)})`, transform: `translateY(${(1 - row) * -10}px) scale(${1 - .016 * press})` }}>
+      background: `linear-gradient(180deg, rgba(255,255,255,${mix(.07, .12, hover)}), rgba(255,255,255,${mix(.025, .05, hover)}))`, backdropFilter: "blur(22px) saturate(150%)", WebkitBackdropFilter: "blur(22px) saturate(150%)", border: "1px solid rgba(255,255,255,.13)", boxShadow: "inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(255,255,255,.03), 0 18px 40px rgba(0,0,0,.45)", transform: `translateY(${(1 - row) * -10}px) scale(${1 - .016 * press})` }}>
       <Img src={staticFile("potion-glyph.png")} style={{ width: 38, height: 38, marginRight: -6 }} />
       <span style={{ fontSize: 31, fontWeight: 760, color: C.acc }}>CRTLAB</span>
       <span style={{ width: 2, height: 32, background: "rgba(255,255,255,.14)" }} />
