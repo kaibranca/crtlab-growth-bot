@@ -7,6 +7,7 @@ on:
     inputs:
       date: { description: "plan date (blank = today UTC)", default: "" }
       force: { description: "re-plan even if a plan exists", default: "false" }
+      rerender: { description: "re-render that date's existing reels (same props, current renderer)", default: "false" }
 concurrency: { group: reels-make, cancel-in-progress: false }
 permissions: { contents: write, actions: read }
 jobs:
@@ -51,6 +52,12 @@ jobs:
       - name: render + QA
         run: |
           D="${{ github.event.inputs.date }}"; [ -z "$D" ] && D=$(date -u +%F)
+          # RE-RENDER (11-09): same reels, new renderer — pull the props from that date's newest render; the poster takes the newest artifact
+          if [ "${{ github.event.inputs.rerender }}" = "true" ]; then
+            ID=$(gh api "repos/${{ github.repository }}/actions/artifacts?name=reels-$D" -q '[.artifacts[]|select(.expired==false)][0].id')
+            [ -n "$ID" ] || { echo "no render to redo for $D"; exit 1; }
+            mkdir -p reels/out && gh api "repos/${{ github.repository }}/actions/artifacts/$ID/zip" > rr.zip && unzip -oq rr.zip 'reel-*.json' -d reels/out && ls reels/out
+          fi
           # render only if today's props exist (plan may have been made earlier); props are rebuilt from the plan file otherwise
           ls reels/out/reel-*.json >/dev/null 2>&1 || { echo "plan existed, nothing to render"; exit 0; }
           echo "D=$D" >> "$GITHUB_ENV"   # set first so a QA failure still uploads the videos to look at
