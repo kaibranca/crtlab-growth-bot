@@ -41,6 +41,12 @@ jobs:
         run: '[ "$(date -u +%u)" = "7" ] && node reels/engine/report.mjs || true'
       - name: plan
         run: FORCE=$([ "${{ github.event.inputs.force }}" = "true" ] && echo 1 || echo "") node reels/engine/plan.mjs ${{ github.event.inputs.date }}
+      - name: music (Mixkit free license; fetched per run, never committed — public repo)
+        continue-on-error: true
+        run: |
+          mkdir -p reels/music
+          for id in 281 293 414 296 455 375 367 1102; do curl -sfL -A "Mozilla/5.0" -o reels/music/mixkit-$id.mp3 "https://assets.mixkit.co/music/$id/$id.mp3" || rm -f reels/music/mixkit-$id.mp3; done
+          ls reels/music
       - name: render + QA
         run: |
           D="${{ github.event.inputs.date }}"; [ -z "$D" ] && D=$(date -u +%F)

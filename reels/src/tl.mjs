@@ -4,14 +4,18 @@
 // SAFE ZONES (1080×1920, IG + FB Reels UI): nothing above y 250, nothing below y 1500, nothing right of x 960 below y 900.
 export const FPS = 60, W = 1080, H = 1920;
 export const SAFE = { top: 250, bottom: 1500, right: 960, rightFrom: 900, left: 64 };
-export const L = { title: 270, chip: 420, PT: 520, PB: 1180, PL: 72, PR: 846, axisX: 860, timeY: 1222, cap: 1262, brand: 1438 };
+// v6 (11-09): taller chart, no time axis, one fixed caption line under the chart, symbol top-left like TradingView
+export const L = { title: 318, sym: 438, PT: 492, PB: 1262, PL: 64, PR: 846, axisX: 860, cap: 1300, brand: 1440 };
 const cl = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 export const EIO = (t) => { t = cl(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
 export const OUT = (t) => 1 - Math.pow(1 - cl(t), 4);
 export const SMOOTH = (t) => { t = cl(t); return t * t * t * (t * (t * 6 - 15) + 10); }; // camera: zero velocity AND acceleration at both ends
 
 export function build(d) {
-  const pace = d.look?.pace === "long" ? 1.12 : 1, N = d.bars.length, B = d.bars, steps = d.lesson.steps;
+  const pace = d.look?.pace === "long" ? 1.12 : 1, N = d.bars.length, steps = d.lesson.steps;
+  // bad-tick wicks (a lone spike many times a normal candle) would squash the whole chart: cap them at 4× the median range
+  const med = [...d.bars].map((b) => b.h - b.l).sort((a, b) => a - b)[Math.floor(d.bars.length / 2)] || 0;
+  const B = d.bars.map((b) => { const top = Math.max(b.o, b.c), bot = Math.min(b.o, b.c), cap = med * 4; return b.h - top > cap || bot - b.l > cap ? { ...b, h: Math.min(b.h, top + cap), l: Math.max(b.l, bot - cap) } : b; });
   const lv = [...B.map((b) => b.h), ...B.map((b) => b.l), d.level];
   if (d.trade) lv.push(d.trade.stop, d.trade.target); if (d.zone) lv.push(d.zone.top, d.zone.bot); if (d.measure) lv.push(d.measure.from, d.measure.to);
   const mx = Math.max(...lv), mn = Math.min(...lv), sp = mx - mn || 1, HI = mx + sp * .1, LO = mn - sp * .1;
@@ -19,7 +23,7 @@ export function build(d) {
   const cw = Math.min(26, Math.max(3, BW * .66));
 
   // walk the lesson: replay bars up to each step, then the step's annotation + caption, then hold so it can be read
-  const sch = [], beats = []; let t = .08, cur = -1;
+  const sch = [], beats = []; let t = .55, cur = -1; // candles start once the intro has fallen into place
   for (const [si, st] of steps.entries()) {
     const to = Math.min(N - 1, st.to ?? cur), n = to - cur;
     if (n > 0) {
@@ -28,7 +32,7 @@ export function build(d) {
       if (slowLast) { const kd = 1.25 * pace; sch[to] = [t + .12, t + .12 + kd]; t += .12 + kd; }
       cur = to;
     }
-    const words = (st.cap || "").split(" ").length, hold = (st.hold ?? Math.max(1.7, .9 + words * .19)) * pace;
+    const words = (st.cap || "").split(" ").length, hold = (st.hold ? Math.min(st.hold, 1.8) : Math.max(1.25, .7 + words * .16)) * pace; // tight: every second earns its place
     beats.push({ ...st, i: si, t: t + .1, end: t + .1 + hold, to: cur });
     t += .1 + hold;
   }

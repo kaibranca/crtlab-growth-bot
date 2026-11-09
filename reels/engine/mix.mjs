@@ -1,43 +1,66 @@
-// SOUND — node reels/engine/mix.mjs <props.json> <out.wav>   (offline, from the same timeline as the picture)
-// Three layers, all quiet, nothing synthetic-sounding up front:
-//   1. candle ticks — CRTLAB's own app candle sound (cand.f32), one soft tick per close, thinned when the replay runs fast
-//   2. real recorded cues only (Kenney CC0, reels/engine/sfx): a mouse press+release on the end click, a soft pluck when the setup pays. No typing, no synth.
-import fs from "node:fs"; import { build, FPS } from "../src/tl.mjs";
+// SOUND (v6, 11-09) — node reels/engine/mix.mjs <props.json> <out.wav>   (offline, from the same timeline as the picture)
+// Every sound is a REAL recording (Kenney CC0 in ./sfx, CRTLAB's own app candle tick in cand.f32), softened with a gentle
+// high-cut so nothing is harsh, and fires on the exact frame its thing happens. Nothing synthesized, nothing for decoration.
+//   candles   — the app tick on EVERY candle close (never skipped); fast runs get softer, not dropped
+//   entry     — the app tick, lower and firmer (same family, dry)
+//   target    — a crisp double app tick, pitched up (dry, no ringing tail)
+//   typing    — minimal soft keys while crtlab.pro types (4 recordings rotated, slight pitch/level variation)
+//   click     — a warm mouse press + release on the result
+//   music     — if reels/music has tracks (fetched from Mixkit at render time, never committed: public repo): one per reel (picked by story), from 20% in, low under the SFX with a
+//               gentle duck on each cue, faded in/out. Royalty-free tracks only (Kai picks them).
+import fs from "node:fs"; import { execSync } from "node:child_process"; import { build, FPS } from "../src/tl.mjs";
 const SR = 48000;
+const smp = (name) => { const b = fs.readFileSync(new URL(`./sfx/${name}.f32`, import.meta.url)); return new Float32Array(b.buffer, b.byteOffset, b.length / 4); };
+export function musicFiles() { const dir = new URL("../music/", import.meta.url); return fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => /\.(mp3|m4a|wav|aac|ogg)$/i.test(f)).sort().map((f) => new URL(f, dir).pathname) : []; }
 export function mix(d) {
   const G = build(d), { T, sch, beats } = G, Ls = Math.ceil(G.DUR / FPS * SR) + SR, Lc = new Float32Array(Ls), Rc = new Float32Array(Ls);
   let seed = 0; for (const c of d.id || "x") seed = (seed * 31 + c.charCodeAt(0)) >>> 0;
   const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+  const cues = []; // times of the cues (music ducks around them)
+  // place a mono buffer, resampled by `rate` (pitch), panned slightly
+  const place = (buf, t0, vol, rate = 1, pan = 0) => { const s0 = Math.floor(t0 * SR), n = Math.floor(buf.length / rate);
+    for (let i = 0; i < n && s0 + i < Ls; i++) { const p = i * rate, k = Math.floor(p), f = p - k, x = (buf[k] || 0) * (1 - f) + (buf[k + 1] || 0) * f; Lc[s0 + i] += x * vol * (1 - pan * .25); Rc[s0 + i] += x * vol * (1 + pan * .25); } };
+  // ── candles: the app's tick (55 ms slice, softened) on every close ────────────────────────────────────────────────
   const cb = fs.readFileSync(new URL("./cand.f32", import.meta.url)), CAND = new Float32Array(cb.buffer, cb.byteOffset, cb.length / 4);
-  // ── 1. the app's candle tick: 55 ms slice, gentle low-pass, resampled for pitch ─────────────────────────────────────
-  function tick(t0, vol, rate = 1, pan = 0) {
-    const s0 = Math.floor(t0 * SR), off = .045 * SR, n = Math.floor(.055 * SR / rate), c = Math.exp(-2 * Math.PI * 3200 / SR); let y = 0;
+  const tick = (t0, vol, rate) => { const s0 = Math.floor(t0 * SR), off = .045 * SR, n = Math.floor(.05 * SR / rate), c = Math.exp(-2 * Math.PI * 2600 / SR); let y = 0;
     for (let i = 0; i < n && s0 + i < Ls; i++) { const p = off + i * rate, k = Math.floor(p), f = p - k, x = (CAND[k] || 0) * (1 - f) + (CAND[k + 1] || 0) * f; y = (1 - c) * x + c * y;
-      const v = vol * 22 * y * Math.min(1, (n - i) / 120) * Math.min(1, i / 12); Lc[s0 + i] += v * (1 - pan * .3); Rc[s0 + i] += v * (1 + pan * .3); }
-  }
-  const pitch = .9 + rnd() * .22; let last = -1; // each reel gets its own tick character
-  for (let i = 0; i <= T.last; i++) { const s = sch[i]; if (!s) continue; const slow = s[1] - s[0] > .5;
-    if (slow) { for (const j of [.34, .67, 1]) tick(s[0] + (s[1] - s[0]) * j, .12 * (.85 + .3 * rnd()), pitch * 1.06, .2); last = s[1]; continue; }
-    if (s[1] - last < .13) continue; last = s[1]; tick(s[1], .16 * (.8 + .4 * rnd()), pitch * (.97 + .06 * rnd()), (rnd() - .5) * .6); }
-  // ── 2. cues ────────────────────────────────────────────────────────────────────────────────────────────────────────
-  // no typing sound (Kai 11-09: gimmicky). The domain types in silence; the real click lands on the result.
-  // RECORDED mouse press + release (Kenney UI Audio, CC0 — reels/engine/sfx), not a synth: subtle, real
-  const sample = (name) => { const b = fs.readFileSync(new URL(`./sfx/${name}.f32`, import.meta.url)); return new Float32Array(b.buffer, b.byteOffset, b.length / 4); };
-  const place = (buf, t0, vol) => { const s0 = Math.floor(t0 * SR); for (let i = 0; i < buf.length && s0 + i < Ls; i++) { Lc[s0 + i] += buf[i] * vol; Rc[s0 + i] += buf[i] * vol; } };
-  place(sample("mouseclick1"), T.click, .35); place(sample("mouserelease1"), T.click + .085, .25);
-  const bell = (t0, f, vol) => { const s0 = Math.floor(t0 * SR); for (let i = 0; i < SR * 1.6 && s0 + i < Ls; i++) { const u = i / SR, e = Math.min(1, u / .004) * Math.exp(-u * 3.2);
-    const v = vol * e * (Math.sin(2 * Math.PI * f * u) + .25 * Math.sin(2 * Math.PI * f * 2.01 * u) * Math.exp(-u * 6) + .08 * Math.sin(2 * Math.PI * f * 3.02 * u) * Math.exp(-u * 9)); Lc[s0 + i] += v; Rc[s0 + i] += v; } };
+      const v = vol * 22 * y * Math.min(1, (n - i) / 140) * Math.min(1, i / 16); Lc[s0 + i] += v; Rc[s0 + i] += v; } };
+  const pitch = .94 + rnd() * .1;
+  for (let i = 0; i <= T.last; i++) { const s = sch[i]; if (!s) continue; const dur = s[1] - s[0];
+    const vol = dur > .5 ? .2 : dur > .09 ? .16 : .1; // the slow key candle is clearest; fast runs are softer, never dropped
+    tick(s[1], vol * (.9 + .2 * rnd()), pitch * (.98 + .04 * rnd())); }
+  // ── entry + target ────────────────────────────────────────────────────────────────────────────────────────────────
+  // entry + TP use the SAME family as the candles (Kai: the app tick is perfect; the glass/drop rang = "wet"): dry, branded
+  if (d.trade && T.tCross) { tick(T.tCross, .42, pitch * .82); cues.push(T.tCross); }
   const pay = beats.find((b) => b.show?.includes("result") || b.show?.includes("measure"));
-  if (pay) { const tp = d.trade && T.tPay ? Math.max(T.tPay, pay.t) : pay.t + .5; place(sample("pluck_001"), tp, .18); }
-  // no music: Kai 11-08 — clean picture + subtle ticks reads better (and no audio-claim risk). Ticks + 2 cues only.
-  const endN = Math.floor(G.DUR / FPS * SR);
-  return { L: Lc.subarray(0, endN), R: Rc.subarray(0, endN) };
+  if (pay) { const tp = d.trade && T.tPay ? T.tPay : pay.t + .4; tick(tp, .4, pitch * 1.22); tick(tp + .075, .34, pitch * 1.42); cues.push(tp); }
+  // ── typing: minimal, soft, real keys ──────────────────────────────────────────────────────────────────────────────
+  const KEYS = ["click1", "click2", "select_001", "select_002"].map(smp);
+  T.keys.forEach(([s], i) => place(KEYS[(i * 3 + (seed & 3)) % 4], s + (rnd() - .5) * .012, .14 * (.8 + .35 * rnd()), .96 + .08 * rnd(), (rnd() - .5) * .3));
+  // ── the click: warm press, release ~90 ms later ───────────────────────────────────────────────────────────────────
+  place(smp("click_001"), T.click, .42); place(smp("click_003"), T.click + .09, .22); cues.push(T.click);
+  const endN = Math.floor(G.DUR / FPS * SR), L = Lc.subarray(0, endN), R = Rc.subarray(0, endN);
+  // ── music (optional) ──────────────────────────────────────────────────────────────────────────────────────────────
+  const files = musicFiles(); let music = null;
+  if (files.length) {
+    const f = files[seed % files.length];
+    const raw = execSync(`ffmpeg -v error -i "${f}" -ac 2 -ar ${SR} -f f32le -`, { maxBuffer: 1 << 30 }), M = new Float32Array(raw.buffer, raw.byteOffset, raw.length / 4), frames = M.length / 2;
+    const start = Math.floor(frames * .2), need = endN; let rms = 0, cnt = 0;
+    for (let i = 0; i < need && start + i < frames; i += 7) { rms += M[(start + i) * 2] ** 2; cnt++; } rms = Math.sqrt(rms / Math.max(1, cnt)) || 1e-4;
+    const g = .075 / rms; // music sits ~-21 dBFS RMS, well under the cues
+    for (let i = 0; i < need; i++) { const j = start + (i % Math.max(1, frames - start)), u = i / SR;
+      let duck = 1; for (const c of cues) { const dt = u - c; if (dt > -.06 && dt < .7) duck = Math.min(duck, 1 - .35 * (dt < 0 ? (dt + .06) / .06 : 1 - dt / .7)); }
+      const fade = Math.min(1, u / .5, (need / SR - u) / .6);
+      L[i] += M[j * 2] * g * duck * fade; R[i] += M[j * 2 + 1] * g * duck * fade; }
+    music = f.split("/").pop();
+  }
+  return { L, R, music };
 }
 export function wav(file, { L, R }) {
   let pk = 1e-9; for (let i = 0; i < L.length; i++) pk = Math.max(pk, Math.abs(L[i]), Math.abs(R[i]));
-  const g = Math.min(1, .15 / pk) /* never boost: the old .5 normalise pushed faint ticks to half volume */, n = L.length, b = Buffer.alloc(44 + n * 4);
+  const g = Math.min(1, .5 / pk) /* headroom only; the final level is set in make.mjs */, n = L.length, b = Buffer.alloc(44 + n * 4);
   b.write("RIFF", 0); b.writeUInt32LE(36 + n * 4, 4); b.write("WAVEfmt ", 8); b.writeUInt32LE(16, 16); b.writeUInt16LE(1, 20); b.writeUInt16LE(2, 22); b.writeUInt32LE(SR, 24); b.writeUInt32LE(SR * 4, 28); b.writeUInt16LE(4, 32); b.writeUInt16LE(16, 34); b.write("data", 36); b.writeUInt32LE(n * 4, 40);
   for (let i = 0; i < n; i++) { b.writeInt16LE(Math.max(-32767, Math.min(32767, Math.round(L[i] * g * 32767))), 44 + i * 4); b.writeInt16LE(Math.max(-32767, Math.min(32767, Math.round(R[i] * g * 32767))), 46 + i * 4); }
   fs.writeFileSync(file, b);
 }
-if (import.meta.url === `file://${process.argv[1]}`) { const d = JSON.parse(fs.readFileSync(process.argv[2], "utf8")); wav(process.argv[3], mix(d)); console.log("wav", process.argv[3]); }
+if (import.meta.url === `file://${process.argv[1]}`) { const d = JSON.parse(fs.readFileSync(process.argv[2], "utf8")); const m = mix(d); wav(process.argv[3], m); console.log("wav", process.argv[3], m.music || "(no music)"); }

@@ -12,8 +12,11 @@ for (const f of jobs) {
   const comp = await selectComposition({ serveUrl, id: "Reel", inputProps: props, port: 3123 });
   await renderMedia({ composition: comp, serveUrl, codec: "h264", crf: 16, outputLocation: raw, inputProps: props, concurrency: 2, port: 3123, pixelFormat: "yuv420p", muted: true });
   // sound is mixed offline from the same timeline, then levelled quiet and clean (-21 LUFS, peaks ≤ -6 dBFS)
-  const w = path.join(OUT, `mix-${k}.wav`); wav(w, mix(props));
-  execSync(`ffmpeg -v error -y -i "${raw}" -i "${w}" -map 0:v -map 1:a -c:v copy -af loudnorm=I=-21:TP=-6:LRA=14 -ar 48000 -c:a aac -b:a 192k -shortest -movflags +faststart "${mp4}"`);
+  // level: WITH music → social loudness on the full mix (-16 LUFS, peaks -1.5); WITHOUT → no loudness pass at all (it pumped
+  // sparse SFX up to -6 dBFS and made them harsh, 11-09): wav() leaves peaks at -6, minus 4 dB → clean cues, peaks about -13 dBFS
+  const w = path.join(OUT, `mix-${k}.wav`), m = mix(props); wav(w, m);
+  const af = m.music ? "loudnorm=I=-16:TP=-1.5:LRA=11" : "volume=-4dB";
+  execSync(`ffmpeg -v error -y -i "${raw}" -i "${w}" -map 0:v -map 1:a -c:v copy -af ${af} -ar 48000 -c:a aac -b:a 192k -shortest -movflags +faststart "${mp4}"`);
   fs.rmSync(w);
   fs.rmSync(raw);
   report[k] = qa(mp4, props);
