@@ -53,9 +53,9 @@ export function mix(d) {
   place(smp("click_001"), T.click, .42); place(smp("click_003"), T.click + .09, .22); cues.push(T.click);
   const endN = Math.floor(G.DUR / FPS * SR), L = Lc.subarray(0, endN), R = Rc.subarray(0, endN);
   // ── music (optional) ──────────────────────────────────────────────────────────────────────────────────────────────
-  const files = musicFiles(); let music = null;
+  const want = d.look?.track, all = musicFiles(), files = want === "none" ? [] : all; let music = null;
   if (files.length) {
-    const f = files[seed % files.length];
+    const f = (want && files.find((x) => x.endsWith(`mixkit-${want}.mp3`))) || files[seed % files.length]; // the planned (learned) track
     const raw = execSync(`ffmpeg -v error -i "${f}" -ac 2 -ar ${SR} -f f32le -`, { maxBuffer: 1 << 30 }), M = new Float32Array(raw.buffer, raw.byteOffset, raw.length / 4), frames = M.length / 2;
     const start = Math.floor(frames * .2), need = endN; let rms = 0, cnt = 0;
     for (let i = 0; i < need && start + i < frames; i += 7) { rms += M[(start + i) * 2] ** 2; cnt++; } rms = Math.sqrt(rms / Math.max(1, cnt)) || 1e-4;

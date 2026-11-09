@@ -53,10 +53,11 @@ for (const [k, s] of chosen.entries()) {
   // caption details: picked per platform from what each audience has rewarded (with exploration)
   const ch = { ig: { q: pick("q", ARMS.q, r, { plat: "ig", B }), save: pick("save", ARMS.save, r, { plat: "ig", B }), close: pick("close", ARMS.close, r, { plat: "ig", B }) },
                fb: { q: pick("q", ARMS.q, r, { plat: "fb", B }), close: pick("close", ARMS.close, r, { plat: "fb", B }) } };
-  const les = lesson(s, angle), caps = captions(s, cp, tagset, les, ch), props = { ...s, copy: cp, lesson: les, look: { pace } };
+  const track = pick("track", ARMS.track, r, { B, explore: .25 }); // music: learned across IG+FB, explored more while data is thin
+  const les = lesson(s, angle), caps = captions(s, cp, tagset, les, ch), props = { ...s, copy: cp, lesson: les, look: { pace, track } };
   fs.writeFileSync(new URL(`../out/reel-${k}.json`, import.meta.url), JSON.stringify(props));
   plan.reels.push({ k, story: s.id, date: s.date, mk: s.mk, model: s.model, title: cp.title.join(" "), fam, angle, pace, tagset,
-    cycle: k === 0 ? WDN : "brain", ig: { at: at(igH[k], k), hour: igH[k], caption: caps.ig, arms: ch.ig }, fb: { at: at(fbH[k], k), hour: fbH[k], caption: caps.fb, arms: ch.fb } });
+    track, cycle: k === 0 ? WDN : "brain", ig: { at: at(igH[k], k), hour: igH[k], caption: caps.ig, arms: ch.ig }, fb: { at: at(fbH[k], k), hour: fbH[k], caption: caps.fb, arms: ch.fb } });
   console.log(`reel ${k}: ${s.date} ${s.mk} ${s.model} "${cp.title.join(" ")}" ${fam}/${angle}/${pace} tags:${tagset} · IG ${igH[k]}:xx FB ${fbH[k]}:xx UTC`);
 }
 save(`plan-${today}.json`, plan);

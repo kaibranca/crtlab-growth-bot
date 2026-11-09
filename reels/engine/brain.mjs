@@ -19,6 +19,8 @@ export const ARMS = {
   tagset: ["smc", "day", "fx", "pa", "bt"],
   // caption details, learned PER PLATFORM (IG and FB audiences answer differently): question style, save line, closing line
   q: [0, 1, 2], save: [0, 1, 2], close: [0, 1, 2],
+  // the music bed is learned too (Mixkit ids, fetched per run) — including no music at all, so the data decides
+  track: ["281", "293", "414", "296", "455", "375", "367", "1102", "none"],
   // posting hours (UTC). 09–23 + 00–02: London morning through the US evening. The plan picks 2 a day per platform, ≥3h apart.
   hour: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2],
 };
