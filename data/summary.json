@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-09T21:18:02.212Z",
+ "updated": "2026-11-09T21:41:58.211Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -394,6 +394,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-09T21:41:47.621Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-09T21:18:02.155Z",
    "job": "indexnow",
    "ok": true,
@@ -494,12 +500,6 @@
    "job": "reels",
    "ok": true,
    "text": "posted \"FVG OR TRAP?\" (NAS100) to Instagram"
-  },
-  {
-   "at": "2026-11-09T19:32:16.321Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-09T19:17:55.609Z",
@@ -981,7 +981,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-09T19:32:16.321Z",
+  "at": "2026-11-09T21:41:47.621Z",
   "alerts": [],
   "checks": [
    {
@@ -1007,7 +1007,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "16h old · 31.6 MB"
+    "note": "19h old · 31.6 MB"
    },
    {
     "name": "market data fresh",
@@ -1020,7 +1020,7 @@
    "tables": [
     [
      "user_events",
-     85
+     86
     ],
     [
      "ui_events",
@@ -1028,11 +1028,11 @@
     ],
     [
      "meter_identities",
-     53
+     54
     ],
     [
      "user_stores",
-     39
+     38
     ],
     [
      "guest_presence",
@@ -1050,24 +1050,24 @@
   },
   "weight": {
    "home": {
-    "kb": 2573,
+    "kb": 2589,
     "scripts": 23,
-    "ttfbMs": 217
+    "ttfbMs": 206
    },
    "backtest": {
     "kb": 1360,
     "scripts": 13,
-    "ttfbMs": 199
+    "ttfbMs": 211
    },
    "chart app": {
-    "kb": 2573,
+    "kb": 2589,
     "scripts": 23,
-    "ttfbMs": 373
+    "ttfbMs": 381
    },
    "statistics": {
     "kb": 1210,
     "scripts": 14,
-    "ttfbMs": 191
+    "ttfbMs": 177
    }
   },
   "heavier": []
