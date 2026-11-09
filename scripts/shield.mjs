@@ -20,7 +20,7 @@ const BAN_AT = 6;
 
 // 1. the last hour of blocks
 const since = new Date(Date.now() - 65 * 60e3).toISOString();
-const gq = `{viewer{zones(filter:{zoneTag:"${Z}"}){firewallEventsAdaptive(limit:10000,filter:{datetime_gt:"${since}",action_in:["block","challenge_failed","managed_challenge"]}){action clientIP clientAsn source ruleId}}}}`;
+const gq = `{viewer{zones(filter:{zoneTag:"${Z}"}){firewallEventsAdaptive(limit:10000,filter:{datetime_gt:"${since}",action_in:["block","challenge_failed","managed_challenge"]}){action clientIP clientAsn clientASNDescription source ruleId}}}}`;
 const g = await (await fetch(API + "/graphql", { method: "POST", headers: H, body: JSON.stringify({ query: gq }) })).json();
 if (g.errors) throw new Error("graphql " + JSON.stringify(g.errors).slice(0, 300));
 const ev = g.data.viewer.zones[0]?.firewallEventsAdaptive || [];
@@ -31,7 +31,7 @@ const per = new Map();
 for (const e of ev) {
   if (e.ruleId && e.ruleId === banRule) continue;
   const s = SCORE[e.source]; if (!s) continue;
-  const x = per.get(e.clientIP) || { n: 0, asn: e.clientAsn, src: {} }; x.n += s; x.src[e.source] = (x.src[e.source] || 0) + 1; per.set(e.clientIP, x);
+  const x = per.get(e.clientIP) || { n: 0, asn: e.clientAsn, org: e.clientASNDescription || "", src: {} }; x.n += s; x.src[e.source] = (x.src[e.source] || 0) + 1; per.set(e.clientIP, x);
 }
 
 // 3. current list: drop expired, collect what's already in
@@ -55,15 +55,22 @@ if (total >= FLOOD && lvl !== "under_attack") { await cf(`/zones/${Z}/settings/s
 else if (lvl === "under_attack" && st.attackSince) { st.quiet = total < FLOOD / 4 ? (st.quiet || 0) + 1 : 0;
   if (st.quiet >= 2) { await cf(`/zones/${Z}/settings/security_level`, { method: "PATCH", body: JSON.stringify({ value: "medium" }) }); mode = "medium"; delete st.attackSince; st.quiet = 0; } }
 
-// 6. email when something real happened (bans, flood mode change)
+// 6. email ONLY when it matters to Kai (11-09: "only if it's a human ban"): a flood-mode change, or a ban on a network a PERSON
+// could be on (home broadband / mobile). Cloud/hosting scanners are banned silently — they still count on the Growth board.
+const HOSTING_ASN = new Set([14618, 16509, 8987, 15169, 396982, 19527, 8075, 8068, 14061, 16276, 24940, 63949, 20473, 51167, 45102, 37963,
+  132203, 45090, 31898, 13335, 60781, 9009, 12876, 213230, 36352, 46606, 62567, 53667, 202425, 211252, 49981, 136787, 55286, 40021, 397423, 14627]);
+const HOSTING_WORDS = /amazon|aws|google|microsoft|azure|digitalocean|ovh|hetzner|linode|akamai|vultr|choopa|contabo|alibaba|tencent|oracle|cloudflare|leaseweb|m247|scaleway|colocrossing|hostinger|hosting|host|server|cloud|data ?cent|datacamp|vps|dedicated|ionos|hostwinds|psychz|quadranet|frantech|ponynet|tzulo|serverion|hostroyale/i;
+const isHosting = (x) => HOSTING_ASN.has(x.asn) || HOSTING_WORDS.test(x.org || "");
+const humanBans = fresh.filter(([, x]) => !isHosting(x));
 const changed = mode !== lvl;
-if ((fresh.length || changed) && process.env.RESEND_API_KEY && process.env.ALERT_TO) {
+if (fresh.length) console.log(`bans: ${fresh.length} (${fresh.length - humanBans.length} cloud/hosting, silent · ${humanBans.length} could be a person)`);
+if ((humanBans.length || changed) && process.env.RESEND_API_KEY && process.env.ALERT_TO) {
   const lines = [];
   if (changed) lines.push(mode === "under_attack" ? `FLOOD: ${total} blocked requests in the last hour. Cloudflare "Under Attack" mode is ON (every visitor gets a 5-second check). It turns off by itself after 2 quiet hours.` : `Flood over. Cloudflare is back to normal security.`);
-  if (fresh.length) lines.push(`Banned ${fresh.length} IP(s) for ${BAN_DAYS} days (repeated exploit probes / login floods):\n` + fresh.map(([ip, x]) => `  ${ip}  asn ${x.asn}  ${Object.entries(x.src).map(([k, v]) => `${k} ${v}`).join(", ")}`).join("\n"));
+  if (humanBans.length) lines.push(`Banned ${humanBans.length} IP(s) on a home/mobile network for ${BAN_DAYS} days (repeated exploit probes / login floods) — check it isn't a real user:\n` + humanBans.map(([ip, x]) => `  ${ip}  asn ${x.asn} ${x.org}  ${Object.entries(x.src).map(([k, v]) => `${k} ${v}`).join(", ")}`).join("\n") + (fresh.length > humanBans.length ? `\n(+${fresh.length - humanBans.length} cloud-server scanners banned silently)` : ""));
   lines.push(`To unban someone: Cloudflare → Manage Account → Configurations → Lists → crtlab_banned → delete the row.`);
   const r = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: process.env.ALERT_FROM || "CRTLAB bot <hello@crtlab.pro>", to: process.env.ALERT_TO, subject: changed && mode === "under_attack" ? "CRTLAB UNDER ATTACK — shield on" : `CRTLAB shield: ${fresh.length} banned`, text: lines.join("\n\n") }) });
+    body: JSON.stringify({ from: process.env.ALERT_FROM || "CRTLAB bot <hello@crtlab.pro>", to: process.env.ALERT_TO, subject: changed && mode === "under_attack" ? "CRTLAB UNDER ATTACK — shield on" : changed ? "CRTLAB shield: flood over" : `CRTLAB shield: ${humanBans.length} possible person banned — check`, text: lines.join("\n\n") }) });
   console.log("emailed", r.status);
 }
 
