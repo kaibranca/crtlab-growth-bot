@@ -30,6 +30,11 @@ export const Reel = (d) => {
   const on = (key) => { const b = beats.find((x) => x.show?.includes(key)); return b ? b.t : Infinity; };
 
   // ── labels: placed ONCE per label against the candles + shapes alive at its moment (no jumping, no overlap) ─────────
+  const zoneSpot = useMemo(() => { if (!d.zone) return null; const z = d.zone, lo = Math.min(z.top, z.bot), hi = Math.max(z.top, z.bot), range = d.model === "asia" || d.model === "nyopen";
+    const x0 = X(z.i0) - BW / 2, x1 = range ? X(z.i1) + BW / 2 : X(T.last) + BW * .7, hh = Math.abs(Y(z.bot) - Y(z.top)), fsz = Math.max(16, Math.min(30, hh * .62)), tw = z.label.length * fsz * .66 + 8;
+    const busy = []; for (let i = 0; i <= T.last; i++) if (B[i].h >= lo && B[i].l <= hi) busy.push(X(i));
+    for (let x = x0 + 12; x + tw <= x1 - 8; x += 4) if (!busy.some((c) => c > x - cw - 10 && c < x + tw + cw + 10)) return { x, fsz };
+    return null; }, [d]);
   const specs = useMemo(() => {
     const S = [], lastX = X(T.last) + BW * .7, z = d.zone;
     // (the zone names itself: faint text inside the box, drawn with the box below — no separate tag)
@@ -72,7 +77,11 @@ export const Reel = (d) => {
         if (!best) { best = [0, 0]; bc = 1e6; } else bc = 0;
       } else { const cs = sp.cands(cam.s); best = cs[0]; for (const c of cs) { const v = cost(c); if (v < bc - 1) { bc = v; best = c; } } }
       // captions are PINNED to the screen spot solved here (no tracking jitter); no room anywhere → the line under the chart
-      done.push({ ...sp, off: best, fixed: !!sp.cap && bc >= 1e6, sx: ax + best[0], sy: ay + best[1] });
+      const ent = { ...sp, off: best, fixed: !!sp.cap && bc >= 1e6, sx: ax + best[0], sy: ay + best[1] };
+      if (sp.cap && sp.cap.point && !ent.fixed) { const x = cl(ent.sx, L.PL + 4, L.PR - 4 - sp.w), y = cl(ent.sy, L.PT + 6, L.PB - 6 - sp.h), cxm = x + sp.w / 2, cym = y + sp.h / 2, side = ay >= y - 4 && ay <= y + sp.h + 4;
+        const bx = side ? (ax < cxm ? x - 16 : x + sp.w + 16) : cl(ax, x + 26, x + sp.w - 26), by = side ? cym : (ay < y ? y - 14 : y + sp.h + 14);
+        if (Math.hypot(ax - bx, ay - by) > 26) ent.ptr = { bx, by, ang: Math.atan2(ay - by, ax - bx) }; } // pinned pointer
+      done.push(ent);
     }
     return done;
   }, [d]);
@@ -134,11 +143,8 @@ export const Reel = (d) => {
     const y = long ? ey0 + 18 + dy : ey0 - 18 + dy, s = long ? 1 : -1; // a clean chevron only: ^ under a buy, v over a sell
     const dv = `M${ex - 10} ${y + 9 * s} L${ex} ${y} L${ex + 10} ${y + 9 * s}`;
     marks.push(<g key="e" opacity={k}><path d={dv} fill="none" stroke="#fff" strokeOpacity={.55} strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" /><path d={dv} fill="none" stroke={long ? C.up : C.dn} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" /></g>); }
-  if (zoneTag && d.zone) { const [sx0, sy0] = mp(zoneTag.x0, Y(d.zone.top)), [sx1, sy1] = mp(zoneTag.x1, Y(d.zone.bot)), hh = sy1 - sy0, fsz = Math.max(16, Math.min(30, hh * .62));
-    // find a gap inside the box where no printed candle crosses the band (the name must never sit on a candle)
-    const tw = d.zone.label.length * fsz * .66 + 8, busy = drawn.filter(([i, b]) => Math.max(b[1], b[2]) >= Math.min(d.zone.top, d.zone.bot) && Math.min(b[1], b[2]) <= Math.max(d.zone.top, d.zone.bot)).map(([i]) => mp(X(i), 0)[0]);
-    let gx = null; for (let x = sx0 + 12; x + tw <= sx1 - 8; x += 8) if (!busy.some((c) => c > x - cw * cam.s - 8 && c < x + tw + cw * cam.s + 8)) { gx = x; break; }
-    if (hh > 14 && gx != null) marks.push(<text key="zt" x={gx} y={sy0 + hh / 2 + fsz * .36} fill="#fff" fillOpacity={.3 * eo(t, tz + .25, .5)} fontSize={fsz} fontWeight={700} fontFamily={SANS} letterSpacing={1}>{d.zone.label}</text>); }
+  if (zoneTag && d.zone && zoneSpot) { const [gx, sy0] = mp(zoneSpot.x, Y(d.zone.top)), [, sy1] = mp(zoneSpot.x, Y(d.zone.bot)), hh = sy1 - sy0, fsz = zoneSpot.fsz * Math.min(1.25, cam.s);
+    if (hh > 14) marks.push(<text key="zt" x={gx} y={sy0 + hh / 2 + fsz * .36} fill="#fff" fillOpacity={.3 * eo(t, tz + .25, .5)} fontSize={fsz} fontWeight={700} fontFamily={SANS} letterSpacing={1}>{d.zone.label}</text>); }
   for (const sp of specs) { if (sp.cap || t < sp.t0 || (sp.t1 != null && t > sp.t1 + .5)) continue; const [ax, ay] = mp(...sp.anchor), o = life(t, sp.t0, sp.t1 ?? Infinity, .4, .45);
     marks.push(<g key={sp.key} transform={sp.rise ? `translate(0 ${(1 - eo(t, sp.t0, .45)) * 10})` : undefined}>{sp.draw(ax + sp.off[0], ay + sp.off[1], o, hit, t)}</g>); }
 
@@ -177,15 +183,12 @@ export const Reel = (d) => {
         const x = cl(sp.sx, L.PL + 4, L.PR - 4 - sp.w), y = cl(sp.sy, L.PT + 6, L.PB - 6 - sp.h);
         // underline: only twice a reel (the first caption + the payoff), drawn left→right under the whole text
         const under = sp.j === 0 || b.tone === "up", ul = under ? ein(t, sp.t0 + .3, .5) : 0;
-        // the pointer: a tiny triangle on the caption's edge, aimed at what it describes; eases in and drifts a hair toward it
+        // the pointer: a small triangle on the caption's edge, aimed at what it describes — solved once, pinned, eases in
         let arrow = null;
-        if (b.point) { const [px, py] = mp(...sp.anchor), cx = x + sp.w / 2, cy = y + sp.h / 2, side = py >= y - 4 && py <= y + sp.h + 4;
-          const bx = side ? (px < cx ? x - 14 : x + sp.w + 14) : cl(px, x + 24, x + sp.w - 24), by = side ? cy : (py < y ? y - 12 : y + sp.h + 12);
-          const ang = Math.atan2(py - by, px - bx), pa = eo(t, sp.t0 + .3, .35), drift = 3 * Math.sin(cl((t - sp.t0 - .3) / 1.2) * Math.PI);
-          const ox = bx + Math.cos(ang) * drift, oy = by + Math.sin(ang) * drift, rr = 9;
-          const pt = (a, r) => `${(ox + Math.cos(ang + a) * r).toFixed(1)},${(oy + Math.sin(ang + a) * r).toFixed(1)}`;
-          if (Math.hypot(px - bx, py - by) > 24) arrow = <svg key={sp.key + "a"} width={W} height={1920} style={{ position: "absolute", inset: 0, opacity: o * pa * .9, pointerEvents: "none" }}>
-            <polygon points={`${pt(0, rr)} ${pt(2.4, rr * .9)} ${pt(-2.4, rr * .9)}`} fill={col} /></svg>; }
+        if (sp.ptr) { const { bx, by, ang } = sp.ptr, pa = eo(t, sp.t0 + .3, .4), drift = 2.5 * Math.sin(cl((t - sp.t0 - .3) / 1.4) * Math.PI), rr = 12;
+          const ox = bx + Math.cos(ang) * drift, oy = by + Math.sin(ang) * drift, pt = (a, r) => `${(ox + Math.cos(ang + a) * r).toFixed(2)},${(oy + Math.sin(ang + a) * r).toFixed(2)}`;
+          arrow = <svg key={sp.key + "a"} width={W} height={1920} style={{ position: "absolute", inset: 0, opacity: o * pa * .92, pointerEvents: "none" }}>
+            <polygon points={`${pt(0, rr)} ${pt(2.35, rr * .85)} ${pt(-2.35, rr * .85)}`} fill={col} strokeLinejoin="round" stroke={col} strokeWidth={1.5} /></svg>; }
         return <React.Fragment key={sp.key}>{arrow}<div style={{ position: "absolute", left: x, top: y, width: sp.w, height: sp.h, display: "flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", fontSize: 40, fontWeight: 700, letterSpacing: -.3, color: col, opacity: o }}>
           <span style={{ position: "relative", display: "inline-block" }}>{b.cap.split(" ").map((w, wi, arr) => { const g = /^(2R|target|TP)$/i.test(w) ? C.up : /^(stop|SL)$/i.test(w) ? C.dn : /^(OB|FVG|gap|tap|sweep|break|BOS|range)$/i.test(w) ? "#fff" : null, gk = g ? eo(t, sp.t0 + .35, .4) : 0;
             const wk = eo(t, sp.t0 + wi * .055, .48); /* each word arrives in reading order: blur→sharp, rise, settle */
@@ -222,13 +225,13 @@ function SignOff({ t, T }) {
   const pm = ein(t, T.ptr, .8), hover = eo(t, T.click - .25, .22), press = t >= T.click ? Math.sin(cl((t - T.click) / .22) * Math.PI) : 0;
   const px = mix(900, 560, pm), py = mix(400, 160, pm);
   return <div style={{ position: "absolute", left: 0, right: 0, top: 720, height: 300, display: "flex", flexDirection: "column", alignItems: "center", fontFamily: SANS, opacity: k * (1 - out), transform: `translateY(${(1 - k) * 12}px) scale(${1 + .03 * out})` }}>
-    <div style={{ width: 680, height: 92, borderRadius: 46, background: "linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.035))", backdropFilter: "blur(22px) saturate(150%)", WebkitBackdropFilter: "blur(22px) saturate(150%)", border: "1px solid rgba(255,255,255,.13)", boxShadow: "inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(255,255,255,.03), 0 18px 40px rgba(0,0,0,.45)", display: "flex", alignItems: "center", gap: 18, padding: "0 32px", boxSizing: "border-box" }}>
+    <div style={{ width: 680, height: 92, borderRadius: 46, background: "linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.035))", border: "1px solid rgba(255,255,255,.13)", boxShadow: "inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(255,255,255,.03)", display: "flex", alignItems: "center", gap: 18, padding: "0 32px", boxSizing: "border-box" }}>
       <svg width={30} height={30} viewBox="0 0 24 24" fill="none" stroke="#8d8f99" strokeWidth={2.2} strokeLinecap="round"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 L20.5 20.5" /></svg>
       <div style={{ display: "flex", alignItems: "center", fontSize: 40, fontWeight: 560, color: "#ececf1", whiteSpace: "pre" }}>{"crtlab.pro".slice(0, n)}
         <span style={{ display: "inline-block", width: 3, height: 42, marginLeft: 3, borderRadius: 2, background: "#ececf1", opacity: caret }} /></div>
     </div>
     <div style={{ marginTop: 14, width: 680, height: 88, borderRadius: 28, boxSizing: "border-box", display: "flex", alignItems: "center", gap: 20, padding: "0 32px", opacity: row,
-      background: `linear-gradient(180deg, rgba(255,255,255,${mix(.07, .12, hover)}), rgba(255,255,255,${mix(.025, .05, hover)}))`, backdropFilter: "blur(22px) saturate(150%)", WebkitBackdropFilter: "blur(22px) saturate(150%)", border: "1px solid rgba(255,255,255,.13)", boxShadow: "inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(255,255,255,.03), 0 18px 40px rgba(0,0,0,.45)", transform: `translateY(${(1 - row) * -10}px) scale(${1 - .016 * press})` }}>
+      background: `linear-gradient(180deg, rgba(255,255,255,${mix(.07, .12, hover)}), rgba(255,255,255,${mix(.025, .05, hover)}))`, border: "1px solid rgba(255,255,255,.13)", boxShadow: "inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(255,255,255,.03)", transform: `translateY(${(1 - row) * 12}px) scale(${1 - .016 * press})` }}>
       <Img src={staticFile("potion-glyph.png")} style={{ width: 38, height: 38, marginRight: -6 }} />
       <span style={{ fontSize: 31, fontWeight: 760, color: C.acc }}>CRTLAB</span>
       <span style={{ width: 2, height: 32, background: "rgba(255,255,255,.14)" }} />
