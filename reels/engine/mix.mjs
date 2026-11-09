@@ -34,8 +34,8 @@ export function mix(d) {
   const chime = (t0) => { const notes = [1046.5, 1318.5, 1568], tail = .55;
     for (const [j, f] of notes.entries()) { const s0 = Math.floor((t0 + j * .075) * SR), n = Math.floor(tail * SR), v = .085 * (1 - j * .08);
       for (let i = 0; i < n && s0 + i < Ls; i++) { const u = i / SR, att = Math.min(1, u / .003);
-        const x = att * (Math.sin(2 * Math.PI * f * u) * Math.exp(-u * 8) + .28 * Math.sin(2 * Math.PI * f * 3.98 * u) * Math.exp(-u * 32) + .06 * Math.sin(2 * Math.PI * f * 9.9 * u) * Math.exp(-u * 60));
-        for (const [dl, g] of [[0, 1], [.041, .16], [.067, .09]]) { const k = s0 + i + Math.floor(dl * SR); if (k < Ls) { Lc[k] += x * v * g * (dl ? .9 : 1); Rc[k] += x * v * g * (dl ? 1.1 : 1); } } } } };
+        const x = att * (Math.sin(2 * Math.PI * f * u) * Math.exp(-u * 11) + .22 * Math.sin(2 * Math.PI * f * 3.98 * u) * Math.exp(-u * 32) + .06 * Math.sin(2 * Math.PI * f * 9.9 * u) * Math.exp(-u * 60));
+        for (const [dl, g] of [[0, 1], [.041, .08]]) { const k = s0 + i + Math.floor(dl * SR); if (k < Ls) { Lc[k] += x * v * g * (dl ? .9 : 1); Rc[k] += x * v * g * (dl ? 1.1 : 1); } } } } };
   // ── entry + target ────────────────────────────────────────────────────────────────────────────────────────────────
   // entry + TP use the SAME family as the candles (Kai: the app tick is perfect; the glass/drop rang = "wet"): dry, branded
   if (d.trade && T.tCross) { tick(T.tCross, .42, pitch * .82); cues.push(T.tCross); }
@@ -43,7 +43,7 @@ export function mix(d) {
   if (pay) { const tp = d.trade && T.tPay ? T.tPay : pay.t + .4; if (fs.existsSync(new URL("./sfx/tp.f32", import.meta.url))) place(smp("tp"), tp, .38); else chime(tp); /* a TP sound file dropped in as sfx/tp.f32 replaces the double tick */ cues.push(tp); }
   // ── drawing the position tool: a soft press as the cursor grabs, a release as it lets go ─────────────────────────
   const tool = beats.find((b) => b.show?.includes("tool"));
-  if (d.trade && tool) { place(smp("click_001"), tool.t, .2); place(smp("click_003"), tool.t + .62, .13); }
+  if (d.trade && tool) { place(smp("click_001"), tool.t, .14); place(smp("click_003"), tool.t + .62, .09); }
   // ── typing: minimal, soft, real keys ──────────────────────────────────────────────────────────────────────────────
   const KEYS = ["click1", "click2", "select_001", "select_002"].map(smp);
   T.keys.forEach(([s], i) => place(KEYS[(i * 3 + (seed & 3)) % 4], s + (rnd() - .5) * .012, .14 * (.8 + .35 * rnd()), .96 + .08 * rnd(), (rnd() - .5) * .3));

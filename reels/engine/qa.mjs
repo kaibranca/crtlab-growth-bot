@@ -1,10 +1,12 @@
 // QA GATE — a reel that fails never posts. Checks the file AND the picture:
 //   format (1080×1920, h264, has audio, 6–20s, < 90 MB) · safe zones (nothing drawn under the IG/FB UI: top bar, caption area,
-//   right-hand button column) · no blank stretch · the loop seam (last frame ≈ first frame) · the chart actually drew.
-import fs from "node:fs"; import { execSync } from "node:child_process"; import { SAFE } from "../src/tl.mjs";
+//   right-hand button column) · no blank stretch · the loop seam (last frame ≈ first frame) · the chart actually drew · no candle ever off-screen.
+import fs from "node:fs"; import { execSync } from "node:child_process"; import { SAFE, build, offscreen } from "../src/tl.mjs";
 const S = 4, w = 1080 / S, h = 1920 / S; // scan at quarter size, 4 fps
 export function qa(mp4, props) {
   const problems = [], info = {};
+  // RULE (Kai 11-09): no candle may ever leave the chart area, on any frame
+  if (props) { const o = offscreen(build(props)); info.offscreen = o.worst; if (o.worst > 2) problems.push(`candle off-screen ${o.worst}px at ${o.at}s`); }
   const pr = JSON.parse(execSync(`ffprobe -v error -show_entries stream=codec_type,codec_name,width,height:format=duration,size -of json "${mp4}"`).toString());
   const v = pr.streams.find((s) => s.codec_type === "video"), a = pr.streams.find((s) => s.codec_type === "audio"), dur = +pr.format.duration, mb = pr.format.size / 1e6;
   Object.assign(info, { dur: +dur.toFixed(2), mb: +mb.toFixed(1) });
