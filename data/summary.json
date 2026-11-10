@@ -1,161 +1,161 @@
 {
- "updated": "2026-11-09T23:18:04.871Z",
+ "updated": "2026-11-10T00:03:50.011Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
   "up30d": 100,
   "last": {
-   "at": "2026-11-09T23:17:52.409Z",
+   "at": "2026-11-10T00:03:37.861Z",
    "ok": true,
    "results": [
     {
      "name": "home",
      "path": "/",
      "status": 200,
-     "ms": 408,
+     "ms": 347,
      "ok": true
     },
     {
      "name": "backtest page",
      "path": "/backtest",
      "status": 200,
-     "ms": 204,
+     "ms": 192,
      "ok": true
     },
     {
      "name": "pricing",
      "path": "/pricing",
      "status": 200,
-     "ms": 180,
+     "ms": 248,
      "ok": true
     },
     {
      "name": "chart app",
      "path": "/backtester",
      "status": 200,
-     "ms": 184,
+     "ms": 194,
      "ok": true
     },
     {
      "name": "statistics",
      "path": "/statistics/nas100",
      "status": 200,
-     "ms": 198,
+     "ms": 233,
      "ok": true
     },
     {
      "name": "calculator",
      "path": "/tools/position-size-calculator",
      "status": 200,
-     "ms": 200,
+     "ms": 236,
      "ok": true
     },
     {
      "name": "candles API",
      "path": "/api/candles?pair=nas100&tf=1hour&limit=50&v=q8",
      "status": 200,
-     "ms": 260,
+     "ms": 291,
      "ok": true
     },
     {
      "name": "llms.txt",
      "path": "/llms.txt",
      "status": 200,
-     "ms": 193,
+     "ms": 220,
      "ok": true
     },
     {
      "name": "robots.txt",
      "path": "/robots.txt",
      "status": 200,
-     "ms": 244,
+     "ms": 299,
      "ok": true
     },
     {
      "name": "sitemap",
      "path": "/sitemap.xml",
      "status": 200,
-     "ms": 224,
+     "ms": 202,
      "ok": true
     },
     {
      "name": "AI: GPTBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 175,
+     "ms": 193,
      "ok": true
     },
     {
      "name": "AI: OAI-SearchBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 193,
+     "ms": 186,
      "ok": true
     },
     {
      "name": "AI: ChatGPT-User",
      "path": "/backtest",
      "status": 200,
-     "ms": 173,
+     "ms": 182,
      "ok": true
     },
     {
      "name": "AI: ClaudeBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 192,
+     "ms": 225,
      "ok": true
     },
     {
      "name": "AI: PerplexityBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 201,
+     "ms": 196,
      "ok": true
     },
     {
      "name": "AI: Googlebot",
      "path": "/backtest",
      "status": 200,
-     "ms": 171,
+     "ms": 179,
      "ok": true
     },
     {
      "name": "AI: bingbot",
      "path": "/backtest",
      "status": 200,
-     "ms": 187,
+     "ms": 213,
      "ok": true
     },
     {
      "name": "AI: Applebot",
      "path": "/backtest",
      "status": 200,
-     "ms": 167,
+     "ms": 219,
      "ok": true
     }
    ]
   },
   "incidents": [],
   "speed": {
-   "home": 408,
-   "backtest page": 204,
-   "pricing": 180,
-   "chart app": 184,
-   "statistics": 198,
-   "calculator": 200,
-   "candles API": 260,
-   "llms.txt": 193,
-   "robots.txt": 244,
-   "sitemap": 224,
-   "AI: GPTBot": 175,
-   "AI: OAI-SearchBot": 193,
-   "AI: ChatGPT-User": 173,
-   "AI: ClaudeBot": 192,
-   "AI: PerplexityBot": 201,
-   "AI: Googlebot": 171,
-   "AI: bingbot": 187,
-   "AI: Applebot": 167
+   "home": 347,
+   "backtest page": 192,
+   "pricing": 248,
+   "chart app": 194,
+   "statistics": 233,
+   "calculator": 236,
+   "candles API": 291,
+   "llms.txt": 220,
+   "robots.txt": 299,
+   "sitemap": 202,
+   "AI: GPTBot": 193,
+   "AI: OAI-SearchBot": 186,
+   "AI: ChatGPT-User": 182,
+   "AI: ClaudeBot": 225,
+   "AI: PerplexityBot": 196,
+   "AI: Googlebot": 179,
+   "AI: bingbot": 213,
+   "AI: Applebot": 219
   }
  },
  "aicrawl": {
@@ -308,20 +308,31 @@
     "DuckDuckBot": 5,
     "YandexBot": 6,
     "Bytespider": 1
+   },
+   "2026-11-10": {
+    "GPTBot": 1,
+    "OAI-SearchBot": 87,
+    "ChatGPT-User": 47,
+    "ClaudeBot": 1,
+    "PerplexityBot": 3,
+    "Googlebot": 3,
+    "Bingbot": 7,
+    "Applebot": 1,
+    "Amazonbot": 5
    }
   },
   "topPages7d": [
    [
     "/",
-    19405
+    19428
    ],
    [
     "/backtest",
-    3035
+    3048
    ],
    [
     "/economic-calendar",
-    1422
+    1427
    ],
    [
     "/pricing",
@@ -329,11 +340,11 @@
    ],
    [
     "/features",
-    970
+    974
    ],
    [
     "/tools",
-    938
+    940
    ],
    [
     "/news",
@@ -348,12 +359,12 @@
     442
    ],
    [
-    "/faq",
-    437
+    "/tools/best-time-to-trade",
+    438
    ],
    [
-    "/tools/best-time-to-trade",
-    436
+    "/faq",
+    437
    ],
    [
     "/answers",
@@ -373,15 +384,15 @@
    ],
    [
     "/tools/position-size-calculator",
-    292
+    294
    ],
    [
     "/help",
-    289
+    293
    ],
    [
     "/learn",
-    284
+    288
    ],
    [
     "/tools/margin-calculator",
@@ -394,6 +405,30 @@
   ]
  },
  "activity": [
+  {
+   "at": "2026-11-10T00:03:49.941Z",
+   "job": "indexnow",
+   "ok": true,
+   "text": "submitted 2 changed pages · HTTP 200"
+  },
+  {
+   "at": "2026-11-10T00:03:37.861Z",
+   "job": "watchdog",
+   "ok": true,
+   "text": "18/18 checks pass · avg 225 ms"
+  },
+  {
+   "at": "2026-11-10T00:03:31.170Z",
+   "job": "ai-crawl",
+   "ok": true,
+   "text": "155 crawler visits · OAI-SearchBot 87 · ChatGPT-User 47 · Bingbot 7 · Amazonbot 5"
+  },
+  {
+   "at": "2026-11-09T23:21:13.661Z",
+   "job": "reels",
+   "ok": true,
+   "text": "posted \"POV ASIA BROKE\" (GBPUSD) to Facebook"
+  },
   {
    "at": "2026-11-09T23:18:04.797Z",
    "job": "indexnow",
@@ -849,30 +884,6 @@
    "job": "watchdog",
    "ok": true,
    "text": "18/18 checks pass · avg 158 ms"
-  },
-  {
-   "at": "2026-11-09T14:04:04.272Z",
-   "job": "shield",
-   "ok": true,
-   "text": "Cloudflare blocked 71 attack requests · banned 1 IP for 7 days"
-  },
-  {
-   "at": "2026-11-09T14:04:01.949Z",
-   "job": "ai-crawl",
-   "ok": true,
-   "text": "788 crawler visits · PerplexityBot 657 · OAI-SearchBot 77 · Amazonbot 27 · ChatGPT-User 17"
-  },
-  {
-   "at": "2026-11-09T13:46:07.793Z",
-   "job": "reels",
-   "ok": true,
-   "text": "posted \"POV YOU WAITED\" (AUDUSD) to Facebook"
-  },
-  {
-   "at": "2026-11-09T13:45:44.530Z",
-   "job": "reels",
-   "ok": true,
-   "text": "posted \"POV YOU WAITED\" (AUDUSD) to Instagram"
   }
  ],
  "seo": {
@@ -1080,11 +1091,6 @@
  },
  "indexnow": [
   {
-   "at": "2026-11-07T06:01:00.168Z",
-   "submitted": 1,
-   "status": "HTTP 200"
-  },
-  {
    "at": "2026-11-07T07:12:14.202Z",
    "submitted": 1,
    "status": "HTTP 200"
@@ -1228,24 +1234,23 @@
    "at": "2026-11-09T23:18:04.797Z",
    "submitted": 2,
    "status": "HTTP 200"
+  },
+  {
+   "at": "2026-11-10T00:03:49.941Z",
+   "submitted": 2,
+   "status": "HTTP 200"
   }
  ],
  "reels": {
   "live": true,
   "posted7d": {
    "ig": 5,
-   "fb": 4
+   "fb": 5
   },
   "views7d": 0,
   "site7d": 0,
   "signups7d": 0,
   "next": [
-   {
-    "plat": "fb",
-    "at": "2026-11-09T23:15:00.000Z",
-    "title": "POV ASIA BROKE",
-    "mk": "GBPUSD"
-   },
    {
     "plat": "fb",
     "at": "2026-11-10T12:36:00.000Z",
@@ -1260,6 +1265,15 @@
    }
   ],
   "last": [
+   {
+    "at": "2026-11-09T23:21:13.661Z",
+    "plat": "fb",
+    "title": "POV ASIA BROKE",
+    "mk": "GBPUSD",
+    "views": null,
+    "site": null,
+    "link": "https://www.facebook.com/reel/1006032231839694/"
+   },
    {
     "at": "2026-11-09T22:21:24.169Z",
     "plat": "ig",
@@ -1304,23 +1318,14 @@
     "views": null,
     "site": null,
     "link": "https://www.instagram.com/reel/DfheCHKAPYC/"
-   },
-   {
-    "at": "2026-11-09T01:10:13.000Z",
-    "plat": "fb",
-    "title": "GBPUSD FVG ENTRY",
-    "mk": "GBPUSD",
-    "views": null,
-    "site": null,
-    "link": "https://www.facebook.com/reel/1680767437000212/"
    }
   ]
  },
  "shield": {
-  "at": "2026-11-09T23:17:48.608Z",
+  "at": "2026-11-10T00:03:33.762Z",
   "lastHour": {
-   "blocked": 1,
-   "ips": 1,
+   "blocked": 0,
+   "ips": 0,
    "banned": 0,
    "unbanned": 0,
    "listSize": 9,
