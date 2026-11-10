@@ -23,6 +23,7 @@ import fs from "node:fs";
 import { SITE, readLines, append, month } from "./lib.mjs";
 
 const DAY = 86400000, HALF = 14, NOW = Date.now();
+const iso = (t) => new Date(t).toISOString().slice(0, 10);
 const w = (dayIso) => Math.pow(0.5, (NOW - Date.parse(dayIso + "T12:00:00Z")) / DAY / HALF); // recency weight
 const LIVE = /^(ChatGPT-User|Claude-User|Perplexity-User)$/, INDEXER = /^(OAI-SearchBot|PerplexityBot|Claude-SearchBot|Bingbot)$/;
 const SKIP = /^\/(api|_next|admin|account|auth|login|signup|unsubscribe|app)(\/|$)|\.(png|jpg|svg|ico|webp|xml|js|css)$|opengraph-image|twitter-image/;
@@ -110,19 +111,59 @@ for (const x of page.values()) {
   x.value = readRate * x.ctr * x.acc;
 }
 
+// ── 2b. learn the calendar: ChatGPT is asked about a release in the days around it ─────────────────────────────────────
+// Each calendar/news page is tied to its release dates. From the read log the machine learns how many times more a page
+// is read in the ±1 day around its release than on other days (LIFT, smoothed toward 2 until it has seen enough), and
+// pages with a release in the next 3 days are pushed to Bing BEFORE the questions come. More releases seen = sharper lift.
+const slug = (t) => t.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const CC = { USD: ["us", "united-states"], EUR: ["ez", "euro-area", "eurozone", "de", "germany"], GBP: ["uk", "united-kingdom"], JPY: ["jp", "japan"], AUD: ["au", "australia"] };
+const upcoming = fs.existsSync("data/events/upcoming.json") ? JSON.parse(fs.readFileSync("data/events/upcoming.json", "utf8")).events ?? [] : [];
+const calPages = [...lastmod.keys()].filter((p) => p.startsWith("/economic-calendar/"));
+const evDates = new Map(); // path → Set(yyyy-mm-dd)
+const tie = (p, d) => { if (!p) return; let x = evDates.get(p); if (!x) evDates.set(p, (x = new Set())); x.add(d); };
+for (const e of upcoming) {
+  const sl = slug(e.title), pre = CC[e.cur] ?? [];
+  tie(calPages.find((p) => { const leaf = p.split("/")[2]; return pre.some((c) => leaf === `${c}-${sl}`); }), e.date);
+  for (const c of pre.slice(1)) if (calPages.includes(`/economic-calendar/${c}`)) tie(`/economic-calendar/${c}`, e.date);
+  if (e.fam) { tie(`/news/${e.fam}`, e.date); for (const p of lastmod.keys()) if (p.startsWith(`/news/${e.fam}/`)) tie(p, e.date); }
+  if (e.imp >= 2) tie("/economic-calendar", e.date);
+}
+const near = (d, set) => { const t = Date.parse(d); for (const x of set) if (Math.abs(Date.parse(x) - t) <= DAY) return true; return false; };
+let nearR = 0, farR = 0, nearN = 0, farN = 0;
+const daysSeen = [...new Set(crawl.map((c) => c.to.slice(0, 10)))];
+const readsBy = new Map(); // path|day → live reads
+for (const win of crawl) { const d = win.to.slice(0, 10); for (const [bot, v] of Object.entries(win.bots)) if (LIVE.test(bot)) for (const [p0, n] of v.top) { const p = p0.split("?")[0].replace(/\/$/, "") || "/"; if (evDates.has(p)) readsBy.set(p + "|" + d, (readsBy.get(p + "|" + d) ?? 0) + n); } }
+for (const [p, set] of evDates) for (const d of daysSeen) { const n = readsBy.get(p + "|" + d) ?? 0; if (near(d, set)) { nearR += n; nearN++; } else { farR += n; farN++; } }
+const K_LIFT = 30; // reads of evidence before the learned lift outweighs the prior of 2
+const rawLift = farN && nearN ? (nearR / nearN) / Math.max(0.05, farR / farN) : 2;
+const LIFT = +(((nearR * rawLift) + K_LIFT * 2) / (nearR + K_LIFT)).toFixed(2);
+const soon = (p) => { const set = evDates.get(p); if (!set) return null; for (const d of [...set].sort()) { const dd = (Date.parse(d) - Date.parse(iso(NOW))) / DAY; if (dd >= 0 && dd <= 3) return d; } return null; };
+
 // ── 3. submit to Bing, most valuable first ────────────────────────────────────────────────────────────────────────────
 const SUB = "data/ai/submitted.json";
 const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
 const queue = [...lastmod.entries()].map(([p, lm]) => {
-  const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0;
-  const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY;
-  return { p, value: x.value, why: !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
-}).filter((q) => q.why && !SKIP.test(q.p)).sort((a, b) => (b.why === "refresh" ? 0 : 1) - (a.why === "refresh" ? 0 : 1) || b.value - a.value);
+  const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
+  const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY, evDue = ev && NOW - last > 2 * DAY;
+  return { p, value: x.value * (ev ? LIFT : 1), conf: x.conf, fam: x.fam, why: evDue ? `release ${ev}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+}).filter((q) => q.why && !SKIP.test(q.p));
+// EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
+// families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
+const rank = (a, b) => (b.why.startsWith("release") ? 1 : 0) - (a.why.startsWith("release") ? 1 : 0) || b.value - a.value;
+const exploit = [...queue].sort(rank);
+const seenFam = new Set(), explore = [];
+for (const q of [...queue].sort((a, b) => a.conf - b.conf || (Math.sin(a.p.length * 7 + NOW / DAY) - Math.sin(b.p.length * 7 + NOW / DAY)))) if (!seenFam.has(q.fam)) { seenFam.add(q.fam); explore.push({ ...q, why: q.why + " · explore" }); }
+const pick = (n) => { const nX = Math.round(n * 0.15), out = [], used = new Set();
+  for (const q of exploit) { if (out.length >= n - nX) break; out.push(q); used.add(q.p); }
+  for (const q of explore) { if (out.length >= n) break; if (!used.has(q.p)) { out.push(q); used.add(q.p); } }
+  for (const q of exploit) { if (out.length >= n) break; if (!used.has(q.p)) { out.push(q); used.add(q.p); } }
+  return out; };
 let submitted = [], bingStatus = "no key";
+if (process.env.DRY) { const b = pick(100); console.log("DRY batch:", b.length, b.slice(0, 30).map((q) => `${q.p} [${q.why}]`).join("\n")); }
 if (process.env.BING_API_KEY && queue.length) {
   const api = (m) => `https://ssl.bing.com/webmaster/api.svc/json/${m}?apikey=${process.env.BING_API_KEY}`;
   const quota = await fetch(api("GetUrlSubmissionQuota") + `&siteUrl=${encodeURIComponent(SITE + "/")}`).then((r) => r.json()).then((j) => j.d?.DailyQuota ?? 0).catch(() => 0);
-  const batch = queue.slice(0, Math.min(100, quota));
+  const batch = pick(Math.min(100, quota));
   if (batch.length) {
     const r = await fetch(api("SubmitUrlBatch"), { method: "POST", headers: { "content-type": "application/json; charset=utf-8" }, body: JSON.stringify({ siteUrl: SITE + "/", urlList: batch.map((q) => SITE + (q.p === "/" ? "" : q.p)) }) }).catch((e) => ({ status: String(e) }));
     bingStatus = `HTTP ${r.status}`;
@@ -142,7 +183,6 @@ const perDay = (match, from, to) => { // raw (unweighted) reads + clicks per day
   const days = Math.max(1, (Date.parse(to) - Date.parse(from)) / DAY);
   return { reads: +(reads / days).toFixed(2), clicks: +(clk / days).toFixed(2), accounts: +(acc / days).toFixed(2) };
 };
-const iso = (t) => new Date(t).toISOString().slice(0, 10);
 const verdicts = changes.map((c) => {
   const t = Date.parse(c.at), match = c.path ? (p) => p === c.path : (p) => family(p) === c.family;
   const before = perDay(match, iso(t - 14 * DAY), iso(t)), age = (NOW - t) / DAY;
@@ -158,7 +198,7 @@ const famRows = [...fam.entries()].map(([f, F]) => ({ family: f, pages: F.pages,
   .sort((a, b) => b.value - a.value);
 const plan = {
   at: new Date().toISOString(),
-  learned: { pagesKnown: page.size, pagesRead: pages.filter((x) => x.reads > 0).length, families: fam.size, globalCtr: r4(gCtr), globalAcc: r4(gAcc), halfLifeDays: HALF },
+  learned: { eventLift: LIFT, eventPages: evDates.size, releasesNext3d: [...lastmod.keys()].filter((p) => soon(p)).length, pagesKnown: page.size, pagesRead: pages.filter((x) => x.reads > 0).length, families: fam.size, globalCtr: r4(gCtr), globalAcc: r4(gAcc), halfLifeDays: HALF },
   // read a lot, clicked rarely: ChatGPT answers from these pages without sending the person → give it a reason to link
   convert: pages.filter((x) => x.r7 >= 5 && x.conf >= 0.3).map((x) => ({ p: x.p, family: x.fam, reads7d: x.r7, clicks7d: x.c7, ctr: r4(x.ctr), missedAccounts: r2(x.reads * Math.max(0, gCtr - x.ctr) * x.acc) }))
     .filter((x) => x.missedAccounts > 0).sort((a, b) => b.missedAccounts - a.missedAccounts).slice(0, 25),
