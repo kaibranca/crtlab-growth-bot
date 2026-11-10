@@ -13,7 +13,7 @@ const JOBS = [
   ["reels.yml", 40, 8, "*"],             // 08:40 plan + render today's reels
   ["restore.yml", 17, 5, 0],             // Sun 05:17 backup restore test
   ["weekly.yml", 0, 5, 1],               // Mon 05:00 weekly SEO
-  ["daily-data.yml", 30, 6, "*", "kaibranca/crtlab-backtester"], // 06:30 daily market data (token needs crtlab-backtester, Actions RW)
+  ["daily-data.yml", 15, 6, "*", "kaibranca/crtlab-backtester"], // 06:15: built + verified by ~06:45, RELEASED at 07:00:00 UTC (11-10)
   ["daily-data.yml", 30, 8, "*", "kaibranca/crtlab-backtester", { retry: "1" }],  // retry slot: skips itself if 06:30 already went live
   ["daily-data.yml", 30, 11, "*", "kaibranca/crtlab-backtester", { retry: "1" }], // second retry slot
 ];
