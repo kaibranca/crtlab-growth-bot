@@ -71,8 +71,10 @@ for (const d of USE) for (const theme of THEMES) {
   await ctx.route(/\/api\/(track|events|wall-event|stats|candles-meter|system-updates)(\/|\?|$)/, (r) => r.abort());
   for (const p of pages) {
     const page = await ctx.newPage(), consoleErr = [];
-    page.on("pageerror", (e) => consoleErr.push(String(e.message).slice(0, 140)));
-    page.on("console", (m) => { if (m.type() === "error" && !/favicon|Failed to load resource|429|ERR_BLOCKED/i.test(m.text())) consoleErr.push(m.text().slice(0, 140)); });
+    page.on("pageerror", (e) => { const t = String(e.message); if (!/Failed to fetch|NetworkError|Load failed/i.test(t)) consoleErr.push(t.slice(0, 140)); });
+    // errors the robot causes itself (it blocks tracking + meter calls) are not the site's: dropped
+    const OWN = /favicon|Failed to load resource|429|ERR_BLOCKED|ERR_FAILED|Failed to fetch|NetworkError|Load failed|candles-meter|\/api\/(track|events|wall-event|stats|system-updates)/i;
+    page.on("console", (m) => { if (m.type() === "error" && !OWN.test(m.text())) consoleErr.push(m.text().slice(0, 140)); });
     const t0 = Date.now();
     try {
       // not "networkidle": CRTLAB pages poll (live data, counters), so the network is never idle and every page waited the full
@@ -100,7 +102,8 @@ const key = (x) => `${x.p}|${x.d}|${x.theme}|${x.kind}`;
 const seen = {}; for (const x of found) seen[key(x)] = (prev.seen?.[key(x)] ?? 0) + 1;
 const confirmed = found.filter((x) => seen[key(x)] >= 2).map((x) => ({ ...x, score: +(weightOf(x.p) * x.share * (x.kind === "sideways-scroll" || x.kind === "http" || x.kind === "invisible-text" ? 3 : x.kind === "js-error" || x.kind === "cut-off" ? 2 : 1)).toFixed(2) })).sort((a, b) => b.score - a.score);
 const fresh = confirmed.filter((x) => !(prev.confirmed ?? []).some((y) => key(y) === key(x)));
-const report = { at: NOW, mode: GUARD ? "guard" : "full", pages: pages.length, devices: USE, themes: THEMES, checked: pages.length * USE.length * THEMES.length, found: found.length, confirmed, newSinceLast: fresh.map(key), errors: errors.slice(0, 10), seen, build: process.env.BUILD_ID ?? null };
+const firstSeen = found.filter((x) => seen[key(x)] === 1).slice(0, 60).map((x) => ({ p: x.p, d: x.d, theme: x.theme, kind: x.kind, detail: x.detail, where: x.where }));
+const report = { at: NOW, firstSeen, mode: GUARD ? "guard" : "full", pages: pages.length, devices: USE, themes: THEMES, checked: pages.length * USE.length * THEMES.length, found: found.length, confirmed, newSinceLast: fresh.map(key), errors: errors.slice(0, 10), seen, build: process.env.BUILD_ID ?? null };
 fs.writeFileSync(R, JSON.stringify(report, null, 1));
 fs.appendFileSync("data/mobile/runs.jsonl", JSON.stringify({ at: NOW, mode: report.mode, checked: report.checked, found: found.length, confirmed: confirmed.length, fresh: fresh.length }) + "\n");
 
