@@ -1,0 +1,12 @@
+name: bing-submit
+on: { workflow_dispatch: { inputs: { urls: { description: "extra paths, comma list", required: false } } } }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node scripts/bing-submit.mjs
+        env: { BING_API_KEY: "${{ secrets.BING_API_KEY }}", URLS: "${{ inputs.urls }}" }
