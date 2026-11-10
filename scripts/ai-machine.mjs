@@ -334,7 +334,7 @@ const plan = {
   // families that earn the most accounts per page → more pages of these, first
   expand: famRows.filter((f) => f.reads + f.clicks > 2).slice(0, 12),
   // pages that send the most accounts → protect, never break, copy what they do
-  winners: pages.filter((x) => x.accounts > 0).sort((a, b) => b.accounts - a.accounts).slice(0, 15).map((x) => ({ p: x.p, family: x.fam, accounts: r2(x.accounts), clicks: r2(x.clicks), reads: r2(x.reads), ctr: r4(x.ctr) })),
+  winners: pages.filter((x) => x.accounts > 0 && !/^\/auth/.test(x.p)).sort((a, b) => b.accounts - a.accounts).slice(0, 15).map((x) => ({ p: x.p, family: x.fam, accounts: r2(x.accounts), clicks: r2(x.clicks), reads: r2(x.reads), ctr: r4(x.ctr) })),
   // the search crawler has it, but nobody's question has pulled it in 7 days: wording/intent problem, not indexing
   indexedNotRead: pages.filter((x) => x.index >= 3 && x.r7 === 0 && lastmod.has(x.p)).sort((a, b) => b.index - a.index).slice(0, 20).map((x) => ({ p: x.p, family: x.fam, index: r2(x.index) })),
   families: famRows,
