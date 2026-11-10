@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-10T06:31:23.887Z",
+ "updated": "2026-11-10T06:40:58.097Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -408,6 +408,12 @@
   ]
  },
  "activity": [
+  {
+   "at": "2026-11-10T06:40:55.675Z",
+   "job": "indexnow",
+   "ok": true,
+   "text": "submitted 4 changed pages · HTTP 200"
+  },
   {
    "at": "2026-11-10T06:18:21.274Z",
    "job": "indexnow",
@@ -881,12 +887,6 @@
    "job": "shield",
    "ok": true,
    "text": "Cloudflare blocked 3 attack requests"
-  },
-  {
-   "at": "2026-11-10T00:17:45.616Z",
-   "job": "ai-crawl",
-   "ok": true,
-   "text": "18 crawler visits · Googlebot 4 · Bingbot 4 · ChatGPT-User 2 · PerplexityBot 2"
   }
  ],
  "seo": {
@@ -1625,7 +1625,7 @@
  },
  "machines": {
   "behaviour": {
-   "at": "2026-11-10T06:31:21.905Z",
+   "at": "2026-11-10T06:40:56.846Z",
    "days": 21,
    "golden": {
     "desktop": {
@@ -1777,7 +1777,7 @@
      {
       "k": "Close",
       "exits": 149,
-      "people": 764,
+      "people": 763,
       "exitShare": 19.3,
       "vsNormal": 5.9
      },
@@ -1879,7 +1879,7 @@
      {
       "k": "4h",
       "exits": 2,
-      "people": 12,
+      "people": 11,
       "exitShare": 11.4,
       "vsNormal": 1.72
      }
@@ -2154,11 +2154,6 @@
  },
  "indexnow": [
   {
-   "at": "2026-11-08T16:03:56.323Z",
-   "submitted": 4,
-   "status": "HTTP 200"
-  },
-  {
    "at": "2026-11-09T06:02:42.261Z",
    "submitted": 1,
    "status": "HTTP 200"
@@ -2301,6 +2296,11 @@
   {
    "at": "2026-11-10T06:18:21.274Z",
    "submitted": 5,
+   "status": "HTTP 200"
+  },
+  {
+   "at": "2026-11-10T06:40:55.675Z",
+   "submitted": 4,
    "status": "HTTP 200"
   }
  ],
