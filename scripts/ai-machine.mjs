@@ -177,6 +177,20 @@ const boost = (p) => (surgePage.has(p) ? 4 : surgeFam.has(family(p)) ? 1.5 : 1);
 { const seen = new Set(readLines("data/ai/surges.jsonl").filter((x) => NOW - Date.parse(x.at) < 2 * DAY).map((x) => x.kind + x.key));
   for (const x of surges) if (!seen.has(x.kind + x.key)) append("data/ai/surges.jsonl", { at: new Date().toISOString(), ...x }); }
 
+// ── 2e. LEARNING FROM FAILURE — Bing sends that went nowhere ─────────────────────────────────────────────────────────
+// Every page sent ≥ 7 days ago either got a live AI read within 7 days of the send (a hit) or not (a miss). Per family:
+// YIELD = Beta-smoothed hit rate. The family's value is scaled by its yield relative to the overall yield, so quota moves
+// away from families whose sends don't pay and toward those that do — automatically, as evidence comes in.
+const readDays = new Map(); // path → sorted read days
+for (const win of crawl) { const d = win.to.slice(0, 10); for (const [bot, v] of Object.entries(win.bots)) if (LIVE.test(bot)) for (const [p0] of v.top) { const p = p0.split("?")[0].replace(/\/$/, "") || "/"; const a = readDays.get(p) ?? []; if (a[a.length - 1] !== d) a.push(d); readDays.set(p, a); } }
+const SUBD = fs.existsSync("data/ai/submitted.json") ? JSON.parse(fs.readFileSync("data/ai/submitted.json", "utf8")) : {};
+const yHit = {}, yMiss = {}; let tH = 0, tM = 0;
+for (const [p, at] of Object.entries(SUBD)) { const t = Date.parse(at); if (NOW - t < 7 * DAY) continue; const f = family(p), d0 = iso(t), d1 = iso(t + 7 * DAY);
+  const hit = (readDays.get(p) ?? []).some((d) => d >= d0 && d <= d1); if (hit) { yHit[f] = (yHit[f] ?? 0) + 1; tH++; } else { yMiss[f] = (yMiss[f] ?? 0) + 1; tM++; } }
+const gYield = (tH + 1) / (tH + tM + 2);
+const famYield = (f) => ((yHit[f] ?? 0) + 4 * gYield) / ((yHit[f] ?? 0) + (yMiss[f] ?? 0) + 4); // prior worth 4 sends
+const yieldMul = (f) => Math.max(0.25, Math.min(3, famYield(f) / gYield));
+
 // ── 3. submit to Bing, most valuable first ────────────────────────────────────────────────────────────────────────────
 const SUB = "data/ai/submitted.json";
 const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
@@ -184,7 +198,7 @@ const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY, evDue = ev && NOW - last > 2 * DAY;
   const old = bingOld(p) && NOW - last > DAY, hot = surgePage.has(p) && NOW - last > 6 * 3.6e6;
-  return { p, value: x.value * (ev ? LIFT : 1) * (old ? 2 : 1) * boost(p), conf: x.conf, fam: x.fam, why: hot ? "SURGE" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+  return { p, value: x.value * (ev ? LIFT : 1) * (old ? 2 : 1) * boost(p) * yieldMul(x.fam), conf: x.conf, fam: x.fam, why: hot ? "SURGE" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).filter((q) => q.why && !SKIP.test(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
@@ -249,6 +263,10 @@ const gamma = (k) => { // Marsaglia–Tsang, k > 0
   for (;;) { let x, v; do { const u1 = Math.random(), u2 = Math.random(); x = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2); v = 1 + c * x; } while (v <= 0); v = v * v * v; const u = Math.random(); if (u < 1 - 0.0331 * x ** 4 || Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v; }
 };
 const pBeats = (cB, eB, cA, eA) => { let n = 0; for (let i = 0; i < 4000; i++) if (gamma(cB + 0.5) / (eB + 1) > gamma(cA + 0.5) / (eA + 1)) n++; return n / 4000; };
+// LESSONS: every finished test, won or lost, is remembered per wording. When a family needs its next test, the wording with
+// the best record across ALL families goes first (Beta mean), and a wording that lost on a family is never retried there.
+const LES = "data/ai/lessons.json", LESSONS = fs.existsSync(LES) ? JSON.parse(fs.readFileSync(LES, "utf8")) : {};
+const winRate = (t) => ((LESSONS[t]?.won ?? 0) + 1) / ((LESSONS[t]?.won ?? 0) + (LESSONS[t]?.lost ?? 0) + 2);
 const hk = fs.existsSync(HOOKS) ? JSON.parse(fs.readFileSync(HOOKS, "utf8")) : { experiments: [] };
 const expReport = [];
 for (const e of hk.experiments.filter((x) => x.status === "running" && x.started)) {
@@ -282,6 +300,7 @@ for (const e of hk.experiments.filter((x) => x.status === "running" && x.started
   e.last = { at: new Date().toISOString(), days: +days.toFixed(1), A, B, clickWorth: W, preDays: +preDays.toFixed(1), pBbeatsA: +pr.toFixed(3), enough };
   if (decision) {
     e.status = decision; e.ended = new Date().toISOString();
+    (LESSONS[e.template] ??= { won: 0, lost: 0, families: {} }); LESSONS[e.template][decision]++; LESSONS[e.template].families[e.family] = decision;
     append("data/ai/changes.jsonl", { at: e.ended, family: e.family, what: `hook test ${e.id} (${e.template}) ${decision.toUpperCase()} · P=${pr.toFixed(2)} after ${days.toFixed(0)}d · A ${A.clicks}/${A.pages}p · B ${B.clicks}/${B.pages}p` });
   }
   expReport.push({ id: e.id, family: e.family, template: e.template, ...e.last, status: e.status });
@@ -290,10 +309,11 @@ for (const e of hk.experiments.filter((x) => x.status === "running" && x.started
 for (const [famName, tpls] of Object.entries(LIBRARY)) {
   const mine = hk.experiments.filter((x) => x.family === famName);
   if (mine.some((x) => x.status === "running" || x.status === "won" || x.status === "paused")) continue;
-  const next = tpls.find((t) => !mine.some((x) => x.template === t));
+  const next = [...tpls].sort((a, b) => winRate(b) - winRate(a)).find((t) => !mine.some((x) => x.template === t));
   if (next) hk.experiments.push({ id: `${famName.replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "")}-${next}-${iso(NOW)}`, family: famName, template: next, split: 0.5, status: "running", started: new Date().toISOString() });
 }
 fs.writeFileSync(HOOKS, JSON.stringify(hk, null, 1));
+fs.writeFileSync(LES, JSON.stringify(LESSONS, null, 1));
 
 // ── 5. plan ───────────────────────────────────────────────────────────────────────────────────────────────────────────
 const pages = [...page.entries()].map(([p, x]) => ({ p, ...x }));
@@ -303,7 +323,7 @@ const famRows = [...fam.entries()].map(([f, F]) => ({ family: f, pages: F.pages,
 const plan = {
   at: new Date().toISOString(),
   surges: surges.slice(0, 15),
-  learned: { readCoverage: COVER, bingChecked: Object.keys(IXD).length, bingOldCopies: [...lastmod.keys()].filter(bingOld).length, famLagH, eventLift: LIFT, eventPages: evDates.size, releasesNext3d: [...lastmod.keys()].filter((p) => soon(p)).length, pagesKnown: page.size, pagesRead: pages.filter((x) => x.reads > 0).length, families: fam.size, globalCtr: r4(gCtr), globalAcc: r4(gAcc), halfLifeDays: HALF },
+  learned: { sendYield: { overall: +gYield.toFixed(3), judged: tH + tM, byFamily: Object.fromEntries(Object.keys({ ...yHit, ...yMiss }).map((f) => [f, +famYield(f).toFixed(3)])) }, hookLessons: LESSONS, readCoverage: COVER, bingChecked: Object.keys(IXD).length, bingOldCopies: [...lastmod.keys()].filter(bingOld).length, famLagH, eventLift: LIFT, eventPages: evDates.size, releasesNext3d: [...lastmod.keys()].filter((p) => soon(p)).length, pagesKnown: page.size, pagesRead: pages.filter((x) => x.reads > 0).length, families: fam.size, globalCtr: r4(gCtr), globalAcc: r4(gAcc), halfLifeDays: HALF },
   // read a lot, clicked rarely: ChatGPT answers from these pages without sending the person → give it a reason to link
   convert: pages.filter((x) => x.r7 >= 5 && x.conf >= 0.3).map((x) => ({ p: x.p, family: x.fam, reads7d: x.r7, clicks7d: x.c7, ctr: r4(x.ctr), missedAccounts: r2(x.reads * Math.max(0, gCtr - x.ctr) * x.acc) }))
     .filter((x) => x.missedAccounts > 0).sort((a, b) => b.missedAccounts - a.missedAccounts).slice(0, 25),
