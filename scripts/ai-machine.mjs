@@ -139,17 +139,33 @@ const rawLift = farN && nearN ? (nearR / nearN) / Math.max(0.05, farR / farN) : 
 const LIFT = +(((nearR * rawLift) + K_LIFT * 2) / (nearR + K_LIFT)).toFixed(2);
 const soon = (p) => { const set = evDates.get(p); if (!set) return null; for (const d of [...set].sort()) { const dd = (Date.parse(d) - Date.parse(iso(NOW))) / DAY; if (dd >= 0 && dd <= 3) return d; } return null; };
 
+// ── 2c. what the eyes saw (ai-eyes.mjs) ───────────────────────────────────────────────────────────────────────────────
+// Bing's copy vs the live page: a page changed AFTER Bing's last crawl is an old page to ChatGPT → it jumps the queue.
+// Per family: hours from sending to Bing crawling it (median), so the machine knows how fast each family pays off.
+// Cloudflare: share of ChatGPT's live reads the site's own counter saw (edge total vs counter) — read counts are scaled by it.
+const IXD = fs.existsSync("data/ai/index.json") ? JSON.parse(fs.readFileSync("data/ai/index.json", "utf8")) : {};
+const bingOld = (p) => { const c = IXD[p]?.crawled, lm = lastmod.get(p); return !!(c && lm && Date.parse(lm) > Date.parse(c) + 3.6e6); };
+const lagBy = {}; for (const [p, x] of Object.entries(IXD)) if (x.lagH != null) (lagBy[family(p)] ??= []).push(x.lagH);
+const med = (a) => { const b = [...a].sort((x, y) => x - y); return b.length ? b[Math.floor(b.length / 2)] : null; };
+const famLagH = Object.fromEntries(Object.entries(lagBy).map(([f, a]) => [f, { medianH: med(a), n: a.length }]));
+const EDGE = fs.existsSync("data/ai/edge.json") ? JSON.parse(fs.readFileSync("data/ai/edge.json", "utf8")) : null;
+const ours24 = crawl.filter((c) => NOW - Date.parse(c.to) < DAY).reduce((t, c) => t + (c.bots["ChatGPT-User"]?.hits ?? 0), 0);
+const edge24 = EDGE?.bots?.["ChatGPT-User"]?.total ?? null;
+const COVER = edge24 ? +Math.min(1, ours24 / edge24).toFixed(2) : null;
+
 // ── 3. submit to Bing, most valuable first ────────────────────────────────────────────────────────────────────────────
 const SUB = "data/ai/submitted.json";
 const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
 const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY, evDue = ev && NOW - last > 2 * DAY;
-  return { p, value: x.value * (ev ? LIFT : 1), conf: x.conf, fam: x.fam, why: evDue ? `release ${ev}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+  const old = bingOld(p) && NOW - last > DAY;
+  return { p, value: x.value * (ev ? LIFT : 1) * (old ? 2 : 1), conf: x.conf, fam: x.fam, why: evDue ? `release ${ev}` : old ? "Bing has an old copy" : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).filter((q) => q.why && !SKIP.test(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
-const rank = (a, b) => (b.why.startsWith("release") ? 1 : 0) - (a.why.startsWith("release") ? 1 : 0) || b.value - a.value;
+const urgent = (q) => (q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
+const rank = (a, b) => urgent(b) - urgent(a) || b.value - a.value;
 const exploit = [...queue].sort(rank);
 const seenFam = new Set(), explore = [];
 for (const q of [...queue].sort((a, b) => a.conf - b.conf || (Math.sin(a.p.length * 7 + NOW / DAY) - Math.sin(b.p.length * 7 + NOW / DAY)))) if (!seenFam.has(q.fam)) { seenFam.add(q.fam); explore.push({ ...q, why: q.why + " · explore" }); }
@@ -262,7 +278,7 @@ const famRows = [...fam.entries()].map(([f, F]) => ({ family: f, pages: F.pages,
   .sort((a, b) => b.value - a.value);
 const plan = {
   at: new Date().toISOString(),
-  learned: { eventLift: LIFT, eventPages: evDates.size, releasesNext3d: [...lastmod.keys()].filter((p) => soon(p)).length, pagesKnown: page.size, pagesRead: pages.filter((x) => x.reads > 0).length, families: fam.size, globalCtr: r4(gCtr), globalAcc: r4(gAcc), halfLifeDays: HALF },
+  learned: { readCoverage: COVER, bingChecked: Object.keys(IXD).length, bingOldCopies: [...lastmod.keys()].filter(bingOld).length, famLagH, eventLift: LIFT, eventPages: evDates.size, releasesNext3d: [...lastmod.keys()].filter((p) => soon(p)).length, pagesKnown: page.size, pagesRead: pages.filter((x) => x.reads > 0).length, families: fam.size, globalCtr: r4(gCtr), globalAcc: r4(gAcc), halfLifeDays: HALF },
   // read a lot, clicked rarely: ChatGPT answers from these pages without sending the person → give it a reason to link
   convert: pages.filter((x) => x.r7 >= 5 && x.conf >= 0.3).map((x) => ({ p: x.p, family: x.fam, reads7d: x.r7, clicks7d: x.c7, ctr: r4(x.ctr), missedAccounts: r2(x.reads * Math.max(0, gCtr - x.ctr) * x.acc) }))
     .filter((x) => x.missedAccounts > 0).sort((a, b) => b.missedAccounts - a.missedAccounts).slice(0, 25),

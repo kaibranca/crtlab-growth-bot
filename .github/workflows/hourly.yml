@@ -19,8 +19,8 @@ jobs:
       # day's AI clicks, re-plans, and sends Bing the next most valuable pages (quota paced over the day)
       - name: AI referral machine
         continue-on-error: true
-        run: node scripts/ai-pull.mjs && node scripts/ai-machine.mjs
-        env: { OPS_KEY: "${{ secrets.OPS_KEY }}", BING_API_KEY: "${{ secrets.BING_API_KEY }}" }
+        run: node scripts/ai-pull.mjs && node scripts/ai-eyes.mjs && node scripts/ai-machine.mjs
+        env: { OPS_KEY: "${{ secrets.OPS_KEY }}", BING_API_KEY: "${{ secrets.BING_API_KEY }}", CF_API_TOKEN: "${{ secrets.CF_API_TOKEN }}", CF_ZONE_ID: "${{ secrets.CF_ZONE_ID }}" }
       - name: Load alert (emails Kai if even one chart load was turned away, failed or slow in the last hour)
         continue-on-error: true
         run: node scripts/load-alert.mjs

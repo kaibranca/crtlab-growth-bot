@@ -2,7 +2,7 @@
 //  A. BING INDEX per page (GetUrlInfo): when Bing last crawled each page that matters. ChatGPT search reads Bing's index, so a
 //     page Bing hasn't re-crawled since a change is still the OLD page to ChatGPT (10-24: "paid only" copy → /backtest dropped).
 //     Learns per family how long sent → crawled takes. Checks /backtest + / every run, then winners, convert targets and
-//     the pages sent most recently (≤ 40 a run).
+//     the pages sent most recently (≤ 12 a run, hourly: Bing throttles GetUrlInfo per host).
 //  B. CLOUDFLARE: AI assistant requests per path at the EDGE, incl. those served from Cloudflare's cache that never reach
 //     the site's own counter — so the machine's read counts can be corrected (coverage ratio).
 // Writes data/ai/index.json + data/ai/edge.json; ai-machine.mjs reads both. Never touches the site.
@@ -20,15 +20,15 @@ if (process.env.BING_API_KEY) {
   for (const x of plan?.winners ?? []) want.add(x.p);
   for (const x of plan?.convert ?? []) want.add(x.p);
   // recently sent, not yet seen crawled after the send
-  for (const [p, at] of Object.entries(sub).sort((a, b) => b[1].localeCompare(a[1]))) { if (want.size >= 40) break; const c = ix[p]?.crawled; if (!c || c < at) want.add(p); }
+  for (const [p, at] of Object.entries(sub).sort((a, b) => b[1].localeCompare(a[1]))) { if (want.size >= 12) break; const c = ix[p]?.crawled; if (!c || c < at) want.add(p); }
   // anything checked less recently than 3 days, oldest first, to fill the run
-  for (const p of Object.keys(ix).sort((a, b) => (ix[a].checkedAt ?? "").localeCompare(ix[b].checkedAt ?? ""))) { if (want.size >= 40) break; if (NOW - Date.parse(ix[p].checkedAt ?? 0) > 3 * DAY) want.add(p); }
+  for (const p of Object.keys(ix).sort((a, b) => (ix[a].checkedAt ?? "").localeCompare(ix[b].checkedAt ?? ""))) { if (want.size >= 12) break; if (NOW - Date.parse(ix[p].checkedAt ?? 0) > 3 * DAY) want.add(p); }
   let ok = 0, fail = 0;
-  for (const p of [...want].slice(0, 40)) {
+  for (const p of [...want].slice(0, 12)) {
     const url = SITE + (p === "/" ? "/" : p);
     const r = await fetch(`https://ssl.bing.com/webmaster/api.svc/json/GetUrlInfo?siteUrl=${encodeURIComponent(SITE + "/")}&url=${encodeURIComponent(url)}&apikey=${process.env.BING_API_KEY}`).catch(() => null);
     const d = r && r.ok ? (await r.json()).d : null;
-    if (!d) { fail++; if (fail <= 3) console.log("GetUrlInfo failed", p, r?.status, r ? (await r.text().catch(() => "")).slice(0, 200) : "network"); await new Promise((z) => setTimeout(z, 1500)); continue; }
+    if (!d) { fail++; const t = r ? await r.text().catch(() => "") : "network"; if (/Throttle/i.test(t)) { console.log("GetUrlInfo throttled after", ok, "— rest next hour"); break; } if (fail <= 3) console.log("GetUrlInfo failed", p, r?.status, t.slice(0, 160)); continue; }
     await new Promise((z) => setTimeout(z, 400)); // gentle: Bing throttles bursts
     ok++;
     const ms = (s) => { const m = /\/Date\((-?\d+)/.exec(s ?? ""); return m && +m[1] > 0 ? iso(+m[1]) : null; };
