@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-10T03:37:35.186Z",
+ "updated": "2026-11-10T03:41:58.556Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -409,6 +409,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-10T03:41:46.110Z",
+   "job": "health",
+   "ok": false,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-10T03:37:35.124Z",
    "job": "indexnow",
    "ok": true,
@@ -557,12 +563,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "2 crawler visits · Amazonbot 2"
-  },
-  {
-   "at": "2026-11-10T01:30:58.423Z",
-   "job": "health",
-   "ok": false,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-10T01:27:30.621Z",
@@ -996,7 +996,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-10T01:30:58.423Z",
+  "at": "2026-11-10T03:41:46.110Z",
   "alerts": [
    "payment-failed"
   ],
@@ -1024,7 +1024,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "22h old · 31.6 MB"
+    "note": "1h old · 32.2 MB"
    },
    {
     "name": "market data fresh",
@@ -1049,7 +1049,7 @@
     ],
     [
      "user_stores",
-     39
+     38
     ],
     [
      "guest_presence",
@@ -1058,8 +1058,8 @@
    ]
   },
   "backup": {
-   "at": "2026-11-09T03:02:34.350Z",
-   "mb": 31.6,
+   "at": "2026-11-10T03:00:46.228Z",
+   "mb": 32.2,
    "count": 31
   },
   "data": {
@@ -1067,24 +1067,24 @@
   },
   "weight": {
    "home": {
-    "kb": 2589,
+    "kb": 2590,
     "scripts": 23,
-    "ttfbMs": 164
+    "ttfbMs": 237
    },
    "backtest": {
-    "kb": 1360,
+    "kb": 1448,
     "scripts": 13,
-    "ttfbMs": 187
+    "ttfbMs": 369
    },
    "chart app": {
-    "kb": 2589,
+    "kb": 2590,
     "scripts": 23,
-    "ttfbMs": 331
+    "ttfbMs": 481
    },
    "statistics": {
-    "kb": 1210,
+    "kb": 1211,
     "scripts": 14,
-    "ttfbMs": 162
+    "ttfbMs": 238
    }
   },
   "heavier": []
