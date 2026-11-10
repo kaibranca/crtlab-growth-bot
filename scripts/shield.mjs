@@ -20,7 +20,7 @@ const BAN_AT = 6;
 
 // 1. the last hour of blocks
 const since = new Date(Date.now() - 65 * 60e3).toISOString();
-const gq = `{viewer{zones(filter:{zoneTag:"${Z}"}){firewallEventsAdaptive(limit:10000,filter:{datetime_gt:"${since}",action_in:["block","challenge_failed","managed_challenge"]}){action clientIP clientAsn clientASNDescription source ruleId}}}}`;
+const gq = `{viewer{zones(filter:{zoneTag:"${Z}"}){firewallEventsAdaptive(limit:10000,filter:{datetime_gt:"${since}",action_in:["block","challenge_failed","managed_challenge"]}){action clientIP clientAsn clientASNDescription source ruleId userAgent clientRequestPath}}}}`;
 const g = await (await fetch(API + "/graphql", { method: "POST", headers: H, body: JSON.stringify({ query: gq }) })).json();
 if (g.errors) throw new Error("graphql " + JSON.stringify(g.errors).slice(0, 300));
 const ev = g.data.viewer.zones[0]?.firewallEventsAdaptive || [];
@@ -31,7 +31,7 @@ const per = new Map();
 for (const e of ev) {
   if (e.ruleId && e.ruleId === banRule) continue;
   const s = SCORE[e.source]; if (!s) continue;
-  const x = per.get(e.clientIP) || { n: 0, asn: e.clientAsn, org: e.clientASNDescription || "", src: {} }; x.n += s; x.src[e.source] = (x.src[e.source] || 0) + 1; per.set(e.clientIP, x);
+  const x = per.get(e.clientIP) || { n: 0, asn: e.clientAsn, org: e.clientASNDescription || "", src: {}, uas: new Set(), wp: 0, reqs: 0 }; x.n += s; x.src[e.source] = (x.src[e.source] || 0) + 1; x.uas.add(e.userAgent || ""); x.reqs++; if (/^\/(wp-|xmlrpc|\.env|\.git|cgi-bin|phpmyadmin|vendor\/phpunit)|\.php$/i.test(e.clientRequestPath || "")) x.wp++; per.set(e.clientIP, x);
 }
 
 // 3. current list: drop expired, collect what's already in
@@ -60,7 +60,9 @@ else if (lvl === "under_attack" && st.attackSince) { st.quiet = total < FLOOD / 
 const HOSTING_ASN = new Set([14618, 16509, 8987, 15169, 396982, 19527, 8075, 8068, 14061, 16276, 24940, 63949, 20473, 51167, 45102, 37963,
   132203, 45090, 31898, 13335, 60781, 9009, 12876, 213230, 36352, 46606, 62567, 53667, 202425, 211252, 49981, 136787, 55286, 40021, 397423, 14627]);
 const HOSTING_WORDS = /amazon|aws|google|microsoft|azure|digitalocean|ovh|hetzner|linode|akamai|vultr|choopa|contabo|alibaba|tencent|oracle|cloudflare|leaseweb|m247|scaleway|colocrossing|hostinger|hosting|host|server|cloud|data ?cent|datacamp|vps|dedicated|ionos|hostwinds|psychz|quadranet|frantech|ponynet|tzulo|serverion|hostroyale/i;
-const isHosting = (x) => HOSTING_ASN.has(x.asn) || HOSTING_WORDS.test(x.org || "");
+const SCRIPT_UA = /^$|go-http-client|python|curl|wget|libwww|okhttp|java\/|httpclient|axios|node-fetch|scrapy|zgrab|masscan|nuclei|nikto|sqlmap/i;
+const scripted = (x) => [...(x.uas || [])].every((u) => SCRIPT_UA.test(u)) || (x.reqs >= 5 && x.wp === x.reqs);
+const isHosting = (x) => HOSTING_ASN.has(x.asn) || HOSTING_WORDS.test(x.org || "") || scripted(x);
 const humanBans = fresh.filter(([, x]) => !isHosting(x));
 const changed = mode !== lvl;
 if (fresh.length) console.log(`bans: ${fresh.length} (${fresh.length - humanBans.length} cloud/hosting, silent · ${humanBans.length} could be a person)`);
