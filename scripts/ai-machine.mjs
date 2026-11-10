@@ -194,6 +194,67 @@ const verdicts = changes.map((c) => {
   return { ...c, before, after, verdict: !after ? `measuring (day ${Math.floor(age)} of 7)` : lift > 0.05 ? "WORKS — keep, apply to the family" : lift < -0.05 ? "WORSE — revert or rethink" : "no clear change yet" };
 });
 
+// ── 4b. HOOK EXPERIMENTS — judge, decide, move on (site renders them: crtlab-standalone lib/aiHooks.ts) ─────────────
+// Half of a family's pages carry the hook (arm B = bucket(id+path) < split·100, the site's own function). Metric: AI-sent
+// value per page-day (live reads + clicks weighted by what a click is worth; exposure = pages × days running). Bayesian (Gamma–Poisson): the test
+// stops the moment P(B beats A) is clear — ≥ 0.95 → WON (every page gets it), ≤ 0.05 → LOST — after at least 5 days, or
+// at 28 days without a clear answer (lost: the simpler page stays). Then the next approved template for that family starts
+// by itself, so the machine keeps testing forever. Templates (wording) are only ever ones Kai pushed in the site's code.
+const HOOKS = "data/ai/hooks.json";
+const LIBRARY = { "/economic-calendar/<event>": ["replay-last", "practise-next"], "/news/<release>": ["replay-last", "practise-next"] };
+const bucket = (str) => { let h = 0x811c9dc5; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h % 100; };
+const gamma = (k) => { // Marsaglia–Tsang, k > 0
+  if (k < 1) return gamma(k + 1) * Math.pow(Math.random(), 1 / k);
+  const d = k - 1 / 3, c = 1 / Math.sqrt(9 * d);
+  for (;;) { let x, v; do { const u1 = Math.random(), u2 = Math.random(); x = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2); v = 1 + c * x; } while (v <= 0); v = v * v * v; const u = Math.random(); if (u < 1 - 0.0331 * x ** 4 || Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v; }
+};
+const pBeats = (cB, eB, cA, eA) => { let n = 0; for (let i = 0; i < 4000; i++) if (gamma(cB + 0.5) / (eB + 1) > gamma(cA + 0.5) / (eA + 1)) n++; return n / 4000; };
+const hk = fs.existsSync(HOOKS) ? JSON.parse(fs.readFileSync(HOOKS, "utf8")) : { experiments: [] };
+const expReport = [];
+for (const e of hk.experiments.filter((x) => x.status === "running" && x.started)) {
+  const t0 = Date.parse(e.started), days = Math.max(0.5, (NOW - t0) / DAY), day0 = iso(t0);
+  const fam = [...lastmod.keys()].filter((p) => family(p) === e.family);
+  const armOf = (p) => (bucket(e.id + p) < e.split * 100 ? "B" : "A");
+  // per page: PRE = the 14 days before the start, POST = since the start. Each page is its own baseline (difference in
+  // differences), because pages differ hugely (a CPI page is read 50× more than a minor one) and a plain arm total would
+  // just measure which arm happened to get the busy pages.
+  const W = Math.round(1 / Math.max(0.005, gCtr));
+  const logStart = crawl.length ? Date.parse(crawl[0].from) : t0, pre0 = Math.max(t0 - 14 * DAY, logStart), preDays = Math.max(0.5, (t0 - pre0) / DAY);
+  const pg = new Map(fam.map((p) => [p, { arm: armOf(p), pre: 0, post: 0, clicks: 0, accounts: 0, reads: 0 }]));
+  for (const win of crawl) { const t = Date.parse(win.to); if (t < pre0) continue; const post = t >= t0;
+    for (const [bot, v] of Object.entries(win.bots)) if (LIVE.test(bot)) for (const [p0, n] of v.top) { const x = pg.get(p0.split("?")[0].replace(/\/$/, "") || "/"); if (!x) continue; if (post) { x.post += n; x.reads += n; } else x.pre += n; } }
+  for (const [k, [vis, acc]] of Object.entries(clicks)) { const [d, eng, p0] = k.split("|"); if (!AIENG.test(eng)) continue; const x = pg.get(p0.replace(/\/$/, "") || "/"); if (!x) continue; const t = Date.parse(d + "T12:00:00Z"); if (t < pre0) continue;
+    if (t >= t0) { x.post += vis * W; x.clicks += vis; x.accounts += acc; } else x.pre += vis * W; }
+  const arms = { A: [], B: [] }; for (const x of pg.values()) if (x.pre + x.post > 0) arms[x.arm].push(x);
+  const sum = (a, f) => a.reduce((t, x) => t + f(x), 0);
+  const A = { pages: [...pg.values()].filter((x) => x.arm === "A").length, active: arms.A.length, reads: sum(arms.A, (x) => x.reads), clicks: sum(arms.A, (x) => x.clicks), accounts: sum(arms.A, (x) => x.accounts) };
+  const B = { pages: [...pg.values()].filter((x) => x.arm === "B").length, active: arms.B.length, reads: sum(arms.B, (x) => x.reads), clicks: sum(arms.B, (x) => x.clicks), accounts: sum(arms.B, (x) => x.accounts) };
+  // lift = (post per day) / (pre per day), +1 smoothing; P(B's lift > A's) by resampling PAGES (2,000 bootstrap draws)
+  const lift = (a) => ((sum(a, (x) => x.post) + 1) / days) / ((sum(a, (x) => x.pre) + 1) / preDays);
+  const draw = (a) => Array.from({ length: a.length }, () => a[Math.floor(Math.random() * a.length)]);
+  let wins = 0; const N = 2000; for (let i = 0; i < N; i++) if (lift(draw(arms.B)) > lift(draw(arms.A))) wins++;
+  const pr = arms.A.length && arms.B.length ? wins / N : 0.5;
+  const enough = preDays >= 5 && sum(arms.A, (x) => x.pre) >= 30 && sum(arms.B, (x) => x.pre) >= 30 && sum(arms.A, (x) => x.post) + sum(arms.B, (x) => x.post) >= 60;
+  A.lift = +lift(arms.A).toFixed(2); B.lift = +lift(arms.B).toFixed(2);
+  let decision = null;
+  // checked every hour, so the bar is high (0.99 / 0.01) to keep false wins rare; at least 7 days (a full week cycle)
+  if (days >= 7 && enough && pr >= 0.99) decision = "won"; else if (days >= 7 && enough && pr <= 0.01) decision = "lost"; else if (days >= 28) decision = "lost";
+  e.last = { at: new Date().toISOString(), days: +days.toFixed(1), A, B, clickWorth: W, preDays: +preDays.toFixed(1), pBbeatsA: +pr.toFixed(3), enough };
+  if (decision) {
+    e.status = decision; e.ended = new Date().toISOString();
+    append("data/ai/changes.jsonl", { at: e.ended, family: e.family, what: `hook test ${e.id} (${e.template}) ${decision.toUpperCase()} · P=${pr.toFixed(2)} after ${days.toFixed(0)}d · A ${A.clicks}/${A.pages}p · B ${B.clicks}/${B.pages}p` });
+  }
+  expReport.push({ id: e.id, family: e.family, template: e.template, ...e.last, status: e.status });
+}
+// keep every family testing: nothing running and nothing won → start the next approved template it hasn't tried
+for (const [famName, tpls] of Object.entries(LIBRARY)) {
+  const mine = hk.experiments.filter((x) => x.family === famName);
+  if (mine.some((x) => x.status === "running" || x.status === "won" || x.status === "paused")) continue;
+  const next = tpls.find((t) => !mine.some((x) => x.template === t));
+  if (next) hk.experiments.push({ id: `${famName.replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "")}-${next}-${iso(NOW)}`, family: famName, template: next, split: 0.5, status: "running", started: new Date().toISOString() });
+}
+fs.writeFileSync(HOOKS, JSON.stringify(hk, null, 1));
+
 // ── 5. plan ───────────────────────────────────────────────────────────────────────────────────────────────────────────
 const pages = [...page.entries()].map(([p, x]) => ({ p, ...x }));
 const r2 = (n) => +n.toFixed(2), r4 = (n) => +n.toFixed(4);
@@ -214,6 +275,7 @@ const plan = {
   families: famRows,
   submitted: { status: bingStatus, count: submitted.length, top: submitted.slice(0, 15).map((q) => `${q.p} (${q.why})`), queueLeft: Math.max(0, queue.length - submitted.length) },
   verdicts,
+  experiments: expReport,
 };
 fs.writeFileSync("data/ai/plan.json", JSON.stringify(plan, null, 1));
 

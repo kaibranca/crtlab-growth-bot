@@ -1,0 +1,19 @@
+{
+ "note": "AI hook tests. The site (crtlab-standalone lib/aiHooks.ts) renders approved templates only; this file only picks template + split + status. 'paused' = not shown; flip to running with a started time once the site code is live.",
+ "experiments": [
+  {
+   "id": "cal-replay-last-1",
+   "family": "/economic-calendar/<event>",
+   "template": "replay-last",
+   "split": 0.5,
+   "status": "paused"
+  },
+  {
+   "id": "rel-replay-last-1",
+   "family": "/news/<release>",
+   "template": "replay-last",
+   "split": 0.5,
+   "status": "paused"
+  }
+ ]
+}
