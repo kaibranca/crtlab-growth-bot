@@ -1,0 +1,17 @@
+name: shield-explain
+# read-only: what did recently banned IPs do, and did they also browse like a real user? (IPs printed hashed — public logs)
+on:
+  workflow_dispatch:
+    inputs:
+      hours: { description: "look back this many hours", required: false, default: "6" }
+permissions: { contents: read }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node scripts/shield-explain.mjs
+        env: { HOURS: "${{ inputs.hours }}", CF_API_TOKEN: "${{ secrets.CF_API_TOKEN }}", CF_ZONE_ID: "${{ secrets.CF_ZONE_ID }}", CF_ACCOUNT_ID: "${{ secrets.CF_ACCOUNT_ID }}", CF_BAN_LIST: "${{ secrets.CF_BAN_LIST }}", OPS_KEY: "${{ secrets.OPS_KEY }}" }
