@@ -47,6 +47,7 @@ for (const x of rlog.slice(-30)) act.push({ at: x.postedAt, job: "reels", ok: tr
 const sh = fs.existsSync("data/shield.json") ? JSON.parse(fs.readFileSync("data/shield.json", "utf8")) : null;
 const shield = sh && { at: sh.at, lastHour: sh.lastHour, blocked24h: (sh.history || []).filter((h) => Date.parse(h.at) >= since(1)).reduce((s, h) => s + h.blocked, 0), banned7d: (sh.history || []).filter((h) => Date.parse(h.at) >= since(7)).reduce((s, h) => s + h.banned, 0) };
 if (sh) for (const h of (sh.history || []).slice(-24)) if (h.blocked || h.banned) act.push({ at: h.at, job: "shield", ok: true, text: `Cloudflare blocked ${h.blocked} attack request${h.blocked === 1 ? "" : "s"}${h.banned ? ` · banned ${h.banned} IP${h.banned === 1 ? "" : "s"} for 7 days` : ""}` });
+for (const r of readLines("data/ai/runs.jsonl").slice(-20)) act.push({ at: r.at, job: "ai-machine", ok: !/HTTP [45]/.test(r.bing), text: `learned from ${r.pagesRead} AI-read pages · read→click ${(r.gCtr * 100).toFixed(1)}% · click→account ${(r.gAcc * 100).toFixed(0)}% · ${r.submitted} pages sent to Bing` });
 act.sort((x, y) => (x.at < y.at ? 1 : -1));
 fs.writeFileSync("data/summary.json", JSON.stringify({
   updated: new Date().toISOString(),
@@ -57,6 +58,9 @@ fs.writeFileSync("data/summary.json", JSON.stringify({
   seo: { bing: bw.slice(-26), weekly: gw.slice(-26), changes: seo.filter((c) => c.kind === "change").slice(-20), outcomes: seo.filter((c) => c.kind === "outcome").slice(-20), gaps: gaps.slice(0, 15) },
   health: health && { at: health.at, alerts: health.alerts, checks: health.checks, db: health.db, backup: health.backup, data: health.data, weight: health.weight, heavier: health.heavier },
   links: links && { at: links.at, checked: links.checked, broken: links.broken.slice(0, 20) },
+  // AI REFERRAL MACHINE (11-10): the score curve + what it learned + what it wants next (scripts/ai-machine.mjs)
+  ai: (() => { const pl = fs.existsSync("data/ai/plan.json") ? JSON.parse(fs.readFileSync("data/ai/plan.json", "utf8")) : null; if (!pl) return null;
+    return { at: pl.at, learned: pl.learned, score: readLines("data/ai/score.jsonl").slice(-30), convert: pl.convert.slice(0, 6), expand: pl.expand.slice(0, 6), winners: pl.winners.slice(0, 6), submitted: pl.submitted, verdicts: pl.verdicts.slice(-8) }; })(),
   indexnow: ix.slice(-30).map((x) => ({ at: x.at, submitted: x.submitted, status: x.status })),
   reels, shield,
 }, null, 1));
