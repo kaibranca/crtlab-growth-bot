@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-10T18:18:24.672Z",
+ "updated": "2026-11-10T18:41:56.565Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -330,11 +330,11 @@
   "topPages7d": [
    [
     "/",
-    21802
+    21760
    ],
    [
     "/backtest",
-    3515
+    3493
    ],
    [
     "/economic-calendar",
@@ -342,11 +342,11 @@
    ],
    [
     "/pricing",
-    1308
+    1299
    ],
    [
     "/features",
-    1218
+    1210
    ],
    [
     "/news",
@@ -354,23 +354,23 @@
    ],
    [
     "/tools",
-    922
+    916
    ],
    [
     "/prop-firm-challenge-simulator",
-    576
+    571
    ],
    [
     "/learn",
     565
    ],
    [
-    "/tools/best-time-to-trade",
-    564
+    "/faq",
+    558
    ],
    [
-    "/faq",
-    563
+    "/tools/best-time-to-trade",
+    558
    ],
    [
     "/answers",
@@ -386,19 +386,19 @@
    ],
    [
     "/recap",
-    429
+    420
    ],
    [
     "/tools/position-size-calculator",
-    410
+    405
    ],
    [
     "/blog",
-    409
+    401
    ],
    [
     "/partnerships",
-    380
+    374
    ],
    [
     "/tools/risk-reward-calculator",
@@ -406,11 +406,17 @@
    ],
    [
     "/tools/margin-calculator",
-    240
+    235
    ]
   ]
  },
  "activity": [
+  {
+   "at": "2026-11-10T18:41:46.599Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh"
+  },
   {
    "at": "2026-11-10T18:18:24.595Z",
    "job": "indexnow",
@@ -518,12 +524,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "225 crawler visits · Amazonbot 132 · ChatGPT-User 53 · OAI-SearchBot 29 · YandexBot 3"
-  },
-  {
-   "at": "2026-11-10T16:35:12.554Z",
-   "job": "health",
-   "ok": false,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-10T16:18:19.809Z",
@@ -999,10 +999,8 @@
   ]
  },
  "health": {
-  "at": "2026-11-10T16:35:12.554Z",
-  "alerts": [
-   "payment-failed"
-  ],
+  "at": "2026-11-10T18:41:46.599Z",
+  "alerts": [],
   "checks": [
    {
     "name": "database size",
@@ -1021,13 +1019,13 @@
    },
    {
     "name": "payments",
-    "ok": false,
-    "note": "failed payment"
+    "ok": true,
+    "note": "ok"
    },
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "14h old · 32.2 MB"
+    "note": "16h old · 32.2 MB"
    },
    {
     "name": "market data fresh",
@@ -1044,7 +1042,7 @@
     ],
     [
      "ui_events",
-     58
+     59
     ],
     [
      "meter_identities",
@@ -1072,22 +1070,22 @@
    "home": {
     "kb": 2592,
     "scripts": 23,
-    "ttfbMs": 271
+    "ttfbMs": 236
    },
    "backtest": {
     "kb": 1448,
     "scripts": 13,
-    "ttfbMs": 236
+    "ttfbMs": 212
    },
    "chart app": {
     "kb": 2592,
     "scripts": 23,
-    "ttfbMs": 730
+    "ttfbMs": 475
    },
    "statistics": {
     "kb": 1211,
     "scripts": 14,
-    "ttfbMs": 210
+    "ttfbMs": 188
    }
   },
   "heavier": []
