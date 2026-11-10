@@ -28,7 +28,8 @@ if (process.env.BING_API_KEY) {
     const url = SITE + (p === "/" ? "/" : p);
     const r = await fetch(`https://ssl.bing.com/webmaster/api.svc/json/GetUrlInfo?siteUrl=${encodeURIComponent(SITE + "/")}&url=${encodeURIComponent(url)}&apikey=${process.env.BING_API_KEY}`).catch(() => null);
     const d = r && r.ok ? (await r.json()).d : null;
-    if (!d) { fail++; continue; }
+    if (!d) { fail++; if (fail <= 3) console.log("GetUrlInfo failed", p, r?.status, r ? (await r.text().catch(() => "")).slice(0, 200) : "network"); await new Promise((z) => setTimeout(z, 1500)); continue; }
+    await new Promise((z) => setTimeout(z, 400)); // gentle: Bing throttles bursts
     ok++;
     const ms = (s) => { const m = /\/Date\((-?\d+)/.exec(s ?? ""); return m && +m[1] > 0 ? iso(+m[1]) : null; };
     const prev = ix[p] ?? {}, crawled = ms(d.LastCrawledDate), found = ms(d.DiscoveryDate);
