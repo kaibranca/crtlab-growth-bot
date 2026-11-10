@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-10T13:18:18.036Z",
+ "updated": "2026-11-10T13:30:56.538Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -411,6 +411,18 @@
  },
  "activity": [
   {
+   "at": "2026-11-10T13:30:46.211Z",
+   "job": "health",
+   "ok": false,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
+   "at": "2026-11-10T13:21:26.981Z",
+   "job": "reels",
+   "ok": true,
+   "text": "posted \"ASIA OR TRAP?\" (AUDUSD) to Instagram"
+  },
+  {
    "at": "2026-11-10T13:18:17.972Z",
    "job": "indexnow",
    "ok": true,
@@ -469,12 +481,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "386 crawler visits · OAI-SearchBot 203 · Amazonbot 138 · ChatGPT-User 38 · Bingbot 4"
-  },
-  {
-   "at": "2026-11-10T12:41:48.204Z",
-   "job": "health",
-   "ok": false,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-10T12:41:15.426Z",
@@ -883,12 +889,6 @@
    "job": "indexnow",
    "ok": true,
    "text": "submitted 4 changed pages · HTTP 200"
-  },
-  {
-   "at": "2026-11-10T05:18:03.917Z",
-   "job": "watchdog",
-   "ok": true,
-   "text": "18/18 checks pass · avg 231 ms"
   }
  ],
  "seo": {
@@ -998,7 +998,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-10T12:41:48.204Z",
+  "at": "2026-11-10T13:30:46.211Z",
   "alerts": [
    "payment-failed"
   ],
@@ -1026,7 +1026,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "10h old · 32.2 MB"
+    "note": "11h old · 32.2 MB"
    },
    {
     "name": "market data fresh",
@@ -1071,22 +1071,22 @@
    "home": {
     "kb": 2592,
     "scripts": 23,
-    "ttfbMs": 193
+    "ttfbMs": 173
    },
    "backtest": {
     "kb": 1448,
     "scripts": 13,
-    "ttfbMs": 229
+    "ttfbMs": 494
    },
    "chart app": {
     "kb": 2592,
     "scripts": 23,
-    "ttfbMs": 445
+    "ttfbMs": 436
    },
    "statistics": {
-    "kb": 1211,
+    "kb": 1210,
     "scripts": 14,
-    "ttfbMs": 214
+    "ttfbMs": 158
    }
   },
   "heavier": []
@@ -2308,21 +2308,23 @@
  "reels": {
   "live": true,
   "posted7d": {
-   "ig": 5,
+   "ig": 6,
    "fb": 6
   },
   "views7d": 830,
   "site7d": 0,
   "signups7d": 0,
-  "next": [
-   {
-    "plat": "ig",
-    "at": "2026-11-10T13:16:00.000Z",
-    "title": "ASIA OR TRAP?",
-    "mk": "AUDUSD"
-   }
-  ],
+  "next": [],
   "last": [
+   {
+    "at": "2026-11-10T13:21:26.981Z",
+    "plat": "ig",
+    "title": "ASIA OR TRAP?",
+    "mk": "AUDUSD",
+    "views": null,
+    "site": null,
+    "link": "https://www.instagram.com/reel/DfkADKuDgCF/"
+   },
    {
     "at": "2026-11-10T12:41:15.426Z",
     "plat": "fb",
@@ -2367,15 +2369,6 @@
     "views": null,
     "site": null,
     "link": "https://www.instagram.com/reel/DfiGxf2DqYP/"
-   },
-   {
-    "at": "2026-11-09T13:46:07.793Z",
-    "plat": "fb",
-    "title": "POV YOU WAITED",
-    "mk": "AUDUSD",
-    "views": null,
-    "site": null,
-    "link": "https://www.facebook.com/reel/2037841227620370/"
    }
   ]
  },
