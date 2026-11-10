@@ -95,6 +95,10 @@ for (const [name, path] of PAGES) {
 append(`data/health/${month()}.jsonl`, { at: out.at, db: out.db?.mb, weight: Object.fromEntries(Object.entries(out.weight).map(([k, v]) => [k, v.kb])) });
 // a page that got >15% heavier than its 7-day median is worth a look (not an alert — a line on the board)
 {
+  { const rl = fs.existsSync("data/radar/runs.jsonl") ? fs.readFileSync("data/radar/runs.jsonl", "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)) : [];
+    const lr = rl.at(-1), ageH = lr ? (Date.now() - Date.parse(lr.at)) / 3.6e6 : null, ok = !lr || (ageH < 36 && !(lr.planned > 0 && lr.asked === 0));
+    if (lr) { check("AI radar", ok, `${Math.round(ageH)}h ago · asked ${lr.asked}/${lr.planned}${lr.error ? " · " + lr.error.slice(0, 60) : ""}`);
+      if (!ok) alerts.push(["radar", ageH >= 36 ? `The AI radar has not run for ${Math.round(ageH)}h (daily.yml dispatches radar.yml).` : `The AI radar ran but asked nothing: ${lr.error}`]); } }
   const hist = fs.existsSync(`data/health/${month()}.jsonl`) ? fs.readFileSync(`data/health/${month()}.jsonl`, "utf8").trim().split("\n").map((l) => JSON.parse(l)).slice(-60, -1) : [];
   out.heavier = Object.entries(out.weight).filter(([k, v]) => { const xs = hist.map((h) => h.weight?.[k]).filter(Boolean).sort((a, b) => a - b); return xs.length >= 6 && v.kb > xs[xs.length >> 1] * 1.15; }).map(([k]) => k);
 }

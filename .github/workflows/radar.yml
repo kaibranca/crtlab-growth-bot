@@ -1,0 +1,22 @@
+name: radar
+# AI RADAR (11-10): asks an OpenAI model with web search the traders' questions CRTLAB should win, learns who gets
+# recommended and why, steers the AI machine's Bing pushes (data/radar/boost.json). Self-paced to a $2.50/month cap
+# (+$1 flex only on a confirmed win). Started once a day by daily.yml; GitHub only — never touches the CRTLAB backend.
+on:
+  workflow_dispatch:
+    inputs:
+      calls: { description: "max questions today (default 10; the budget pacer usually asks fewer)", required: false, default: "" }
+concurrency: { group: radar, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node scripts/ai-radar.mjs
+        env: { OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}", RADAR_CALLS: "${{ inputs.calls }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
+      - run: node scripts/summary.mjs
+      - run: bash scripts/push.sh "radar $(date -u +%F)"

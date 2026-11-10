@@ -11,6 +11,12 @@ const surges = readLines("data/ai/surges.jsonl").filter((x) => NOW - Date.parse(
 const runs = readLines("data/ai/runs.jsonl").filter((x) => NOW - Date.parse(x.at) < 7 * DAY);
 const sent = runs.reduce((t, r) => t + (r.submitted || 0), 0);
 const L = plan.learned;
+const R = J("data/radar/plan.json"), rs = readLines("data/radar/score.jsonl"), rw = (a, b) => { const x = rs.filter((s) => { const t = NOW - Date.parse(s.day + "T12:00:00Z"); return t >= a * DAY && t < b * DAY; }); return x.length ? x.at(-1).sov : null; };
+const radarLines = R ? [``, `AI RADAR — what AI answers recommend (share of voice, value-weighted)`, `  Now ${(R.sov * 100).toFixed(0)}%${rw(7, 14) != null ? ` (a week ago ${(rw(7, 14) * 100).toFixed(0)}%)` : ""} · spend this month ~$${R.monthCost} of $${R.budget}`,
+  ...Object.entries(R.clusters).sort((a, b) => b[1].value - a[1].value).map(([c, x]) => x.n < 1 ? `  ${c.padEnd(7)} not asked yet` : `  ${c.padEnd(7)} ${(x.share * 100).toFixed(0).padStart(3)}% mentioned · ${(x.cited * 100).toFixed(0)}% cited · ${(x.first * 100).toFixed(0)}% first (${Math.round(x.n)} answers)`),
+  ...(R.events.filter((e) => NOW - Date.parse(e.at) < 7 * DAY).map((e) => `  ${e.kind}: "${e.q}"`)),
+  ...(R.gaps.slice(0, 4).map((g) => `  GAP: "${g.q}" → wins: ${g.winners.slice(0, 3).join(", ")} · our page ${g.ourPage}`)),
+  ...([...new Set(R.wrong.map((w) => w.what))].slice(0, 3).map((w) => `  WRONG about CRTLAB: ${w}`))] : [];
 const lines = [
   `AI REFERRALS, last 7 days vs the 7 before`,
   `  Accounts from AI answers: ${now.accounts} (${ch(now.accounts, prev.accounts)})`,
@@ -31,6 +37,11 @@ const lines = [
   `  Convert (read a lot, rarely clicked): ${plan.convert.slice(0, 4).map((x) => x.p).join(", ") || "–"}`,
   `  Expand (best accounts per page): ${plan.expand.slice(0, 4).map((x) => x.family).join(", ") || "–"}`,
   `  Winners to protect: ${plan.winners.slice(0, 4).map((x) => x.p).join(", ") || "–"}`,
+  ...radarLines,
+  // budget advice (Kai 11-10): $2.50 until the radar proves a fix works; then $5 doubles learning speed. Never guess.
+  ...(R ? [R.events.some((e) => e.kind === "WON" && NOW - Date.parse(e.at) < 14 * DAY)
+    ? `  BUDGET: a confirmed win in the last 14 days — raising the radar to $5/month (RADAR_BUDGET) now doubles how fast it learns.`
+    : `  BUDGET: keep $2.50/month — no confirmed win yet, so more money would only watch the scoreboard more closely.`] : []),
 ];
 const text = lines.join("\n");
 console.log(text);

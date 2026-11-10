@@ -176,6 +176,10 @@ for (const [f, n] of famNow) { const { mu, x } = zOf(n, famBase.get(f) ?? 0); if
 surges.sort((a, b) => b.z - a.z);
 const surgePage = new Set(surges.filter((x) => x.kind === "page").map((x) => x.key)), surgeFam = new Set(surges.map((x) => x.family));
 const boost = (p) => (surgePage.has(p) ? 4 : surgeFam.has(family(p)) ? 1.5 : 1);
+// AI RADAR (11-10, scripts/ai-radar.mjs): pages that should win an AI answer but don't (absent ×2), are being cited (×1.5,
+// keep fresh) or just WON a question (×3, go all in). Multipliers are learned by the radar from its own verdicts.
+const radar = (() => { try { return JSON.parse(fs.readFileSync("data/radar/boost.json", "utf8")).pages || {}; } catch { return {}; } })();
+const radarMul = (p) => radar[p]?.mul || 1;
 { const seen = new Set(readLines("data/ai/surges.jsonl").filter((x) => NOW - Date.parse(x.at) < 2 * DAY).map((x) => x.kind + x.key));
   for (const x of surges) if (!seen.has(x.kind + x.key)) append("data/ai/surges.jsonl", { at: new Date().toISOString(), ...x }); }
 
@@ -220,12 +224,12 @@ const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
 const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY, evDue = ev && NOW - last > 2 * DAY;
-  const old = bingOld(p) && NOW - last > DAY, hot = surgePage.has(p) && NOW - last > 6 * 3.6e6;
-  return { p, value: x.value * (ev ? LIFT : 1) * (old ? 2 : 1) * boost(p) * yieldMul(x.fam) * weekMul(x.fam), conf: x.conf, fam: x.fam, why: hot ? "SURGE" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+  const old = bingOld(p) && NOW - last > DAY, hot = surgePage.has(p) && NOW - last > 6 * 3.6e6, rad = radar[p] && NOW - last > 3 * DAY;
+  return { p, value: x.value * (ev ? LIFT : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * weekMul(x.fam), conf: x.conf, fam: x.fam, why: hot ? "SURGE" : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).filter((q) => q.why && !SKIP.test(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
-const urgent = (q) => (q.why === "SURGE" ? 3 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
+const urgent = (q) => (q.why === "SURGE" || q.why === "RADAR won" ? 3 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
 const rank = (a, b) => urgent(b) - urgent(a) || b.value - a.value;
 const exploit = [...queue].sort(rank);
 const seenFam = new Set(), explore = [];
