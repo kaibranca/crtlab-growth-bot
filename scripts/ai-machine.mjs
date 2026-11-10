@@ -296,7 +296,9 @@ for (const e of hk.experiments.filter((x) => x.status === "running" && x.started
   A.lift = +lift(arms.A).toFixed(2); B.lift = +lift(arms.B).toFixed(2);
   let decision = null;
   // checked every hour, so the bar is high (0.99 / 0.01) to keep false wins rare; at least 7 days (a full week cycle)
-  if (days >= 7 && enough && pr >= 0.99) decision = "won"; else if (days >= 7 && enough && pr <= 0.01) decision = "lost"; else if (days >= 28) decision = "lost";
+  const truthBad = fs.existsSync("data/ai/truth.json") && JSON.parse(fs.readFileSync("data/ai/truth.json", "utf8")).problems?.some((x) => !/: missing "/.test(x));
+  if (truthBad) decision = null; // the site contradicts itself → any lift or drop is not the hook's doing: no verdict until it agrees again
+  else if (days >= 7 && enough && pr >= 0.99) decision = "won"; else if (days >= 7 && enough && pr <= 0.01) decision = "lost"; else if (days >= 28) decision = "lost";
   e.last = { at: new Date().toISOString(), days: +days.toFixed(1), A, B, clickWorth: W, preDays: +preDays.toFixed(1), pBbeatsA: +pr.toFixed(3), enough };
   if (decision) {
     e.status = decision; e.ended = new Date().toISOString();
@@ -320,8 +322,10 @@ const pages = [...page.entries()].map(([p, x]) => ({ p, ...x }));
 const r2 = (n) => +n.toFixed(2), r4 = (n) => +n.toFixed(4);
 const famRows = [...fam.entries()].map(([f, F]) => ({ family: f, pages: F.pages, inSitemap: F.inMap, reads: r2(F.reads), clicks: r2(F.clicks), accounts: r2(F.accounts), readsPerPage: r2(F.readsPerPage), ctr: r4(F.ctr), acc: r4(F.acc), value: r4(F.value) }))
   .sort((a, b) => b.value - a.value);
+const TRUTH = fs.existsSync("data/ai/truth.json") ? JSON.parse(fs.readFileSync("data/ai/truth.json", "utf8")) : null;
 const plan = {
   at: new Date().toISOString(),
+  truth: TRUTH && { at: TRUTH.at, ok: TRUTH.ok, problems: TRUTH.problems },
   surges: surges.slice(0, 15),
   learned: { sendYield: { overall: +gYield.toFixed(3), judged: tH + tM, byFamily: Object.fromEntries(Object.keys({ ...yHit, ...yMiss }).map((f) => [f, +famYield(f).toFixed(3)])) }, hookLessons: LESSONS, readCoverage: COVER, bingChecked: Object.keys(IXD).length, bingOldCopies: [...lastmod.keys()].filter(bingOld).length, famLagH, eventLift: LIFT, eventPages: evDates.size, releasesNext3d: [...lastmod.keys()].filter((p) => soon(p)).length, pagesKnown: page.size, pagesRead: pages.filter((x) => x.reads > 0).length, families: fam.size, globalCtr: r4(gCtr), globalAcc: r4(gAcc), halfLifeDays: HALF },
   // read a lot, clicked rarely: ChatGPT answers from these pages without sending the person → give it a reason to link
