@@ -61,6 +61,14 @@ fs.writeFileSync("data/summary.json", JSON.stringify({
   // AI REFERRAL MACHINE (11-10): the score curve + what it learned + what it wants next (scripts/ai-machine.mjs)
   ai: (() => { const pl = fs.existsSync("data/ai/plan.json") ? JSON.parse(fs.readFileSync("data/ai/plan.json", "utf8")) : null; if (!pl) return null;
     return { at: pl.at, learned: pl.learned, score: readLines("data/ai/score.jsonl").slice(-30), convert: pl.convert.slice(0, 6), expand: pl.expand.slice(0, 6), winners: pl.winners.slice(0, 6), submitted: pl.submitted, verdicts: pl.verdicts.slice(-8) }; })(),
+  // 11-10 MACHINES pages on the Growth board: what every learning machine found, small, counts only
+  machines: (() => { const J = (f) => (fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, "utf8")) : null);
+    const b = J("data/behaviour/plan.json"), a = J("data/ai/plan.json"), m = J("data/mobile/report.json");
+    return {
+      behaviour: b && { at: b.at, days: b.daysLearned, golden: Object.fromEntries(Object.entries(b.golden).map(([k, v]) => [k, { base: v.baselineBack7, signup: v.baselineSignup, top: v.top.slice(0, 7) }])), anti: Object.fromEntries(Object.entries(b.anti).map(([k, v]) => [k, v.slice(0, 4)])), stalls: Object.fromEntries(Object.entries(b.stalls).map(([k, v]) => [k, v.slice(0, 6)])), breaks: b.breaks, rises: b.rises.slice(0, 5), countries: b.countries.slice(0, 10) },
+      ai: a && { surges: (a.surges ?? []).slice(0, 6), convert: (a.convert ?? []).slice(0, 5), expand: (a.expand ?? []).slice(0, 5), experiments: (a.experiments ?? []).map((e) => ({ id: e.id, status: e.status, days: e.days, p: e.pBbeatsA })), weekly: a.learned?.weekly?.peaks?.slice(0, 5) ?? [], eventLift: a.learned?.eventLift, ctr: a.learned?.globalCtr, acc: a.learned?.globalAcc },
+      devices: m && { at: m.at, checked: m.checked, confirmed: (m.confirmed ?? []).slice(0, 8).map((x) => ({ p: x.p, d: x.d, theme: x.theme, kind: x.kind, detail: x.detail })) },
+    }; })(),
   indexnow: ix.slice(-30).map((x) => ({ at: x.at, submitted: x.submitted, status: x.status })),
   reels, shield,
 }, null, 1));
