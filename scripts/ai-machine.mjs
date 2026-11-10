@@ -41,6 +41,8 @@ export function family(p) {
   if (["statistics", "answers", "reference", "blog", "learn", "indicators", "hub"].includes(s[0])) return s[1] ? `/${s[0]}/<page>` : `/${s[0]}`;
   if (s.length === 1 && /-challenge-simulator$/.test(s[0])) return "/<firm>-challenge-simulator";
   if (s.length === 1 && new RegExp(`^backtest-(${MKT})$`).test(s[0])) return "/backtest-<market>";
+  // factory pages (11-10): one family per strategy, so the machine learns which strategy pages pay, across all markets
+  { const m = new RegExp(`^(${MKT})-(fair-value-gaps|order-blocks|crt|previous-day-high-low|asian-range)$`).exec(s[0] ?? ""); if (s.length === 1 && m) return `/<market>-${m[2]}`; }
   if (s.length === 1 && new RegExp(`^(${MKT})-[a-z-]+$`).test(s[0]) && !/backtest|replay|software/.test(s[0])) return "/<market>-<concept>";
   if (s.length === 1 && /(backtester|backtesting|backtest)/.test(s[0])) return "/<strategy>-backtester";
   if (s.length === 1 && new RegExp(`^(${MKT})(ny)?$`).test(s[0])) return "/<market> (app)";
