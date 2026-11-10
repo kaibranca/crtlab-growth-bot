@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-10T12:18:22.635Z",
+ "updated": "2026-11-10T12:41:56.700Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -411,6 +411,18 @@
  },
  "activity": [
   {
+   "at": "2026-11-10T12:41:48.204Z",
+   "job": "health",
+   "ok": false,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
+   "at": "2026-11-10T12:41:15.426Z",
+   "job": "reels",
+   "ok": true,
+   "text": "posted \"ASIA OR TRAP?\" (AUDUSD) to Facebook"
+  },
+  {
    "at": "2026-11-10T12:18:22.548Z",
    "job": "indexnow",
    "ok": true,
@@ -529,12 +541,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "328 crawler visits · OAI-SearchBot 159 · Amazonbot 136 · ChatGPT-User 17 · Bingbot 6"
-  },
-  {
-   "at": "2026-11-10T10:32:00.705Z",
-   "job": "health",
-   "ok": false,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-10T10:18:14.860Z",
@@ -883,12 +889,6 @@
    "job": "watchdog",
    "ok": true,
    "text": "18/18 checks pass · avg 151 ms"
-  },
-  {
-   "at": "2026-11-10T04:17:58.908Z",
-   "job": "shield",
-   "ok": true,
-   "text": "Cloudflare blocked 4 attack requests"
   }
  ],
  "seo": {
@@ -998,7 +998,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-10T10:32:00.705Z",
+  "at": "2026-11-10T12:41:48.204Z",
   "alerts": [
    "payment-failed"
   ],
@@ -1006,7 +1006,7 @@
    {
     "name": "database size",
     "ok": true,
-    "note": "274 MB"
+    "note": "275 MB"
    },
    {
     "name": "signups flowing",
@@ -1026,16 +1026,16 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "8h old · 32.2 MB"
+    "note": "10h old · 32.2 MB"
    },
    {
     "name": "market data fresh",
     "ok": true,
-    "note": "newest candle 4d old"
+    "note": "newest candle 1d old"
    }
   ],
   "db": {
-   "mb": 274,
+   "mb": 275,
    "tables": [
     [
      "user_events",
@@ -1043,7 +1043,7 @@
     ],
     [
      "ui_events",
-     57
+     58
     ],
     [
      "meter_identities",
@@ -1065,28 +1065,28 @@
    "count": 31
   },
   "data": {
-   "newestDays": 4
+   "newestDays": 1
   },
   "weight": {
    "home": {
-    "kb": 2590,
+    "kb": 2592,
     "scripts": 23,
-    "ttfbMs": 216
+    "ttfbMs": 193
    },
    "backtest": {
     "kb": 1448,
     "scripts": 13,
-    "ttfbMs": 223
+    "ttfbMs": 229
    },
    "chart app": {
-    "kb": 2590,
+    "kb": 2592,
     "scripts": 23,
-    "ttfbMs": 444
+    "ttfbMs": 445
    },
    "statistics": {
     "kb": 1211,
     "scripts": 14,
-    "ttfbMs": 204
+    "ttfbMs": 214
    }
   },
   "heavier": []
@@ -2309,18 +2309,12 @@
   "live": true,
   "posted7d": {
    "ig": 5,
-   "fb": 5
+   "fb": 6
   },
   "views7d": 830,
   "site7d": 0,
   "signups7d": 0,
   "next": [
-   {
-    "plat": "fb",
-    "at": "2026-11-10T12:36:00.000Z",
-    "title": "ASIA OR TRAP?",
-    "mk": "AUDUSD"
-   },
    {
     "plat": "ig",
     "at": "2026-11-10T13:16:00.000Z",
@@ -2329,6 +2323,15 @@
    }
   ],
   "last": [
+   {
+    "at": "2026-11-10T12:41:15.426Z",
+    "plat": "fb",
+    "title": "ASIA OR TRAP?",
+    "mk": "AUDUSD",
+    "views": null,
+    "site": null,
+    "link": "https://www.facebook.com/reel/2977394795950430/"
+   },
    {
     "at": "2026-11-09T23:21:13.661Z",
     "plat": "fb",
@@ -2373,15 +2376,6 @@
     "views": null,
     "site": null,
     "link": "https://www.facebook.com/reel/2037841227620370/"
-   },
-   {
-    "at": "2026-11-09T13:45:44.530Z",
-    "plat": "ig",
-    "title": "POV YOU WAITED",
-    "mk": "AUDUSD",
-    "views": null,
-    "site": null,
-    "link": "https://www.instagram.com/reel/DfheCHKAPYC/"
    }
   ]
  },
