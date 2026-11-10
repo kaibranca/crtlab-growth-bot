@@ -1,0 +1,23 @@
+name: device-qa
+on:
+  workflow_dispatch:
+    inputs:
+      guard: { description: "1 = after-deploy guard (top pages, iPhone + desktop)", required: false, default: "" }
+      build: { description: "build id that triggered it", required: false, default: "" }
+concurrency: { group: device-qa, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm i --no-save playwright@1.48.2 && npx playwright install --with-deps chromium
+      - run: node scripts/mobile-qa.mjs
+        env: { GUARD: "${{ inputs.guard }}", BUILD_ID: "${{ inputs.build }}", RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: device-shots, path: shots, retention-days: 7, if-no-files-found: ignore }
+      - run: bash scripts/push.sh "device qa $(date -u +%FT%H)"

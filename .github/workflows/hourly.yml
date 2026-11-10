@@ -3,7 +3,7 @@ on:
   # was schedule 17 * * * *: now started by the Cloudflare cron worker (cron-worker/worker.js). GitHub's own schedule drops runs and doubled them (11-09).
   workflow_dispatch:
 concurrency: { group: data, cancel-in-progress: false }
-permissions: { contents: write }
+permissions: { contents: write, actions: write }
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -17,6 +17,10 @@ jobs:
         env: { OPS_KEY: "${{ secrets.OPS_KEY }}" }
       # AI REFERRAL MACHINE (11-10) — the main short-term engine: learns every hour from the reads just drained + the
       # day's AI clicks, re-plans, and sends Bing the next most valuable pages (quota paced over the day)
+      - name: Deploy watch → device QA guard after each site deploy
+        continue-on-error: true
+        run: node scripts/deploy-watch.mjs
+        env: { GH_TOKEN: "${{ github.token }}" }
       - name: AI referral machine
         continue-on-error: true
         run: node scripts/ai-pull.mjs && node scripts/ai-eyes.mjs && node scripts/ai-machine.mjs; node scripts/ai-truth.mjs
