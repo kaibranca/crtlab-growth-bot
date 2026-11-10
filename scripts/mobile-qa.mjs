@@ -66,6 +66,9 @@ fs.mkdirSync("shots", { recursive: true });
 for (const d of USE) for (const theme of THEMES) {
   const { share, ...ctxOpts } = DEV[d];
   const ctx = await browser.newContext({ ...ctxOpts, colorScheme: theme, userAgent: ctxOpts.userAgent ?? undefined });
+  // INVISIBLE TO ANALYTICS (11-10: Kai saw "an American user spamming pages" in the live feed — it was this robot on GitHub's US
+  // servers). Every tracking call is blocked, so the robot never appears in the activity feed, visits, guests, meters or events.
+  await ctx.route(/\/api\/(track|events|wall-event|stats|candles-meter|system-updates)(\/|\?|$)/, (r) => r.abort());
   for (const p of pages) {
     const page = await ctx.newPage(), consoleErr = [];
     page.on("pageerror", (e) => consoleErr.push(String(e.message).slice(0, 140)));
