@@ -346,6 +346,15 @@ const plan = {
 };
 fs.writeFileSync("data/ai/plan.json", JSON.stringify(plan, null, 1));
 
+// ── 5b. CURATOR → llms.txt "Right now" (site lib/aiCurated.ts renders it; paths + reason codes only, no text) ──────────
+// surging pages first, then pages whose release is due in the next 3 days, then the pages that send the most accounts.
+{ const picks = [], seen = new Set(), add = (path, why, date) => { if (seen.has(path) || !lastmod.has(path) || picks.length >= 12) return; seen.add(path); picks.push(date ? { path, why, date } : { path, why }); };
+  for (const x of surges.filter((y) => y.kind === "page")) if (picks.length < 4) add(x.key, "surge");
+  const due = [...lastmod.keys()].map((p) => ({ p, d: soon(p), v: page.get(p)?.value ?? 0 })).filter((x) => x.d).sort((a, b) => b.v - a.v);
+  for (const x of due) { if (picks.filter((q) => q.why === "release").length >= 4) break; add(x.p, "release", x.d); }
+  for (const x of plan.winners) add(x.p, "winner");
+  fs.writeFileSync("data/ai/llms.json", JSON.stringify({ at: plan.at, picks }, null, 1)); }
+
 // ── 6. score: one line per finished day (re-written while the day can still change) ──────────────────────────────────
 const SC = "data/ai/score.jsonl";
 const old = readLines(SC).filter((s) => NOW - Date.parse(s.day + "T00:00:00Z") > 4 * DAY);
