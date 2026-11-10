@@ -30,7 +30,7 @@ const SKIP = /^\/(api|_next|admin|account|auth|login|signup|unsubscribe|app)(\/|
 
 // FAMILY = the page's template. Order matters: specific first.
 const MKT = "xauusd|xagusd|eurusd|gbpusd|usdjpy|audusd|usdcad|usdchf|nzdusd|nas100|sp500|us30|ger40|usoil|btcusd|ethusd|solusd|gold|silver|oil|nasdaq|dax|bitcoin|ethereum|crypto|forex|stocks|[a-z]{1,5}";
-const HUBS = new Set(["/backtest", "/pricing", "/features", "/faq", "/backtesting-software", "/market-replay-software", "/tradingview-bar-replay-alternative", "/daily-market-data", "/what-traders-backtest", "/economic-calendar", "/news", "/recap", "/tools", "/statistics", "/answers", "/blog", "/learn"]);
+const HUBS = new Set(["/backtest", "/pricing", "/features", "/faq", "/backtesting-software", "/market-replay-software", "/tradingview-bar-replay-alternative", "/daily-market-data", "/what-traders-backtest", "/week-ahead", "/economic-calendar", "/news", "/recap", "/tools", "/statistics", "/answers", "/blog", "/learn"]);
 export function family(p) {
   if (p === "/" || HUBS.has(p)) return p; // the site's key pages are each their own family
   const s = p.split("/").filter(Boolean);
@@ -128,7 +128,7 @@ for (const e of upcoming) {
   tie(calPages.find((p) => { const leaf = p.split("/")[2]; return pre.some((c) => leaf === `${c}-${sl}`); }), e.date);
   for (const c of pre.slice(1)) if (calPages.includes(`/economic-calendar/${c}`)) tie(`/economic-calendar/${c}`, e.date);
   if (e.fam) { tie(`/news/${e.fam}`, e.date); for (const p of lastmod.keys()) if (p.startsWith(`/news/${e.fam}/`)) tie(p, e.date); }
-  if (e.imp >= 2) tie("/economic-calendar", e.date);
+  if (e.imp >= 2) { tie("/economic-calendar", e.date); tie("/week-ahead", e.date); } // the week-ahead page is about every high-impact release
 }
 const near = (d, set) => { const t = Date.parse(d); for (const x of set) if (Math.abs(Date.parse(x) - t) <= DAY) return true; return false; };
 let nearR = 0, farR = 0, nearN = 0, farN = 0;
