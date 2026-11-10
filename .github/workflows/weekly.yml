@@ -25,6 +25,10 @@ jobs:
         run: node scripts/linkcheck.mjs
         timeout-minutes: 6
         continue-on-error: true
+      - name: AI engine Monday report (email)
+        run: node scripts/ai-report.mjs
+        continue-on-error: true
+        env: { RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
       - run: node scripts/summary.mjs
       - name: Publish title fixes to the site (deploys on Railway)
         run: |
