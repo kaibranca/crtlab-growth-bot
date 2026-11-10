@@ -23,6 +23,11 @@ for (const p of PAGES) {
   // a page may QUOTE an old claim to correct it ("…is outdated", "no longer exists") — that helps the assistants, not a problem
   for (const [re, what] of NEVER) { const g = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g"); let m; while ((m = g.exec(t))) { const near = t.slice(Math.max(0, m.index - 200), m.index + 200); if (/outdated|no longer|not true|is wrong|was wrong|used to|formerly|since 6 November/i.test(near)) continue; break; } if (m) problems.push(`${p}: says "${what}" — "…${t.slice(Math.max(0, m.index - 60), m.index + 60).trim()}…"`); }
   if (PRICE_PAGES.includes(p)) for (const [re, what] of MUST) if (!re.test(t)) problems.push(`${p}: missing "${what}"`);
+  // 11-10: the daily data date must be current wherever it is stated (llms.txt said "2 November" for an hour after a deploy).
+  // Session markets: Friday's data stands until Tuesday morning, plus a holiday → stale only when > 5 days old.
+  { const m = /Data through (?:\w+day, )?(\d{1,2} \w+ \d{4})/i.exec(t) || /through (?:\w{3} )?(\d{1,2} \w{3,9})(?: (\d{4}))?/i.exec(t);
+    if (m && /llms|^\/$|daily-market-data|backtest$/.test(p)) { const d = Date.parse(m[1].includes(" 20") ? m[1] : `${m[1]} ${new Date().getUTCFullYear()}`);
+      if (Number.isFinite(d) && Date.now() - d > 5.5 * 86_400_000) problems.push(`${p}: says data through ${m[1]} — stale (contradicts the daily update)`); } }
 }
 const at = new Date().toISOString(), today = at.slice(0, 10);
 const sentToday = new Set(prev.emailed?.day === today ? prev.emailed.keys : []);
