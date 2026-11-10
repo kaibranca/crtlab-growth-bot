@@ -122,12 +122,13 @@ const CC = { USD: ["us", "united-states"], EUR: ["ez", "euro-area", "eurozone", 
 const upcoming = fs.existsSync("data/events/upcoming.json") ? JSON.parse(fs.readFileSync("data/events/upcoming.json", "utf8")).events ?? [] : [];
 const calPages = [...lastmod.keys()].filter((p) => p.startsWith("/economic-calendar/"));
 const evDates = new Map(); // path → Set(yyyy-mm-dd)
-const tie = (p, d) => { if (!p) return; let x = evDates.get(p); if (!x) evDates.set(p, (x = new Set())); x.add(d); };
+const evFam = new Map(); // path → release family (cpi, ppi…) for the per-release lift
+const tie = (p, d, f) => { if (!p) return; let x = evDates.get(p); if (!x) evDates.set(p, (x = new Set())); x.add(d); if (f && !evFam.has(p)) evFam.set(p, f); };
 for (const e of upcoming) {
   const sl = slug(e.title), pre = CC[e.cur] ?? [];
   tie(calPages.find((p) => { const leaf = p.split("/")[2]; return pre.some((c) => leaf === `${c}-${sl}`); }), e.date);
   for (const c of pre.slice(1)) if (calPages.includes(`/economic-calendar/${c}`)) tie(`/economic-calendar/${c}`, e.date);
-  if (e.fam) { tie(`/news/${e.fam}`, e.date); for (const p of lastmod.keys()) if (p.startsWith(`/news/${e.fam}/`)) tie(p, e.date); }
+  if (e.fam) { tie(`/news/${e.fam}`, e.date, e.fam); for (const p of lastmod.keys()) if (p.startsWith(`/news/${e.fam}/`)) tie(p, e.date, e.fam); }
   if (e.imp >= 2) { tie("/economic-calendar", e.date); tie("/week-ahead", e.date); } // the week-ahead page is about every high-impact release
 }
 const near = (d, set) => { const t = Date.parse(d); for (const x of set) if (Math.abs(Date.parse(x) - t) <= DAY) return true; return false; };
@@ -139,6 +140,13 @@ for (const [p, set] of evDates) for (const d of daysSeen) { const n = readsBy.ge
 const K_LIFT = 30; // reads of evidence before the learned lift outweighs the prior of 2
 const rawLift = farN && nearN ? (nearR / nearN) / Math.max(0.05, farR / farN) : 2;
 const LIFT = +(((nearR * rawLift) + K_LIFT * 2) / (nearR + K_LIFT)).toFixed(2);
+// PER-RELEASE LIFT (11-11): ChatGPT is not asked about every release equally (PPI/gold went 0.5 → 42 reads on PPI day). Same
+// near/far split per release family, shrunk toward the global LIFT until that family has K_LIFT reads of its own evidence.
+const famNF = {}; for (const [p, set] of evDates) { const f = evFam.get(p); if (!f) continue; const o = (famNF[f] ??= { nR: 0, nN: 0, fR: 0, fN: 0 });
+  for (const d of daysSeen) { const n = readsBy.get(p + "|" + d) ?? 0; if (near(d, set)) { o.nR += n; o.nN++; } else { o.fR += n; o.fN++; } } }
+const famLift = Object.fromEntries(Object.entries(famNF).map(([f, o]) => { const raw = o.nN && o.fN ? (o.nR / o.nN) / Math.max(0.05, o.fR / o.fN) : LIFT;
+  return [f, +Math.min(8, ((o.nR * raw) + K_LIFT * LIFT) / (o.nR + K_LIFT)).toFixed(2)]; }));
+const liftOf = (p) => famLift[evFam.get(p)] ?? LIFT;
 const soon = (p) => { const set = evDates.get(p); if (!set) return null; for (const d of [...set].sort()) { const dd = (Date.parse(d) - Date.parse(iso(NOW))) / DAY; if (dd >= 0 && dd <= 3) return d; } return null; };
 
 // ── 2c. what the eyes saw (ai-eyes.mjs) ───────────────────────────────────────────────────────────────────────────────
@@ -175,13 +183,38 @@ for (const [p, n] of evBase) famBase.set(family(p), (famBase.get(family(p)) ?? 0
 for (const [f, n] of famNow) { const { mu, x } = zOf(n, famBase.get(f) ?? 0); if (x >= 3 && n >= 2.5 * mu && n >= 12) surges.push({ kind: "family", key: f, family: f, last24h: n, normal: mu, z: +x.toFixed(1) }); }
 surges.sort((a, b) => b.z - a.z);
 const surgePage = new Set(surges.filter((x) => x.kind === "page").map((x) => x.key)), surgeFam = new Set(surges.map((x) => x.family));
-const boost = (p) => (surgePage.has(p) ? 4 : surgeFam.has(family(p)) ? 1.5 : 1);
+// EARLY TRACTION (11-11, Kai: "compound what grows quick"): a surge needs one big day; a page can also be CLIMBING — its
+// last 3 days against its own 11 days before (Poisson, mu floored at 0.3/day so brand-new factory pages qualify once read).
+// RISING = z ≥ 2.5, ≥ 2× its rate, ≥ 6 events. Rising pages get ×2.5 and are re-sent every 2 days while they climb.
+const ev3 = new Map(), evPrev = new Map();
+for (const win of crawl) { const age = NOW - Date.parse(win.to); if (age > 14 * DAY) continue;
+  for (const [bot, v] of Object.entries(win.bots)) if (LIVE.test(bot)) for (const [p0, n] of v.top) { const p = p0.split("?")[0].replace(/\/$/, "") || "/"; if (SKIP.test(p)) continue; const m = age < 3 * DAY ? ev3 : evPrev; m.set(p, (m.get(p) ?? 0) + n); } }
+for (const [k, [vis]] of Object.entries(clicks)) { const [d, eng, p0] = k.split("|"); if (!AIENG.test(eng)) continue; const age = NOW - Date.parse(d + "T12:00:00Z"); if (age > 14 * DAY) continue; const p = p0.replace(/\/$/, "") || "/"; const m = age < 3 * DAY ? ev3 : evPrev; m.set(p, (m.get(p) ?? 0) + vis * CW); }
+const prevDays = Math.max(1, Math.min(11, baseDays - 2)), rising = [];
+for (const [p, n] of ev3) { if (surgePage.has(p)) continue; const mu = 3 * Math.max(0.3, (evPrev.get(p) ?? 0) / prevDays), z = (n - mu) / Math.sqrt(mu);
+  if (z >= 2.5 && n >= 2 * mu && n >= 6) rising.push({ kind: "rising", key: p, family: family(p), last3d: n, normal3d: +mu.toFixed(1), z: +z.toFixed(1) }); }
+rising.sort((a, b) => b.z - a.z);
+const risePage = new Set(rising.map((x) => x.key));
+// SISTER PAGES: when one page is hot, the same question is about to be asked about its neighbours. A hot /news/ppi/gold
+// lifts every PPI market page and every gold reaction page; a hot single release lifts its reaction pages; a hot
+// /<market>-<concept> lifts that concept on the other markets. Sisters get ×2 and go to Bing the same hour (once a day).
+const sisKeys = (p) => { const s = p.split("/").filter(Boolean);
+  if (s[0] === "news" && s.length === 3) return [`/news/${s[1]}/`, `/news/*/${s[2]}`];
+  if (s[0] === "news" && s.length === 2) { const f = s[1].replace(/-\d{4}-\d{2}-\d{2}$/, ""); return [`/news/${f}/`]; }
+  const m = /^[a-z0-9]+-(.+)$/.exec(s[0] ?? ""); if (s.length === 1 && family(p) === "/<market>-<concept>" && m) return [`*-${m[1]}`];
+  return []; };
+const sisMatch = (k, q) => (k.startsWith("/news/*/") ? /^\/news\/[^/]+\/[^/]+$/.test(q) && q.endsWith("/" + k.slice(8)) : k.startsWith("*-") ? q.split("/").length === 2 && q.endsWith(k.slice(1)) && family(q) === "/<market>-<concept>" : q.startsWith(k));
+// the 3 hottest surges + 3 hottest climbers only, so sisters never eat the whole Bing quota
+const hot = [...surges.filter((x) => x.kind === "page").slice(0, 3), ...rising.slice(0, 3)].map((x) => x.key), sisterOf = new Map();
+{ const keys = hot.flatMap((h) => sisKeys(h).map((k) => [k, h]));
+  if (keys.length) for (const q of lastmod.keys()) { if (surgePage.has(q) || risePage.has(q)) continue; const hit = keys.find(([k]) => sisMatch(k, q)); if (hit) sisterOf.set(q, hit[1]); } }
+const boost = (p) => (surgePage.has(p) ? 4 : risePage.has(p) ? 2.5 : sisterOf.has(p) ? 2 : surgeFam.has(family(p)) ? 1.5 : 1);
 // AI RADAR (11-10, scripts/ai-radar.mjs): pages that should win an AI answer but don't (absent ×2), are being cited (×1.5,
 // keep fresh) or just WON a question (×3, go all in). Multipliers are learned by the radar from its own verdicts.
 const radar = (() => { try { return JSON.parse(fs.readFileSync("data/radar/boost.json", "utf8")).pages || {}; } catch { return {}; } })();
 const radarMul = (p) => radar[p]?.mul || 1;
 { const seen = new Set(readLines("data/ai/surges.jsonl").filter((x) => NOW - Date.parse(x.at) < 2 * DAY).map((x) => x.kind + x.key));
-  for (const x of surges) if (!seen.has(x.kind + x.key)) append("data/ai/surges.jsonl", { at: new Date().toISOString(), ...x }); }
+  for (const x of [...surges, ...rising]) if (!seen.has(x.kind + x.key)) append("data/ai/surges.jsonl", { at: new Date().toISOString(), ...x }); }
 
 // ── 2e. LEARNING FROM FAILURE — Bing sends that went nowhere ─────────────────────────────────────────────────────────
 // Every page sent ≥ 7 days ago either got a live AI read within 7 days of the send (a hit) or not (a miss). Per family:
@@ -215,6 +248,16 @@ for (const [f, a] of Object.entries(famDow)) {
 }
 const tom = (new Date(NOW).getUTCDay() + 1) % 7, aft = (tom + 1) % 7;
 const weekMul = (f) => { const L = lift[f]; if (!L) return 1; const m = Math.max(L[tom], L[aft]); return m > 1.15 ? Math.min(2.5, m) : 1; };
+// LONG CYCLE (11-11, Kai: "machines for every cycle"): hour = surge, 3 days = rising, week = weekly cycle, release = lift,
+// and this — 4 weeks: each family's live reads in the last 14 days vs the 14 before. A family that keeps growing gets more of
+// the quota (up to ×2), one that is fading less (down to ×0.7). Shrunk by K_T reads so a small family can't swing it.
+const K_T = 20, famT = {};
+for (const win of crawl) { const age = NOW - Date.parse(win.to); if (age > 28 * DAY) continue;
+  for (const [bot, v] of Object.entries(win.bots)) if (LIVE.test(bot)) for (const [p0, n] of v.top) { const p = p0.split("?")[0].replace(/\/$/, "") || "/"; if (SKIP.test(p)) continue; const o = (famT[family(p)] ??= [0, 0]); o[age < 14 * DAY ? 0 : 1] += n; } }
+// warm-up: off until the read log really holds 28 days (it starts 11-01 for full paths), else "before" is just missing data
+const T_ON = crawl.length && NOW - Date.parse(crawl[0].from) >= 27.5 * DAY;
+const trendMul = (f) => { const o = famT[f]; if (!o || !T_ON) return 1; return +Math.max(0.7, Math.min(2, (o[0] + K_T) / (o[1] + K_T))).toFixed(2); };
+const trends = Object.entries(famT).map(([f, [now, before]]) => ({ f, now, before, mul: trendMul(f) })).filter((x) => x.mul !== 1).sort((a, b) => b.mul - a.mul);
 const DN = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const weekPeaks = Object.entries(lift).map(([f, L]) => ({ f, peak: DN[L.indexOf(Math.max(...L))], lift: Math.max(...L) })).filter((x) => x.lift > 1.15).sort((a, b) => b.lift - a.lift).slice(0, 10);
 
@@ -224,12 +267,12 @@ const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
 const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY, evDue = ev && NOW - last > 2 * DAY;
-  const old = bingOld(p) && NOW - last > DAY, hot = surgePage.has(p) && NOW - last > 6 * 3.6e6, rad = radar[p] && NOW - last > 3 * DAY;
-  return { p, value: x.value * (ev ? LIFT : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * weekMul(x.fam), conf: x.conf, fam: x.fam, why: hot ? "SURGE" : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+  const old = bingOld(p) && NOW - last > DAY, hotP = surgePage.has(p) && NOW - last > 6 * 3.6e6, riseP = risePage.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
+  return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * weekMul(x.fam) * trendMul(x.fam), conf: x.conf, fam: x.fam, why: hotP ? "SURGE" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).filter((q) => q.why && !SKIP.test(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
-const urgent = (q) => (q.why === "SURGE" || q.why === "RADAR won" ? 3 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
+const urgent = (q) => (q.why === "SURGE" || q.why === "RADAR won" ? 3 : q.why === "RISING" || q.why.startsWith("SISTER") ? 2 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
 const rank = (a, b) => urgent(b) - urgent(a) || b.value - a.value;
 const exploit = [...queue].sort(rank);
 const seenFam = new Set(), explore = [];
@@ -246,7 +289,7 @@ if (process.env.BING_API_KEY && queue.length) {
   const quota = await fetch(api("GetUrlSubmissionQuota") + `&siteUrl=${encodeURIComponent(SITE + "/")}`).then((r) => r.json()).then((j) => j.d?.DailyQuota ?? 0).catch(() => 0);
   // paced over the day (it runs hourly): releases due go at once, the rest share what is left of today's quota over the hours
   // left, so pages created later today (a fresh release, a new recap) still find room
-  const hoursLeft = Math.max(1, 24 - new Date().getUTCHours()), due = queue.filter((q) => q.why.startsWith("release")).length;
+  const hoursLeft = Math.max(1, 24 - new Date().getUTCHours()), due = queue.filter((q) => urgent(q) >= 2).length;
   const batch = pick(Math.min(quota, Math.max(Math.min(due, quota), Math.ceil(quota / hoursLeft))));
   if (batch.length) {
     const r = await fetch(api("SubmitUrlBatch"), { method: "POST", headers: { "content-type": "application/json; charset=utf-8" }, body: JSON.stringify({ siteUrl: SITE + "/", urlList: batch.map((q) => SITE + (q.p === "/" ? "" : q.p)) }) }).catch((e) => ({ status: String(e) }));
@@ -354,6 +397,10 @@ const plan = {
   at: new Date().toISOString(),
   truth: TRUTH && { at: TRUTH.at, ok: TRUTH.ok, problems: TRUTH.problems },
   surges: surges.slice(0, 15),
+  rising: rising.slice(0, 15),
+  sisters: [...sisterOf].slice(0, 40).map(([p, of]) => ({ p, of })),
+  releaseLift: { global: LIFT, byRelease: famLift },
+  trends: T_ON ? trends.slice(0, 20) : "warming up (needs 28 days of reads)",
   learned: { weekly: { daysSeen: dowDays, peaks: weekPeaks }, sendYield: { overall: +gYield.toFixed(3), judged: tH + tM, byFamily: Object.fromEntries(Object.keys({ ...yHit, ...yMiss }).map((f) => [f, +famYield(f).toFixed(3)])) }, hookLessons: LESSONS, readCoverage: COVER, bingChecked: Object.keys(IXD).length, bingOldCopies: [...lastmod.keys()].filter(bingOld).length, famLagH, eventLift: LIFT, eventPages: evDates.size, releasesNext3d: [...lastmod.keys()].filter((p) => soon(p)).length, pagesKnown: page.size, pagesRead: pages.filter((x) => x.reads > 0).length, families: fam.size, globalCtr: r4(gCtr), globalAcc: r4(gAcc), halfLifeDays: HALF },
   // read a lot, clicked rarely: ChatGPT answers from these pages without sending the person → give it a reason to link
   convert: pages.filter((x) => x.r7 >= 5 && x.conf >= 0.3).map((x) => ({ p: x.p, family: x.fam, reads7d: x.r7, clicks7d: x.c7, ctr: r4(x.ctr), missedAccounts: r2(x.reads * Math.max(0, gCtr - x.ctr) * x.acc) }))
@@ -375,6 +422,7 @@ fs.writeFileSync("data/ai/plan.json", JSON.stringify(plan, null, 1));
 // surging pages first, then pages whose release is due in the next 3 days, then the pages that send the most accounts.
 { const picks = [], seen = new Set(), add = (path, why, date) => { if (seen.has(path) || !lastmod.has(path) || picks.length >= 12) return; seen.add(path); picks.push(date ? { path, why, date } : { path, why }); };
   for (const x of surges.filter((y) => y.kind === "page")) if (picks.length < 4) add(x.key, "surge");
+  for (const x of rising) if (picks.length < 6) add(x.key, "rising");
   const due = [...lastmod.keys()].map((p) => ({ p, d: soon(p), v: page.get(p)?.value ?? 0 })).filter((x) => x.d).sort((a, b) => b.v - a.v);
   for (const x of due) { if (picks.filter((q) => q.why === "release").length >= 4) break; add(x.p, "release", x.d); }
   for (const x of plan.winners) add(x.p, "winner");
