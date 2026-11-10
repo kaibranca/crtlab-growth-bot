@@ -193,6 +193,27 @@ const gYield = (tH + 1) / (tH + tM + 2);
 const famYield = (f) => ((yHit[f] ?? 0) + 4 * gYield) / ((yHit[f] ?? 0) + (yMiss[f] ?? 0) + 4); // prior worth 4 sends
 const yieldMul = (f) => Math.max(0.25, Math.min(3, famYield(f) / gYield));
 
+// ── 2f. WEEKLY CYCLE (Kai 11-10: "lean into the weekend") ────────────────────────────────────────────────────────────
+// Each family's live AI reads by UTC weekday (per day of that weekday seen) against its own average day, shrunk toward 1
+// until enough weeks are in (K_W days of evidence per weekday) and only for families with ≥ 50 reads (no noise from
+// small ones). Families that peak TOMORROW or the day after get that lift on their value, so their pages are fresh in
+// Bing before the demand arrives (Friday → the weekend). Sharpens every week, with no cap on what it can learn.
+const K_W = 4, MIN_W = 50;
+const famDow = {}, dowDays = Array(7).fill(0), seenDay = new Set();
+for (const win of crawl) { const day = win.to.slice(0, 10), d = new Date(day + "T12:00:00Z").getUTCDay(); if (!seenDay.has(day)) { seenDay.add(day); dowDays[d]++; }
+  for (const [bot, v] of Object.entries(win.bots)) if (LIVE.test(bot)) for (const [p0, n] of v.top) { const f = family(p0.split("?")[0].replace(/\/$/, "") || "/"); (famDow[f] ??= Array(7).fill(0))[d] += n; } }
+const lift = {};
+for (const [f, a] of Object.entries(famDow)) {
+  if (a.reduce((x, y) => x + y, 0) < MIN_W) continue;
+  const perDay = a.map((v, d) => (dowDays[d] ? v / dowDays[d] : null)), known = perDay.filter((v) => v != null);
+  const avg = known.reduce((x, y) => x + y, 0) / Math.max(1, known.length);
+  lift[f] = perDay.map((v, d) => (v == null || !avg ? 1 : +(((v / avg) * dowDays[d] + K_W) / (dowDays[d] + K_W)).toFixed(2)));
+}
+const tom = (new Date(NOW).getUTCDay() + 1) % 7, aft = (tom + 1) % 7;
+const weekMul = (f) => { const L = lift[f]; if (!L) return 1; const m = Math.max(L[tom], L[aft]); return m > 1.15 ? Math.min(2.5, m) : 1; };
+const DN = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const weekPeaks = Object.entries(lift).map(([f, L]) => ({ f, peak: DN[L.indexOf(Math.max(...L))], lift: Math.max(...L) })).filter((x) => x.lift > 1.15).sort((a, b) => b.lift - a.lift).slice(0, 10);
+
 // ── 3. submit to Bing, most valuable first ────────────────────────────────────────────────────────────────────────────
 const SUB = "data/ai/submitted.json";
 const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
@@ -200,7 +221,7 @@ const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY, evDue = ev && NOW - last > 2 * DAY;
   const old = bingOld(p) && NOW - last > DAY, hot = surgePage.has(p) && NOW - last > 6 * 3.6e6;
-  return { p, value: x.value * (ev ? LIFT : 1) * (old ? 2 : 1) * boost(p) * yieldMul(x.fam), conf: x.conf, fam: x.fam, why: hot ? "SURGE" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+  return { p, value: x.value * (ev ? LIFT : 1) * (old ? 2 : 1) * boost(p) * yieldMul(x.fam) * weekMul(x.fam), conf: x.conf, fam: x.fam, why: hot ? "SURGE" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).filter((q) => q.why && !SKIP.test(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
@@ -329,7 +350,7 @@ const plan = {
   at: new Date().toISOString(),
   truth: TRUTH && { at: TRUTH.at, ok: TRUTH.ok, problems: TRUTH.problems },
   surges: surges.slice(0, 15),
-  learned: { sendYield: { overall: +gYield.toFixed(3), judged: tH + tM, byFamily: Object.fromEntries(Object.keys({ ...yHit, ...yMiss }).map((f) => [f, +famYield(f).toFixed(3)])) }, hookLessons: LESSONS, readCoverage: COVER, bingChecked: Object.keys(IXD).length, bingOldCopies: [...lastmod.keys()].filter(bingOld).length, famLagH, eventLift: LIFT, eventPages: evDates.size, releasesNext3d: [...lastmod.keys()].filter((p) => soon(p)).length, pagesKnown: page.size, pagesRead: pages.filter((x) => x.reads > 0).length, families: fam.size, globalCtr: r4(gCtr), globalAcc: r4(gAcc), halfLifeDays: HALF },
+  learned: { weekly: { daysSeen: dowDays, peaks: weekPeaks }, sendYield: { overall: +gYield.toFixed(3), judged: tH + tM, byFamily: Object.fromEntries(Object.keys({ ...yHit, ...yMiss }).map((f) => [f, +famYield(f).toFixed(3)])) }, hookLessons: LESSONS, readCoverage: COVER, bingChecked: Object.keys(IXD).length, bingOldCopies: [...lastmod.keys()].filter(bingOld).length, famLagH, eventLift: LIFT, eventPages: evDates.size, releasesNext3d: [...lastmod.keys()].filter((p) => soon(p)).length, pagesKnown: page.size, pagesRead: pages.filter((x) => x.reads > 0).length, families: fam.size, globalCtr: r4(gCtr), globalAcc: r4(gAcc), halfLifeDays: HALF },
   // read a lot, clicked rarely: ChatGPT answers from these pages without sending the person → give it a reason to link
   convert: pages.filter((x) => x.r7 >= 5 && x.conf >= 0.3).map((x) => ({ p: x.p, family: x.fam, reads7d: x.r7, clicks7d: x.c7, ctr: r4(x.ctr), missedAccounts: r2(x.reads * Math.max(0, gCtr - x.ctr) * x.acc) }))
     .filter((x) => x.missedAccounts > 0).sort((a, b) => b.missedAccounts - a.missedAccounts).slice(0, 25),
