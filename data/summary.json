@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-10T06:40:58.097Z",
+ "updated": "2026-11-10T06:41:57.390Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -409,6 +409,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-10T06:41:47.588Z",
+   "job": "health",
+   "ok": false,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-10T06:40:55.675Z",
    "job": "indexnow",
    "ok": true,
@@ -533,12 +539,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "421 crawler visits · OAI-SearchBot 137 · PerplexityBot 132 · Amazonbot 118 · ChatGPT-User 22"
-  },
-  {
-   "at": "2026-11-10T04:30:19.260Z",
-   "job": "health",
-   "ok": false,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-10T04:18:13.256Z",
@@ -996,7 +996,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-10T04:30:19.260Z",
+  "at": "2026-11-10T06:41:47.588Z",
   "alerts": [
    "payment-failed"
   ],
@@ -1004,7 +1004,7 @@
    {
     "name": "database size",
     "ok": true,
-    "note": "272 MB"
+    "note": "274 MB"
    },
    {
     "name": "signups flowing",
@@ -1024,7 +1024,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "1h old · 32.2 MB"
+    "note": "4h old · 32.2 MB"
    },
    {
     "name": "market data fresh",
@@ -1033,7 +1033,7 @@
    }
   ],
   "db": {
-   "mb": 272,
+   "mb": 274,
    "tables": [
     [
      "user_events",
@@ -1049,7 +1049,7 @@
     ],
     [
      "user_stores",
-     39
+     40
     ],
     [
      "guest_presence",
@@ -1069,22 +1069,22 @@
    "home": {
     "kb": 2590,
     "scripts": 23,
-    "ttfbMs": 138
+    "ttfbMs": 267
    },
    "backtest": {
     "kb": 1448,
     "scripts": 13,
-    "ttfbMs": 176
+    "ttfbMs": 308
    },
    "chart app": {
     "kb": 2590,
     "scripts": 23,
-    "ttfbMs": 315
+    "ttfbMs": 585
    },
    "statistics": {
-    "kb": 1210,
+    "kb": 1211,
     "scripts": 14,
-    "ttfbMs": 137
+    "ttfbMs": 230
    }
   },
   "heavier": []
