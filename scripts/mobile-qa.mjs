@@ -25,7 +25,7 @@ const plan = J("data/ai/plan.json", {});
 const KEY = ["/", "/backtest", "/economic-calendar", "/economic-calendar/us-core-inflation-rate-mom", "/news", "/news/cpi", "/learn", "/pricing",
   "/statistics/xauusd", "/tools/fair-value-gap-statistics", "/gold-fair-value-gaps", "/what-traders-backtest", "/daily-market-data", "/backtest-gold", "/blog", "/faq"];
 const fromPlan = [...(plan.winners ?? []).map((x) => x.p), ...(plan.convert ?? []).map((x) => x.p), ...(plan.surges ?? []).filter((x) => x.kind === "page").map((x) => x.key)];
-const pages = [...new Set([...fromPlan, ...KEY])].filter((p) => !/^\/(auth|api|admin|account)/.test(p)).slice(0, GUARD ? 12 : 40);
+const pages = [...new Set([...fromPlan, ...KEY])].filter((p) => !/^\/(auth|api|admin|account)/.test(p)).slice(0, GUARD ? 12 : 28);
 const weightOf = (p) => { const w = (plan.winners ?? []).find((x) => x.p === p), c = (plan.convert ?? []).find((x) => x.p === p); return 1 + (w ? w.accounts * 5 + w.clicks : 0) + (c ? c.reads7d / 10 : 0) + (KEY.includes(p) ? 1 : 0); };
 
 // in-page checks (run inside the browser) — objective things only
@@ -75,8 +75,10 @@ for (const d of USE) for (const theme of THEMES) {
     page.on("console", (m) => { if (m.type() === "error" && !/favicon|Failed to load resource|429|ERR_BLOCKED/i.test(m.text())) consoleErr.push(m.text().slice(0, 140)); });
     const t0 = Date.now();
     try {
-      const r = await page.goto(SITE + p + (p.includes("?") ? "&" : "?") + "qa=1", { waitUntil: "networkidle", timeout: 30000 });
-      await page.waitForTimeout(800);
+      // not "networkidle": CRTLAB pages poll (live data, counters), so the network is never idle and every page waited the full
+      // 30 s — the run hit its time limit (11-10). Load, then give the page 2.5 s to settle.
+      const r = await page.goto(SITE + p + (p.includes("?") ? "&" : "?") + "qa=1", { waitUntil: "load", timeout: 25000 });
+      await page.waitForTimeout(2500);
       const ms = Date.now() - t0;
       if (!r || r.status() >= 400) { found.push({ p, d, theme, kind: "http", detail: `HTTP ${r?.status()}`, where: "page", share }); await page.close(); continue; }
       const issues = await page.evaluate(CHECK);
