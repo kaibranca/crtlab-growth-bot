@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-10T04:18:13.337Z",
+ "updated": "2026-11-10T04:30:27.280Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -409,6 +409,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-10T04:30:19.260Z",
+   "job": "health",
+   "ok": false,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
+  },
+  {
    "at": "2026-11-10T04:18:13.256Z",
    "job": "indexnow",
    "ok": true,
@@ -467,12 +473,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "89 crawler visits · OAI-SearchBot 43 · Amazonbot 33 · Bingbot 6 · ChatGPT-User 5"
-  },
-  {
-   "at": "2026-11-10T03:41:46.110Z",
-   "job": "health",
-   "ok": false,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✗ payments · ✓ nightly backup · ✓ market data fresh"
   },
   {
    "at": "2026-11-10T03:37:35.124Z",
@@ -996,7 +996,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-10T03:41:46.110Z",
+  "at": "2026-11-10T04:30:19.260Z",
   "alerts": [
    "payment-failed"
   ],
@@ -1004,7 +1004,7 @@
    {
     "name": "database size",
     "ok": true,
-    "note": "271 MB"
+    "note": "272 MB"
    },
    {
     "name": "signups flowing",
@@ -1033,7 +1033,7 @@
    }
   ],
   "db": {
-   "mb": 271,
+   "mb": 272,
    "tables": [
     [
      "user_events",
@@ -1041,7 +1041,7 @@
     ],
     [
      "ui_events",
-     56
+     57
     ],
     [
      "meter_identities",
@@ -1049,7 +1049,7 @@
     ],
     [
      "user_stores",
-     38
+     39
     ],
     [
      "guest_presence",
@@ -1069,22 +1069,22 @@
    "home": {
     "kb": 2590,
     "scripts": 23,
-    "ttfbMs": 237
+    "ttfbMs": 138
    },
    "backtest": {
     "kb": 1448,
     "scripts": 13,
-    "ttfbMs": 369
+    "ttfbMs": 176
    },
    "chart app": {
     "kb": 2590,
     "scripts": 23,
-    "ttfbMs": 481
+    "ttfbMs": 315
    },
    "statistics": {
-    "kb": 1211,
+    "kb": 1210,
     "scripts": 14,
-    "ttfbMs": 238
+    "ttfbMs": 137
    }
   },
   "heavier": []
