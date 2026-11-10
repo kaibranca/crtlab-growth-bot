@@ -153,18 +153,42 @@ const ours24 = crawl.filter((c) => NOW - Date.parse(c.to) < DAY).reduce((t, c) =
 const edge24 = EDGE?.bots?.["ChatGPT-User"]?.total ?? null;
 const COVER = edge24 ? +Math.min(1, ours24 / edge24).toFixed(2) : null;
 
+// ── 2d. SURGE DETECTOR (Kai 11-10: "if it sees anything abnormal in a good way, focus on it and power it to the max") ────
+// Every hour: each page's and each family's last 24 h of live AI reads (+ clicks × click worth) against its own previous
+// 14-day daily average. Poisson z-score; a surge = z ≥ 3 and ≥ 2.5× its normal and ≥ 8 events. A surging page gets ×4 value
+// and its family's other pages ×1.5 (Bing first, plan top), so a question ChatGPT has started asking gets every related
+// page fresh in Bing while it is hot. Surges are logged once each (data/ai/surges.jsonl) and listed at the top of the plan.
+const CW = Math.round(1 / Math.max(0.005, gCtr));
+const ev24 = new Map(), evBase = new Map(); // path → events
+for (const win of crawl) { const age = NOW - Date.parse(win.to); if (age > 15 * DAY) continue;
+  for (const [bot, v] of Object.entries(win.bots)) if (LIVE.test(bot)) for (const [p0, n] of v.top) { const p = p0.split("?")[0].replace(/\/$/, "") || "/"; if (SKIP.test(p)) continue; const m = age < DAY ? ev24 : evBase; m.set(p, (m.get(p) ?? 0) + n); } }
+for (const [k, [vis]] of Object.entries(clicks)) { const [d, eng, p0] = k.split("|"); if (!AIENG.test(eng)) continue; const age = NOW - Date.parse(d + "T12:00:00Z"); if (age > 15 * DAY) continue; const p = p0.replace(/\/$/, "") || "/"; const m = age < DAY ? ev24 : evBase; m.set(p, (m.get(p) ?? 0) + vis * CW); }
+const baseDays = Math.max(1, Math.min(14, (NOW - (crawl.length ? Date.parse(crawl[0].from) : NOW)) / DAY - 1));
+const zOf = (now, base) => { const mu = Math.max(0.5, base / baseDays); return { mu: +mu.toFixed(1), x: (now - mu) / Math.sqrt(mu) }; };
+const surges = [];
+for (const [p, n] of ev24) { const { mu, x } = zOf(n, evBase.get(p) ?? 0); if (x >= 3 && n >= 2.5 * mu && n >= 8) surges.push({ kind: "page", key: p, family: family(p), last24h: n, normal: mu, z: +x.toFixed(1) }); }
+const famNow = new Map(), famBase = new Map();
+for (const [p, n] of ev24) famNow.set(family(p), (famNow.get(family(p)) ?? 0) + n);
+for (const [p, n] of evBase) famBase.set(family(p), (famBase.get(family(p)) ?? 0) + n);
+for (const [f, n] of famNow) { const { mu, x } = zOf(n, famBase.get(f) ?? 0); if (x >= 3 && n >= 2.5 * mu && n >= 12) surges.push({ kind: "family", key: f, family: f, last24h: n, normal: mu, z: +x.toFixed(1) }); }
+surges.sort((a, b) => b.z - a.z);
+const surgePage = new Set(surges.filter((x) => x.kind === "page").map((x) => x.key)), surgeFam = new Set(surges.map((x) => x.family));
+const boost = (p) => (surgePage.has(p) ? 4 : surgeFam.has(family(p)) ? 1.5 : 1);
+{ const seen = new Set(readLines("data/ai/surges.jsonl").filter((x) => NOW - Date.parse(x.at) < 2 * DAY).map((x) => x.kind + x.key));
+  for (const x of surges) if (!seen.has(x.kind + x.key)) append("data/ai/surges.jsonl", { at: new Date().toISOString(), ...x }); }
+
 // ── 3. submit to Bing, most valuable first ────────────────────────────────────────────────────────────────────────────
 const SUB = "data/ai/submitted.json";
 const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
 const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY, evDue = ev && NOW - last > 2 * DAY;
-  const old = bingOld(p) && NOW - last > DAY;
-  return { p, value: x.value * (ev ? LIFT : 1) * (old ? 2 : 1), conf: x.conf, fam: x.fam, why: evDue ? `release ${ev}` : old ? "Bing has an old copy" : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+  const old = bingOld(p) && NOW - last > DAY, hot = surgePage.has(p) && NOW - last > 6 * 3.6e6;
+  return { p, value: x.value * (ev ? LIFT : 1) * (old ? 2 : 1) * boost(p), conf: x.conf, fam: x.fam, why: hot ? "SURGE" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).filter((q) => q.why && !SKIP.test(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
-const urgent = (q) => (q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
+const urgent = (q) => (q.why === "SURGE" ? 3 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
 const rank = (a, b) => urgent(b) - urgent(a) || b.value - a.value;
 const exploit = [...queue].sort(rank);
 const seenFam = new Set(), explore = [];
@@ -278,6 +302,7 @@ const famRows = [...fam.entries()].map(([f, F]) => ({ family: f, pages: F.pages,
   .sort((a, b) => b.value - a.value);
 const plan = {
   at: new Date().toISOString(),
+  surges: surges.slice(0, 15),
   learned: { readCoverage: COVER, bingChecked: Object.keys(IXD).length, bingOldCopies: [...lastmod.keys()].filter(bingOld).length, famLagH, eventLift: LIFT, eventPages: evDates.size, releasesNext3d: [...lastmod.keys()].filter((p) => soon(p)).length, pagesKnown: page.size, pagesRead: pages.filter((x) => x.reads > 0).length, families: fam.size, globalCtr: r4(gCtr), globalAcc: r4(gAcc), halfLifeDays: HALF },
   // read a lot, clicked rarely: ChatGPT answers from these pages without sending the person → give it a reason to link
   convert: pages.filter((x) => x.r7 >= 5 && x.conf >= 0.3).map((x) => ({ p: x.p, family: x.fam, reads7d: x.r7, clicks7d: x.c7, ctr: r4(x.ctr), missedAccounts: r2(x.reads * Math.max(0, gCtr - x.ctr) * x.acc) }))
