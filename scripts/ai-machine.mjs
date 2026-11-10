@@ -163,7 +163,10 @@ if (process.env.DRY) { const b = pick(100); console.log("DRY batch:", b.length, 
 if (process.env.BING_API_KEY && queue.length) {
   const api = (m) => `https://ssl.bing.com/webmaster/api.svc/json/${m}?apikey=${process.env.BING_API_KEY}`;
   const quota = await fetch(api("GetUrlSubmissionQuota") + `&siteUrl=${encodeURIComponent(SITE + "/")}`).then((r) => r.json()).then((j) => j.d?.DailyQuota ?? 0).catch(() => 0);
-  const batch = pick(Math.min(100, quota));
+  // paced over the day (it runs hourly): releases due go at once, the rest share what is left of today's quota over the hours
+  // left, so pages created later today (a fresh release, a new recap) still find room
+  const hoursLeft = Math.max(1, 24 - new Date().getUTCHours()), due = queue.filter((q) => q.why.startsWith("release")).length;
+  const batch = pick(Math.min(quota, Math.max(Math.min(due, quota), Math.ceil(quota / hoursLeft))));
   if (batch.length) {
     const r = await fetch(api("SubmitUrlBatch"), { method: "POST", headers: { "content-type": "application/json; charset=utf-8" }, body: JSON.stringify({ siteUrl: SITE + "/", urlList: batch.map((q) => SITE + (q.p === "/" ? "" : q.p)) }) }).catch((e) => ({ status: String(e) }));
     bingStatus = `HTTP ${r.status}`;

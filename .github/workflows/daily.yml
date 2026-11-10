@@ -17,13 +17,6 @@ jobs:
       - run: node scripts/cal-history.mjs
         continue-on-error: true
       - run: node scripts/indexnow.mjs
-      # AI referral machine (11-10): clicks from the site, then learn → Bing submit (most valuable first) → plan + score
-      - run: node scripts/ai-pull.mjs
-        env: { OPS_KEY: "${{ secrets.OPS_KEY }}" }
-        continue-on-error: true
-      - run: node scripts/ai-machine.mjs
-        env: { BING_API_KEY: "${{ secrets.BING_API_KEY }}" }
-        continue-on-error: true
       - run: node scripts/summary.mjs
       - run: |
           bash scripts/push.sh "daily $(date -u +%F)"

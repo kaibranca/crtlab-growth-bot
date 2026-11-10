@@ -15,6 +15,12 @@ jobs:
       - name: AI crawler counts
         run: node scripts/aicrawl.mjs
         env: { OPS_KEY: "${{ secrets.OPS_KEY }}" }
+      # AI REFERRAL MACHINE (11-10) — the main short-term engine: learns every hour from the reads just drained + the
+      # day's AI clicks, re-plans, and sends Bing the next most valuable pages (quota paced over the day)
+      - name: AI referral machine
+        continue-on-error: true
+        run: node scripts/ai-pull.mjs && node scripts/ai-machine.mjs
+        env: { OPS_KEY: "${{ secrets.OPS_KEY }}", BING_API_KEY: "${{ secrets.BING_API_KEY }}" }
       - name: Load alert (emails Kai if even one chart load was turned away, failed or slow in the last hour)
         continue-on-error: true
         run: node scripts/load-alert.mjs
