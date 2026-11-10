@@ -1,5 +1,5 @@
 {
- "at": "2026-11-10T17:01:38.941Z",
+ "at": "2026-11-10T17:18:01.477Z",
  "truth": {
   "at": "2026-11-10T14:18:10.513Z",
   "ok": true,
@@ -12,23 +12,23 @@
    "family": "/news/<type>/<market>",
    "last24h": 281,
    "normal": 12,
-   "z": 77.5
-  },
-  {
-   "kind": "family",
-   "key": "/news/<release>",
-   "family": "/news/<release>",
-   "last24h": 476,
-   "normal": 42.2,
-   "z": 66.8
+   "z": 77.6
   },
   {
    "kind": "page",
    "key": "/news/cpi/gold",
    "family": "/news/<type>/<market>",
    "last24h": 214,
-   "normal": 9.8,
-   "z": 65.4
+   "normal": 9.7,
+   "z": 65.5
+  },
+  {
+   "kind": "family",
+   "key": "/news/<release>",
+   "family": "/news/<release>",
+   "last24h": 465,
+   "normal": 43.4,
+   "z": 64
   },
   {
    "kind": "page",
@@ -51,40 +51,8 @@
    "key": "/economic-calendar/<event>",
    "family": "/economic-calendar/<event>",
    "last24h": 130,
-   "normal": 17,
-   "z": 27.4
-  },
-  {
-   "kind": "page",
-   "key": "/news/cpi-2026-06-10",
-   "family": "/news/<release>",
-   "last24h": 12,
-   "normal": 0.5,
-   "z": 16.3
-  },
-  {
-   "kind": "page",
-   "key": "/news/cpi-2026-10-14",
-   "family": "/news/<release>",
-   "last24h": 20,
-   "normal": 1.4,
-   "z": 15.9
-  },
-  {
-   "kind": "page",
-   "key": "/economic-calendar/us-core-inflation-rate-mom",
-   "family": "/economic-calendar/<event>",
-   "last24h": 22,
-   "normal": 1.8,
-   "z": 14.9
-  },
-  {
-   "kind": "page",
-   "key": "/news/cpi-2026-01-13",
-   "family": "/news/<release>",
-   "last24h": 11,
-   "normal": 0.5,
-   "z": 14.8
+   "normal": 17.2,
+   "z": 27.2
   },
   {
    "kind": "page",
@@ -92,19 +60,43 @@
    "family": "/news/<release>",
    "last24h": 13,
    "normal": 0.7,
-   "z": 14.8
+   "z": 14.9
+  },
+  {
+   "kind": "page",
+   "key": "/news/cpi-2026-10-14",
+   "family": "/news/<release>",
+   "last24h": 19,
+   "normal": 1.5,
+   "z": 14.3
+  },
+  {
+   "kind": "page",
+   "key": "/news/cpi-2026-06-10",
+   "family": "/news/<release>",
+   "last24h": 11,
+   "normal": 0.6,
+   "z": 13.8
   },
   {
    "kind": "family",
    "key": "/answers/<page>",
    "family": "/answers/<page>",
    "last24h": 45,
-   "normal": 7.5,
+   "normal": 7.4,
+   "z": 13.8
+  },
+  {
+   "kind": "page",
+   "key": "/economic-calendar/us-core-inflation-rate-mom",
+   "family": "/economic-calendar/<event>",
+   "last24h": 21,
+   "normal": 1.9,
    "z": 13.7
   },
   {
    "kind": "page",
-   "key": "/news/cpi-2026-04-10",
+   "key": "/news/cpi-2026-01-13",
    "family": "/news/<release>",
    "last24h": 10,
    "normal": 0.5,
@@ -120,11 +112,19 @@
   },
   {
    "kind": "page",
-   "key": "/",
-   "family": "/",
-   "last24h": 195,
-   "normal": 77.7,
-   "z": 13.3
+   "key": "/news/cpi-2026-04-10",
+   "family": "/news/<release>",
+   "last24h": 9,
+   "normal": 0.5,
+   "z": 12
+  },
+  {
+   "kind": "page",
+   "key": "/news/cpi",
+   "family": "/news/<type>",
+   "last24h": 11,
+   "normal": 0.8,
+   "z": 11.4
   }
  ],
  "learned": {
@@ -152,12 +152,12 @@
     {
      "f": "/economic-calendar/<event>",
      "peak": "Tue",
-     "lift": 1.56
+     "lift": 1.57
     },
     {
      "f": "/",
      "peak": "Tue",
-     "lift": 1.4
+     "lift": 1.41
     },
     {
      "f": "/answers/<page>",
@@ -177,7 +177,7 @@
    "byFamily": {}
   },
   "hookLessons": {},
-  "readCoverage": 0.88,
+  "readCoverage": 0.86,
   "bingChecked": 19,
   "bingOldCopies": 2,
   "famLagH": {
@@ -194,9 +194,9 @@
   "eventPages": 189,
   "releasesNext3d": 41,
   "pagesKnown": 2739,
-  "pagesRead": 474,
+  "pagesRead": 475,
   "families": 48,
-  "globalCtr": 0.0243,
+  "globalCtr": 0.0242,
   "globalAcc": 0.4959,
   "halfLifeDays": 14
  },
@@ -204,9 +204,9 @@
   {
    "p": "/",
    "family": "/",
-   "reads7d": 430,
+   "reads7d": 431,
    "clicks7d": 4,
-   "ctr": 0.01,
+   "ctr": 0.0099,
    "missedAccounts": 3.2
   },
   {
@@ -310,7 +310,7 @@
    "family": "/economic-calendar/<event>",
    "reads7d": 13,
    "clicks7d": 0,
-   "ctr": 0.0022,
+   "ctr": 0.0021,
    "missedAccounts": 0.13
   },
   {
@@ -407,49 +407,49 @@
    "family": "/backtest",
    "pages": 1,
    "inSitemap": 1,
-   "reads": 179.72,
-   "clicks": 7.7,
-   "accounts": 50.28,
-   "readsPerPage": 179.72,
-   "ctr": 0.0394,
+   "reads": 180.61,
+   "clicks": 7.69,
+   "accounts": 50.25,
+   "readsPerPage": 180.61,
+   "ctr": 0.0393,
    "acc": 0.5318,
-   "value": 3.7699
+   "value": 3.7705
   },
   {
    "family": "/",
    "pages": 1,
    "inSitemap": 1,
-   "reads": 438.44,
+   "reads": 439.19,
    "clicks": 4.34,
-   "accounts": 8.44,
-   "readsPerPage": 438.44,
+   "accounts": 8.43,
+   "readsPerPage": 439.19,
    "ctr": 0.0111,
    "acc": 0.5066,
-   "value": 2.4662
+   "value": 2.4646
   },
   {
    "family": "/tools/<stats>",
    "pages": 6,
    "inSitemap": 6,
-   "reads": 93.64,
+   "reads": 93.58,
    "clicks": 2.39,
    "accounts": 3.36,
-   "readsPerPage": 15.61,
-   "ctr": 0.0252,
-   "acc": 0.4321,
-   "value": 0.1697
+   "readsPerPage": 15.6,
+   "ctr": 0.0251,
+   "acc": 0.4322,
+   "value": 0.1695
   },
   {
    "family": "/backtest-<market>",
    "pages": 16,
    "inSitemap": 15,
-   "reads": 55.88,
+   "reads": 55.85,
    "clicks": 3.79,
    "accounts": 5.13,
    "readsPerPage": 3.49,
    "ctr": 0.0496,
    "acc": 0.4828,
-   "value": 0.0837
+   "value": 0.0836
   },
   {
    "family": "/news",
@@ -459,33 +459,33 @@
    "clicks": 0.94,
    "accounts": 0,
    "readsPerPage": 4.38,
-   "ctr": 0.0431,
-   "acc": 0.4286,
-   "value": 0.0809
+   "ctr": 0.043,
+   "acc": 0.4287,
+   "value": 0.0808
   },
   {
    "family": "/<strategy>-backtester",
    "pages": 29,
    "inSitemap": 27,
-   "reads": 19.52,
+   "reads": 19.51,
    "clicks": 12.35,
    "accounts": 9.78,
    "readsPerPage": 0.67,
-   "ctr": 0.2239,
+   "ctr": 0.2237,
    "acc": 0.5145,
-   "value": 0.0775
+   "value": 0.0774
   },
   {
    "family": "/news/<type>/<market>",
    "pages": 25,
    "inSitemap": 25,
-   "reads": 55.61,
-   "clicks": 7.78,
+   "reads": 55.58,
+   "clicks": 7.77,
    "accounts": 0.99,
    "readsPerPage": 2.22,
    "ctr": 0.0915,
-   "acc": 0.2878,
-   "value": 0.0586
+   "acc": 0.2879,
+   "value": 0.0585
   },
   {
    "family": "/pricing",
@@ -497,19 +497,19 @@
    "readsPerPage": 4.46,
    "ctr": 0.0218,
    "acc": 0.4959,
-   "value": 0.0483
+   "value": 0.0482
   },
   {
    "family": "/tradingview-bar-replay-alternative",
    "pages": 1,
    "inSitemap": 1,
    "reads": 1.98,
-   "clicks": 1.42,
+   "clicks": 1.41,
    "accounts": 0.6,
    "readsPerPage": 1.98,
    "ctr": 0.0568,
-   "acc": 0.4206,
-   "value": 0.0473
+   "acc": 0.4207,
+   "value": 0.0472
   },
   {
    "family": "/daily-market-data",
@@ -519,9 +519,9 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 3.96,
-   "ctr": 0.0221,
+   "ctr": 0.022,
    "acc": 0.4959,
-   "value": 0.0434
+   "value": 0.0433
   },
   {
    "family": "/faq",
@@ -533,7 +533,7 @@
    "readsPerPage": 3.91,
    "ctr": 0.0221,
    "acc": 0.4959,
-   "value": 0.0429
+   "value": 0.0428
   },
   {
    "family": "/features",
@@ -543,35 +543,35 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 3.77,
-   "ctr": 0.0222,
+   "ctr": 0.0221,
    "acc": 0.4959,
-   "value": 0.0415
+   "value": 0.0414
   }
  ],
  "winners": [
   {
    "p": "/backtest",
    "family": "/backtest",
-   "accounts": 50.28,
-   "clicks": 7.7,
-   "reads": 179.72,
-   "ctr": 0.0424
+   "accounts": 50.25,
+   "clicks": 7.69,
+   "reads": 180.61,
+   "ctr": 0.0422
   },
   {
    "p": "/",
    "family": "/",
-   "accounts": 8.44,
+   "accounts": 8.43,
    "clicks": 4.34,
-   "reads": 438.44,
-   "ctr": 0.01
+   "reads": 439.19,
+   "ctr": 0.0099
   },
   {
    "p": "/footprint-chart-backtesting",
    "family": "/<strategy>-backtester",
-   "accounts": 5.12,
+   "accounts": 5.11,
    "clicks": 7.68,
    "reads": 0.85,
-   "ctr": 0.5136
+   "ctr": 0.5134
   },
   {
    "p": "/xauusd",
@@ -586,7 +586,7 @@
    "family": "/tools/<stats>",
    "accounts": 2.18,
    "clicks": 2.39,
-   "reads": 21.08,
+   "reads": 21.07,
    "ctr": 0.0655
   },
   {
@@ -601,9 +601,9 @@
    "p": "/news/cpi/gold",
    "family": "/news/<type>/<market>",
    "accounts": 0.99,
-   "clicks": 6.79,
+   "clicks": 6.78,
    "reads": 11.59,
-   "ctr": 0.248
+   "ctr": 0.2479
   },
   {
    "p": "/smt-divergence-backtester",
@@ -611,7 +611,7 @@
    "accounts": 0.9,
    "clicks": 1.75,
    "reads": 0,
-   "ctr": 0.2938
+   "ctr": 0.2937
   },
   {
    "p": "/backtest-eurusd",
@@ -627,12 +627,12 @@
    "accounts": 0.9,
    "clicks": 0.9,
    "reads": 0,
-   "ctr": 0.1243
+   "ctr": 0.1242
   },
   {
    "p": "/backtest-sp500",
    "family": "/backtest-<market>",
-   "accounts": 0.85,
+   "accounts": 0.84,
    "clicks": 0,
    "reads": 1.47,
    "ctr": 0.0469
@@ -643,7 +643,7 @@
    "accounts": 0.77,
    "clicks": 0.77,
    "reads": 0.99,
-   "ctr": 0.0677
+   "ctr": 0.0676
   },
   {
    "p": "/backtest-crypto",
@@ -659,7 +659,7 @@
    "accounts": 0.67,
    "clicks": 1.52,
    "reads": 0.85,
-   "ctr": 0.2752
+   "ctr": 0.2751
   },
   {
    "p": "/order-flow-backtesting",
@@ -667,109 +667,109 @@
    "accounts": 0.67,
    "clicks": 0.67,
    "reads": 1.49,
-   "ctr": 0.2364
+   "ctr": 0.2363
   }
  ],
  "indexedNotRead": [
   {
    "p": "/learn",
    "family": "/learn",
-   "index": 512.94
+   "index": 523.53
   },
   {
    "p": "/help",
    "family": "/<market> (app)",
-   "index": 501.21
+   "index": 510.82
   },
   {
    "p": "/prop-firm-challenge-simulator",
    "family": "/<firm>-challenge-simulator",
-   "index": 493.06
+   "index": 497.73
   },
   {
    "p": "/partnerships",
    "family": "/<landing>",
-   "index": 419.86
+   "index": 419.62
   },
   {
    "p": "/tools/futures-tick-value-calculator",
    "family": "/tools/<calculator>",
-   "index": 383.12
+   "index": 387.85
   },
   {
    "p": "/recap",
    "family": "/recap",
-   "index": 376.81
+   "index": 377.58
   },
   {
    "p": "/tools/position-size-calculator",
    "family": "/tools/<calculator>",
-   "index": 350.27
+   "index": 355.02
   },
   {
    "p": "/tools/margin-calculator",
    "family": "/tools/<calculator>",
-   "index": 218.04
+   "index": 222.86
   },
   {
    "p": "/tools/risk-reward-calculator",
    "family": "/tools/<calculator>",
-   "index": 211.77
+   "index": 216.59
   },
   {
    "p": "/tools/pip-calculator",
    "family": "/tools/<calculator>",
-   "index": 167.32
+   "index": 172.17
   },
   {
    "p": "/tools/prop-firm-challenge-calculator",
    "family": "/tools/<calculator>",
-   "index": 166
+   "index": 170.85
   },
   {
    "p": "/tools/forex-compounding-calculator",
    "family": "/tools/<calculator>",
-   "index": 117.84
+   "index": 122.72
   },
   {
    "p": "/backtest-bitcoin",
    "family": "/backtest-<market>",
-   "index": 108.31
+   "index": 111.22
   },
   {
    "p": "/backtest-oil",
    "family": "/backtest-<market>",
-   "index": 90.58
+   "index": 93.5
   },
   {
    "p": "/backtest-dax",
    "family": "/backtest-<market>",
-   "index": 83.75
+   "index": 86.67
   },
   {
    "p": "/smt-divergence-backtester",
    "family": "/<strategy>-backtester",
-   "index": 68.8
+   "index": 71.73
   },
   {
    "p": "/forex-backtesting-software",
    "family": "/<strategy>-backtester",
-   "index": 67.93
+   "index": 70.86
   },
   {
    "p": "/smc-backtesting",
    "family": "/<strategy>-backtester",
-   "index": 62.47
+   "index": 65.4
   },
   {
    "p": "/ict-backtesting-tool",
    "family": "/<strategy>-backtester",
-   "index": 61.87
+   "index": 64.8
   },
   {
    "p": "/prop-firm-backtesting",
    "family": "/<strategy>-backtester",
-   "index": 58.47
+   "index": 58.44
   }
  ],
  "families": [
@@ -777,49 +777,49 @@
    "family": "/backtest",
    "pages": 1,
    "inSitemap": 1,
-   "reads": 179.72,
-   "clicks": 7.7,
-   "accounts": 50.28,
-   "readsPerPage": 179.72,
-   "ctr": 0.0394,
+   "reads": 180.61,
+   "clicks": 7.69,
+   "accounts": 50.25,
+   "readsPerPage": 180.61,
+   "ctr": 0.0393,
    "acc": 0.5318,
-   "value": 3.7699
+   "value": 3.7705
   },
   {
    "family": "/",
    "pages": 1,
    "inSitemap": 1,
-   "reads": 438.44,
+   "reads": 439.19,
    "clicks": 4.34,
-   "accounts": 8.44,
-   "readsPerPage": 438.44,
+   "accounts": 8.43,
+   "readsPerPage": 439.19,
    "ctr": 0.0111,
    "acc": 0.5066,
-   "value": 2.4662
+   "value": 2.4646
   },
   {
    "family": "/tools/<stats>",
    "pages": 6,
    "inSitemap": 6,
-   "reads": 93.64,
+   "reads": 93.58,
    "clicks": 2.39,
    "accounts": 3.36,
-   "readsPerPage": 15.61,
-   "ctr": 0.0252,
-   "acc": 0.4321,
-   "value": 0.1697
+   "readsPerPage": 15.6,
+   "ctr": 0.0251,
+   "acc": 0.4322,
+   "value": 0.1695
   },
   {
    "family": "/backtest-<market>",
    "pages": 16,
    "inSitemap": 15,
-   "reads": 55.88,
+   "reads": 55.85,
    "clicks": 3.79,
    "accounts": 5.13,
    "readsPerPage": 3.49,
    "ctr": 0.0496,
    "acc": 0.4828,
-   "value": 0.0837
+   "value": 0.0836
   },
   {
    "family": "/news",
@@ -829,33 +829,33 @@
    "clicks": 0.94,
    "accounts": 0,
    "readsPerPage": 4.38,
-   "ctr": 0.0431,
-   "acc": 0.4286,
-   "value": 0.0809
+   "ctr": 0.043,
+   "acc": 0.4287,
+   "value": 0.0808
   },
   {
    "family": "/<strategy>-backtester",
    "pages": 29,
    "inSitemap": 27,
-   "reads": 19.52,
+   "reads": 19.51,
    "clicks": 12.35,
    "accounts": 9.78,
    "readsPerPage": 0.67,
-   "ctr": 0.2239,
+   "ctr": 0.2237,
    "acc": 0.5145,
-   "value": 0.0775
+   "value": 0.0774
   },
   {
    "family": "/news/<type>/<market>",
    "pages": 25,
    "inSitemap": 25,
-   "reads": 55.61,
-   "clicks": 7.78,
+   "reads": 55.58,
+   "clicks": 7.77,
    "accounts": 0.99,
    "readsPerPage": 2.22,
    "ctr": 0.0915,
-   "acc": 0.2878,
-   "value": 0.0586
+   "acc": 0.2879,
+   "value": 0.0585
   },
   {
    "family": "/pricing",
@@ -867,19 +867,19 @@
    "readsPerPage": 4.46,
    "ctr": 0.0218,
    "acc": 0.4959,
-   "value": 0.0483
+   "value": 0.0482
   },
   {
    "family": "/tradingview-bar-replay-alternative",
    "pages": 1,
    "inSitemap": 1,
    "reads": 1.98,
-   "clicks": 1.42,
+   "clicks": 1.41,
    "accounts": 0.6,
    "readsPerPage": 1.98,
    "ctr": 0.0568,
-   "acc": 0.4206,
-   "value": 0.0473
+   "acc": 0.4207,
+   "value": 0.0472
   },
   {
    "family": "/daily-market-data",
@@ -889,9 +889,9 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 3.96,
-   "ctr": 0.0221,
+   "ctr": 0.022,
    "acc": 0.4959,
-   "value": 0.0434
+   "value": 0.0433
   },
   {
    "family": "/faq",
@@ -903,7 +903,7 @@
    "readsPerPage": 3.91,
    "ctr": 0.0221,
    "acc": 0.4959,
-   "value": 0.0429
+   "value": 0.0428
   },
   {
    "family": "/features",
@@ -913,9 +913,9 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 3.77,
-   "ctr": 0.0222,
+   "ctr": 0.0221,
    "acc": 0.4959,
-   "value": 0.0415
+   "value": 0.0414
   },
   {
    "family": "/economic-calendar",
@@ -925,9 +925,9 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 3.77,
-   "ctr": 0.0222,
+   "ctr": 0.0221,
    "acc": 0.4959,
-   "value": 0.0415
+   "value": 0.0414
   },
   {
    "family": "/<market> (app)",
@@ -937,8 +937,8 @@
    "clicks": 3.01,
    "accounts": 4.55,
    "readsPerPage": 0.62,
-   "ctr": 0.0885,
-   "acc": 0.6426,
+   "ctr": 0.0884,
+   "acc": 0.6425,
    "value": 0.0353
   },
   {
@@ -949,9 +949,9 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 2.79,
-   "ctr": 0.0227,
+   "ctr": 0.0226,
    "acc": 0.4959,
-   "value": 0.0314
+   "value": 0.0313
   },
   {
    "family": "/backtesting-software",
@@ -963,13 +963,13 @@
    "readsPerPage": 2.75,
    "ctr": 0.0227,
    "acc": 0.4959,
-   "value": 0.031
+   "value": 0.0309
   },
   {
    "family": "/answers/<page>",
    "pages": 16,
    "inSitemap": 16,
-   "reads": 54.59,
+   "reads": 54.56,
    "clicks": 0.99,
    "accounts": 0,
    "readsPerPage": 3.41,
@@ -987,7 +987,7 @@
    "readsPerPage": 2.17,
    "ctr": 0.023,
    "acc": 0.4959,
-   "value": 0.0248
+   "value": 0.0247
   },
   {
    "family": "/tools/<tool>",
@@ -999,7 +999,7 @@
    "readsPerPage": 2.34,
    "ctr": 0.0206,
    "acc": 0.4547,
-   "value": 0.022
+   "value": 0.0219
   },
   {
    "family": "/blog",
@@ -1011,7 +1011,7 @@
    "readsPerPage": 1.68,
    "ctr": 0.0233,
    "acc": 0.4959,
-   "value": 0.0194
+   "value": 0.0193
   },
   {
    "family": "/tools",
@@ -1021,9 +1021,9 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 1.55,
-   "ctr": 0.0234,
+   "ctr": 0.0233,
    "acc": 0.4959,
-   "value": 0.018
+   "value": 0.0179
   },
   {
    "family": "/reference",
@@ -1033,7 +1033,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 1.56,
-   "ctr": 0.0234,
+   "ctr": 0.0233,
    "acc": 0.4859,
    "value": 0.0177
   },
@@ -1041,11 +1041,11 @@
    "family": "/recap/<date>",
    "pages": 21,
    "inSitemap": 21,
-   "reads": 80.5,
+   "reads": 80.45,
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 3.83,
-   "ctr": 0.0081,
+   "ctr": 0.008,
    "acc": 0.4959,
    "value": 0.0153
   },
@@ -1053,13 +1053,13 @@
    "family": "/recap/<market>",
    "pages": 12,
    "inSitemap": 12,
-   "reads": 21.83,
+   "reads": 21.82,
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 1.82,
    "ctr": 0.0157,
    "acc": 0.4959,
-   "value": 0.0142
+   "value": 0.0141
   },
   {
    "family": "/<market>-<concept>",
@@ -1069,7 +1069,7 @@
    "clicks": 2.34,
    "accounts": 0.63,
    "readsPerPage": 0.43,
-   "ctr": 0.0748,
+   "ctr": 0.0747,
    "acc": 0.4328,
    "value": 0.0138
   },
@@ -1077,11 +1077,11 @@
    "family": "/news/<type>",
    "pages": 19,
    "inSitemap": 19,
-   "reads": 37.32,
+   "reads": 37.3,
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 1.96,
-   "ctr": 0.0126,
+   "ctr": 0.0125,
    "acc": 0.4959,
    "value": 0.0122
   },
@@ -1089,11 +1089,11 @@
    "family": "/statistics/<page>",
    "pages": 13,
    "inSitemap": 13,
-   "reads": 17.53,
+   "reads": 17.52,
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 1.35,
-   "ctr": 0.0169,
+   "ctr": 0.0168,
    "acc": 0.4959,
    "value": 0.0113
   },
@@ -1105,7 +1105,7 @@
    "clicks": 0,
    "accounts": 0.06,
    "readsPerPage": 1.05,
-   "ctr": 0.021,
+   "ctr": 0.0209,
    "acc": 0.4931,
    "value": 0.0108
   },
@@ -1117,9 +1117,9 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0.85,
-   "ctr": 0.0238,
+   "ctr": 0.0237,
    "acc": 0.4959,
-   "value": 0.0101
+   "value": 0.01
   },
   {
    "family": "/tools/<calculator>",
@@ -1130,7 +1130,7 @@
    "accounts": 1.16,
    "readsPerPage": 0.2,
    "ctr": 0.0394,
-   "acc": 0.549,
+   "acc": 0.5489,
    "value": 0.0043
   },
   {
@@ -1141,7 +1141,7 @@
    "clicks": 0.63,
    "accounts": 0.63,
    "readsPerPage": 0.13,
-   "ctr": 0.0381,
+   "ctr": 0.038,
    "acc": 0.4962,
    "value": 0.0025
   },
@@ -1149,7 +1149,7 @@
    "family": "/economic-calendar/<event>",
    "pages": 356,
    "inSitemap": 356,
-   "reads": 263.29,
+   "reads": 265.12,
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0.74,
@@ -1167,13 +1167,13 @@
    "readsPerPage": 0.07,
    "ctr": 0.0237,
    "acc": 0.4959,
-   "value": 0.0009
+   "value": 0.0008
   },
   {
    "family": "/news/<release>",
    "pages": 1960,
    "inSitemap": 1960,
-   "reads": 699.53,
+   "reads": 699.13,
    "clicks": 1.62,
    "accounts": 0,
    "readsPerPage": 0.36,
@@ -1189,7 +1189,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0.01,
-   "ctr": 0.0238,
+   "ctr": 0.0237,
    "acc": 0.4959,
    "value": 0.0001
   },
@@ -1201,7 +1201,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0,
-   "ctr": 0.0243,
+   "ctr": 0.0242,
    "acc": 0.4959,
    "value": 0
   },
@@ -1213,7 +1213,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0,
-   "ctr": 0.0243,
+   "ctr": 0.0242,
    "acc": 0.4959,
    "value": 0
   },
@@ -1225,7 +1225,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0,
-   "ctr": 0.0243,
+   "ctr": 0.0242,
    "acc": 0.4959,
    "value": 0
   },
@@ -1237,7 +1237,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0,
-   "ctr": 0.0243,
+   "ctr": 0.0242,
    "acc": 0.4959,
    "value": 0
   },
@@ -1249,7 +1249,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0,
-   "ctr": 0.0243,
+   "ctr": 0.0242,
    "acc": 0.4959,
    "value": 0
   },
@@ -1261,7 +1261,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0,
-   "ctr": 0.0243,
+   "ctr": 0.0242,
    "acc": 0.4959,
    "value": 0
   },
@@ -1273,7 +1273,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0,
-   "ctr": 0.0243,
+   "ctr": 0.0242,
    "acc": 0.4959,
    "value": 0
   },
@@ -1285,7 +1285,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0,
-   "ctr": 0.0243,
+   "ctr": 0.0242,
    "acc": 0.4959,
    "value": 0
   },
@@ -1297,7 +1297,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0,
-   "ctr": 0.0243,
+   "ctr": 0.0242,
    "acc": 0.4959,
    "value": 0
   },
@@ -1309,7 +1309,7 @@
    "clicks": 0.6,
    "accounts": 3.22,
    "readsPerPage": 0,
-   "ctr": 0.0394,
+   "ctr": 0.0393,
    "acc": 0.5784,
    "value": 0
   },
@@ -1321,7 +1321,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0,
-   "ctr": 0.0243,
+   "ctr": 0.0242,
    "acc": 0.4959,
    "value": 0
   },
@@ -1333,7 +1333,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0,
-   "ctr": 0.0243,
+   "ctr": 0.0242,
    "acc": 0.4959,
    "value": 0
   },
@@ -1345,7 +1345,7 @@
    "clicks": 0,
    "accounts": 0,
    "readsPerPage": 0,
-   "ctr": 0.0243,
+   "ctr": 0.0242,
    "acc": 0.4959,
    "value": 0
   }
@@ -1354,7 +1354,7 @@
   "status": "quota used",
   "count": 0,
   "top": [],
-  "queueLeft": 2682
+  "queueLeft": 2681
  },
  "verdicts": [],
  "experiments": [
@@ -1362,15 +1362,15 @@
    "id": "cal-replay-last-1",
    "family": "/economic-calendar/<event>",
    "template": "replay-last",
-   "at": "2026-11-10T17:01:38.891Z",
+   "at": "2026-11-10T17:18:01.438Z",
    "days": 0.6,
    "A": {
     "pages": 171,
-    "active": 27,
-    "reads": 41,
+    "active": 28,
+    "reads": 43,
     "clicks": 0,
     "accounts": 0,
-    "lift": 9.72
+    "lift": 10
    },
    "B": {
     "pages": 185,
@@ -1378,11 +1378,11 @@
     "reads": 61,
     "clicks": 0,
     "accounts": 0,
-    "lift": 7.67
+    "lift": 7.53
    },
    "clickWorth": 41,
    "preDays": 9.1,
-   "pBbeatsA": 0.207,
+   "pBbeatsA": 0.166,
    "enough": true,
    "status": "running"
   },
@@ -1390,7 +1390,7 @@
    "id": "rel-replay-last-1",
    "family": "/news/<release>",
    "template": "replay-last",
-   "at": "2026-11-10T17:01:38.939Z",
+   "at": "2026-11-10T17:18:01.475Z",
    "days": 0.6,
    "A": {
     "pages": 994,
@@ -1398,7 +1398,7 @@
     "reads": 218,
     "clicks": 0,
     "accounts": 0,
-    "lift": 12.57
+    "lift": 12.35
    },
    "B": {
     "pages": 966,
@@ -1406,11 +1406,11 @@
     "reads": 196,
     "clicks": 0,
     "accounts": 0,
-    "lift": 15.53
+    "lift": 15.26
    },
    "clickWorth": 41,
    "preDays": 9.1,
-   "pBbeatsA": 0.614,
+   "pBbeatsA": 0.608,
    "enough": true,
    "status": "running"
   }
