@@ -194,7 +194,7 @@ function needQueue() {
 
 // ── RUN EACH BRAIN: sense → modes → judge last episode on its outcome → learn intensity → write its pyramid ───────────
 const index = [];
-for (const S of BRAINS) {
+for (const S of BRAINS) try {
   const DIR = `data/brains/${S.id}`; fs.mkdirSync(DIR, { recursive: true });
   const mem = J(`${DIR}/brain.json`, { modes: {}, episode: null, born: iso(NOW), days: [] });
   let sens = {}; try { sens = S.sensors(); } catch (e) { sens = { error: String(e.message).slice(0, 80) }; }
@@ -278,5 +278,7 @@ for (const S of BRAINS) {
   fs.writeFileSync(`${DIR}/ecosystem.json`, JSON.stringify(eco));
   index.push({ id: S.id, name: S.name, color: S.color, mode: lead.label, level: lead.level, outcome: out, authority, open: BR.branches.filter((b) => b.state === "open").length, escalated: escalate.length });
   console.log(`${S.name}: [${BR.branches.filter((b) => b.state === "open").length} branches] ${lead.label}${modes.length > 1 ? ` +${modes.length - 1}` : ""} · ${out.label} ${out.v ?? "—"} · authority ×${authority} · ${nodes.length} nodes${S.admin(sens).length ? ` · admin: ${S.admin(sens)[0].slice(0, 90)}` : ""}`);
-}
+} catch (e) { // ONE BRAIN FAILING NEVER TAKES THE OTHERS DOWN — it is reported (the supervisor/fixer read the log + index)
+  console.log(`${S.name}: FAILED — ${String(e?.stack ?? e).split("\n").slice(0, 2).join(" | ").slice(0, 220)}`);
+  index.push({ id: S.id, name: S.name, color: S.color, mode: "Failed", level: "critical", outcome: { label: "brain run", v: null }, authority: 1, error: String(e?.message ?? e).slice(0, 160) }); }
 fs.writeFileSync("data/brains/index.json", JSON.stringify({ at: iso(NOW), brains: index }, null, 1));
