@@ -41,6 +41,7 @@ const REG = [
   { id: "bing", name: "Bing sender", group: "traffic", parent: "ai", does: "Sends the day's most valuable pages to Bing — the index ChatGPT searches", every: 1, t: () => lastAt("data/ai/runs.jsonl") },
   { id: "curator", name: "llms.txt curator", group: "traffic", parent: "ai", does: "Puts the pages that matter right now at the top of llms.txt for AI assistants", every: 1, t: () => atOf("data/ai/llms.json") },
   { id: "truth", name: "Truth gate", group: "traffic", parent: "ai", does: "Reads key pages as ChatGPT does; contradictions hold every verdict until fixed", every: 6, t: () => atOf("data/ai/truth.json"), feeds: ["hooks"] },
+  { id: "traffic-brain", link: "traffic", name: "Traffic brain ↗", group: "core", parent: "core", does: "The traffic engine's own brain: modes, neurons, convergence, memory + bin; builds and judges traffic branches hourly (its own web on /machine → Traffic)", every: 1, t: () => atOf("data/traffic/ecosystem.json"), feeds: ["bing"] },
   { id: "analyst", name: "AI analyst", group: "core", does: "Reads every machine daily (gpt-4.1-mini, ~$0.10/month); findings tied to real numbers + ≤2 focus picks the core judges", every: 24, t: () => atOf("data/analyst/plan.json"), feeds: ["core"] },
   { id: "radar", name: "AI radar", group: "traffic", does: "Asks AI the real buyer questions daily; who wins the answer", every: 24, t: () => atOf("data/radar/plan.json"), feeds: ["ai"] },
   { id: "indexnow", name: "IndexNow", group: "traffic", does: "Tells Bing and others the moment a page changes", every: 24, t: () => lastAt("data/indexnow.jsonl") },
@@ -279,7 +280,7 @@ const OUTC = (() => { try { return JSON.parse(fs.readFileSync("data/machines/out
 const kpiOf = { ...Object.fromEntries((sup?.status ?? []).map((s) => [s.id, s.kpi])), ...OUTC };
 const act = {}; for (const e of feed) if (NOW - Date.parse(e.t) < DAY && e.kind !== "run" && !/ read \//.test(e.text)) act[e.m] = (act[e.m] ?? 0) + 1;
 const hotIds = new Set(mode === "surge" ? ["surge", "sisters", "bing", "curator", "mode", "ai", "rising"] : mode === "dip" ? ["mode", "bing", "curator", "ai"] : []);
-const nodes = REG.map((m) => { const s = statusOf(m); return { id: m.id, name: m.name, group: m.group, parent: m.parent ?? null, does: m.does, every: m.every,
+const nodes = REG.map((m) => { const s = statusOf(m); return { id: m.id, ...(m.link ? { link: m.link } : {}), name: m.name, group: m.group, parent: m.parent ?? null, does: m.does, every: m.every,
   state: s.state, lastRunH: s.age == null ? null : +s.age.toFixed(1), kpi: kpiOf[m.id] ?? null, act24: act[m.id] ?? 0, hot: hotIds.has(m.id), discovered: !!m.discovered, spawned: !!m.spawned,
   recent: feed.filter((e) => e.m === m.id).slice(0, 6) }; });
 for (const n of nodes) if (n.id.startsWith("lead-")) { const mine = nodes.filter((x) => x.group === n.group && x.id !== n.id);
@@ -405,6 +406,8 @@ if (mode === "dip") next.push(`Recovery: the ${P.recoveryN} best pages go back t
   const seen = new Set(); for (const e of up) { if (seen.has(e.fam)) continue; seen.add(e.fam); if (seen.size > 3) break;
     next.push(`${e.title} drops ${new Date(e.t).toUTCString().slice(0, 11)} — its pages are already queued for Bing before people ask.`); } }
 { const an = J("data/analyst/plan.json"); if (an?.headline && NOW - Date.parse(an.at) < 30 * 3600e3) next.unshift(`AI analyst: ${an.headline}`); }
+// THE TRAFFIC BRAIN talks back (two engines, one picture): its mode + what it is pushing lead the main briefing
+{ const tb = J("data/traffic/ecosystem.json"); if (tb?.briefing && NOW - Date.parse(tb.at) < 3 * 3600e3) { next.unshift(`Traffic brain (${tb.modes?.[0]?.label ?? "on"}): ${tb.briefing.conclusion}`); for (const w of (tb.briefing.watch ?? []).slice(0, 1)) watch.push(`Traffic: ${w}`); } }
 for (const b of (spawned.branches ?? []).filter((x) => x.state === "alive").slice(0, 2)) next.push(`Focus branch on ${b.target} is running (${b.why}).`);
 const topSurge = (ai.surges ?? []).find((y) => y.kind === "page");
 const conclusion = mode === "surge" ? `Big day, Kai. AI is reading us ${xN.toFixed(1)}× normal${topSurge ? `, led by ${topSurge.key}` : ""}, and I've got every machine pushing it.${watch.length ? ` ${watch.length === 1 ? "One thing needs" : `${watch.length} things need`} you.` : " Nothing needs you."}`

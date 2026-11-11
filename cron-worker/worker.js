@@ -42,7 +42,7 @@ async function guard(env, d) {
     if (age == null || age > 3) why.push(`the hourly engine has not reported for ${age == null ? "an unknown time" : age.toFixed(1) + " h"} (supervisor + every machine behind it)`);
   } catch (e) { why.push("could not read the engine status: " + String(e).slice(0, 60)); }
   try {
-    const v = await fetch("https://crtlab.pro/api/data-version", { headers: { "User-Agent": "crtlab-cron" } }) // WAF rule 3 403s an empty UA.then((r) => (r.ok ? r.json() : null));
+    const v = await fetch("https://crtlab.pro/api/data-version", { headers: { "User-Agent": "crtlab-cron", ...(env.EDGE_SECRET ? { "x-crtlab-edge": env.EDGE_SECRET } : {}) } }) // WAF rule 3 403s an empty UA; a worker's own-zone fetch skips the transform rule, so it carries the edge header itself.then((r) => (r.ok ? r.json() : null));
     const x = new Date(d); x.setUTCHours(0, 0, 0, 0); if (d - x < 7.5 * 3.6e6) x.setUTCDate(x.getUTCDate() - 1);
     do x.setUTCDate(x.getUTCDate() - 1); while (x.getUTCDay() === 0 || x.getUTCDay() === 6);
     const want = x.toISOString().slice(0, 10);

@@ -66,7 +66,7 @@ jobs:
         env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}" }
       - name: Supervisor + engine core (every machine watched, mistakes, mode surge/dip, the /machine web)
         continue-on-error: true
-        run: node scripts/supervisor.mjs; node scripts/fixer.mjs; node scripts/core.mjs
+        run: node scripts/supervisor.mjs; node scripts/fixer.mjs; node scripts/core.mjs; node scripts/traffic-core.mjs
         env: { RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", GH_TOKEN: "${{ github.token }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}" }
       - run: node scripts/summary.mjs
       - name: Save

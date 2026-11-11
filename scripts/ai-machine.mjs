@@ -218,7 +218,9 @@ const hot = [...surges.filter((x) => x.kind === "page").slice(0, SIS_TOP), ...ri
 { const keys = hot.flatMap((h) => sisKeys(h).map((k) => [k, h]));
   if (keys.length) for (const q of lastmod.keys()) { if (surgePage.has(q) || risePage.has(q)) continue; const hit = keys.find(([k]) => sisMatch(k, q)); if (hit) sisterOf.set(q, hit[1]); } }
 // FOCUS BRANCHES the core built (data/machines/spawned.json): their pages ×boost while the branch is alive
-const FOCUS = (() => { try { return JSON.parse(fs.readFileSync("data/machines/spawned.json", "utf8")).branches.filter((b) => b.state === "alive"); } catch { return []; } })();
+// + the TRAFFIC BRAIN's branches (data/traffic/branches.json): surge / channel / event / rank / convergence, boost 1.2–2.2
+const FOCUS = (() => { const rd = (f) => { try { return JSON.parse(fs.readFileSync(f, "utf8")).branches.filter((b) => b.state === "alive" && b.boost); } catch { return []; } };
+  return [...rd("data/traffic/branches.json").sort((a, b) => b.boost - a.boost), ...rd("data/machines/spawned.json")]; })();
 const focusMul = (p) => { for (const b of FOCUS) if (p === b.target || p.startsWith(b.target.endsWith("/") ? b.target : b.target + "/") || p.startsWith(b.target + "-")) return b.boost; return 1; };
 const boost0 = (p) => (surgePage.has(p) ? (MP.surgeBoost ?? 4) : risePage.has(p) ? 2.5 : sisterOf.has(p) ? 2 : surgeFam.has(family(p)) ? 1.5 : 1);
 const boost = (p) => boost0(p) * focusMul(p);
