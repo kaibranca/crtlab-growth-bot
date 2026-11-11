@@ -1,5 +1,11 @@
 {
- "at": "2026-11-11T15:18:22.708Z",
+ "heap": {
+  "cap": 768,
+  "stopped": false,
+  "samples": 0,
+  "note": "no /api/ops/mem yet (deploys at the next window)"
+ },
+ "at": "2026-11-11T16:01:16.301Z",
  "status": "over budget",
  "budget": 10,
  "weekPace": 21.6,
@@ -7,28 +13,28 @@
  "deploys": {
   "Postgres": 0,
   "data": 1,
-  "web": 13,
+  "web": 14,
   "ops": 12
  },
- "dayCost": 1.04,
+ "dayCost": 1,
  "avgDayCost": 0.72,
- "monthPace": 31.2,
+ "monthPace": 30,
  "services": [
-  {
-   "svc": "data",
-   "memGB": 0.97,
-   "normalGB": 0.18,
-   "dayCost": 0.46,
-   "avgDayCost": 0.2,
-   "monthPace": 13.74
-  },
   {
    "svc": "web",
    "memGB": 2.11,
    "normalGB": 0.72,
    "dayCost": 0.45,
    "avgDayCost": 0.4,
-   "monthPace": 13.6
+   "monthPace": 13.58
+  },
+  {
+   "svc": "data",
+   "memGB": 0.49,
+   "normalGB": 0.18,
+   "dayCost": 0.42,
+   "avgDayCost": 0.2,
+   "monthPace": 12.56
   },
   {
    "svc": "Postgres",
@@ -36,7 +42,7 @@
    "normalGB": 0.38,
    "dayCost": 0.13,
    "avgDayCost": 0.12,
-   "monthPace": 3.91
+   "monthPace": 3.89
   },
   {
    "svc": "ops",
@@ -54,27 +60,16 @@
    "normalGB": 0.72,
    "dayCost": 0.45,
    "avgDayCost": 0.4,
-   "monthPace": 13.6,
+   "monthPace": 13.58,
    "kind": "memory growth",
    "rssGB": 0.194,
    "why": "memory 2.11 GB vs ~0.72 GB normal"
   },
   {
-   "svc": "data",
-   "memGB": 0.97,
-   "normalGB": 0.18,
-   "dayCost": 0.46,
-   "avgDayCost": 0.2,
-   "monthPace": 13.74,
-   "kind": "cache bloat",
-   "rssGB": 0.194,
-   "why": "Railway counts 0.97 GB but the server itself uses 0.19 GB — file cache from the data swap"
-  },
-  {
    "svc": "web",
    "kind": "too many deploys",
-   "n": 13,
-   "why": "13 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
+   "n": 14,
+   "why": "14 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
   }
  ],
  "actions": [],
