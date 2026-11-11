@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T06:03:54.078Z",
+ "at": "2026-11-11T06:19:33.534Z",
  "ok": 12,
  "total": 12,
  "status": [
@@ -41,7 +41,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 3.7,
+   "lastRunH": 4,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -53,7 +53,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 21.9,
+   "lastRunH": 22.2,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -64,7 +64,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 23.4,
+   "lastRunH": 23.6,
    "everyH": 24,
    "kpi": null
   },
@@ -72,7 +72,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 11.1,
+   "lastRunH": 11.4,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -83,7 +83,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 19.2,
+   "lastRunH": 19.5,
    "everyH": 24,
    "kpi": null
   },
@@ -91,7 +91,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 6.2,
+   "lastRunH": 6.4,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -102,7 +102,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 1.5,
+   "lastRunH": 1.8,
    "everyH": 1,
    "kpi": null
   },
@@ -126,15 +126,15 @@
  "allIn": [
   {
    "move": "surge",
-   "what": "/news/cpi/gold",
-   "why": "226 AI reads in 24 h vs ~10.2/day",
-   "z": 67.7
-  },
-  {
-   "move": "surge",
    "what": "/news/ppi/gold",
    "why": "48 AI reads in 24 h vs ~0.5/day",
    "z": 67.2
+  },
+  {
+   "move": "surge",
+   "what": "/news/cpi/gold",
+   "why": "225 AI reads in 24 h vs ~10.2/day",
+   "z": 67.1
   },
   {
    "move": "surge",
