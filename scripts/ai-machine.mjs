@@ -110,7 +110,11 @@ for (const x of page.values()) {
   x.conf = +(x.reads / (x.reads + K_CTR)).toFixed(2); // how much of the estimate is the page's own evidence
   // expected accounts from this page: its own read rate, or (no reads yet) its family's — so new pages rank on day one
   const readRate = x.reads > 0 ? x.reads : F.readsPerPage * 0.5;
-  x.value = readRate * x.ctr * x.acc;
+  // 11-11 CONVERSION FIRST: a Bing send buys NEW reads, so what one is worth is accounts PER READ (ctr × acc), with reach only
+  // as a damped √ — the old reads × ctr × acc gave the quota to pages already read most (news releases: 738 reads, 0
+  // accounts) and starved the best family (/<strategy>-backtester: 27 reads → 9 accounts; 2 of 150 sends ever).
+  x.perRead = x.ctr * x.acc;
+  x.value = x.perRead * Math.sqrt(readRate + 1);
 }
 
 // ── 2b. learn the calendar: ChatGPT is asked about a release in the days around it ─────────────────────────────────────
