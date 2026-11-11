@@ -33,6 +33,10 @@ const digest = {
   mode: { mode: mode.mode, why: mode.why },
   machines: { ok: sup.ok, total: sup.total, fix: (sup.fix ?? []).slice(0, 5) },
   focusAlive: spawned.branches.filter((b) => b.state === "alive").map((b) => ({ target: b.target, owner: b.owner ?? "core", why: b.why })),
+  // the other brains + the traffic brain's per-page people→click (11-11): the analyst sees the whole system
+  brains: (J("data/brains/index.json", { brains: [] }).brains ?? []).map((b) => ({ brain: b.name, mode: b.mode, outcome: `${b.outcome?.label}: ${b.outcome?.v}`, openBranches: b.open })),
+  peopleClick: (() => { const t = J("data/traffic/ecosystem.json", {}).live; return t ? { siteRatePct: t.rate, fetches7: t.fetches7, clicks7: t.clicks7, best: (t.best ?? []).slice(0, 3).map((x) => ({ p: x.p, fetches: x.fetches, clicks: x.clicks })), neverClicked: (t.never ?? []).slice(0, 3).map((x) => ({ p: x.p, fetches: x.fetches })) } : null; })(),
+  needsKai: (J("data/brains/fixer/ecosystem.json", {}).briefing?.watch ?? []).filter((w) => /^Admin: \d/.test(w)).slice(0, 5).map((w) => w.replace(/^Admin: /, "").slice(0, 140)),
 };
 const DIG = JSON.stringify(digest);
 

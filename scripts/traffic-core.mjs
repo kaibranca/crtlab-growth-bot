@@ -114,6 +114,14 @@ const RATE = 0.25, BAR = 0.42;
 const fire = (k) => { const w = W(k); w.used = iso(NOW); return w.v >= BAR || rnd() < 0.15; };
 const reward = (k, r) => { const w = W(k); w.v = +clamp(w.v + RATE * (r - w.v), 0.05, 0.95).toFixed(3); w.n++; w.used = iso(NOW); };
 
+// ── SHARED LEARNING (engines teach each other): the main engine's focus-branch verdicts (core + AI analyst picks) are the
+// same action as this brain's surge/convergence branches (pages Bing-first) → each new verdict moves "surge→bing" at half
+// strength. Every verdict anywhere teaches the brain that does the same kind of thing.
+{ const seenV = (brain.sharedSeen ??= {}); const mainLed = readLines("data/machines/ledger.jsonl").filter((l) => /^spawn\|focus-/.test(l.key ?? "") && (l.kind === "win" || l.kind === "loss") && NOW - Date.parse(l.at) < 14 * DAY);
+  for (const l of mainLed) { if (seenV[l.key]) continue; seenV[l.key] = 1; const w = W("surge→bing"); w.v = +clamp(w.v + (RATE / 2) * ((l.kind === "win" ? 1 : 0) - w.v), 0.05, 0.95).toFixed(3); w.used = iso(NOW);
+    say("neurons", `learned from the main engine: ${l.what} → surge→bing ${w.v}`, l.kind === "win" ? "win" : "bad"); }
+  for (const k of Object.keys(seenV)) if (Object.keys(seenV).length > 400) delete seenV[k]; }
+
 // ── JUDGE every branch that is due (fractal: the same judge for every kind) ─────────────────────────────────────────
 const pagePos = tplan.pagePos ?? {};
 const KIND = {
