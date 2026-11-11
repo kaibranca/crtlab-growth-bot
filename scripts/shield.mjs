@@ -27,9 +27,12 @@ const ev = g.data.viewer.zones[0]?.firewallEventsAdaptive || [];
 
 // 2. score IPs (blocks from the ban list itself don't count — they're already banned)
 const banRule = st.banRuleId;
+// the cloud-crawler rule (11-11: Huawei/Tencent/Alibaba headless crawlers get a challenge) is a FILTER working, not an
+// attack — its events are counted on their own and never score an IP or the flood total (truth rule)
+const CRAWLER_RULE = "6ada962bdf364810b175d41c8f427012", crawlerEv = ev.filter((e) => e.ruleId === CRAWLER_RULE);
 const per = new Map();
 for (const e of ev) {
-  if (e.ruleId && e.ruleId === banRule) continue;
+  if (e.ruleId && (e.ruleId === banRule || e.ruleId === CRAWLER_RULE)) continue;
   const s = SCORE[e.source]; if (!s) continue;
   const x = per.get(e.clientIP) || { n: 0, asn: e.clientAsn, org: e.clientASNDescription || "", src: {}, uas: new Set(), wp: 0, reqs: 0 }; x.n += s; x.src[e.source] = (x.src[e.source] || 0) + 1; x.uas.add(e.userAgent || ""); x.reqs++; if (/^\/(wp-|xmlrpc|\.env|\.git|cgi-bin|phpmyadmin|vendor\/phpunit)|\.php$/i.test(e.clientRequestPath || "")) x.wp++; per.set(e.clientIP, x);
 }
@@ -48,7 +51,7 @@ if (fresh.length) await cf(`/accounts/${ACC}/rules/lists/${LIST}/items`, { metho
   body: JSON.stringify(fresh.map(([ip, x]) => ({ ip, comment: `auto|${Object.entries(x.src).map(([k, v]) => `${k}:${v}`).join(",")}|asn=${x.asn}|exp=${exp}` }))) });
 
 // 5. flood → Under Attack (JS check for everyone) ; quiet for 2 runs → back to medium
-const total = ev.length, FLOOD = 4000;
+const total = ev.length - crawlerEv.length, FLOOD = 4000; // attacks only
 const lvl = (await cf(`/zones/${Z}/settings/security_level`)).result.value;
 let mode = lvl;
 if (total >= FLOOD && lvl !== "under_attack") { await cf(`/zones/${Z}/settings/security_level`, { method: "PATCH", body: JSON.stringify({ value: "under_attack" }) }); mode = "under_attack"; st.attackSince = new Date().toISOString(); st.quiet = 0; }
@@ -76,7 +79,7 @@ if ((humanBans.length || changed) && process.env.RESEND_API_KEY && process.env.A
   console.log("emailed", r.status);
 }
 
-st.at = new Date().toISOString(); st.lastHour = { blocked: total, ips: per.size, banned: fresh.length, unbanned: expired.length, listSize: items.length - expired.length + fresh.length, mode };
+st.at = new Date().toISOString(); st.lastHour = { crawlersChallenged: crawlerEv.length, blocked: total, ips: per.size, banned: fresh.length, unbanned: expired.length, listSize: items.length - expired.length + fresh.length, mode };
 st.history = [...(st.history || []), { at: st.at, blocked: total, banned: fresh.length }].slice(-24 * 14);
 st.bannedHashes = [...new Set([...(st.bannedHashes || []), ...fresh.map(([ip]) => hash(ip))])].slice(-2000);
 fs.writeFileSync(STATE, JSON.stringify(st, null, 1));

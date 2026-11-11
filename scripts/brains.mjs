@@ -115,7 +115,7 @@ const BRAINS = [
       { id: "app", label: "App", machines: ["security"], does: "secrets, headers, exposed paths" },
       { id: "watch", label: "Watchdogs", machines: ["watchdog", "health"], does: "independent uptime + data checks" },
     ],
-    sensors: () => ({ blockedHour: shield.lastHour?.blocked ?? null, bannedList: shield.lastHour?.listSize ?? null, shieldMode: shield.lastHour?.mode ?? null,
+    sensors: () => ({ crawlersChallengedHour: shield.lastHour?.crawlersChallenged ?? null, blockedHour: shield.lastHour?.blocked ?? null, bannedList: shield.lastHour?.listSize ?? null, shieldMode: shield.lastHour?.mode ?? null,
       blocked24: (shield.history ?? []).filter((h) => NOW - Date.parse(h.at) < DAY).reduce((a, h) => a + (h.blocked ?? 0), 0), deps: deps?.open ?? null, depsHigh: deps?.high ?? null, depsUnmeasured: deps?.open == null ? (deps?.error ?? "no token") : null }),
     outcome: (s) => ({ label: "attacks blocked / 24 h", v: s.blocked24 ?? 0, higher: false }),
     signals: (s) => [s.blocked24 >= 1000 && { key: "attack-volume", target: "blocked / 24 h", v: s.blocked24, higher: false, days: 3, why: `${s.blocked24} blocked in 24 h` },
