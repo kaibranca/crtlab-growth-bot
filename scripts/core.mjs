@@ -286,7 +286,17 @@ const widgets = {
   losses7: readLines("data/machines/ledger.jsonl").filter((x) => (x.kind === "loss" || x.kind === "mistake") && NOW - Date.parse(x.at) < 7 * DAY).length,
 };
 
-const eco = { at: new Date().toISOString(), widgets, modes, briefing, rules: CORE_RULES, capacity: cap, mode: modeOut, nodes, edges, feed: feed.slice(0, 60),
+// ── 7. SCOUT: what's missing — the machines the core would build next, each backed by data it already holds
+const scout = [];
+for (const n of nodes.filter((x) => x.discovered)) scout.push({ what: `Wire in ${n.name}`, why: "writes a plan nobody reads yet", kind: "wire" });
+for (const c of (ai.convert ?? []).slice(0, 3)) scout.push({ what: `Convert hook for ${c.p}`, why: `${c.reads7d} AI reads in 7 days, ${c.clicks7d} clicks`, kind: "hook" });
+for (const f of (ai.expand ?? []).filter((x) => x.pages >= 3).slice(0, 2)) scout.push({ what: `More ${f.family} pages`, why: `read→click ${(f.ctr * 100).toFixed(1)}% on ${f.pages} pages — the best-paying page type`, kind: "factory" });
+{ const g = J("data/gaps.json"); const n = Array.isArray(g) ? g.length : (g?.gaps?.length ?? 0); if (n) scout.push({ what: "Pages for search gaps", why: `${n} searches with no good CRTLAB page`, kind: "factory" }); }
+if ((men?.sources?.length ?? 0) < 5) scout.push({ what: "Word-of-mouth engine", why: "no outside site sends people yet", kind: "new" });
+if (!(widgets.aiAccounts7 >= widgets.aiAccountsPrev)) scout.push({ what: "AI landing machine", why: `AI accounts ${widgets.aiAccounts7} vs ${widgets.aiAccountsPrev} last week while reads are up — the first screen leaks`, kind: "new" });
+scout.push({ what: "Cost machine (Railway)", why: "budget watch + backend optimiser — Kai asked 11-11", kind: "new" });
+
+const eco = { at: new Date().toISOString(), scout, widgets, modes, briefing, rules: CORE_RULES, capacity: cap, mode: modeOut, nodes, edges, feed: feed.slice(0, 60),
   totals: { machines: nodes.length, ok: nodes.filter((n) => n.state === "ok").length, late: nodes.filter((n) => n.state === "late").length, stopped: nodes.filter((n) => n.state === "stopped").length, actions24: Object.values(act).reduce((a, b) => a + b, 0) },
   allIn: sup?.allIn ?? [], fix: sup?.fix ?? [], mistakes: sup?.mistakes ?? [], ledger: (sup?.ledger ?? []).slice(0, 15), episodes: readLines("data/machines/modes.jsonl").slice(-8).reverse(),
   spawned: spawned.branches.slice(-12),
