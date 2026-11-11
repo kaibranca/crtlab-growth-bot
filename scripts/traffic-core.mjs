@@ -49,7 +49,7 @@ const months = [iso(NOW).slice(0, 7), iso(NOW - 15 * DAY).slice(0, 7)].filter((v
 const crawl = months.flatMap((m) => readLines(`data/aicrawl/${m}.jsonl`)).filter((w) => NOW - Date.parse(w.to) < 15 * DAY);
 // ChatGPT is TWO channels (11-11 correction): ChatGPT-User = a real person asking right now (drives the modes);
 // OAI-SearchBot = ChatGPT building its search index (a leading signal: indexed today, answered tomorrow — not people).
-const ASSIST = { chatgpt: /^ChatGPT-User$/, "chatgpt-index": /^OAI-SearchBot$/, perplexity: /^Perplexity-User$/, "perplexity-index": /^PerplexityBot$/, claude: /^Claude-(User|SearchBot)$/, bing: /^Bingbot$/, google: /^Googlebot$/, apple: /^Applebot$/, meta: /^Meta$/ };
+const ASSIST = { chatgpt: /^ChatGPT-User$/, "chatgpt-index": /^OAI-SearchBot$/, perplexity: /^Perplexity-User$/, "perplexity-index": /^PerplexityBot$/, claude: /^Claude-User$/, "claude-index": /^Claude-SearchBot$/, bing: /^Bingbot$/, google: /^Googlebot$/, apple: /^Applebot$/, meta: /^Meta$/ };
 const LIVE = /-User$|^OAI-SearchBot$|^Claude-SearchBot$|^PerplexityBot$|^Bingbot$/;
 const chan = {};
 for (const [c, re] of Object.entries(ASSIST)) { let d24 = 0, d7 = 0; const pages = new Map();
@@ -293,7 +293,7 @@ for (const [a, b] of [["demand", "rank"], ["rank", "bing"], ["surges", "bing"], 
   if (ids.has(a) && ids.has(b)) edges.push({ a, b, kind: "data", w: 0.5 });
 const tFeed = [...feed, ...(main.feed ?? []).filter((f) => ids.has(f.m) && f.m !== "core")].sort((a, b) => Date.parse(b.t) - Date.parse(a.t)).slice(0, 60);
 const good = [], watch = [], next = [];
-const LBL = { chatgpt: "People asking ChatGPT", "chatgpt-index": "ChatGPT's search index", perplexity: "People asking Perplexity", "perplexity-index": "Perplexity's index", claude: "People asking Claude", bing: "Bing's crawler", google: "Google's crawler", apple: "Apple's crawler", meta: "Meta's crawler" };
+const LBL = { chatgpt: "People asking ChatGPT", "chatgpt-index": "ChatGPT's search index", perplexity: "People asking Perplexity", "perplexity-index": "Perplexity's index", claude: "People asking Claude", "claude-index": "Claude's index", bing: "Bing's crawler", google: "Google's crawler", apple: "Apple's crawler", meta: "Meta's crawler" };
 for (const [c, v] of Object.entries(chan)) if (v.x != null && v.x >= 1.5 && v.reads24 >= 20) good.push(`${LBL[c] ?? c}: ${v.reads24} reads in 24 h, ${v.x}× normal${c.endsWith("-index") ? " (indexing — answers follow)" : ""}.`);
 if (clk.chatgpt) (clk.chatgpt.d7 >= clk.chatgpt.prev ? good : watch).push(`ChatGPT clicks ${clk.chatgpt.d7} this week vs ${clk.chatgpt.prev} the week before.`);
 if (aiReadsX >= 1.5 && (aiSeg?.ratio ?? 1) <= 1) watch.push("People asking ChatGPT are up but AI visitors aren't — the read→click step is the bottleneck.");
