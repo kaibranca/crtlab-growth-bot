@@ -14,7 +14,7 @@ import { readLines, append } from "./lib.mjs";
 const NOW = Date.now(), H = 3.6e6, DAY = 24 * H, iso = (t) => new Date(t).toISOString().slice(0, 10);
 const J = (f, d = null) => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return d; } };
 const lastAt = (f) => { const l = readLines(f).slice(-1)[0]; return l?.at ? Date.parse(l.at) : null; };
-const atOf = (f) => { const j = J(f); return j?.at ? Date.parse(j.at) : null; };
+const atOf = (f) => { const j = J(f), t = j?.at ?? j?.changed; return t ? Date.parse(t) : null; };
 const month = iso(NOW).slice(0, 7);
 
 // ── 1. THE REGISTRY: every machine and branch, what it does, what it feeds ────────────────────────────────────────────
