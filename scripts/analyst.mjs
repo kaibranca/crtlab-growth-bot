@@ -39,12 +39,15 @@ const DIG = JSON.stringify(digest);
 // ── 2. CANDIDATES: the only pages a proposal may name (real pages the machines already measure) ──────────────────────
 const blocked = new Set(spawned.branches.filter((b) => b.state === "alive" || NOW - Date.parse(b.retired ?? 0) < 28 * DAY).map((b) => b.target));
 const cand = new Map();
-const addC = (p, why) => { if (!p || typeof p !== "string" || !p.startsWith("/") || p === "/" || blocked.has(p) || p.includes("<")) return; if (!cand.has(p)) cand.set(p, why); };
-for (const c of ai.convert ?? []) addC(c.p, `${c.reads7d} AI reads / 7 d, ${c.clicks7d} clicks`);
-for (const w of ai.winners ?? []) addC(w.p, `winner: ${r1(w.accounts)} accounts, ${r1(w.clicks)} clicks, ${r1(w.reads)} reads`);
-for (const s of ai.surges ?? []) if (s.kind === "page") addC(s.key, `surging: ${s.last24h} reads in 24 h vs ~${r1(s.normal)}`);
-for (const g of radar.gaps ?? []) addC(g.ourPage, `AI answer gap: "${g.q}"`);
-const CANDS = [...cand].slice(0, 30).map(([p, why]) => ({ p, why }));
+// proven = already turns AI reads into clicks, or is surging now. A focus branch buys more AI reads (Bing first), so only a
+// page that converts reads is a safe pick; zero-click pages and answer gaps may only be the one EXPLORE pick (~15% rule).
+const addC = (p, why, proven) => { if (!p || typeof p !== "string" || !p.startsWith("/") || p === "/" || blocked.has(p) || p.includes("<")) return;
+  const c = cand.get(p); if (!c) cand.set(p, { why, proven }); else if (proven && !c.proven) cand.set(p, { why: why + "; " + c.why, proven }); };
+for (const w of ai.winners ?? []) addC(w.p, `winner: ${r1(w.accounts)} accounts, ${r1(w.clicks)} clicks, ${r1(w.reads)} reads`, (w.clicks ?? 0) > 0);
+for (const s of ai.surges ?? []) if (s.kind === "page") addC(s.key, `surging: ${s.last24h} reads in 24 h vs ~${r1(s.normal)}`, true);
+for (const c of ai.convert ?? []) addC(c.p, `${c.reads7d} AI reads / 7 d, ${c.clicks7d} clicks`, (c.clicks7d ?? 0) > 0);
+for (const g of radar.gaps ?? []) addC(g.ourPage, `AI answer gap: "${g.q}"`, false);
+const CANDS = [...cand].slice(0, 30).map(([p, c]) => ({ p, why: c.why, proven: c.proven }));
 
 // ── 3. TRACK RECORD (learning): what its own past proposals did ──────────────────────────────────────────────────────
 const mine = spawned.branches.filter((b) => b.owner === "analyst");
@@ -56,7 +59,7 @@ const runs = readLines(`${OUT}/runs.jsonl`).slice(-14);
 const SYS = `You are the growth analyst for CRTLAB, a free-every-day trading backtest / bar-replay web app. The one goal: more real people who make an account and replay, mostly from AI answers (ChatGPT) and Bing. The known bottleneck: AI tools read our pages thousands of times but few readers click through.
 Rules: use ONLY numbers that appear in DATA, copied exactly. No guessing, no generic advice, no new pages or features — you can only point machines at existing pages. Be blunt and short.
 Return JSON: {"findings":[{"claim":"<one sentence, plain words>","numbers":[<each number you used, exactly as in DATA>],"so":"<what the machines should do, one short sentence>"}] (max 5, most important first),
-"proposals":[{"target":"<exact p from CANDIDATES>","why":"<one sentence citing a number>","explore":<true if a long shot>}] (0-2; at most 1 explore; propose nothing rather than something weak),
+"proposals":[{"target":"<exact p from CANDIDATES>","why":"<one sentence citing a number>","explore":<true if a long shot>}] (0-2; a candidate with proven:false MUST be explore:true; at most 1 explore; propose nothing rather than something weak; never pick a page your own findings call a problem),
 "headline":"<the single most important thing today, max 14 words>"}`;
 const USER = `DATA ${DIG}\n\nCANDIDATES ${JSON.stringify(CANDS)}\n\nYOUR TRACK RECORD (your past proposals, judged by AI reads/day after 7 days: kept at ×1.2+, else retired) ${JSON.stringify(record)}\nLearn from it: if your picks were retired, change what kind of page you pick.`;
 
@@ -87,9 +90,10 @@ const findings = (Array.isArray(ans.findings) ? ans.findings : []).slice(0, 5).f
 }).map((f) => ({ claim: f.claim.slice(0, 240), numbers: f.numbers.slice(0, 6), so: String(f.so ?? "").slice(0, 200) }));
 let explore = 0;
 const proposals = (Array.isArray(ans.proposals) ? ans.proposals : []).filter((p) => {
-  const ok = p && cand.has(p.target) && !(p.explore && explore++ >= 1);
+  const c = p && cand.get(p.target); if (c && !c.proven) p.explore = true; // unproven = explore, whatever the model said
+  const ok = !!c && !(p.explore && explore++ >= 1);
   if (!ok) rejected++; return ok;
-}).slice(0, 2).map((p) => ({ target: p.target, why: String(p.why ?? "").slice(0, 200), explore: !!p.explore, evidence: cand.get(p.target) }));
+}).slice(0, 2).map((p) => ({ target: p.target, why: String(p.why ?? "").slice(0, 200), explore: !!p.explore, evidence: cand.get(p.target).why }));
 
 const cost = +(((res.usage?.prompt_tokens ?? 0) * 0.4 + (res.usage?.completion_tokens ?? 0) * 1.6) / 1e6).toFixed(5);
 const plan = { at: new Date().toISOString(), model: via, headline: String(ans.headline ?? findings[0]?.claim ?? "").slice(0, 120), findings, proposals, rejected, record, candidates: CANDS.length, usage: res.usage, fellBack: errs };
