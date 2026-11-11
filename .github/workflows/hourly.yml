@@ -56,6 +56,10 @@ jobs:
         continue-on-error: true
         run: node scripts/cost.mjs
         env: { RAILWAY_API_TOKEN: "${{ secrets.RAILWAY_API_TOKEN }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
+      - name: People machine (real visitors + sign-ups vs the same hours of 14 days; finds the segment that fell)
+        continue-on-error: true
+        run: npm i pg@8 --no-save --no-package-lock --silent && node scripts/humans.mjs
+        env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}" }
       - name: Supervisor + engine core (every machine watched, mistakes, mode surge/dip, the /machine web)
         continue-on-error: true
         run: node scripts/supervisor.mjs; node scripts/core.mjs

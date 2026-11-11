@@ -115,10 +115,14 @@ const baseDays = Math.max(1, Math.min(14, (NOW - t0) / DAY - 1)), mu = Math.max(
 const pageSurges = (ai.surges ?? []).filter((s) => s.kind === "page").length;
 const old = J("data/machines/mode.json", { mode: "normal", since: new Date(0).toISOString(), params: {} });
 const P = { surgeCap: 0.8, sisterTop: 5, recoveryN: 20, ...(old.params ?? {}) };
-let mode = z >= 3 || pageSurges >= 3 ? "surge" : z <= -2.5 && mu >= 30 ? "dip" : "normal";
+// PEOPLE FIRST (11-11): AI crawler reads can surge while real visitors fall (that day the engine said "surge" with people
+// down 30%). A people dip from humans.mjs puts the engine in RECOVERY whatever the reads do — and says which segment fell.
+const HU = (() => { try { return JSON.parse(fs.readFileSync("data/machines/humans.json", "utf8")); } catch { return null; } })();
+const peopleDip = !!HU && HU.state === "dip" && NOW - Date.parse(HU.at) < 3 * H;
+let mode = peopleDip ? "dip" : z >= 3 || pageSurges >= 3 ? "surge" : z <= -2.5 && mu >= 30 ? "dip" : "normal";
 // hysteresis: stay in a mode at least 3 hours, so one quiet hour doesn't flip it back
 if (mode !== old.mode && NOW - Date.parse(old.since) < 3 * H) mode = old.mode;
-const why = mode === "surge" ? `${pageSurges} pages surging · AI reads ${r24} in 24 h vs ~${Math.round(mu)}/day (z ${z})` : mode === "dip" ? `AI reads ${r24} in 24 h vs ~${Math.round(mu)}/day (z ${z}) — recovery: winners first` : `AI reads ${r24} in 24 h vs ~${Math.round(mu)}/day`;
+const why = peopleDip ? `people down: ${HU.visitors.now} visitors in 24 h vs ~${HU.visitors.normal} (sign-ups ${HU.signups.now} vs ~${HU.signups.normal})${HU.why.length ? " — fell most: " + HU.why.slice(0, 3).join("; ") : ""}${z >= 3 ? ` · AI reads still ${r24} vs ~${Math.round(mu)}` : ""}` : mode === "surge" ? `${pageSurges} pages surging · AI reads ${r24} in 24 h vs ~${Math.round(mu)}/day (z ${z})` : mode === "dip" ? `AI reads ${r24} in 24 h vs ~${Math.round(mu)}/day (z ${z}) — recovery: winners first` : `AI reads ${r24} in 24 h vs ~${Math.round(mu)}/day`;
 // episode learning: when a surge/dip ends, compare reads per hour during it vs the 24 h before it started → nudge the
 // bounded parameter that mode controls (surge: Bing share + sister reach; dip: how many winners are re-sent)
 if (mode !== old.mode) {
@@ -344,7 +348,7 @@ for (const m of modes.filter((x) => x.level === "critical" || (x.level === "warn
 for (const st of sup?.status ?? []) if (st.kpi?.change != null && st.kpi.change <= -0.2 && st.kpi.before >= 5 && !st.kpi.lowerBetter) watch.push(`${st.kpi.label} down ${Math.abs(Math.round(st.kpi.change * 100))}% on last week (${st.kpi.now} vs ${st.kpi.before}). More readers, fewer sign-ups — that's the leak to look at.`);
 if (bad.length) watch.push(`${bad.map((n) => n.name).join(", ")} ${bad.length === 1 ? "is" : "are"} behind.`);
 for (const m of (sup?.mistakes ?? []).filter((x) => x.repeating)) watch.push(`${m.where} keeps failing (${m.n}× this week).`);
-if (mode === "dip") watch.push(`Reads are down (${r24} vs ~${Math.round(mu)} a day). Recovery is on: the proven pages get pushed first.`);
+if (mode === "dip") watch.push(peopleDip ? `People are down (${HU.visitors.now} vs ~${HU.visitors.normal} a day) — ${HU.why.slice(0, 2).join("; ") || "no single segment"}. Recovery is on: the proven pages get pushed first.` : `Reads are down (${r24} vs ~${Math.round(mu)} a day). Recovery is on: the proven pages get pushed first.`);
 { const lk = J("data/leak/plan.json"), l = lk?.leaks?.[0]; if (l) watch.unshift(`Biggest leak: ${l.segment.replace(/^\w+:/, "")} at "${l.stage}" — ${l.lost} people lost in 14 days. Fix to try: ${l.fix}.`); }
 if ((men?.sources?.length ?? 0) < 5) watch.push("Nobody outside links to CRTLAB yet — word of mouth is basically zero.");
 if (mode === "surge") next.push(`Surge mode: the hottest pages get up to ${Math.round(P.surgeCap * 100)}% of today's Bing sends, and the top ${P.sisterTop} pull their sister pages up with them.`);
