@@ -1,5 +1,5 @@
 {
- "at": "2026-11-10T18:54:30.418Z",
+ "at": "2026-11-11T06:34:36.299Z",
  "note": "Questions where CRTLAB is usually NOT recommended: who wins, with what claim, and the CRTLAB page that should win. Build list for Claude sessions (new pages need Kai's OK).",
  "gaps": [
   {
@@ -8,7 +8,7 @@
    "cluster": "free",
    "ourPage": "/best-backtesting-software",
    "value": 26.04,
-   "p": 0.02,
+   "p": 0.01,
    "winners": [
     {
      "n": "QuantConnect LEAN",
@@ -44,7 +44,7 @@
    "cluster": "free",
    "ourPage": "/backtest",
    "value": 26.04,
-   "p": 0.02,
+   "p": 0.01,
    "winners": [
     {
      "n": "QuantConnect",
@@ -78,7 +78,7 @@
    "cluster": "free",
    "ourPage": "/backtest",
    "value": 26.04,
-   "p": 0.02,
+   "p": 0.01,
    "winners": [
     {
      "n": "QuantConnect",
@@ -106,7 +106,7 @@
    "cluster": "free",
    "ourPage": "/backtest",
    "value": 26.04,
-   "p": 0.02,
+   "p": 0.01,
    "winners": [
     {
      "n": "TradingView",
@@ -134,7 +134,7 @@
    "cluster": "free",
    "ourPage": "/backtest",
    "value": 26.04,
-   "p": 0.02,
+   "p": 0.01,
    "winners": [
     {
      "n": "MetaTrader 5",
@@ -176,7 +176,7 @@
    "cluster": "free",
    "ourPage": "/backtest",
    "value": 26.04,
-   "p": 0.02,
+   "p": 0.01,
    "winners": [
     {
      "n": "TradingView",
@@ -211,7 +211,7 @@
    "cluster": "free",
    "ourPage": "/backtest",
    "value": 26.04,
-   "p": 0.02,
+   "p": 0.01,
    "winners": [
     {
      "n": "TradingView Bar Replay",
@@ -245,6 +245,125 @@
     "strategytune.com",
     "motivewave.com"
    ],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "how-can-i-backtest-order-flow",
+   "q": "How can I backtest order flow?",
+   "cluster": "flow",
+   "ourPage": "/order-flow-backtesting",
+   "value": 5.66,
+   "p": 0.01,
+   "winners": [],
+   "winningDomains": [],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "is-there-a-footprint-chart-replay-for-backtesting",
+   "q": "Is there a footprint chart replay for backtesting?",
+   "cluster": "flow",
+   "ourPage": "/footprint-chart-backtesting",
+   "value": 5.66,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "TradingView",
+     "r": 1,
+     "why": "Bar Replay exists but won’t work with native Volume Footprint",
+     "$": ""
+    },
+    {
+     "n": "Replay Footprint (TradingView indicator)",
+     "r": 2,
+     "why": "Open-source indicator rebuilt for footprint support in replay/backtesting",
+     "$": "free"
+    },
+    {
+     "n": "Bookmap",
+     "r": 3,
+     "why": "Footprint add-on supports market replay with speed controls",
+     "$": ""
+    },
+    {
+     "n": "Sierra Chart",
+     "r": 4,
+     "why": "Replay/backtest workflows can include footprint data (depends on tick data)",
+     "$": ""
+    }
+   ],
+   "winningDomains": [
+    "tradingview.com",
+    "bookmap.com",
+    "sierrachart.com",
+    "orderflows.com"
+   ],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "how-to-backtest-with-volume-profile",
+   "q": "How to backtest with volume profile",
+   "cluster": "flow",
+   "ourPage": "/order-flow-backtesting",
+   "value": 5.66,
+   "p": 0.01,
+   "winners": [],
+   "winningDomains": [],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "free-footprint-chart-software-for-practice",
+   "q": "Free footprint chart software for practice",
+   "cluster": "flow",
+   "ourPage": "/footprint-chart-backtesting",
+   "value": 5.66,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "Sierra Chart",
+     "r": 1,
+     "why": "Offers a 21-day trial with unrestricted functionality (some data/symbol limits).",
+     "$": "paid/free plan (21-day trial)"
+    },
+    {
+     "n": "NinjaTrader",
+     "r": 2,
+     "why": "Free trading simulator for practice; footprint via Volumetric Bars/Order Flow+.",
+     "$": "free (simulator)"
+    },
+    {
+     "n": "ATAS",
+     "r": 3,
+     "why": "Has footprint chart mode; offers free trial and may continue free for crypto.",
+     "$": "paid/free plan (free trial; then free fo"
+    },
+    {
+     "n": "TradingView",
+     "r": 4,
+     "why": "Volume Footprint native chart requires Premium+; some scripts may help.",
+     "$": "paid (Premium+ for Volume Footprint)"
+    }
+   ],
+   "winningDomains": [
+    "sierrachart.com",
+    "help.atas.net",
+    "tradingview.com"
+   ],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "how-to-backtest-trading-around-news-releases-like-cpi-and-nf",
+   "q": "How to backtest trading around news releases like CPI and NFP",
+   "cluster": "news",
+   "ourPage": "/backtest-with-news",
+   "value": 3.32,
+   "p": 0.02,
+   "winners": [],
+   "winningDomains": [],
    "diag": "not found",
    "fix": "indexing: push our page to Bing"
   }

@@ -1,66 +1,66 @@
 {
- "at": "2026-11-10T18:54:30.420Z",
+ "at": "2026-11-11T06:34:36.299Z",
  "model": "gpt-5.4-mini",
- "sov": 0.03,
+ "sov": 0.02,
  "clusters": {
   "free": {
-   "share": 0.01923047518401021,
+   "share": 0.013886667853279022,
    "cited": 0,
    "first": 0,
-   "n": 7,
+   "n": 6.8,
    "value": 26.04
   },
   "replay": {
-   "share": 0.04166633537281771,
+   "share": 0.0297025185428494,
    "cited": 0,
    "first": 0,
    "n": 0,
    "value": 2.83
   },
   "ict": {
-   "share": 0.04166633537281771,
+   "share": 0.0297025185428494,
    "cited": 0,
    "first": 0,
    "n": 0,
    "value": 2.24
   },
   "prop": {
-   "share": 0.04166633537281771,
+   "share": 0.0297025185428494,
    "cited": 0,
    "first": 0,
    "n": 0,
    "value": 3.16
   },
   "flow": {
-   "share": 0.04166633537281771,
+   "share": 0.017821450097288225,
    "cited": 0,
    "first": 0,
-   "n": 0,
+   "n": 4,
    "value": 5.66
   },
   "gold": {
-   "share": 0.04166633537281771,
+   "share": 0.0297025185428494,
    "cited": 0,
    "first": 0,
    "n": 0,
    "value": 2.45
   },
   "news": {
-   "share": 0.04166633537281771,
+   "share": 0.02545924766550858,
    "cited": 0,
    "first": 0,
-   "n": 0,
+   "n": 1,
    "value": 3.32
   },
   "stats": {
-   "share": 0.04166633537281771,
+   "share": 0.0297025185428494,
    "cited": 0,
    "first": 0,
    "n": 0,
    "value": 2.83
   },
   "data": {
-   "share": 0.04166633537281771,
+   "share": 0.0297025185428494,
    "cited": 0,
    "first": 0,
    "n": 0,
@@ -81,7 +81,8 @@
      "Best for chart-based/manual testing using Bar Replay and Pine Script",
      "Beginners: Strategy Tester in charts; Pine Script; tests on historical data",
      "Bar replay available on free plan; intraday history limited.",
-     "Use Strategy Tester on charts; use existing strategies/indicators for no-code testing."
+     "Use Strategy Tester on charts; use existing strategies/indicators for no-code testing.",
+     "Bar Replay exists but won’t work with native Volume Footprint"
     ]
    },
    {
@@ -141,7 +142,8 @@
     "reasons": [
      "Best for futures traders; desktop platform with strategy backtesting",
      "Beginner-friendly for futures: charting, strategy backtesting, sim trading",
-     "Limited amount of Market Replay data free to download."
+     "Limited amount of Market Replay data free to download.",
+     "Free trading simulator for practice; footprint via Volumetric Bars/Order Flow+."
     ]
    },
    {
@@ -166,13 +168,113 @@
      "Browser-based app; supports intraday data and no-code usage"
     ]
    }
-  ]
+  ],
+  "flow": [
+   {
+    "name": "TradingView",
+    "n": 2,
+    "first": 1,
+    "free": 0,
+    "share": 0.5,
+    "freeShare": 0,
+    "reasons": [
+     "Easiest chart-based strategy testing via Strategy Report",
+     "Best for chart-based/manual testing using Bar Replay and Pine Script",
+     "Beginners: Strategy Tester in charts; Pine Script; tests on historical data",
+     "Bar replay available on free plan; intraday history limited.",
+     "Use Strategy Tester on charts; use existing strategies/indicators for no-code testing.",
+     "Bar Replay exists but won’t work with native Volume Footprint"
+    ]
+   },
+   {
+    "name": "Sierra Chart",
+    "n": 2,
+    "first": 1,
+    "free": 1,
+    "share": 0.5,
+    "freeShare": 0.5,
+    "reasons": [
+     "Replay/backtest workflows can include footprint data (depends on tick data)",
+     "Offers a 21-day trial with unrestricted functionality (some data/symbol limits)."
+    ]
+   },
+   {
+    "name": "Replay Footprint (TradingView indicator)",
+    "n": 1,
+    "first": 0,
+    "free": 1,
+    "share": 0.25,
+    "freeShare": 1,
+    "reasons": [
+     "Open-source indicator rebuilt for footprint support in replay/backtesting"
+    ]
+   },
+   {
+    "name": "Bookmap",
+    "n": 1,
+    "first": 0,
+    "free": 0,
+    "share": 0.25,
+    "freeShare": 0,
+    "reasons": [
+     "Footprint add-on supports market replay with speed controls"
+    ]
+   },
+   {
+    "name": "BalancePIVOT (Orderflows.com)",
+    "n": 1,
+    "first": 0,
+    "free": 0,
+    "share": 0.25,
+    "freeShare": 0,
+    "reasons": [
+     "Footprint/order-flow tools can support historical review via tick replay"
+    ]
+   },
+   {
+    "name": "NinjaTrader",
+    "n": 1,
+    "first": 0,
+    "free": 1,
+    "share": 0.25,
+    "freeShare": 1,
+    "reasons": [
+     "Best for futures traders; desktop platform with strategy backtesting",
+     "Beginner-friendly for futures: charting, strategy backtesting, sim trading",
+     "Limited amount of Market Replay data free to download.",
+     "Free trading simulator for practice; footprint via Volumetric Bars/Order Flow+."
+    ]
+   },
+   {
+    "name": "ATAS",
+    "n": 1,
+    "first": 0,
+    "free": 1,
+    "share": 0.25,
+    "freeShare": 1,
+    "reasons": [
+     "Has footprint chart mode; offers free trial and may continue free for crypto."
+    ]
+   },
+   {
+    "name": "NinjaTrader Order Flow+ (Volumetric bars",
+    "n": 1,
+    "first": 0,
+    "free": 0,
+    "share": 0.25,
+    "freeShare": 0,
+    "reasons": [
+     "Footprint/volumetric bars are tied to Order Flow+ for order-flow practice."
+    ]
+   }
+  ],
+  "news": []
  },
  "gaps": [
   {
    "q": "What is the best free backtesting software?",
    "ourPage": "/best-backtesting-software",
-   "p": 0.02,
+   "p": 0.01,
    "diag": "not found",
    "winners": [
     "QuantConnect LEAN",
@@ -183,7 +285,7 @@
   {
    "q": "Is there a free backtesting tool for day trading?",
    "ourPage": "/backtest",
-   "p": 0.02,
+   "p": 0.01,
    "diag": "not found",
    "winners": [
     "QuantConnect",
@@ -194,7 +296,7 @@
   {
    "q": "Best free website to backtest trading strategies",
    "ourPage": "/backtest",
-   "p": 0.02,
+   "p": 0.01,
    "diag": "not found",
    "winners": [
     "QuantConnect",
@@ -204,7 +306,7 @@
   {
    "q": "How can I backtest a trading strategy for free without coding?",
    "ourPage": "/backtest",
-   "p": 0.02,
+   "p": 0.01,
    "diag": "not found",
    "winners": [
     "TradingView",
@@ -214,7 +316,7 @@
   {
    "q": "Free alternative to paid backtesting software for forex",
    "ourPage": "/backtest",
-   "p": 0.02,
+   "p": 0.01,
    "diag": "not found",
    "winners": [
     "MetaTrader 5",
@@ -226,7 +328,7 @@
   {
    "q": "What is the best backtesting software for beginners?",
    "ourPage": "/backtest",
-   "p": 0.02,
+   "p": 0.01,
    "diag": "not found",
    "winners": [
     "TradingView",
@@ -237,7 +339,7 @@
   {
    "q": "Where can I backtest manually for free with replay?",
    "ourPage": "/backtest",
-   "p": 0.02,
+   "p": 0.01,
    "diag": "not found",
    "winners": [
     "TradingView Bar Replay",
@@ -245,11 +347,56 @@
     "Trades Replay",
     "StrategyTune"
    ]
+  },
+  {
+   "q": "How can I backtest order flow?",
+   "ourPage": "/order-flow-backtesting",
+   "p": 0.01,
+   "diag": "not found",
+   "winners": []
+  },
+  {
+   "q": "Is there a footprint chart replay for backtesting?",
+   "ourPage": "/footprint-chart-backtesting",
+   "p": 0.01,
+   "diag": "not found",
+   "winners": [
+    "TradingView",
+    "Replay Footprint (TradingView indicator)",
+    "Bookmap",
+    "Sierra Chart"
+   ]
+  },
+  {
+   "q": "How to backtest with volume profile",
+   "ourPage": "/order-flow-backtesting",
+   "p": 0.01,
+   "diag": "not found",
+   "winners": []
+  },
+  {
+   "q": "Free footprint chart software for practice",
+   "ourPage": "/footprint-chart-backtesting",
+   "p": 0.01,
+   "diag": "not found",
+   "winners": [
+    "Sierra Chart",
+    "NinjaTrader",
+    "ATAS",
+    "TradingView"
+   ]
+  },
+  {
+   "q": "How to backtest trading around news releases like CPI and NFP",
+   "ourPage": "/backtest-with-news",
+   "p": 0.02,
+   "diag": "not found",
+   "winners": []
   }
  ],
  "wrong": [],
  "events": [],
- "boost": 2,
+ "boost": 5,
  "kinds": {
   "unseen": 2.5,
   "unchosen": 1.2,
@@ -258,6 +405,6 @@
  },
  "verdicts": [],
  "questions": 47,
- "monthCost": 0.16,
+ "monthCost": 0.24,
  "budget": 2.5
 }
