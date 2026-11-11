@@ -192,11 +192,11 @@ for (const [target, ds] of Object.entries(surgeDays).sort((a, b) => b[1].size - 
 // judged and what counts as success. Branches are data (same spawned.json), shown on the web under their section, and
 // judged by the core: kept while they pay, retired (and not respawned for 28 days) when they don't. Max 12 alive in all.
 const TEMPLATES = [
-  { kind: "leak", group: "conversion", parent: "lead-conversion", src: () => (J("data/leak/plan.json")?.leaks ?? []).slice(0, 2).filter((l) => l.lost >= 5).map((l) => ({ target: `${l.segment} @ ${l.stage}`, why: `${l.lost} people lost in 14 days`, base: l.lost })),
+  { kind: "leak", group: "conversion", parent: "leak", src: () => (J("data/leak/plan.json")?.leaks ?? []).slice(0, 2).filter((l) => l.lost >= 5).map((l) => ({ target: `${l.segment} @ ${l.stage}`, why: `${l.lost} people lost in 14 days`, base: l.lost })),
     measure: (b) => (J("data/leak/plan.json")?.leaks ?? []).find((l) => `${l.segment} @ ${l.stage}` === b.target)?.lost ?? 0, better: "lower", days: 7, does: "Watches one leak the leak machine found until it shrinks; escalates in the briefing while it doesn't" },
-  { kind: "cost", group: "health", parent: "lead-health", src: () => (J("data/cost/plan.json")?.incidents ?? []).map((i) => ({ target: `${i.svc} ${i.kind}`, why: i.why, base: i.memGB })),
+  { kind: "cost", group: "health", parent: "cost", src: () => (J("data/cost/plan.json")?.incidents ?? []).map((i) => ({ target: `${i.svc} ${i.kind}`, why: i.why, base: i.memGB })),
     measure: (b) => (J("data/cost/plan.json")?.services ?? []).find((x) => b.target.startsWith(x.svc + " "))?.memGB ?? 0, better: "lower", days: 2, does: "Watches one Railway cost incident until the service is back near its normal" },
-  { kind: "source", group: "traffic", parent: "lead-traffic", src: () => (men?.rising ?? []).map((x) => ({ target: x.host, why: `${x.v7} visitors this week`, base: x.v7 })),
+  { kind: "source", group: "traffic", parent: "mentions", src: () => (men?.rising ?? []).map((x) => ({ target: x.host, why: `${x.v7} visitors this week`, base: x.v7 })),
     measure: (b) => (men?.sources ?? []).find((x) => x.host === b.target)?.v7 ?? 0, better: "higher", days: 7, does: "Tracks one outside source that started sending people: does it keep sending people who sign up?" },
 ];
 for (const T of TEMPLATES) {
@@ -214,7 +214,7 @@ for (const T of TEMPLATES) {
     else if (T.better === "higher" && !ok) { b.state = "retired"; b.verdict = "faded"; b.retired = b.judged; append("data/machines/ledger.jsonl", { at: b.judged, key: `spawn|${b.id}|${iso(NOW)}`, machine: "core", kind: "loss", what: `${T.kind} branch ${b.target}: ${b.base} → ${v} — faded, retired` }); }
     else { b.verdict = T.better === "lower" ? "still open" : "keeps paying"; if (T.better === "lower") watchExtra.push(`${T.kind === "leak" ? "Leak" : "Cost"} still open after ${T.days} days: ${b.target} (${b.base} → ${v}).`); }
   }
-  for (const b of spawned.branches.filter((x) => x.kind === T.kind && x.state === "alive")) REG.push({ id: b.id, name: `${T.kind[0].toUpperCase() + T.kind.slice(1)}: ${b.target}`.slice(0, 40), group: T.group, parent: T.parent, does: `Built by the core. ${T.does}. ${b.why}.`, every: 24, t: () => NOW, spawned: true });
+  for (const b of spawned.branches.filter((x) => x.kind === T.kind && x.state === "alive")) REG.push({ id: b.id, name: b.target.replace(/^(source|page|ai-page):/, "").slice(0, 26), group: T.group, parent: T.parent, does: `Built by the core. ${T.does}. ${b.why}.`, every: 24, t: () => NOW, spawned: true });
 }
 fs.writeFileSync(SP, JSON.stringify(spawned, null, 1));
 for (const b of spawned.branches.filter((x) => x.state === "alive" && (!x.kind || x.kind === "focus"))) REG.push({ id: b.id, name: `Focus ${b.target}`, group: "core", parent: "core", does: `Built by the core: ${b.why}. Pages under ${b.target} ×${b.boost}, Bing first; judged weekly`, every: 1, t: () => NOW, feeds: ["bing"], spawned: true });
@@ -354,9 +354,9 @@ if (mode === "dip") next.push(`Recovery: the ${P.recoveryN} best pages go back t
     next.push(`${e.title} drops ${new Date(e.t).toUTCString().slice(0, 11)} — its pages are already queued for Bing before people ask.`); } }
 for (const b of (spawned.branches ?? []).filter((x) => x.state === "alive").slice(0, 2)) next.push(`Focus branch on ${b.target} is running (${b.why}).`);
 const topSurge = (ai.surges ?? []).find((y) => y.kind === "page");
-const conclusion = mode === "surge" ? `Big day. AI is reading CRTLAB ${xN.toFixed(1)}× normal${topSurge ? `, led by ${topSurge.key}` : ""}. The machines are all in on it.${watch.length ? " One thing needs you below." : ""}`
-  : mode === "dip" ? `Quiet day. Reads are under normal, so the machines switched to recovery and are pushing the pages that already work.`
-  : `Steady. ${nodes.filter((n) => n.state === "ok").length} of ${nodes.length} machines running and learning.${watch.length ? " A couple of things to look at." : " Nothing needs you."}`;
+const conclusion = mode === "surge" ? `Big day, Kai. AI is reading us ${xN.toFixed(1)}× normal${topSurge ? `, led by ${topSurge.key}` : ""}, and I've got every machine pushing it.${watch.length ? ` ${watch.length === 1 ? "One thing needs" : `${watch.length} things need`} you.` : " Nothing needs you."}`
+  : mode === "dip" ? `Quiet one, Kai. Reads are under normal, so I switched to recovery and I'm pushing the pages that already work.${watch.length ? " Have a look below." : ""}`
+  : `All steady, Kai. ${nodes.filter((n) => n.state === "ok").length} of ${nodes.length} machines running and learning.${watch.length ? ` ${watch.length === 1 ? "One thing to look at." : `${watch.length} things to look at.`}` : " Nothing needs you."}`;
 const prevEco = J("data/machines/ecosystem.json"), bKey = [mode, ...good.slice(0, 3), ...watch.slice(0, 2)].join("|").replace(/\d+/g, "#");
 const briefing = { key: bKey, changed: prevEco?.briefing?.key === bKey ? prevEco.briefing.changed : new Date().toISOString(), headline: modeOut.why, good: good.slice(0, 10), watch: watch.slice(0, 6), next: next.slice(0, 6), conclusion };
 
