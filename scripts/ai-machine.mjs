@@ -288,7 +288,7 @@ const queue = [...lastmod.entries()].map(([p, lm]) => {
 }).filter((q) => q.why && !SKIP.test(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
-const urgent = (q) => (q.why === "SURGE" || q.why === "RADAR won" ? 3 : q.why === "RISING" || q.why === "RECOVERY" || q.why.startsWith("SISTER") ? 2 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
+const urgent = (q) => (q.why === "SURGE" || q.why === "RADAR won" ? 3 : q.why === "RISING" || q.why.startsWith("SISTER") ? 2 : q.why === "RECOVERY" ? 1 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
 const rank = (a, b) => urgent(b) - urgent(a) || b.value - a.value;
 const exploit = [...queue].sort(rank);
 const seenFam = new Set(), explore = [];
@@ -305,7 +305,10 @@ if (process.env.BING_API_KEY && queue.length) {
   const quota = await fetch(api("GetUrlSubmissionQuota") + `&siteUrl=${encodeURIComponent(SITE + "/")}`).then((r) => r.json()).then((j) => j.d?.DailyQuota ?? 0).catch(() => 0);
   // paced over the day (it runs hourly): releases due go at once, the rest share what is left of today's quota over the hours
   // left, so pages created later today (a fresh release, a new recap) still find room
-  const hoursLeft = Math.max(1, 24 - new Date().getUTCHours()), due = Math.min(queue.filter((q) => urgent(q) >= 2).length, Math.round(quota * URG_CAP)); // urgent goes now but never spends the whole day (11-11: 61 at 01:16 left 0 for later surges)
+  const hoursLeft = Math.max(1, 24 - new Date().getUTCHours());
+  // DAY-PACED URGENT SPEND (11-11: 75 of ~100 went at 00:03, then 0 sends 03:00→24:00 — every daytime surge and brain branch
+  // waited a day). An urgent run may spend at most URG_CAP × (35% at midnight → 100% by the last hour) of what is left.
+  const dayFrac = 0.35 + 0.65 * (24 - hoursLeft) / 23, due = Math.min(queue.filter((q) => urgent(q) >= 2).length, Math.round(quota * URG_CAP * dayFrac)); // urgent goes now but never spends the whole day (11-11: 61 at 01:16 left 0 for later surges)
   const batch = pick(Math.min(quota, Math.max(Math.min(due, quota), Math.ceil(quota / hoursLeft))));
   if (batch.length) {
     const r = await fetch(api("SubmitUrlBatch"), { method: "POST", headers: { "content-type": "application/json; charset=utf-8" }, body: JSON.stringify({ siteUrl: SITE + "/", urlList: batch.map((q) => SITE + (q.p === "/" ? "" : q.p)) }) }).catch((e) => ({ status: String(e) }));
