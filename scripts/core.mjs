@@ -89,7 +89,7 @@ for (const x of (ai.sisters ?? []).slice(0, 8)) ev(aiT, "sisters", `lifted ${x.p
 for (const x of readLines(`data/watchdog/${month}.jsonl`).slice(-48)) if (!x.ok) ev(Date.parse(x.at), "watchdog", `a key page failed: ${(x.results ?? []).filter((r) => !r.ok).map((r) => r.name).join(", ")}`, "bad");
 for (const x of readLines("data/indexnow.jsonl").slice(-10)) if (x.submitted) ev(Date.parse(x.at), "indexnow", `${x.submitted} changed pages announced (${x.status})`);
 for (const x of readLines("data/recap-runs.jsonl").slice(-6)) ev(Date.parse(x.at), "recaps", `published ${x.published ?? 0} recap(s)${x.latest?.headline ? " — " + x.latest.headline.slice(0, 70) : ""}`);
-for (const x of readLines("data/machines/ledger.jsonl").slice(-30)) ev(Date.parse(x.at), x.machine === "supervisor" ? "mistakes" : "ledger", x.what, x.kind === "win" ? "win" : x.kind === "loss" || x.kind === "mistake" ? "bad" : "do");
+for (const x of readLines("data/machines/ledger.jsonl").slice(-30).filter((y) => y.kind !== "surge")) ev(Date.parse(x.at), x.machine === "supervisor" ? "mistakes" : "ledger", x.what, x.kind === "win" ? "win" : x.kind === "loss" || x.kind === "mistake" ? "bad" : "do");
 for (const x of men?.fresh ?? []) ev(Date.parse(men.at), "mentions", `${x.where}: ${x.url}`, "win");
 for (const x of readLines("data/ai/changes.jsonl").slice(-10)) ev(Date.parse(x.at), "factory", x.what);
 for (const x of readLines("data/machines/modes.jsonl").slice(-10)) ev(Date.parse(x.at), "mode", x.text, x.mode === "surge" ? "hot" : x.mode === "dip" ? "bad" : "do");
@@ -212,6 +212,34 @@ const today0 = iso(NOW);
   for (const n of nodes) { const h = (hist[n.id] ??= {}); h[today0] = n.act24; for (const d of Object.keys(h)) if (d < keep) delete h[d]; }
   fs.writeFileSync(HF, JSON.stringify(hist));
   for (const n of nodes) { const h = hist[n.id] ?? {}; n.days = Array.from({ length: 14 }, (_, i) => { const d = iso(NOW - (13 - i) * DAY); return [d.slice(5), h[d] ?? 0]; }); } }
+// XP + LEVELS (Kai 11-11: "see how much each machine learnt"). XP comes only from real learning events:
+//   every action it took (×2, 30 days) · every WIN it proved (+40) · every LESSON it stored (+25) · every LOSS it learned
+//   from (+15 — failure teaches too) · every day it ran (+5). Level = 1 + log2(1 + XP/50): fast early, slower at the top.
+// The highest-level machine in a section TEACHES: its learned values are what its section's newer machines start from
+// (shown as the "teaches" list; the machines already read each other's files — this makes the strongest one visible).
+const LEDGER = readLines("data/machines/ledger.jsonl"), HIST = J("data/machines/history.json", {});
+const ledMap = { ai: "ai", core: "core", mentions: "mentions", supervisor: "mistakes" };
+const LEARNS = {
+  ai: "Every hour: which pages AI reads, clicks and turns into accounts → shrinks small samples toward their page type → spends Bing's quota where the value is; drops what never pays",
+  surge: "Compares each page's last 24 h with its own 14-day normal; learns what a real spike looks like for each page", rising: "3-day climb vs its own 11 days before — catches early traction before it becomes a surge",
+  sisters: "Learns which neighbours rise when one page is hot (same release, same market, same idea)", lift: "Learns per release how much more it is asked about around its day",
+  weekly: "Learns which page types peak on which weekday", trend: "4-week growth per page type; growing types earn more quota", yield: "Learns from every Bing send that led to no read: that type gets less next time",
+  hooks: "A/B tests one sentence on page halves, judges itself, never retries a losing wording", radar: "Asks AI the real buyer questions daily; learns which answers name CRTLAB and which don't",
+  mode: "Each surge/dip is an episode: if pushing harder paid, it pushes harder next time; if not, less", core: "Links every machine, runs the modes, builds focus branches and retires the ones that don't pay",
+  mentions: "Learns which outside sources send people who sign up", behaviour: "Learns which first-day actions bring people back, per device", factory: "Builds a page only when 30+ measured releases exist; the machines tell it which pages pay",
+  supervisor: "Learns each machine's normal rhythm and flags anything late or failing", mistakes: "Counts every failure; repeats get escalated", bin: "Learns which data no machine reads and throws it out",
+};
+for (const n of nodes) {
+  const h = HIST[n.id] ?? {}, acts30 = Object.values(h).reduce((t, v) => t + v, 0), days = Object.values(h).filter((v) => v > 0).length + Math.min(30, Math.floor((NOW - Date.parse(n.born ?? new Date().toISOString())) / DAY));
+  const mine = LEDGER.filter((l) => (ledMap[l.machine] ?? l.machine) === n.id || (n.id === "surge" && /surged/.test(l.what)));
+  const wins = mine.filter((l) => l.kind === "win").length, lessons = mine.filter((l) => l.kind === "lesson" || l.kind === "surge").length, losses = mine.filter((l) => l.kind === "loss" || l.kind === "mistake").length;
+  const xp = acts30 * 2 + wins * 40 + lessons * 25 + losses * 15 + days * 5, lv = 1 + Math.floor(Math.log2(1 + xp / 50));
+  const lo = 50 * (2 ** (lv - 1) - 1), hi = 50 * (2 ** lv - 1);
+  n.xp = { xp, level: lv, next: hi, progress: +((xp - lo) / Math.max(1, hi - lo)).toFixed(2), wins, lessons, losses, acts30 };
+  n.learns = LEARNS[n.id] ?? (n.id.startsWith("lead-") ? "Ranks its section's machines every hour and keeps them on the core rules" : n.id.startsWith("focus-") ? "Built by the core for one surging target; judged after 7 days, kept or retired" : "Learns from its own runs: what changed since last time, what failed, what to repeat");
+}
+for (const g of ["traffic", "conversion", "content", "security", "health", "core"]) { const ms = nodes.filter((n) => n.group === g && !n.id.startsWith("lead-")).sort((a, b) => b.xp.xp - a.xp.xp);
+  if (ms[0]) ms[0].teaches = ms.slice(1).map((m) => m.id); }
 const ids = new Set(nodes.map((n) => n.id)), edges = [];
 for (const m of REG) { if (m.parent && ids.has(m.parent)) edges.push({ a: m.parent, b: m.id, kind: "branch", w: (act[m.id] ?? 0) + 1 });
   for (const f of m.feeds ?? []) if (ids.has(f) && f !== m.parent) edges.push({ a: m.id, b: f, kind: "data", w: (act[m.id] ?? 0) + 1 }); }
