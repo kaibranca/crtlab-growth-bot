@@ -2,10 +2,10 @@
  "heap": {
   "cap": 768,
   "stopped": false,
-  "samples": 0,
-  "note": "no /api/ops/mem yet (deploys at the next window)"
+  "samples": 1,
+  "note": "measuring heap (1/24 h, peak so far 170 MB)"
  },
- "at": "2026-11-11T16:01:16.301Z",
+ "at": "2026-11-11T16:18:19.574Z",
  "status": "over budget",
  "budget": 10,
  "weekPace": 21.6,
@@ -16,17 +16,17 @@
   "web": 14,
   "ops": 12
  },
- "dayCost": 1,
+ "dayCost": 1.01,
  "avgDayCost": 0.72,
- "monthPace": 30,
+ "monthPace": 30.3,
  "services": [
   {
    "svc": "web",
    "memGB": 2.11,
    "normalGB": 0.72,
-   "dayCost": 0.45,
+   "dayCost": 0.46,
    "avgDayCost": 0.4,
-   "monthPace": 13.58
+   "monthPace": 13.91
   },
   {
    "svc": "data",
@@ -38,11 +38,11 @@
   },
   {
    "svc": "Postgres",
-   "memGB": 0.47,
+   "memGB": 0.48,
    "normalGB": 0.38,
    "dayCost": 0.13,
    "avgDayCost": 0.12,
-   "monthPace": 3.89
+   "monthPace": 3.92
   },
   {
    "svc": "ops",
@@ -58,9 +58,9 @@
    "svc": "web",
    "memGB": 2.11,
    "normalGB": 0.72,
-   "dayCost": 0.45,
+   "dayCost": 0.46,
    "avgDayCost": 0.4,
-   "monthPace": 13.58,
+   "monthPace": 13.91,
    "kind": "memory growth",
    "rssGB": 0.194,
    "why": "memory 2.11 GB vs ~0.72 GB normal"
