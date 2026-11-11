@@ -363,7 +363,11 @@ const briefing = { key: bKey, changed: prevEco?.briefing?.key === bKey ? prevEco
 const today = iso(NOW), runsToday = readLines("data/ai/runs.jsonl").filter((r) => r.at.slice(0, 10) === today);
 const sc = readLines("data/ai/score.jsonl"), sc7 = sc.slice(-7), scPrev = sc.slice(-14, -7), sum = (a, k) => a.reduce((t, x) => t + (x[k] ?? 0), 0);
 const shw = J("data/shield.json"), radw = J("data/radar/plan.json"), menw = readLines("data/mentions/score.jsonl").slice(-1)[0];
+// AI reads per hour, last 24 h (live readers only) — the top-right graph on /machine
+const readsHourly = Array.from({ length: 24 }, () => 0);
+for (const w of crawl) { const age = NOW - Date.parse(w.to); if (age < 0 || age >= DAY) continue; const h = 23 - Math.floor(age / H); let n = 0; for (const [b, v] of Object.entries(w.bots)) if (LIVE.test(b)) n += v.hits ?? 0; readsHourly[h] += n; }
 const widgets = {
+  readsHourly,
   aiReads24: r24, aiReadsNormal: Math.round(mu), aiReadsZ: z,
   aiClicks7: sum(sc7, "clicks"), aiClicksPrev: sum(scPrev, "clicks"), aiAccounts7: sum(sc7, "accounts"), aiAccountsPrev: sum(scPrev, "accounts"),
   bingToday: runsToday.reduce((t, r) => t + (r.submitted ?? 0), 0), bingStatus: runsToday.at(-1)?.bing ?? null,
