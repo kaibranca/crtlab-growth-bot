@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T07:05:55.738Z",
+ "at": "2026-11-11T07:19:30.752Z",
  "ok": 12,
  "total": 12,
  "status": [
@@ -41,7 +41,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 4.8,
+   "lastRunH": 5,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -53,7 +53,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 23,
+   "lastRunH": 23.2,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -64,7 +64,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 0.4,
+   "lastRunH": 0.6,
    "everyH": 24,
    "kpi": null
   },
@@ -72,7 +72,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 0.4,
+   "lastRunH": 0.6,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -83,7 +83,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 0.3,
+   "lastRunH": 0.5,
    "everyH": 24,
    "kpi": null
   },
@@ -91,7 +91,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 0.4,
+   "lastRunH": 0.6,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -102,7 +102,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 0.4,
+   "lastRunH": 0.6,
    "everyH": 1,
    "kpi": null
   },
@@ -128,7 +128,7 @@
    "move": "surge",
    "what": "/news/cpi/gold",
    "why": "225 AI reads in 24 h vs ~10.2/day",
-   "z": 67.2
+   "z": 67.3
   },
   {
    "move": "surge",
@@ -198,6 +198,20 @@
   }
  ],
  "ledger": [
+  {
+   "at": "2026-11-11T07:05:55.789Z",
+   "key": "spawn|leak-source-direct-land-account|born",
+   "machine": "core",
+   "kind": "lesson",
+   "what": "built a leak branch: source:direct @ land → account (6.8 people lost in 14 days)"
+  },
+  {
+   "at": "2026-11-11T07:05:55.789Z",
+   "key": "spawn|leak-page-backtest-market-land-account|born",
+   "machine": "core",
+   "kind": "lesson",
+   "what": "built a leak branch: page:/backtest-<market> @ land → account (14.9 people lost in 14 days)"
+  },
   {
    "at": "2026-11-11T07:04:14.871Z",
    "key": "surge|/economic-calendar/us-core-inflation-rate-mom|2026-11-11",
