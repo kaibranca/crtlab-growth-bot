@@ -68,6 +68,10 @@ jobs:
         continue-on-error: true
         run: node scripts/supervisor.mjs; node scripts/fixer.mjs; node scripts/core.mjs; node scripts/traffic-core.mjs
         env: { RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", GH_TOKEN: "${{ github.token }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}" }
+      - name: The other brains — money, data, security, content, retention, speed (they read each other + the engines)
+        continue-on-error: true
+        run: node scripts/brains.mjs
+        env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}", CF_API_TOKEN: "${{ secrets.CF_API_TOKEN }}", CF_ACCOUNT_ID: "${{ secrets.CF_ACCOUNT_ID }}" }
       - run: node scripts/summary.mjs
       - name: Save
         run: |
