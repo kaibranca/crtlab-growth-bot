@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T10:19:44.155Z",
+ "at": "2026-11-11T11:06:41.867Z",
  "ok": 12,
  "total": 12,
  "status": [
@@ -41,7 +41,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 2,
+   "lastRunH": 2.8,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -53,7 +53,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 2.2,
+   "lastRunH": 3,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -64,7 +64,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 3.6,
+   "lastRunH": 4.4,
    "everyH": 24,
    "kpi": null
   },
@@ -72,7 +72,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 3.6,
+   "lastRunH": 4.4,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -83,7 +83,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 3.5,
+   "lastRunH": 4.3,
    "everyH": 24,
    "kpi": null
   },
@@ -91,7 +91,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 3.6,
+   "lastRunH": 4.4,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -134,7 +134,7 @@
    "move": "surge",
    "what": "/news/cpi/gold",
    "why": "232 AI reads in 24 h vs ~10.8/day",
-   "z": 67.3
+   "z": 67.4
   },
   {
    "move": "surge",
@@ -162,39 +162,39 @@
   },
   {
    "move": "climbing",
-   "what": "/economic-calendar/us-cpi-seasonally-adjusted",
-   "why": "32 reads in 3 days vs ~0.9",
-   "z": 32.8
-  },
-  {
-   "move": "climbing",
    "what": "/economic-calendar/us-core-inflation-rate-mom",
    "why": "37 reads in 3 days vs ~1.2",
-   "z": 32.5
+   "z": 32.6
   },
   {
    "move": "climbing",
-   "what": "/backtest-eurusd",
-   "why": "53 reads in 3 days vs ~3.6",
-   "z": 25.9
+   "what": "/economic-calendar/us-cpi-seasonally-adjusted",
+   "why": "31 reads in 3 days vs ~1.2",
+   "z": 27.1
   },
   {
    "move": "climbing",
    "what": "/economic-calendar/united-states",
-   "why": "24 reads in 3 days vs ~0.9",
-   "z": 24.3
+   "why": "25 reads in 3 days vs ~0.9",
+   "z": 25.4
   },
   {
    "move": "climbing",
-   "what": "/economic-calendar/us-inflation-rate-yoy",
-   "why": "19 reads in 3 days vs ~0.9",
-   "z": 19.1
+   "what": "/backtest-eurusd",
+   "why": "52 reads in 3 days vs ~4",
+   "z": 23.9
   },
   {
    "move": "surge",
    "what": "/gold-volume-profile",
    "why": "46 AI reads in 24 h vs ~5.1/day",
-   "z": 18.1
+   "z": 18.2
+  },
+  {
+   "move": "climbing",
+   "what": "/news/cpi-2026-10-14",
+   "why": "27 reads in 3 days vs ~2",
+   "z": 17.6
   }
  ],
  "ledger": [
