@@ -100,6 +100,12 @@ if (!ep || ep.mode !== lead.id) {
     learn("modes", good ? "win" : "loss", `${ep.mode} episode ${good ? "paid" : "did not pay"} (visitors ×${r1(ratio)}) → intensity ${m.intensity}`, `ep|${ep.mode}|${ep.since}`); }
   brain.episode = { mode: lead.id, since: iso(NOW), startVisitors: hum.visitors?.now ?? 0 }; say("modes", `switched to ${lead.label}: ${lead.why}`, "hot");
 }
+// steady modes learn too: every 24 h inside the same lead mode, the day is judged on real visitors and the next day starts
+else if (NOW - Date.parse(brain.episode.segAt ?? brain.episode.since) >= DAY) { const m = M(lead.id), a0 = brain.episode.segVisitors ?? brain.episode.startVisitors ?? 0, b0 = hum.visitors?.now ?? 0;
+  const good = a0 ? b0 / a0 >= (lead.id === "dip" ? 1.05 : 1) : b0 > 0; m.episodes++; good ? m.wins++ : m.losses++; m.intensity = +clamp(m.intensity + (good ? 0.05 : -0.05), 0.6, 1.6).toFixed(2);
+  append(`${OUT}/modes.jsonl`, { at: iso(NOW), mode: lead.id, since: brain.episode.segAt ?? brain.episode.since, ratio: a0 ? r1(b0 / a0) : null, verdict: good ? "day paid" : "day did not pay", intensity: m.intensity });
+  say("modes", `a day in ${lead.label}: visitors ${a0} → ${b0} (${good ? "paid" : "did not pay"}) → intensity ${m.intensity}`, good ? "win" : "bad");
+  brain.episode.segAt = iso(NOW); brain.episode.segVisitors = b0; }
 const intensity = M(lead.id).intensity;
 
 // ── NEURONS: weight per signal→action, judged outcomes move it ──────────────────────────────────────────────────────

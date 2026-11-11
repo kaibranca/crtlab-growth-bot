@@ -209,6 +209,12 @@ for (const S of BRAINS) {
       feed.push({ t: iso(NOW), m: `${S.id}-modes`, text: `${mem.episode.mode} ended: ${out.label} ${a} → ${b} (${good ? "better" : "worse"})`, kind: good ? "win" : "bad" }); }
     mem.episode = { mode: lead.id, since: iso(NOW), start: out.v ?? 0 }; feed.push({ t: iso(NOW), m: `${S.id}-modes`, text: `now ${lead.label}: ${lead.why}`, kind: lead.level === "critical" ? "bad" : "hot" });
   }
+  // STEADY MODES LEARN TOO: every 24 h inside the same mode the day is judged (outcome now vs the day's start) and the
+  // next day starts from here — a brain in one mode for a week still learns seven times
+  else if (NOW - Date.parse(mem.episode.segAt ?? mem.episode.since) >= DAY) { const m = M(lead.id), a = mem.episode.segStart ?? mem.episode.start ?? 0, b = out.v ?? 0;
+    const good = out.higher ? b >= a : b <= a; m.episodes++; good ? m.wins++ : m.losses++; m.intensity = +clamp(m.intensity + (good ? 0.05 : -0.05), 0.6, 1.6).toFixed(2);
+    feed.push({ t: iso(NOW), m: `${S.id}-modes`, text: `day in ${lead.label}: ${out.label} ${a} → ${b} (${good ? "better" : "worse"})`, kind: good ? "win" : "bad" });
+    mem.episode.segAt = iso(NOW); mem.episode.segStart = b; }
   const ep = Object.values(mem.modes).reduce((a, m) => ({ e: a.e + m.episodes, w: a.w + m.wins }), { e: 0, w: 0 });
   const authority = ep.e >= 4 ? +clamp(0.85 + 0.5 * (ep.w / ep.e), 0.85, 1.25).toFixed(2) : 1;
   // BRANCHES (new parts made from what the brain finds) + NEURONS ("does this kind of problem fix itself?") + ESCALATION
