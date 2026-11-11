@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T14:06:32.072Z",
+ "at": "2026-11-11T14:20:17.932Z",
  "ok": 12,
  "total": 12,
  "status": [
@@ -41,7 +41,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 5.8,
+   "lastRunH": 0,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -53,7 +53,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 5.9,
+   "lastRunH": 6.2,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -64,7 +64,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 7.4,
+   "lastRunH": 7.6,
    "everyH": 24,
    "kpi": null
   },
@@ -72,7 +72,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 7.4,
+   "lastRunH": 7.6,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -83,7 +83,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 7.3,
+   "lastRunH": 7.5,
    "everyH": 24,
    "kpi": null
   },
@@ -91,7 +91,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 7.4,
+   "lastRunH": 7.6,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -102,7 +102,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 0.5,
+   "lastRunH": 0.7,
    "everyH": 1,
    "kpi": null
   },
@@ -133,8 +133,8 @@
   {
    "move": "climbing",
    "what": "/news/cpi/gold",
-   "why": "288 reads in 3 days vs ~18.6",
-   "z": 62.5
+   "why": "288 reads in 3 days vs ~18.5",
+   "z": 62.6
   },
   {
    "move": "climbing",
@@ -410,7 +410,6 @@
   }
  ],
  "fix": [
-  "DAILY DATA BEHIND: site data through 2026-11-09, should be 2026-11-10 (live d20261110-1627)",
   "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones",
   "daily-data failed 3× this week (last: run failure)"
  ],
