@@ -1,0 +1,71 @@
+{
+ "branches": [
+  {
+   "id": "surge-tools-position-size-calculator",
+   "born": "2026-11-11T21:20:44.329Z",
+   "state": "alive",
+   "boost": 1.5,
+   "signs": [
+    "AI surge"
+   ],
+   "kind": "surge",
+   "owner": "surges",
+   "target": "/tools/position-size-calculator",
+   "neuron": "surge→bing",
+   "base": 0.5,
+   "why": "48 reads in 24 h vs ~0.5"
+  },
+  {
+   "id": "surge-economic-calendar-us-core-ppi-mom",
+   "born": "2026-11-11T21:20:44.329Z",
+   "state": "alive",
+   "boost": 1.75,
+   "signs": [
+    "perplexity reading",
+    "AI surge"
+   ],
+   "kind": "surge",
+   "owner": "surges",
+   "target": "/economic-calendar/us-core-ppi-mom",
+   "neuron": "surge→bing",
+   "base": 0.5,
+   "why": "9 reads in 24 h vs ~0.5"
+  },
+  {
+   "id": "stall-economic-calendar-us-core-inflation-rate-mom",
+   "born": "2026-11-11T21:20:44.329Z",
+   "state": "alive",
+   "boost": null,
+   "signs": [
+    "rising"
+   ],
+   "kind": "stall",
+   "owner": "converter",
+   "target": "/economic-calendar/us-core-inflation-rate-mom",
+   "neuron": "readnoclick→hook",
+   "base": 0,
+   "path": false,
+   "test": "cal-replay-last-1",
+   "why": "41 AI reads in 7 d, 0 clicks — hook test replay-last running on /economic-calendar/<event>"
+  },
+  {
+   "id": "surge-backtest",
+   "born": "2026-11-11T21:20:44.329Z",
+   "state": "alive",
+   "boost": 2.2,
+   "signs": [
+    "chatgpt reading",
+    "perplexity reading",
+    "apple reading",
+    "AI answer gap",
+    "converts"
+   ],
+   "kind": "surge",
+   "owner": "convergence",
+   "target": "/backtest",
+   "neuron": "convergence→bing",
+   "base": 589,
+   "why": "5 signs at once: chatgpt reading + perplexity reading + apple reading + AI answer gap + converts"
+  }
+ ]
+}
