@@ -190,7 +190,10 @@ const epAll = Object.values(brain.modes).reduce((a, m) => ({ e: a.e + m.episodes
 const ENGINE_AUTH = epAll.e >= 4 ? +clamp(0.85 + 0.5 * (epAll.w / epAll.e), 0.85, 1.25).toFixed(2) : 1;
 brain.authority = { engine: ENGINE_AUTH, managers: AUTH, scores: groupScore };
 const boost = (p, owner) => +clamp(1.5 * intensity * ENGINE_AUTH * (AUTH[OWNER_GROUP[owner]] ?? 1) + 0.25 * Math.max(0, nSigns(p ?? "") - 1), 1.2, 2.2).toFixed(2);
-const build = (o) => { if (built >= 4 || alive().length >= 14) return false; const id = `${o.kind}-${o.target}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 52);
+const REALP = (() => { const x = J(`${OUT}/pages.json`); return x?.pages?.length > 500 ? new Set(x.pages) : null; })(); // sitemap, from the demand miner
+const isReal = (p) => !REALP || REALP.has(p) || [...REALP].some((q) => q.startsWith(p.endsWith("/") ? p : p + "/")); // a family prefix counts if real pages sit under it
+const build = (o) => { if (built >= 4 || alive().length >= 14) return false;
+  if (o.path !== false && !isReal(o.target)) { say(o.owner, `refused a branch on ${o.target}: not a real page (sitemap)`, "bad"); return false; } const id = `${o.kind}-${o.target}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 52);
   if (blocked(id) || !(fire(o.neuron) || nSigns(o.target) >= 3)) return false;
   B.branches.push({ id, born: iso(NOW), state: "alive", boost: o.path === false ? null : boost(o.target, o.owner), signs: [...(signs.get(o.target) ?? signs.get(famKey(o.target)) ?? [])], ...o }); built++;
   learn(o.owner, "lesson", `built a ${o.kind} branch: ${o.target} (${o.why})`, `tb|${id}|born`); say(o.owner, `built a ${o.kind} branch: ${o.target}`, "win"); return true; };

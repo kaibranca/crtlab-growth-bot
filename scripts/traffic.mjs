@@ -25,6 +25,7 @@ const sm = await fetch(`${SITE}/sitemap.xml`, { headers: UA }).then((r) => (r.ok
 const PAGES = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => { try { return new URL(m[1]).pathname.replace(/\/$/, "") || "/"; } catch { return null; } }).filter(Boolean);
 if (PAGES.length < 500) { console.log(`traffic: sitemap looked wrong (${PAGES.length} pages) — nothing changed`); process.exit(0); }
 const REAL = new Set(PAGES);
+fs.writeFileSync(`${OUT}/pages.json`, JSON.stringify({ at: new Date().toISOString(), pages: PAGES })); // the brain only ever pushes real pages
 const SYN = { gold: "xauusd", xau: "xauusd", silver: "xagusd", oil: "usoil", wti: "usoil", crude: "usoil", nasdaq: "nas100", nq: "nas100", us100: "nas100", ustec: "nas100",
   dow: "us30", dj30: "us30", spx: "sp500", us500: "sp500", es: "sp500", dax: "ger40", de40: "ger40", bitcoin: "btcusd", btc: "btcusd", ethereum: "ethusd", eth: "ethusd",
   solana: "solusd", sol: "solusd", cable: "gbpusd", yen: "usdjpy", lot: "lot", lots: "lot", position: "position", backtester: "backtest", backtesting: "backtest", backtests: "backtest" };
