@@ -1,0 +1,21 @@
+name: promote-site
+# DEPLOY WINDOWS (11-11, Railway budget): Railway deploys the site from branch `live`, not from every push. This fast-forwards
+# live → rebuild-integration at the windows the cron worker starts (07:15 · 13:00 · 19:00 UTC) and on "deploy now". Nothing
+# new = nothing happens (no deploy, no cost). Never force: live must be an ancestor of rebuild-integration.
+on: { workflow_dispatch: {} }
+concurrency: { group: promote-site, cancel-in-progress: false }
+permissions: { contents: read }
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { repository: kaibranca/crtlab-standalone, ref: rebuild-integration, ssh-key: "${{ secrets.SITE_DEPLOY_KEY }}", fetch-depth: 0 }
+      - name: Fast-forward live
+        run: |
+          git fetch -q origin live
+          head=$(git rev-parse HEAD); live=$(git rev-parse origin/live)
+          if [ "$head" = "$live" ]; then echo "live is current ($(git rev-parse --short HEAD)) — no deploy"; exit 0; fi
+          git merge-base --is-ancestor "$live" "$head" || { echo "::error::live is not behind rebuild-integration — refusing (no force)"; exit 1; }
+          echo "promoting $(git log --oneline "$live..$head" | wc -l | tr -d ' ') commit(s):"; git log --oneline "$live..$head" | head -40
+          git push origin "$head:refs/heads/live"

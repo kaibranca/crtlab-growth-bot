@@ -23,6 +23,10 @@ const JOBS = [
   ["daily-data.yml", 30, 13, "*", "kaibranca/crtlab-backtester", { retry: "1" }],
   ["daily-data.yml", 30, 15, "*", "kaibranca/crtlab-backtester", { retry: "1" }],
   ["daily-data.yml", 30, 17, "*", "kaibranca/crtlab-backtester", { retry: "1" }],
+  // DEPLOY WINDOWS (11-11, Railway budget): the site goes live 3× a day instead of on every push; nothing new = no deploy
+  ["promote-site.yml", 15, 7, "*", "kaibranca/crtlab-growth-bot"],
+  ["promote-site.yml", 0, 13, "*", "kaibranca/crtlab-growth-bot"],
+  ["promote-site.yml", 0, 19, "*", "kaibranca/crtlab-growth-bot"],
 ];
 const hit = (rule, v) => rule === "*" || (typeof rule === "number" ? rule === v : rule.startsWith("*/") ? v % +rule.slice(2) === 0 : rule.includes("-") ? v >= +rule.split("-")[0] && v <= +rule.split("-")[1] : +rule === v);
 
