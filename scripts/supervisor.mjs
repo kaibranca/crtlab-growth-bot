@@ -77,7 +77,10 @@ if (men && (men.sources?.length ?? 0) < 5) fix.push("word of mouth is near zero 
 // Each mistake is counted per step over 7 days (data/machines/mistakes.jsonl), so a one-off is "once", a repeat is "REPEATING".
 const mistakes = [];
 const REPO = process.env.GITHUB_REPOSITORY || "kaibranca/crtlab-growth-bot", GH = { accept: "application/vnd.github+json", ...(process.env.GH_TOKEN ? { authorization: `Bearer ${process.env.GH_TOKEN}` } : {}) };
-try {
+// 11-11: the daily data pull lives in crtlab-backtester — it failed 3× on 11-10 and 11-11 and the supervisor never saw it
+// (it only read this repo). Watched repos: this one (github.token) + the backtester (GH_WATCH_TOKEN = the cron worker's PAT).
+const WATCH = [[REPO, GH], ["kaibranca/crtlab-backtester", { accept: GH.accept, ...(process.env.GH_WATCH_TOKEN ? { authorization: `Bearer ${process.env.GH_WATCH_TOKEN}` } : {}) }]];
+for (const [REPO, GH] of WATCH) try {
   const since = new Date(NOW - 26 * H).toISOString();
   const r = { workflow_runs: [] };
   for (let pg = 1; pg <= 4; pg++) { const x = await fetch(`https://api.github.com/repos/${REPO}/actions/runs?per_page=100&page=${pg}&created=>${since}`, { headers: GH }).then((y) => y.json());
@@ -90,7 +93,17 @@ try {
       for (const j of jb.jobs ?? []) for (const st of j.steps ?? []) if (st.conclusion === "failure") mistakes.push({ where: `${run.name} → ${st.name}`, what: "step failed (run continued)", at: st.completed_at ?? run.updated_at, url: run.html_url });
     } else if (run.conclusion !== "cancelled" && run.conclusion !== "skipped") mistakes.push({ where: run.name, what: `run ${run.conclusion}`, at: run.updated_at, url: run.html_url });
   }
-} catch (e) { mistakes.push({ where: "supervisor", what: "could not read GitHub runs: " + String(e).slice(0, 80), at: new Date().toISOString() }); }
+} catch (e) { mistakes.push({ where: "supervisor", what: `could not read GitHub runs (${REPO.split("/")[1]}): ` + String(e).slice(0, 80), at: new Date().toISOString() }); }
+// DATA FRESHNESS (11-11): the one outcome that matters, checked on the live site — not "did a run go green".
+// After 07:30 UTC the site must have data through the last weekday before today; before 07:30, the weekday before that.
+let dataStale = null;
+try {
+  const dv = await fetch("https://crtlab.pro/api/data-version", { headers: { "user-agent": "crtlab-supervisor" } }).then((r) => r.json());
+  const d = new Date(NOW); d.setUTCHours(0, 0, 0, 0); if (NOW - d.getTime() < 7.5 * H) d.setUTCDate(d.getUTCDate() - 1);
+  do d.setUTCDate(d.getUTCDate() - 1); while (d.getUTCDay() === 0 || d.getUTCDay() === 6);
+  const want = d.toISOString().slice(0, 10);
+  if (!dv?.end || dv.end < want) { dataStale = { want, have: dv?.end ?? "unknown", live: dv?.live ?? "?" }; fix.unshift(`DAILY DATA BEHIND: site data through ${dataStale.have}, should be ${want} (live ${dataStale.live})`); mistakes.push({ where: "Daily data (live site)", what: `data through ${dataStale.have}, expected ${want}`, at: new Date(Math.floor(NOW / H) * H).toISOString() }); }
+} catch (e) { fix.unshift("DAILY DATA: could not read crtlab.pro/api/data-version — " + String(e).slice(0, 60)); }
 for (const r of readLines("data/ai/runs.jsonl").filter((r) => NOW - Date.parse(r.at) < 26 * H && /HTTP (?!200)/.test(r.bing ?? ""))) mistakes.push({ where: "AI machine → Bing", what: `send refused (${r.bing})`, at: r.at });
 for (const l of men?.log ?? []) mistakes.push({ where: "Mentions machine", what: l, at: men.at });
 const MK = "data/machines/mistakes.jsonl", seenM = new Set(readLines(MK).map((m) => m.where + "|" + m.at));
@@ -108,6 +121,7 @@ fs.writeFileSync("data/machines/status.json", JSON.stringify(out, null, 1));
 // email when a machine stops (once per machine per day)
 const ST = "data/machines/alerted.json", al = J(ST, {});
 const stopped = [...status.filter((s) => s.state === "STOPPED" && al[s.id] !== iso(NOW)),
+  ...(dataStale && al["m:data-fresh"] !== iso(NOW) ? [{ id: "m:data-fresh", name: "Daily data", lastRunH: `BEHIND — site data through ${dataStale.have}, should be ${dataStale.want} (live ${dataStale.live}). Check gh run list -R kaibranca/crtlab-backtester -w daily-data.yml`, everyH: "daily 06:15 UTC" }] : []),
   ...mistakeRows.filter((m) => m.repeating && al["m:" + m.where] !== iso(NOW)).map((m) => ({ id: "m:" + m.where, name: m.where, lastRunH: `failing (${m.n}× in 7 days: ${m.last})`, everyH: "–" }))];
 if (stopped.length && process.env.RESEND_API_KEY && process.env.ALERT_TO) {
   const e = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" },
