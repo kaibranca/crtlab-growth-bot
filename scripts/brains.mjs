@@ -53,7 +53,7 @@ if (process.env.CF_API_TOKEN && process.env.CF_ACCOUNT_ID) try {
 const isChart = (p) => /^\/(xauusd|nas100|btcusd|us30|sp500|eurusd|gbpusd|usdjpy|ethusd|solusd|xagusd|usoil|ger40|[a-z]{3,6}usd)$/.test(p);
 // BRAINS TALK: every brain reads every other brain's mode from the last run (and the traffic + main engines')
 const peers = J("data/brains/index.json", { brains: [] }).brains ?? [];
-const trafficEco = J("data/traffic/ecosystem.json", {});
+const trafficEco = J("data/traffic/ecosystem.json", {}), trafficBranches = J("data/traffic/branches.json", { branches: [] }).branches;
 
 // the wall → checkout steps (behaviour machine), all devices
 const wallSteps = (() => { const out = {}; for (const rows of Object.values(beh.wall ?? {})) for (const s of rows ?? []) out[s.step] = (out[s.step] ?? 0) + (s.n ?? 0); return out; })();
@@ -72,6 +72,10 @@ const BRAINS = [
       wallViews: wallSteps.wall_view ?? null, packClicks: wallSteps.pack_click ?? null, cardEntered: wallSteps.card_details_entered ?? null, payClicks: wallSteps.pay_click ?? null,
       paymentsOk: check("payments")?.ok ?? null }),
     outcome: (s) => ({ label: "new paying customers / 7 d", v: s.newPaid7 ?? s.paid14 ?? 0, higher: true }),
+    signals: (s) => [s.packClicks >= 20 && { key: "checkout-step", target: "pack → card", v: r1((s.cardEntered / s.packClicks) * 100), higher: true, days: 7, why: `${s.cardEntered} of ${s.packClicks} pack-pickers typed a card` },
+      s.pastDue > 0 && { key: "past-due", target: "past-due cards", v: s.pastDue, higher: false, days: 5, why: `${s.pastDue} subscription(s) past due` },
+      ...(leak.leaks ?? []).filter((l) => l.rate < l.overall).slice(0, 2).map((l) => ({ key: "leak", target: `${l.segment} @ ${l.stage}`, v: r1(l.rate * 100), higher: true, days: 7, why: `${l.base} people, ${r1(l.rate * 100)}% vs ${r1(l.overall * 100)}% overall` }))].filter(Boolean),
+    measureOf: (b, s) => b.key === "checkout-step" ? (s.packClicks ? r1((s.cardEntered / s.packClicks) * 100) : null) : b.key === "past-due" ? s.pastDue : r1(((leak.leaks ?? []).find((l) => `${l.segment} @ ${l.stage}` === b.target)?.rate ?? NaN) * 100),
     modes: (s) => [
       s.paymentsOk === false && { id: "money-alert", label: "Money alert", level: "critical", why: `payments check failing (${check("payments")?.note ?? "failed payment"})${s.pastDue ? ` · ${s.pastDue} past due` : ""}` },
       s.packClicks >= 20 && s.cardEntered != null && s.cardEntered / s.packClicks < 0.15 && { id: "checkout-leak", label: "Checkout leak", level: "warn", why: `${s.packClicks} picked a pack, only ${s.cardEntered} typed card details, ${s.payClicks} pressed pay` },
@@ -87,6 +91,10 @@ const BRAINS = [
     sensors: () => ({ dataFresh: check("market data fresh")?.ok ?? null, dataNote: check("market data fresh")?.note ?? null, pullFails7: lastData,
       backupOk: check("nightly backup")?.ok ?? null, monthPace: r1(cost.monthPace), budget: cost.budget ?? 10, deploys24: cost.deploys ?? null }),
     outcome: (s) => ({ label: "Railway $ / month pace", v: s.monthPace ?? 0, higher: false }),
+    signals: (s) => [s.monthPace > s.budget && { key: "budget", target: "Railway pace", v: s.monthPace, higher: false, days: 3, why: `$${s.monthPace}/month vs $${s.budget}` },
+      s.pullFails7 >= 2 && { key: "pull", target: "daily-data failures", v: s.pullFails7, higher: false, days: 3, why: `${s.pullFails7} failures in 7 days` },
+      ...(cost.incidents ?? []).slice(0, 2).map((i) => ({ key: "cost-incident", target: `${i.svc} ${i.kind}`, v: i.memGB ?? i.n ?? 1, higher: false, days: 2, why: i.why }))].filter(Boolean),
+    measureOf: (b, s) => b.key === "budget" ? s.monthPace : b.key === "pull" ? s.pullFails7 : (cost.incidents ?? []).some((i) => `${i.svc} ${i.kind}` === b.target) ? (cost.incidents.find((i) => `${i.svc} ${i.kind}` === b.target).memGB ?? 1) : 0,
     modes: (s) => [
       s.dataFresh === false && { id: "data-late", label: "Data late", level: "critical", why: `market data not fresh (${s.dataNote})` },
       s.backupOk === false && { id: "backup", label: "Backup failing", level: "critical", why: "nightly backup check failing" },
@@ -103,6 +111,9 @@ const BRAINS = [
     sensors: () => ({ blockedHour: shield.lastHour?.blocked ?? null, bannedList: shield.lastHour?.listSize ?? null, shieldMode: shield.lastHour?.mode ?? null,
       blocked24: (shield.history ?? []).filter((h) => NOW - Date.parse(h.at) < DAY).reduce((a, h) => a + (h.blocked ?? 0), 0), deps: J("data/security/deps.json")?.open ?? null }),
     outcome: (s) => ({ label: "attacks blocked / 24 h", v: s.blocked24 ?? 0, higher: false }),
+    signals: (s) => [s.blocked24 >= 1000 && { key: "attack-volume", target: "blocked / 24 h", v: s.blocked24, higher: false, days: 3, why: `${s.blocked24} blocked in 24 h` },
+      { key: "deps", target: "Dependabot alerts", v: s.deps ?? 17, higher: false, days: 7, why: "open dependency alerts on crtlab-standalone" }].filter(Boolean),
+    measureOf: (b, s) => b.key === "attack-volume" ? s.blocked24 : s.deps ?? 17,
     modes: (s) => [
       s.shieldMode && s.shieldMode !== "medium" && s.shieldMode !== "low" && { id: "under-attack", label: "Under attack", level: "critical", why: `Cloudflare in ${s.shieldMode} mode` },
       s.blockedHour >= 200 && { id: "attack", label: "Attack", level: "warn", why: `${s.blockedHour} blocked in the last hour` },
@@ -117,6 +128,8 @@ const BRAINS = [
     sensors: () => { const fam = (f) => (ai.families ?? []).find((x) => x.family === f); const react = fam("/news/<type>/<market>");
       return { reactPages: react?.pages ?? null, reactReads: r1(react?.reads), reactClicks: r1(react?.clicks), gaps: (tplan.gaps ?? []).length, topGap: tplan.gaps?.[0]?.q ?? null }; },
     outcome: (s) => ({ label: "AI clicks on factory pages (decayed)", v: s.reactClicks ?? 0, higher: true }),
+    signals: () => (tplan.gaps ?? []).slice(0, 3).map((g) => ({ key: "gap", target: g.q, v: 0, higher: true, days: 14, why: `Bing shows us for it (${g.impr} impressions, #${g.pos}) with no page` })),
+    measureOf: (b) => ((tplan.demand ?? []).find((d) => d.q === b.target)?.page ? 1 : 0),
     modes: (s) => [s.gaps >= 5 && { id: "gaps", label: "Gaps", level: "info", why: `${s.gaps} searches Bing shows us for with no page (top: "${s.topGap}")` }].filter(Boolean),
     admin: (s) => [s.topGap ? `Bing shows CRTLAB for "${s.topGap}" with no page that fits — a page for it is the content brain's top request.` : null].filter(Boolean) },
   { id: "retention", name: "Retention brain", color: "#5b8cff",
@@ -126,6 +139,8 @@ const BRAINS = [
     ],
     sensors: () => ({ cohort: ret?.c1 ?? null, backWeek2: ret ? r1((ret.b1 / Math.max(1, ret.c1)) * 100) : null, backWeek2Before: ret ? r1((ret.b0 / Math.max(1, ret.c0)) * 100) : null, returners24: ret?.back24 ?? null }),
     outcome: (s) => ({ label: "% of a week's sign-ups back in week 2", v: s.backWeek2 ?? 0, higher: true }),
+    signals: (s) => [s.backWeek2 != null && s.backWeek2 < 30 && { key: "week2", target: "week-2 return", v: s.backWeek2, higher: true, days: 7, why: `${s.backWeek2}% of a cohort back in week 2` }].filter(Boolean),
+    measureOf: (b, s) => s.backWeek2,
     modes: (s) => [s.backWeek2 != null && s.backWeek2Before != null && s.cohort >= 20 && s.backWeek2 < s.backWeek2Before * 0.8 && { id: "churn", label: "Churn up", level: "warn", why: `${s.backWeek2}% of last cohort came back in week 2 vs ${s.backWeek2Before}% before` }].filter(Boolean),
     admin: (s) => [s.backWeek2 != null && s.backWeek2 < 25 ? `Only ${s.backWeek2}% of the people who signed up 8–14 days ago came back this week — the first session decides it (behaviour machine: golden actions).` : null].filter(Boolean) },
   { id: "speed", name: "Speed brain", color: "#00c2a8",
@@ -138,6 +153,9 @@ const BRAINS = [
       const worst = [...ch].sort((a, b) => b.p90 - a.p90)[0];
       return { chartP90: w(ch), pageP90: w(pg2), worstChart: worst ? `${worst.p} ${worst.p90}s` : null, loads24: (rum ?? []).reduce((a, x) => a + x.n, 0) || null }; },
     outcome: (s) => ({ label: "chart pages: slowest 10% load (s)", v: s.chartP90 ?? 0, higher: false }),
+    signals: () => (rum ?? []).filter((x) => x.n >= 8 && x.p90 > 5).sort((a, b) => b.p90 * b.n - a.p90 * a.n).slice(0, 3).map((x) => { const pushed = (trafficBranches ?? []).some((t) => t.state === "alive" && t.target === x.p);
+      return { key: "slow-page", target: x.p, v: x.p90, higher: false, days: 7, why: `slowest 10% load ${x.p90}s (${x.n} loads)${pushed ? " — and the traffic brain is pushing it" : ""}` }; }),
+    measureOf: (b) => (rum ?? []).find((x) => x.p === b.target)?.p90 ?? null,
     modes: (s) => [s.chartP90 != null && s.chartP90 > 6 && { id: "slow", label: "Slow charts", level: "warn", why: `slowest 10% of chart loads take ${s.chartP90}s (worst ${s.worstChart})` }].filter(Boolean),
     admin: (s) => [s.chartP90 > 4 ? `Chart pages: the slowest 10% of real loads take ${s.chartP90}s (worst ${s.worstChart}). Candles come from the origin per request — the fix is engineering (edge-cache immutable candle windows per tier), not a machine.` : null].filter(Boolean) },
 ];
@@ -161,6 +179,27 @@ for (const S of BRAINS) {
   }
   const ep = Object.values(mem.modes).reduce((a, m) => ({ e: a.e + m.episodes, w: a.w + m.wins }), { e: 0, w: 0 });
   const authority = ep.e >= 4 ? +clamp(0.85 + 0.5 * (ep.w / ep.e), 0.85, 1.25).toFixed(2) : 1;
+  // BRANCHES (new parts made from what the brain finds) + NEURONS ("does this kind of problem fix itself?") + ESCALATION
+  const BR = J(`${DIR}/branches.json`, { branches: [] }), W = (mem.w ??= {});
+  const wOf = (k) => (W[k] ??= { v: 0.5, n: 0 });
+  let sig = []; try { sig = (S.signals?.(sens) ?? []).filter((x) => x && x.v != null && Number.isFinite(+x.v)); } catch { sig = []; }
+  for (const x of sig) { const id = `${x.key}-${x.target}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 50);
+    if (BR.branches.some((b) => b.id === id && (b.state === "open" || NOW - Date.parse(b.closed ?? 0) < 14 * DAY))) continue;
+    if (BR.branches.filter((b) => b.state === "open").length >= 8) break;
+    BR.branches.push({ id, key: x.key, target: x.target, base: x.v, higher: x.higher, days: x.days, why: x.why, born: iso(NOW), state: "open" });
+    feed.push({ t: iso(NOW), m: "core", text: `opened a branch: ${x.target} (${x.why})`, kind: "hot" }); }
+  for (const b of BR.branches.filter((b) => b.state === "open")) {
+    let v = null; try { v = S.measureOf?.(b, sens); } catch { v = null; } if (v != null && Number.isFinite(+v)) b.now = v;
+    const age = (NOW - Date.parse(b.born)) / DAY; if (age < b.days || b.now == null) continue;
+    const better = b.higher ? b.now >= b.base * 1.15 || (b.base === 0 && b.now > 0) : b.now <= b.base * 0.85; const w = wOf(b.key);
+    w.v = +clamp(w.v + 0.25 * ((better ? 1 : 0) - w.v), 0.05, 0.95).toFixed(3); w.n++;
+    if (better) { b.state = "resolved"; b.closed = iso(NOW); feed.push({ t: iso(NOW), m: "core", text: `resolved: ${b.target} (${b.base} → ${b.now})`, kind: "win" }); }
+    else { b.judged = iso(NOW); b.base = b.base; b.born = iso(NOW); b.stuck = (b.stuck ?? 0) + 1; feed.push({ t: iso(NOW), m: "core", text: `still open: ${b.target} (${b.now}) — ${b.stuck}× judged`, kind: "bad" }); }
+  }
+  BR.branches = BR.branches.filter((b) => b.state === "open" || NOW - Date.parse(b.closed ?? b.born) < 45 * DAY); // bin
+  fs.writeFileSync(`${DIR}/branches.json`, JSON.stringify(BR, null, 1));
+  // ESCALATION: kinds that don't fix themselves (neuron < .35 after 2 verdicts) or branches stuck 2+ windows → admin, first
+  const escalate = BR.branches.filter((b) => b.state === "open" && ((W[b.key]?.n ?? 0) >= 2 && W[b.key].v < 0.35 || (b.stuck ?? 0) >= 2)).map((b) => `${b.target}: ${b.why} — open ${b.stuck ?? 0}× windows; this kind doesn't fix itself → needs an admin`);
   const day = iso(NOW).slice(0, 10); mem.days = [...(mem.days ?? []).filter((d) => d.day !== day), { day, outcome: out.v, mode: lead.id }].slice(-120); // memory: 120 days, the rest binned
   fs.writeFileSync(`${DIR}/brain.json`, JSON.stringify(mem, null, 1));
 
@@ -176,10 +215,14 @@ for (const S of BRAINS) {
     for (const k of kids) push({ ...k, group: g.id, parent: lid, link: undefined });
     for (const b of (main.spawned ?? []).filter((b) => b.state === "alive" && g.machines.some((m) => b.id.startsWith(m + "-")))) push({ id: b.id, name: b.target.slice(0, 26), group: g.id, parent: g.machines.find((m) => b.id.startsWith(m + "-")), does: `Branch: ${b.why}`, spawned: true, born: b.born, kpi: null });
   }
+  const KEYMGR = { "checkout-step": "lead-wall", "past-due": "lead-recover", leak: "lead-funnel", budget: "lead-budget", pull: "lead-pull", "cost-incident": "lead-budget", "attack-volume": "lead-edge", deps: "lead-app", gap: "lead-factory", week2: "lead-return", "slow-page": "lead-charts" };
+  for (const b of BR.branches.filter((b) => b.state === "open")) push({ id: `br-${b.id}`, name: b.target.length > 24 ? b.target.slice(0, 23) + "…" : b.target, group: nodes.find((n) => n.id === KEYMGR[b.key])?.group ?? "core", parent: KEYMGR[b.key] ?? "core", spawned: true, born: b.born,
+    does: `Branch opened by ${S.name}: ${b.why}. Judged after ${b.days} d on its own number; neuron "${b.key}" = ${W[b.key]?.v ?? 0.5} (chance this kind fixes itself)`, kpi: { label: b.target, now: b.now ?? b.base, before: b.base, lowerBetter: !b.higher } });
   const ids = new Set(nodes.map((n) => n.id)); for (const n of nodes) if (n.parent && !ids.has(n.parent)) n.parent = "core";
   const edges = nodes.filter((n) => n.parent).map((n) => ({ a: n.parent, b: n.id, kind: "branch", w: Math.min(1, (n.act24 ?? 0) / 10) }));
   const good = [], watch = [], next = [];
   for (const [k, v] of Object.entries(sens)) if (v != null && typeof v !== "object") (k === "error" ? watch : good).push(`${k.replace(/([A-Z])/g, " $1").toLowerCase()}: ${v}`);
+  for (const e of escalate) watch.push(`Escalated: ${e}`);
   for (const a of S.admin(sens)) watch.push(`Admin: ${a}`);
   for (const m of modes) next.push(`${m.label}: ${m.why}`);
   // what the OTHER brains are saying (they all talk through data/brains/index.json + the traffic engine)
@@ -191,9 +234,11 @@ for (const S of BRAINS) {
     mode: { mode: lead.level === "critical" ? "dip" : "normal", since: mem.episode.since, why: lead.why, z: 0, r24: 0, normal: 0 },
     nodes, edges, feed: [...feed, ...mainFeed], totals: { machines: nodes.length, ok: nodes.filter((n) => n.state === "ok").length, late: nodes.filter((n) => n.state === "late").length, stopped: nodes.filter((n) => n.state === "stopped").length, actions24: feed.length + mainFeed.length },
     widgets: main.widgets, rules: ["Judged on one outcome number; mode intensity learns from every episode", "Never touches the web server", "What no machine can fix is listed as an admin job"],
-    allIn: [], fix: watch.slice(0, 4), mistakes: [], ledger: [], episodes: [], spawned: [], score: main.score ?? [] };
+    allIn: [], fix: watch.slice(0, 4), mistakes: [], ledger: [], episodes: [], score: main.score ?? [],
+    spawned: BR.branches.slice(-12).map((b) => ({ id: b.id, target: b.target, state: b.state, born: b.born, why: b.why, verdict: b.state === "resolved" ? "resolved" : b.stuck ? `open ${b.stuck}×` : "measuring", ratio: b.now })),
+    neurons: Object.entries(W).map(([k, w]) => ({ k, v: w.v, n: w.n })) };
   fs.writeFileSync(`${DIR}/ecosystem.json`, JSON.stringify(eco));
-  index.push({ id: S.id, name: S.name, color: S.color, mode: lead.label, level: lead.level, outcome: out, authority });
-  console.log(`${S.name}: ${lead.label}${modes.length > 1 ? ` +${modes.length - 1}` : ""} · ${out.label} ${out.v ?? "—"} · authority ×${authority} · ${nodes.length} nodes${S.admin(sens).length ? ` · admin: ${S.admin(sens)[0].slice(0, 90)}` : ""}`);
+  index.push({ id: S.id, name: S.name, color: S.color, mode: lead.label, level: lead.level, outcome: out, authority, open: BR.branches.filter((b) => b.state === "open").length, escalated: escalate.length });
+  console.log(`${S.name}: [${BR.branches.filter((b) => b.state === "open").length} branches] ${lead.label}${modes.length > 1 ? ` +${modes.length - 1}` : ""} · ${out.label} ${out.v ?? "—"} · authority ×${authority} · ${nodes.length} nodes${S.admin(sens).length ? ` · admin: ${S.admin(sens)[0].slice(0, 90)}` : ""}`);
 }
 fs.writeFileSync("data/brains/index.json", JSON.stringify({ at: iso(NOW), brains: index }, null, 1));
