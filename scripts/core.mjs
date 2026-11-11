@@ -77,10 +77,11 @@ const selfDir = "data/machines/self";
 for (const f of fs.existsSync(selfDir) ? fs.readdirSync(selfDir).filter((x) => x.endsWith(".json")) : []) {
   const m = J(`${selfDir}/${f}`); if (m?.id && !REG.some((r) => r.id === m.id)) REG.push({ ...m, t: () => (m.out ? atOf(m.out) ?? lastAt(m.out) : null) });
 }
-const covered = new Set(["ai", "behaviour", "radar", "mentions", "mobile", "machines", "reels", "events", "recaps"]);
+const covered = new Set(["ai", "behaviour", "radar", "mentions", "mobile", "machines", "reels", "events", "recaps", "cost", "leak"]);
 for (const d of fs.readdirSync("data", { withFileTypes: true }).filter((x) => x.isDirectory() && !covered.has(x.name)))
   if (fs.existsSync(`data/${d.name}/plan.json`)) REG.push({ id: d.name, name: d.name, group: "core", does: "Discovered: writes a plan the core has not been told about yet", every: 24, t: () => atOf(`data/${d.name}/plan.json`), discovered: true });
 
+{ const seenIds = new Set(); for (let i = REG.length - 1; i >= 0; i--) { if (seenIds.has(REG[i].id)) REG.splice(i, 1); else seenIds.add(REG[i].id); } }
 // ── 2. LIVE ACTIVITY: what each machine just did ─────────────────────────────────────────────────────────────────────
 const feed = []; const ev = (t, m, text, kind = "do") => { if (t && NOW - t < 3 * DAY) feed.push({ t: new Date(t).toISOString(), m, text, kind }); };
 for (const r of readLines("data/ai/runs.jsonl").slice(-60)) if (r.submitted) ev(Date.parse(r.at), "bing", `sent ${r.submitted} pages to Bing`);
@@ -216,7 +217,7 @@ for (const T of TEMPLATES) {
   for (const b of spawned.branches.filter((x) => x.kind === T.kind && x.state === "alive")) REG.push({ id: b.id, name: `${T.kind[0].toUpperCase() + T.kind.slice(1)}: ${b.target}`.slice(0, 40), group: T.group, parent: T.parent, does: `Built by the core. ${T.does}. ${b.why}.`, every: 24, t: () => NOW, spawned: true });
 }
 fs.writeFileSync(SP, JSON.stringify(spawned, null, 1));
-for (const b of spawned.branches.filter((x) => x.state === "alive")) REG.push({ id: b.id, name: `Focus ${b.target}`, group: "core", parent: "core", does: `Built by the core: ${b.why}. Pages under ${b.target} ×${b.boost}, Bing first; judged weekly`, every: 1, t: () => NOW, feeds: ["bing"], spawned: true });
+for (const b of spawned.branches.filter((x) => x.state === "alive" && (!x.kind || x.kind === "focus"))) REG.push({ id: b.id, name: `Focus ${b.target}`, group: "core", parent: "core", does: `Built by the core: ${b.why}. Pages under ${b.target} ×${b.boost}, Bing first; judged weekly`, every: 1, t: () => NOW, feeds: ["bing"], spawned: true });
 
 // ── 3c. THE BIN: data no machine reads any more is thrown out (never what a learner needs: aicrawl 120 d, score, clicks
 // stay). Each rule = file, how long its lines matter, a hard line cap. Old monthly logs beyond 3 months are deleted.
