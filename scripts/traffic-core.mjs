@@ -155,10 +155,22 @@ const convergent = [...signs].filter(([p, s]) => s.size >= 3 && p.split("/").fil
 const alive = () => B.branches.filter((b) => b.state === "alive");
 const blocked = (id) => B.branches.some((b) => b.id === id && (b.state === "alive" || NOW - Date.parse(b.retired ?? 0) < 28 * DAY));
 let built = 0;
-const boost = (p) => +clamp(1.5 * intensity + 0.25 * Math.max(0, nSigns(p ?? "") - 1), 1.2, 2.2).toFixed(2);
+// AUTHORITY CASCADES DOWN (Kai 11-11: "the bigger branches, the big fractal going up, have more power over everything").
+// Earned, never given: the ENGINE's authority = how often its mode episodes paid; a MANAGER's = its machines' judged wins −
+// losses (30 d). A branch pushes with engine × manager × mode intensity — a proven manager's branches push harder, a
+// failing one loses power over its machines until it earns it back.
+const OWNER_GROUP = { channels: "ai", converter: "ai", surges: "ai", rank: "search", demand: "search", ghosts: "search", events: "content", referrals: "referral", convergence: "brain", modes: "brain" };
+const led30 = readLines(`${OUT}/ledger.jsonl`).filter((l) => NOW - Date.parse(l.at) < 30 * DAY);
+const tierOf = (sc) => (sc <= -2 ? 0.8 : sc < 2 ? 1 : sc < 5 ? 1.15 : sc < 10 ? 1.3 : 1.5);
+const groupScore = {}; for (const l of led30) { const g = OWNER_GROUP[l.machine]; if (!g) continue; groupScore[g] = (groupScore[g] ?? 0) + (l.kind === "win" ? 1 : l.kind === "loss" ? -1 : 0); }
+const AUTH = Object.fromEntries(["brain", "ai", "search", "content", "social", "referral"].map((g) => [g, tierOf(groupScore[g] ?? 0)]));
+const epAll = Object.values(brain.modes).reduce((a, m) => ({ e: a.e + m.episodes, w: a.w + m.wins }), { e: 0, w: 0 });
+const ENGINE_AUTH = epAll.e >= 4 ? +clamp(0.85 + 0.5 * (epAll.w / epAll.e), 0.85, 1.25).toFixed(2) : 1;
+brain.authority = { engine: ENGINE_AUTH, managers: AUTH, scores: groupScore };
+const boost = (p, owner) => +clamp(1.5 * intensity * ENGINE_AUTH * (AUTH[OWNER_GROUP[owner]] ?? 1) + 0.25 * Math.max(0, nSigns(p ?? "") - 1), 1.2, 2.2).toFixed(2);
 const build = (o) => { if (built >= 4 || alive().length >= 14) return false; const id = `${o.kind}-${o.target}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 52);
   if (blocked(id) || !(fire(o.neuron) || nSigns(o.target) >= 3)) return false;
-  B.branches.push({ id, born: iso(NOW), state: "alive", boost: o.path === false ? null : boost(o.target), signs: [...(signs.get(o.target) ?? signs.get(famKey(o.target)) ?? [])], ...o }); built++;
+  B.branches.push({ id, born: iso(NOW), state: "alive", boost: o.path === false ? null : boost(o.target, o.owner), signs: [...(signs.get(o.target) ?? signs.get(famKey(o.target)) ?? [])], ...o }); built++;
   learn(o.owner, "lesson", `built a ${o.kind} branch: ${o.target} (${o.why})`, `tb|${id}|born`); say(o.owner, `built a ${o.kind} branch: ${o.target}`, "win"); return true; };
 // breakout: the pages that channel is reading right now
 for (const [c, v] of breakout) for (const [p] of v.top.slice(0, 2)) if (p !== "/") build({ kind: "channel", owner: "channels", chan: c, target: p, neuron: `breakout:${c}→bing`, base: r1(readsOf(p, NOW - 8 * DAY, NOW - DAY, ASSIST[c]) / 7), why: `${c} reading it during a ${v.x}× breakout` });
@@ -210,7 +222,7 @@ const nodes = [];
 const own = (id, name, group, parent, does, every, kpi, extra = {}) => { const acts = feed.filter((f) => f.m === id).length + tLedger(id).length;
   nodes.push({ id, name, group, parent, does, every, state: "ok", lastRunH: 0, kpi, act24: feed.filter((f) => f.m === id).length, hot: false, discovered: false, recent: feed.filter((f) => f.m === id).slice(0, 5), xp: xpOf(id, acts), learns: extra.learns, born: extra.born, ...extra }); };
 const reuse = (id, group, parent, rename) => { const n = mainNode.get(id); if (!n) return; nodes.push({ ...n, group, parent, name: rename ?? n.name }); };
-own("core", "Traffic brain", "brain", null, `Runs every traffic machine in one hourly cycle: senses every channel, picks the mode, fires branches through its neurons, judges them, remembers what paid and bins the rest`, 1,
+own("core", "Traffic brain", "brain", null, `Authority ×${ENGINE_AUTH} (from its mode episodes). Runs every traffic machine in one hourly cycle: senses every channel, picks the mode, fires branches through its neurons, judges them, remembers what paid and bins the rest`, 1,
   { label: "real visitors / 24 h", now: hum.visitors?.now ?? null, before: r1(hum.visitors?.normal), change: hum.visitors?.ratio != null ? r1(hum.visitors.ratio - 1) : null });
 // THE LINK to the main engine (both webs show it; click = open the other engine). Its numbers are the main engine's own.
 own("main-engine", "Main engine ↗", "brain", "core", `The engine core: ${main.totals?.ok ?? "?"}/${main.totals?.machines ?? "?"} machines running. Two-way: the brain reads its machines, feed and ranks; it reads the brain's mode, branches and briefing`, 1,
@@ -244,7 +256,8 @@ reuse("mentions", "referral", "lead-referral"); own("referrals", "Rising sources
 for (const b of alive()) own(b.id, b.target.length > 26 ? b.target.slice(0, 25) + "…" : b.target, nodes.find((n) => n.id === b.owner)?.group ?? "brain", b.owner, `Built by the traffic brain (${b.kind}): ${b.why}${b.boost ? ` · Bing ×${b.boost}` : ""}`, 24, { label: b.kind === "rank" ? "Bing position" : "now vs start", now: b.now ?? null, before: b.base, lowerBetter: b.kind === "rank" }, { spawned: true, born: b.born });
 // managers: what their machines earned → authority
 for (const g of GROUPS) { const ms = nodes.filter((n) => n.group === g.id && !n.id.startsWith("lead-") && n.id !== "core"); const lead0 = nodes.find((n) => n.id === `lead-${g.id}`);
-  lead0.kpi = { label: "machines running", now: ms.filter((n) => n.state === "ok").length, before: ms.length }; lead0.act24 = ms.reduce((a, n) => a + (n.act24 ?? 0), 0); }
+  lead0.kpi = { label: `authority ×${AUTH[g.id] ?? 1} · machines running`, now: ms.filter((n) => n.state === "ok").length, before: ms.length }; lead0.act24 = ms.reduce((a, n) => a + (n.act24 ?? 0), 0);
+  lead0.does += ` Authority ×${AUTH[g.id] ?? 1} (earned: ${groupScore[g.id] ?? 0} net judged wins in 30 d) — scales how hard its machines' branches push.`; }
 const ids = new Set(nodes.map((n) => n.id));
 for (const n of nodes) if (n.parent && !ids.has(n.parent)) n.parent = `lead-${n.group}`;
 const edges = nodes.filter((n) => n.parent).map((n) => ({ a: n.parent, b: n.id, kind: "branch", w: Math.min(1, (n.act24 ?? 0) / 10) }));
