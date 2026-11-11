@@ -1,5 +1,5 @@
 {
- "at": "2026-11-10T23:55:41.168Z",
+ "at": "2026-11-11T00:55:35.472Z",
  "ok": 12,
  "total": 12,
  "status": [
@@ -7,33 +7,33 @@
    "id": "ai",
    "name": "AI referral machine",
    "state": "ok",
-   "lastRunH": 0.6,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "AI clicks / week",
-    "now": 34,
+    "now": 45,
     "before": 33,
-    "change": 0.03
+    "change": 0.36
    }
   },
   {
    "id": "ai-acc",
    "name": "AI → accounts",
    "state": "ok",
-   "lastRunH": 0.6,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "AI accounts / week",
-    "now": 16,
+    "now": 19,
     "before": 27,
-    "change": -0.41
+    "change": -0.3
    }
   },
   {
    "id": "eyes",
    "name": "Eyes (Bing index + Cloudflare)",
    "state": "ok",
-   "lastRunH": 0.6,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": null
   },
@@ -41,7 +41,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 3.6,
+   "lastRunH": 4.6,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -53,7 +53,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 15.8,
+   "lastRunH": 16.8,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -64,7 +64,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 17.2,
+   "lastRunH": 18.2,
    "everyH": 24,
    "kpi": null
   },
@@ -72,7 +72,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 5,
+   "lastRunH": 6,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -83,7 +83,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 13.1,
+   "lastRunH": 14.1,
    "everyH": 24,
    "kpi": null
   },
@@ -91,7 +91,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 1,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -102,7 +102,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 1.3,
+   "lastRunH": 0.2,
    "everyH": 1,
    "kpi": null
   },
@@ -110,7 +110,7 @@
    "id": "shield",
    "name": "Shield",
    "state": "ok",
-   "lastRunH": 0.6,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": null
   },
@@ -118,7 +118,7 @@
    "id": "indexnow",
    "name": "IndexNow",
    "state": "ok",
-   "lastRunH": 0.6,
+   "lastRunH": 0,
    "everyH": 24,
    "kpi": null
   }
@@ -127,65 +127,147 @@
   {
    "move": "surge",
    "what": "/news/cpi/gold",
-   "why": "212 AI reads in 24 h vs ~9.7/day",
-   "z": 65
+   "why": "222 AI reads in 24 h vs ~10.1/day",
+   "z": 66.8
   },
   {
    "move": "surge",
    "what": "/news/ppi/gold",
-   "why": "43 AI reads in 24 h vs ~0.5/day",
-   "z": 60.1
+   "why": "46 AI reads in 24 h vs ~0.5/day",
+   "z": 64.3
   },
   {
    "move": "surge",
    "what": "/news/cpi/eurusd",
-   "why": "41 AI reads in 24 h vs ~0.5/day",
-   "z": 57.3
+   "why": "43 AI reads in 24 h vs ~0.5/day",
+   "z": 60.1
+  },
+  {
+   "move": "climbing",
+   "what": "/news",
+   "why": "46 reads in 3 days vs ~0.9",
+   "z": 47.5
+  },
+  {
+   "move": "climbing",
+   "what": "/nas100",
+   "why": "43 reads in 3 days vs ~0.9",
+   "z": 44.4
   },
   {
    "move": "surge",
    "what": "/answers/does-the-opening-range-breakout-work-on-gold",
-   "why": "44 AI reads in 24 h vs ~1.1/day",
-   "z": 40.6
+   "why": "46 AI reads in 24 h vs ~1.1/day",
+   "z": 42.7
+  },
+  {
+   "move": "climbing",
+   "what": "/backtest-eurusd",
+   "why": "52 reads in 3 days vs ~3",
+   "z": 28.4
+  },
+  {
+   "move": "climbing",
+   "what": "/economic-calendar/us-core-inflation-rate-yoy",
+   "why": "21 reads in 3 days vs ~0.9",
+   "z": 21.2
+  },
+  {
+   "move": "climbing",
+   "what": "/economic-calendar/us-inflation-rate-yoy",
+   "why": "20 reads in 3 days vs ~0.9",
+   "z": 20.1
   },
   {
    "move": "surge",
    "what": "/gold-volume-profile",
-   "why": "41 AI reads in 24 h vs ~4.8/day",
-   "z": 16.5
+   "why": "43 AI reads in 24 h vs ~5/day",
+   "z": 17
   },
   {
-   "move": "surge",
-   "what": "/news/cpi-2026-10-14",
-   "why": "16 AI reads in 24 h vs ~1.8/day",
-   "z": 10.7
+   "move": "climbing",
+   "what": "/economic-calendar/us-initial-jobless-claims",
+   "why": "13 reads in 3 days vs ~0.9",
+   "z": 12.8
   },
   {
    "move": "surge",
    "what": "/news/cpi-2026-09-11",
    "why": "11 AI reads in 24 h vs ~0.9/day",
-   "z": 10.7
-  },
-  {
-   "move": "surge",
-   "what": "/news/cpi-2026-01-13",
-   "why": "8 AI reads in 24 h vs ~0.6/day",
-   "z": 10
-  },
-  {
-   "move": "surge",
-   "what": "/news/cpi",
-   "why": "10 AI reads in 24 h vs ~0.9/day",
-   "z": 9.7
-  },
-  {
-   "move": "surge",
-   "what": "/economic-calendar/us-core-inflation-rate-mom",
-   "why": "17 AI reads in 24 h vs ~2.5/day",
-   "z": 9.3
+   "z": 10.8
   }
  ],
  "ledger": [
+  {
+   "at": "2026-11-11T00:54:10.132Z",
+   "key": "surge|/news/cpi-2026-01-13|2026-11-11",
+   "machine": "ai",
+   "kind": "surge",
+   "what": "/news/cpi-2026-01-13 surged (8 vs 0.6/day)"
+  },
+  {
+   "at": "2026-11-11T00:54:10.132Z",
+   "key": "surge|/economic-calendar/us-ppi-mom|2026-11-11",
+   "machine": "ai",
+   "kind": "surge",
+   "what": "/economic-calendar/us-ppi-mom surged (8 vs 0.5/day)"
+  },
+  {
+   "at": "2026-11-11T00:54:10.132Z",
+   "key": "surge|/news/cpi-2026-10-14|2026-11-11",
+   "machine": "ai",
+   "kind": "surge",
+   "what": "/news/cpi-2026-10-14 surged (16 vs 1.8/day)"
+  },
+  {
+   "at": "2026-11-11T00:54:10.132Z",
+   "key": "surge|/news/cpi|2026-11-11",
+   "machine": "ai",
+   "kind": "surge",
+   "what": "/news/cpi surged (11 vs 0.9/day)"
+  },
+  {
+   "at": "2026-11-11T00:54:10.132Z",
+   "key": "surge|/news/cpi-2026-09-11|2026-11-11",
+   "machine": "ai",
+   "kind": "surge",
+   "what": "/news/cpi-2026-09-11 surged (11 vs 0.9/day)"
+  },
+  {
+   "at": "2026-11-11T00:54:10.131Z",
+   "key": "surge|/gold-volume-profile|2026-11-11",
+   "machine": "ai",
+   "kind": "surge",
+   "what": "/gold-volume-profile surged (43 vs 5/day)"
+  },
+  {
+   "at": "2026-11-11T00:54:10.131Z",
+   "key": "surge|/answers/does-the-opening-range-breakout-work-on-gold|2026-11-11",
+   "machine": "ai",
+   "kind": "surge",
+   "what": "/answers/does-the-opening-range-breakout-work-on-gold surged (46 vs 1.1/day)"
+  },
+  {
+   "at": "2026-11-11T00:54:10.131Z",
+   "key": "surge|/news/cpi/eurusd|2026-11-11",
+   "machine": "ai",
+   "kind": "surge",
+   "what": "/news/cpi/eurusd surged (43 vs 0.5/day)"
+  },
+  {
+   "at": "2026-11-11T00:54:10.131Z",
+   "key": "surge|/news/ppi/gold|2026-11-11",
+   "machine": "ai",
+   "kind": "surge",
+   "what": "/news/ppi/gold surged (46 vs 0.5/day)"
+  },
+  {
+   "at": "2026-11-11T00:54:10.131Z",
+   "key": "surge|/news/cpi/gold|2026-11-11",
+   "machine": "ai",
+   "kind": "surge",
+   "what": "/news/cpi/gold surged (222 vs 10.1/day)"
+  },
   {
    "at": "2026-11-10T23:52:55.317Z",
    "key": "surge|/economic-calendar/us-core-inflation-rate-mom|2026-11-10",
