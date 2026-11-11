@@ -132,6 +132,28 @@ if (mode !== old.mode) {
   }
   append("data/machines/modes.jsonl", ep);
 }
+// ── 3a. THE ENGINE LEARNS FROM ITSELF (meta-learning, bounded, logged) ───────────────────────────────────────────────
+// SURGE PRECISION: of the page surges it pushed (≥ 48 h ago, last 30 days), how many brought at least one AI click within
+// 2 days? Precision (shrunk toward 50% with K 10) sets how hard surges are pushed next: surgeBoost 2…6 (default 4).
+{ const CL = J("data/ai/clicks.json", {}), clickDays = new Map();
+  for (const [k, [vis]] of Object.entries(CL)) { if (!vis) continue; const [d, , p0] = k.split("|"); const p = (p0 || "/").replace(/\/$/, "") || "/"; (clickDays.get(p) ?? clickDays.set(p, new Set()).get(p)).add(d); }
+  const judged = readLines("data/ai/surges.jsonl").filter((x) => x.kind === "page" && NOW - Date.parse(x.at) > 2 * DAY && NOW - Date.parse(x.at) < 30 * DAY);
+  const hit = judged.filter((x) => { const d0 = Date.parse(x.at); const ds = clickDays.get(x.key); if (!ds) return false; for (const d of ds) { const t = Date.parse(d + "T12:00:00Z"); if (t >= d0 - DAY / 2 && t <= d0 + 2 * DAY) return true; } return false; }).length;
+  const prec = (hit + 5) / (judged.length + 10), boost = +Math.max(2, Math.min(6, 2 + prec * 4)).toFixed(2);
+  if (judged.length >= 3 && Math.abs(boost - (P.surgeBoost ?? 4)) >= 0.25) append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `meta|surge|${iso(NOW)}`, machine: "core", kind: "lesson", what: `surges brought clicks ${hit}/${judged.length} times → surge push set to ×${boost}` });
+  P.surgeBoost = judged.length >= 3 ? boost : P.surgeBoost ?? 4; P.surgePrecision = +prec.toFixed(2); P.surgeJudged = judged.length; }
+// SISTER PAYOFF: every sister page the AI machine lifted is logged; 3 days later its live AI reads (3 d after vs 3 d before)
+// say whether spreading paid. Paid more than half the time → reach one more sister group (max 8); less than a quarter → one fewer (min 3).
+{ const SL = "data/machines/sisters.jsonl", logged = readLines(SL), seenK = new Set(logged.map((x) => x.p + x.d));
+  for (const x of ai.sisters ?? []) if (!seenK.has(x.p + iso(NOW))) append(SL, { d: iso(NOW), p: x.p, of: x.of });
+  const readsIn = (p, from, to) => { let n = 0; for (const w of crawl) { const t = Date.parse(w.to); if (t < from || t >= to) continue; for (const [b, v] of Object.entries(w.bots)) if (LIVE.test(b)) for (const [p0, k] of v.top) if (p0.split("?")[0] === p) n += k; } return n; };
+  const due = readLines(SL).filter((x) => !x.judged && NOW - Date.parse(x.d + "T12:00:00Z") > 3 * DAY);
+  let paid = 0; for (const x of due) { const t0 = Date.parse(x.d + "T12:00:00Z"), after = readsIn(x.p, t0, t0 + 3 * DAY), before = readsIn(x.p, t0 - 3 * DAY, t0); x.judged = after > before ? "paid" : "flat"; if (after > before) paid++; }
+  if (due.length) { const all = readLines(SL).map((x) => due.find((y) => y.p === x.p && y.d === x.d) ?? x); fs.writeFileSync(SL, all.slice(-3000).map((x) => JSON.stringify(x)).join("\n") + "\n");
+    const rate = paid / due.length, was = P.sisterTop; if (due.length >= 5) { if (rate > 0.5) P.sisterTop = Math.min(8, P.sisterTop + 1); else if (rate < 0.25) P.sisterTop = Math.max(3, P.sisterTop - 1); }
+    append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `meta|sisters|${iso(NOW)}`, machine: "core", kind: rate > 0.5 ? "win" : rate < 0.25 ? "loss" : "lesson", what: `sister pages paid ${paid}/${due.length} times${P.sisterTop !== was ? ` → spread to ${P.sisterTop} hot pages` : ""}` }); }
+  P.sisterPaid = due.length ? +(paid / due.length).toFixed(2) : P.sisterPaid ?? null; }
+
 const modeOut = { mode, since: mode === old.mode ? old.since : new Date().toISOString(), why, z, r24, normal: Math.round(mu), pageSurges, params: P,
   startMu: mode === old.mode ? old.startMu ?? Math.round(mu) : Math.round(mu), startR24: mode === old.mode ? old.startR24 ?? r24 : r24,
   targets: mode === "surge" ? (ai.surges ?? []).filter((s) => s.kind === "page").slice(0, 8).map((s) => s.key) : mode === "dip" ? (ai.winners ?? []).slice(0, P.recoveryN).map((w) => w.p) : [] };
