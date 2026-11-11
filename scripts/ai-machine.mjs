@@ -451,7 +451,9 @@ fs.writeFileSync("data/ai/plan.json", JSON.stringify(plan, null, 1));
 // surging pages first, then pages whose release is due in the next 3 days, then the pages that send the most accounts.
 { const picks = [], seen = new Set(), add = (path, why, date) => { if (seen.has(path) || !lastmod.has(path) || picks.length >= 12) return; seen.add(path); picks.push(date ? { path, why, date } : { path, why }); };
   for (const x of surges.filter((y) => y.kind === "page")) if (picks.length < 4) add(x.key, "surge");
-  for (const x of rising) if (picks.length < 6) add(x.key, "rising");
+  for (const x of rising) if (picks.length < 6) add(x.key, "surge"); // the site renders surge|release|winner only — "rising" was silently dropped
+  // the TRAFFIC BRAIN's branches (strongest first): surge/convergence pages = "surge", pages people click through = "winner"
+  for (const b of FOCUS.filter((b) => b.kind === "surge" || b.kind === "channel").slice(0, 3)) if (picks.length < 8) add(b.target, /people|clicked/.test(b.why ?? "") ? "winner" : "surge");
   const due = [...lastmod.keys()].map((p) => ({ p, d: soon(p), v: page.get(p)?.value ?? 0 })).filter((x) => x.d).sort((a, b) => b.v - a.v);
   for (const x of due) { if (picks.filter((q) => q.why === "release").length >= 4) break; add(x.p, "release", x.d); }
   for (const x of plan.winners) add(x.p, "winner");
