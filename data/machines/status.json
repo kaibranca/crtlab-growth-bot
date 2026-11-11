@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T05:04:16.514Z",
+ "at": "2026-11-11T05:19:44.607Z",
  "ok": 12,
  "total": 12,
  "status": [
@@ -41,7 +41,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 2.7,
+   "lastRunH": 3,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -53,7 +53,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 21,
+   "lastRunH": 21.2,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -64,7 +64,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 22.4,
+   "lastRunH": 22.6,
    "everyH": 24,
    "kpi": null
   },
@@ -72,7 +72,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 10.1,
+   "lastRunH": 10.4,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -83,7 +83,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 18.2,
+   "lastRunH": 18.5,
    "everyH": 24,
    "kpi": null
   },
@@ -91,7 +91,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 5.2,
+   "lastRunH": 5.4,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -102,7 +102,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 0.5,
+   "lastRunH": 0.8,
    "everyH": 1,
    "kpi": null
   },
@@ -127,8 +127,8 @@
   {
    "move": "surge",
    "what": "/news/cpi/gold",
-   "why": "227 AI reads in 24 h vs ~10.1/day",
-   "z": 68.3
+   "why": "226 AI reads in 24 h vs ~10.2/day",
+   "z": 67.6
   },
   {
    "move": "surge",
@@ -186,15 +186,15 @@
   },
   {
    "move": "climbing",
+   "what": "/news/cpi-2026-08-12",
+   "why": "17 reads in 3 days vs ~1.2",
+   "z": 14.1
+  },
+  {
+   "move": "climbing",
    "what": "/economic-calendar/us-initial-jobless-claims",
    "why": "14 reads in 3 days vs ~0.9",
    "z": 13.8
-  },
-  {
-   "move": "surge",
-   "what": "/economic-calendar/us-ppi-mom",
-   "why": "10 AI reads in 24 h vs ~0.5/day",
-   "z": 13.4
   }
  ],
  "ledger": [
