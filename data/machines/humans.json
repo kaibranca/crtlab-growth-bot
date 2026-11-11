@@ -1,32 +1,32 @@
 {
- "at": "2026-11-11T17:18:28.772Z",
+ "at": "2026-11-11T18:01:29.147Z",
  "visitors": {
   "now": 17,
   "normal": 37,
   "ratio": 0.46,
-  "z": -2
+  "z": -2.1
  },
  "rawVisitors": {
-  "now": 78,
-  "normal": 76.7,
-  "ratio": 1.02,
-  "z": 0.1
+  "now": 95,
+  "normal": 76.6,
+  "ratio": 1.24,
+  "z": 0.8
  },
  "signups": {
-  "now": 11,
+  "now": 12,
   "normal": 15.7,
-  "ratio": 0.7,
-  "z": -0.6
+  "ratio": 0.76,
+  "z": -0.5
  },
  "state": "dip",
  "why": [
   "device desktop: 9 vs ~28.4/day",
-  "source Direct: 10 vs ~23/day",
-  "landing home: 7 vs ~17.3/day",
+  "source Direct: 11 vs ~22.9/day",
+  "landing home: 8 vs ~17.2/day",
   "landing chart: 1 vs ~6/day"
  ],
  "gainers": [
-  "device mobile: 8 vs ~7.7/day"
+  "device mobile: 8 vs ~7.8/day"
  ],
  "segments": [
   {
@@ -35,26 +35,26 @@
    "now": 9,
    "normal": 28.4,
    "ratio": 0.32,
-   "z": -2.3,
+   "z": -2.4,
    "gap": -19.4
   },
   {
    "dim": "source",
    "seg": "Direct",
-   "now": 10,
-   "normal": 23,
-   "ratio": 0.43,
-   "z": -1.8,
-   "gap": -13
+   "now": 11,
+   "normal": 22.9,
+   "ratio": 0.48,
+   "z": -1.7,
+   "gap": -11.9
   },
   {
    "dim": "landing",
    "seg": "home",
-   "now": 7,
-   "normal": 17.3,
-   "ratio": 0.4,
-   "z": -1.9,
-   "gap": -10.3
+   "now": 8,
+   "normal": 17.2,
+   "ratio": 0.46,
+   "z": -1.7,
+   "gap": -9.2
   },
   {
    "dim": "landing",
@@ -62,8 +62,17 @@
    "now": 1,
    "normal": 6,
    "ratio": 0.17,
-   "z": -2.2,
+   "z": -2.6,
    "gap": -5
+  },
+  {
+   "dim": "source",
+   "seg": "AI answers",
+   "now": 2,
+   "normal": 6.4,
+   "ratio": 0.31,
+   "z": -1.7,
+   "gap": -4.4
   },
   {
    "dim": "landing",
@@ -75,21 +84,12 @@
    "gap": -4.1
   },
   {
-   "dim": "source",
-   "seg": "AI answers",
-   "now": 3,
-   "normal": 6.3,
-   "ratio": 0.48,
-   "z": -1.4,
-   "gap": -3.3
-  },
-  {
    "dim": "country",
    "seg": "IN",
    "now": 3,
    "normal": 5.9,
    "ratio": 0.51,
-   "z": -1,
+   "z": -0.9,
    "gap": -2.9
   },
   {
@@ -98,7 +98,7 @@
    "now": 0,
    "normal": 2.6,
    "ratio": 0,
-   "z": -0.8,
+   "z": -0.9,
    "gap": -2.6
   },
   {
@@ -107,7 +107,7 @@
    "now": 2,
    "normal": 3.8,
    "ratio": 0.53,
-   "z": -0.8,
+   "z": -0.7,
    "gap": -1.8
   },
   {
@@ -141,10 +141,10 @@
    "dim": "device",
    "seg": "mobile",
    "now": 8,
-   "normal": 7.7,
-   "ratio": 1.04,
+   "normal": 7.8,
+   "ratio": 1.03,
    "z": 0.1,
-   "gap": 0.3
+   "gap": 0.2
   }
  ]
 }
