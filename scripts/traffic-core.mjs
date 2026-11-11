@@ -110,7 +110,10 @@ const intensity = M(lead.id).intensity;
 
 // ── NEURONS: weight per signal→action, judged outcomes move it ──────────────────────────────────────────────────────
 const W = (k) => (brain.w[k] ??= { v: 0.5, n: 0, used: iso(NOW) });
-const RATE = 0.25, BAR = 0.42;
+// SELF-TUNING SELECTIVITY (learning to learn): the firing bar follows the brain's own recent hit rate — most of the last 20
+// judged branches paid → bolder (bar down to .32), most failed → pickier (bar up to .55). Starts at .42 until 6 verdicts.
+const judged20 = B.branches.filter((b) => b.verdict && b.verdict !== "measuring").slice(-20), hit = judged20.filter((b) => b.verdict === "paying" || b.verdict === "graduated").length;
+const RATE = 0.25, BAR = judged20.length >= 6 ? +clamp(0.42 - (hit / judged20.length - 0.5) * 0.3, 0.32, 0.55).toFixed(3) : 0.42;
 const fire = (k) => { const w = W(k); w.used = iso(NOW); return w.v >= BAR || rnd() < 0.15; };
 const reward = (k, r) => { const w = W(k); w.v = +clamp(w.v + RATE * (r - w.v), 0.05, 0.95).toFixed(3); w.n++; w.used = iso(NOW); };
 
