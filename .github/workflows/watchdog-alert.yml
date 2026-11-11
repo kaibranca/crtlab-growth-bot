@@ -1,0 +1,22 @@
+name: watchdog-alert
+# THE TOP OF THE PYRAMID (11-11). The Cloudflare cron worker checks, independently of GitHub's scheduler, that the hourly
+# engine itself ran and that the live site's data is current; when not, it starts this and you get one email. Uses only
+# the Resend key already stored here — no new secrets anywhere, nothing written to the site.
+on:
+  workflow_dispatch:
+    inputs:
+      why: { description: "what the worker found", required: true }
+permissions: { contents: read }
+jobs:
+  alert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Email
+        env: { RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", WHY: "${{ inputs.why }}" }
+        run: |
+          node -e '
+          const body = { from: "CRTLAB watchdog <hello@crtlab.pro>", to: process.env.ALERT_TO, subject: "CRTLAB watchdog: " + process.env.WHY.slice(0, 90),
+            text: "The independent watchdog (Cloudflare worker) found:\n\n" + process.env.WHY.split(" | ").map((x) => "• " + x).join("\n") +
+              "\n\nCheck: gh run list -R kaibranca/crtlab-growth-bot -w hourly.yml -L 3 · gh run list -R kaibranca/crtlab-backtester -w daily-data.yml -L 3" };
+          fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: "Bearer " + process.env.RESEND_API_KEY, "Content-Type": "application/json" }, body: JSON.stringify(body) })
+            .then(async (r) => { console.log("resend", r.status, (await r.text()).slice(0, 120)); if (!r.ok) process.exit(1); });'

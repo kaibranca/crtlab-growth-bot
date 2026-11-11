@@ -42,6 +42,21 @@ const status = MACHINES.map((m) => {
   return { id: m.id, name: m.name, state, lastRunH: age == null ? null : +age.toFixed(1), everyH: m.every, kpi: k };
 });
 
+// ── THE PYRAMID (11-11): the supervisor watched 12 machines; the core knows 59. Every machine the core registered (last
+// hour's ecosystem.json) now has the same contract here: RAN ON TIME (else late / STOPPED → email + fixer) and its OUTCOME
+// not getting worse (outcomes.json: 20%+ the wrong way on a real base = HURTING → fix list, judged by its section lead).
+{ const eco = J("data/machines/ecosystem.json"), have = new Set(status.map((x) => x.id));
+  for (const n of eco?.nodes ?? []) {
+    if (have.has(n.id) || n.id.startsWith("lead-") || n.spawned) continue;
+    const st = n.state === "ok" ? "ok" : n.state === "late" ? "late" : n.state ? "STOPPED" : "ok";
+    status.push({ id: n.id, name: n.name ?? n.id, state: st, lastRunH: n.lastRunH ?? null, everyH: n.every ?? null, kpi: n.kpi ?? null, from: "core" });
+  }
+}
+const OUTC = J("data/machines/outcomes.json")?.kpi ?? {};
+const hurting = Object.entries(OUTC).filter(([, k]) => k && !k.neutral && k.change != null && (k.before ?? 0) >= 10 && (k.lowerBetter ? k.change >= 0.2 : k.change <= -0.2)).map(([id, k]) => ({ id, label: k.label, now: k.now, before: k.before, change: k.change }));
+const seenH = new Set();
+for (const h of hurting) { const key = h.label + h.now; if (seenH.has(key)) continue; seenH.add(key); fix.push(`${h.label} getting worse: ${h.now} vs ${h.before} last week (${h.id})`); }
+
 // ── ALL IN: what the machines are pushing hardest, one ranked list ────────────────────────────────────────────────────
 const allIn = [];
 for (const s of ai?.surges ?? []) if (s.kind === "page") allIn.push({ move: "surge", what: s.key, why: `${s.last24h} AI reads in 24 h vs ~${s.normal}/day`, z: s.z });
@@ -117,7 +132,7 @@ const mistakeRows = Object.entries(per).map(([where, xs]) => ({ where, n: xs.len
 for (const m of mistakeRows.filter((x) => x.repeating)) fix.push(`${m.where} failed ${m.n}× this week (last: ${m.last})`);
 for (const m of mistakeRows) add(`mistake|${m.where}|${iso(Date.parse(m.at))}`, "supervisor", "mistake", `${m.where}: ${m.last}`);
 
-const out = { at: new Date().toISOString(), ok: status.filter((s) => s.state === "ok").length, total: status.length, status, allIn: allIn.slice(0, 12), ledger: readLines(LED).slice(-30).reverse(), fix, mistakes: mistakeRows.slice(0, 12) };
+const out = { at: new Date().toISOString(), ok: status.filter((s) => s.state === "ok").length, total: status.length, hurting, status, allIn: allIn.slice(0, 12), ledger: readLines(LED).slice(-30).reverse(), fix, mistakes: mistakeRows.slice(0, 12) };
 fs.mkdirSync("data/machines", { recursive: true });
 fs.writeFileSync("data/machines/status.json", JSON.stringify(out, null, 1));
 

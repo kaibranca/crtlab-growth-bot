@@ -30,9 +30,36 @@ const JOBS = [
 ];
 const hit = (rule, v) => rule === "*" || (typeof rule === "number" ? rule === v : rule.startsWith("*/") ? v % +rule.slice(2) === 0 : rule.includes("-") ? v >= +rule.split("-")[0] && v <= +rule.split("-")[1] : +rule === v);
 
+// THE WATCHDOG OF THE WATCHDOG (11-11): every 3 h (minute 7) this worker — outside GitHub's scheduler — checks that the
+// hourly engine itself ran (its status.json is < 3 h old) and that the live site's data is current. Read-only: public
+// raw GitHub + crtlab.pro's public data-version. A problem starts watchdog-alert.yml, which emails with the key already in
+// GitHub. Nothing else changes, no new secret.
+async function guard(env, d) {
+  const why = [];
+  try {
+    const s = await fetch(`https://raw.githubusercontent.com/${REPO}/main/data/machines/status.json?t=${d.getTime()}`).then((r) => (r.ok ? r.json() : null));
+    const age = s?.at ? (d.getTime() - Date.parse(s.at)) / 3.6e6 : null;
+    if (age == null || age > 3) why.push(`the hourly engine has not reported for ${age == null ? "an unknown time" : age.toFixed(1) + " h"} (supervisor + every machine behind it)`);
+  } catch (e) { why.push("could not read the engine status: " + String(e).slice(0, 60)); }
+  try {
+    const v = await fetch("https://crtlab.pro/api/data-version").then((r) => (r.ok ? r.json() : null));
+    const x = new Date(d); x.setUTCHours(0, 0, 0, 0); if (d - x < 7.5 * 3.6e6) x.setUTCDate(x.getUTCDate() - 1);
+    do x.setUTCDate(x.getUTCDate() - 1); while (x.getUTCDay() === 0 || x.getUTCDay() === 6);
+    const want = x.toISOString().slice(0, 10);
+    if (!v?.end || v.end < want) why.push(`live data through ${v?.end ?? "unknown"}, should be ${want}`);
+  } catch (e) { why.push("could not read crtlab.pro data version: " + String(e).slice(0, 60)); }
+  if (!why.length) return;
+  const r = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/watchdog-alert.yml/dispatches`, {
+    method: "POST", headers: { Authorization: `Bearer ${env.GH_TOKEN}`, Accept: "application/vnd.github+json", "User-Agent": "crtlab-cron", "X-GitHub-Api-Version": "2022-11-28" },
+    body: JSON.stringify({ ref: "main", inputs: { why: why.join(" | ").slice(0, 900) } }),
+  });
+  console.log(`${d.toISOString()} watchdog: ${why.join(" | ")} → alert ${r.status}`);
+}
+
 export default {
   async scheduled(event, env, ctx) {
     const d = new Date(event.scheduledTime), m = d.getUTCMinutes(), h = d.getUTCHours(), w = d.getUTCDay();
+    if (m === 7 && h % 3 === 0) ctx.waitUntil(guard(env, d));
     const due = JOBS.filter(([, mm, hh, ww]) => hit(mm, m) && hit(hh, h) && hit(ww, w));
     for (const [wf, , , , repo = REPO, inputs] of due) {
       const r = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/${wf}/dispatches`, {
