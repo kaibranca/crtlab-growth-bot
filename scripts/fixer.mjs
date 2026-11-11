@@ -42,6 +42,7 @@ const behind = (status.fix ?? []).find((f) => /^DAILY DATA BEHIND/.test(f));
 if (behind && tok) {
   const k = "daily-data:behind", r = await lastRun("kaibranca/crtlab-backtester", "daily-data.yml");
   const busy = r && r.status !== "completed", recent = r && NOW - Date.parse(r.created_at) < 45 * 60e3;
+  if (!busy && !recent && canTry(k)) (state.verify ??= {})["data"] = { at: new Date().toISOString(), id: "daily-data", playbook: "data-retry" };
   if (busy || recent) actions.push({ at: new Date().toISOString(), what: `data behind — a daily-data run is ${busy ? "running" : "fresh"}, waiting for it`, ok: true });
   else if (canTry(k)) { tried(k); const ok = await dispatch("kaibranca/crtlab-backtester", "daily-data.yml", { retry: "1" }); act(`data behind → started a daily-data retry (${state.tries[k]}/3 today)`, ok); }
   else tasks.push({ what: "Daily data still behind after 3 retries today", evidence: behind, fix: "read the newest daily-data log: gh run list -R kaibranca/crtlab-backtester -w daily-data.yml" });
@@ -61,6 +62,24 @@ for (const m of status.mistakes ?? []) {
   if (w.transient && wf && canTry(k) && tok) { tried(k); const ok = await dispatch(repo, wf, wf === "daily-data.yml" ? { retry: "1" } : undefined); act(`${m.where} failed on a transient error ("${w.line.slice(0, 80)}") → re-ran it`, ok); }
   else tasks.push({ what: `${m.where} failed${m.repeating ? ` ${m.n}× this week` : ""}`, evidence: w.line || m.last, fix: w.transient ? "re-run budget used up today — look at the runner/network" : "a real error: a re-run would repeat it — fix the cause (see the log line)", url: m.url });
 }
+
+// 4. A MACHINE THAT RAN BEFORE AND STOPPED → start its workflow once (never-run machines are "waiting", not stopped)
+const WF = { hourly: ["ai", "bing", "hooks", "curator", "truth", "surge", "rising", "sisters", "eyes", "humans", "leak", "outcomes", "shield", "cost", "core", "traffic-brain", "brains", "mode", "supervisor", "ledger", "mistakes", "bin", "fixer"],
+  "daily.yml": ["indexnow", "behaviour", "mentions", "devices", "wall", "analyst", "calendar", "indicators", "linkcheck"], "radar.yml": ["radar"], "recap.yml": ["recaps", "factory", "news"], "health.yml": ["health", "watchdog", "load", "capacity", "backup", "datapull"], "reels-post.yml": ["social"] };
+const wfOf = (id) => { for (const [wf, ids] of Object.entries(WF)) if (ids.includes(id)) return wf === "hourly" ? "hourly.yml" : wf; return null; };
+for (const x of (status.status ?? []).filter((x) => x.state === "STOPPED" && x.lastRunH != null)) {
+  const wf = wfOf(x.id), k = `restart:${x.id}`; if (!wf || !tok) { tasks.push({ what: `${x.name} stopped (last run ${x.lastRunH} h ago)`, evidence: "supervisor", fix: wf ? "no token to restart it" : "no workflow known for it — needs a look" }); continue; }
+  if ((state.w?.restart?.v ?? 0.5) < 0.2 && (state.w?.restart?.n ?? 0) >= 3) { tasks.push({ what: `${x.name} stopped`, evidence: "restarts have not been fixing stops", fix: "read its last log" }); continue; }
+  const r = await lastRun("kaibranca/crtlab-growth-bot", wf); if (r && r.status !== "completed") continue; // already running
+  if (canTry(k, 2)) { tried(k); const ok = await dispatch("kaibranca/crtlab-growth-bot", wf); act(`${x.name} had stopped (${x.lastRunH} h) → restarted ${wf}`, ok); if (ok) (state.verify ??= {})[k] = { at: new Date().toISOString(), id: x.id, playbook: "restart" }; }
+}
+// VERIFY: every fix from an earlier run is checked now — did the problem actually go away? → the playbook's neuron learns
+state.w ??= {};
+for (const [k, v] of Object.entries(state.verify ?? {})) { if (NOW - Date.parse(v.at) < 50 * 60e3) continue;
+  const now = (status.status ?? []).find((x) => x.id === v.id), fixed = v.id === "daily-data" ? !(status.fix ?? []).some((f) => /^DAILY DATA BEHIND/.test(f)) : now ? now.state === "ok" : true;
+  const w = (state.w[v.playbook] ??= { v: 0.5, n: 0 }); w.v = +Math.max(0.05, Math.min(0.95, w.v + 0.25 * ((fixed ? 1 : 0) - w.v))).toFixed(3); w.n++;
+  append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `fixer-verify|${k}|${v.at}`, machine: "fixer", kind: fixed ? "win" : "loss", what: `${v.playbook} on ${v.id}: ${fixed ? "fixed" : "did NOT fix it"} (playbook ${w.v})` });
+  actions.push({ at: new Date().toISOString(), what: `checked: ${v.playbook} on ${v.id} ${fixed ? "worked" : "did not work"}`, ok: fixed }); delete state.verify[k]; }
 
 // 3. the rest of the supervisor's fix list becomes tasks (word of mouth etc. are not machine-fixable)
 for (const f of status.fix ?? []) if (!/^DAILY DATA BEHIND|failed \d+× this week/.test(f)) tasks.push({ what: f, evidence: "supervisor", fix: "needs a build or a decision" });

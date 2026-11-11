@@ -158,7 +158,39 @@ const BRAINS = [
     measureOf: (b) => (rum ?? []).find((x) => x.p === b.target)?.p90 ?? null,
     modes: (s) => [s.chartP90 != null && s.chartP90 > 6 && { id: "slow", label: "Slow charts", level: "warn", why: `slowest 10% of chart loads take ${s.chartP90}s (worst ${s.worstChart})` }].filter(Boolean),
     admin: (s) => [s.chartP90 > 4 ? `Chart pages: the slowest 10% of real loads take ${s.chartP90}s (worst ${s.worstChart}). Candles come from the origin per request — the fix is engineering (edge-cache immutable candle windows per tier), not a machine.` : null].filter(Boolean) },
+  { id: "fixer", name: "Fixer brain", color: "#e2b93b",
+    managers: [
+      { id: "auto", label: "Auto-fix", machines: ["fixer", "supervisor"], does: "data retries, transient re-runs, restarting stopped machines — each fix verified the next hour" },
+      { id: "queue", label: "Needs you", machines: ["mistakes"], does: "what no machine can do, with the exact steps — one queue for every engine" },
+    ],
+    sensors: () => { const q = needQueue(); const fx = J("data/machines/fixer.json", {}); return { humanOpen: q.length, autoActions24: (fx.actions ?? []).filter((a) => NOW - Date.parse(a.at) < DAY).length,
+      playbooks: Object.entries(fx.w ?? {}).map(([k, w]) => `${k} ${w.v}`).join(", ") || null, top: q[0]?.what ?? null }; },
+    outcome: (s) => ({ label: "things that need you", v: s.humanOpen ?? 0, higher: false }),
+    signals: () => needQueue().slice(0, 6).map((x) => ({ key: x.kind, target: x.what.slice(0, 60), v: 1, higher: false, days: 3, why: x.steps })),
+    measureOf: (b) => (needQueue().some((x) => x.what.slice(0, 60) === b.target) ? 1 : 0),
+    modes: (s) => [s.humanOpen >= 6 && { id: "backlog", label: "Backlog", level: "warn", why: `${s.humanOpen} things need you — top: ${s.top}` }].filter(Boolean),
+    admin: () => needQueue().slice(0, 5).map((x, i) => `${i + 1}. ${x.what} → ${x.steps}`) },
 ];
+
+// THE NEED-YOU QUEUE (Fixer brain): every engine's "needs you" in one list, the same thing said twice merged, each with
+// the exact steps. Only what no machine can do lands here (auto-fixable things are the fixer's, verified next hour).
+function needQueue() {
+  const raw = [];
+  for (const id of ["money", "data", "security", "content", "retention", "speed"]) for (const w of J(`data/brains/${id}/ecosystem.json`, {}).briefing?.watch ?? []) if (/^(Admin|Escalated):/.test(w)) raw.push({ from: id, text: w.replace(/^(Admin|Escalated):\s*/, "") });
+  for (const t of J("data/machines/fixer.json", {}).tasks ?? []) raw.push({ from: "fixer", text: `${t.what} — ${t.fix}` });
+  const KNOWN = [[/Smart Retries|failed-payment/i, "stripe", "Stripe dashboard → Settings → Billing → turn on Smart Retries + failed-payment emails (5 min)"],
+    [/Rotate|2FA|token/i, "tokens", "Cloudflare + Railway: roll the tokens pasted in chat, update GH secrets CF_API_TOKEN; turn on 2FA (10 min)"],
+    [/Dependabot/i, "deps", "say \"fix dependabot\" — upgrades need a build + test session"],
+    [/pack|card|checkout/i, "checkout", "decide the checkout fix (wallets/PayPal first, fewer fields) — a build session"],
+    [/Chart pages|slowest 10%|candle/i, "speed", "say \"chart speed\" — edge-cache immutable candle windows (a build session)"],
+    [/Railway pace|deploys/i, "budget", "fewer direct deploys (use the windows); heap tuner after 24 h of samples"],
+    [/came back|week 2|first session/i, "retention", "decide a first-session change (golden actions from the behaviour machine)"],
+    [/no page|Bing shows/i, "gap", "approve a page for the search (content brain's top gap)"]];
+  const out = new Map();
+  for (const r of raw) { const k = KNOWN.find(([re]) => re.test(r.text)); const kind = k?.[1] ?? "other", key = kind === "other" ? r.text.slice(0, 50) : kind;
+    if (!out.has(key)) out.set(key, { kind, what: r.text.split(" — ")[0].slice(0, 140), steps: k?.[2] ?? "needs a look in a build session", from: new Set([r.from]) }); else out.get(key).from.add(r.from); }
+  return [...out.values()].map((x) => ({ ...x, from: [...x.from] })).sort((a, b) => b.from.length - a.from.length);
+}
 
 // ── RUN EACH BRAIN: sense → modes → judge last episode on its outcome → learn intensity → write its pyramid ───────────
 const index = [];
@@ -215,8 +247,8 @@ for (const S of BRAINS) {
     for (const k of kids) push({ ...k, group: g.id, parent: lid, link: undefined });
     for (const b of (main.spawned ?? []).filter((b) => b.state === "alive" && g.machines.some((m) => b.id.startsWith(m + "-")))) push({ id: b.id, name: b.target.slice(0, 26), group: g.id, parent: g.machines.find((m) => b.id.startsWith(m + "-")), does: `Branch: ${b.why}`, spawned: true, born: b.born, kpi: null });
   }
-  const KEYMGR = { "checkout-step": "lead-wall", "past-due": "lead-recover", leak: "lead-funnel", budget: "lead-budget", pull: "lead-pull", "cost-incident": "lead-budget", "attack-volume": "lead-edge", deps: "lead-app", gap: "lead-factory", week2: "lead-return", "slow-page": "lead-charts" };
-  for (const b of BR.branches.filter((b) => b.state === "open")) push({ id: `br-${b.id}`, name: b.target.length > 24 ? b.target.slice(0, 23) + "…" : b.target, group: nodes.find((n) => n.id === KEYMGR[b.key])?.group ?? "core", parent: KEYMGR[b.key] ?? "core", spawned: true, born: b.born,
+  const KEYMGR = { stripe: "lead-queue", tokens: "lead-queue", deps: "lead-queue", checkout: "lead-queue", speed: "lead-queue", budget: "lead-queue", retention: "lead-queue", gap: "lead-queue", other: "lead-queue", "checkout-step": "lead-wall", "past-due": "lead-recover", leak: "lead-funnel", budget: "lead-budget", pull: "lead-pull", "cost-incident": "lead-budget", "attack-volume": "lead-edge", deps: "lead-app", gap: "lead-factory", week2: "lead-return", "slow-page": "lead-charts" };
+  for (const b of BR.branches.filter((b) => b.state === "open")) push({ id: `br-${b.id}`, name: b.target.length > 24 ? b.target.slice(0, 23) + "…" : b.target, group: nodes.find((n) => n.id === (S.id === "fixer" ? "lead-queue" : KEYMGR[b.key]))?.group ?? "core", parent: (S.id === "fixer" ? "lead-queue" : KEYMGR[b.key]) ?? "core", spawned: true, born: b.born,
     does: `Branch opened by ${S.name}: ${b.why}. Judged after ${b.days} d on its own number; neuron "${b.key}" = ${W[b.key]?.v ?? 0.5} (chance this kind fixes itself)`, kpi: { label: b.target, now: b.now ?? b.base, before: b.base, lowerBetter: !b.higher } });
   const ids = new Set(nodes.map((n) => n.id)); for (const n of nodes) if (n.parent && !ids.has(n.parent)) n.parent = "core";
   const edges = nodes.filter((n) => n.parent).map((n) => ({ a: n.parent, b: n.id, kind: "branch", w: Math.min(1, (n.act24 ?? 0) / 10) }));
