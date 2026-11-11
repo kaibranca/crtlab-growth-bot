@@ -124,7 +124,15 @@ const KIND = {
 const clicksOn = (target, from) => { let c = 0, a = 0; for (const [k, v] of Object.entries(clicks)) { const [d, , p] = k.split("|"); if (!p || Date.parse(d + "T23:59:59Z") < from) continue;
   if (p === target || p.startsWith(target.endsWith("/") ? target : target + "/") || p.startsWith(target + "-")) { c += v[0] ?? 0; a += v[1] ?? 0; } } return { c, a }; };
 for (const b of B.branches) {
-  if (b.state !== "alive") continue; const K = KIND[b.kind]; if (!K || NOW - Date.parse(b.judged ?? b.born) < K.days * DAY) continue;
+  if (b.state !== "alive") continue; const K = KIND[b.kind]; if (!K) continue;
+  // EARLY READ (learn faster, Kai 11-11): from day 2, a branch that is CLEARLY winning (×2 its start, or real clicks) or
+  // CLEARLY losing (under half its start) moves its neuron at half strength once — the full verdict still comes at the end.
+  const age = (NOW - Date.parse(b.born)) / DAY;
+  if (!b.early && age >= 2 && age < K.days) { let r0 = null; try { r0 = K.judge(b); } catch { r0 = null; }
+    if (r0) { const e0 = b.path === false ? { c: 0 } : clicksOn(b.target, Date.parse(b.born)), base = Math.max(1, b.base ?? 0), hi = (b.kind === "rank" ? r0.v <= base - 3 : r0.v >= base * 2) || e0.c > 0, lo = b.kind === "rank" ? r0.v >= base + 3 : r0.v < base * 0.5 && e0.c === 0;
+      if (hi || lo) { const w = W(b.neuron), tgt = hi ? 1 : 0; w.v = +clamp(w.v + (RATE / 2) * (tgt - w.v), 0.05, 0.95).toFixed(3); w.used = iso(NOW); b.early = hi ? "strong" : "weak";
+        say(b.owner, `early read on ${b.target}: ${hi ? "clearly working" : "clearly not"} (${b.base} → ${r0.v}${e0.c ? `, ${e0.c} clicks` : ""}) — neuron ${b.neuron} → ${w.v}`, hi ? "win" : "bad"); } } }
+  if (NOW - Date.parse(b.judged ?? b.born) < K.days * DAY) continue;
   let res = null; try { res = K.judge(b); } catch { res = null; } b.judged = iso(NOW); if (!res) continue;
   b.now = res.v; const earned = b.path === false ? { c: 0, a: 0 } : clicksOn(b.target, Date.parse(b.born)); b.clicks = earned.c; b.accounts = earned.a;
   reward(b.neuron, b.path === false ? (res.win ? 1 : 0) : (res.win ? 0.6 : 0) + (earned.c > 0 ? 0.4 : 0));
