@@ -57,7 +57,7 @@ for (const plat of ["ig", "fb"]) {
   const ps = log.filter((x) => x.plat === plat && M[x.id] && age(x) >= 2).sort((a, b) => a.postedAt.localeCompare(b.postedAt)), hist = [];
   for (const x of ps) {
     const rw = reward(M[x.id], x.dur || 10, plat, hist.slice(-30)); if (!rw) continue;
-    hist.push(rw.raw); if (hist.length < 4) continue; // need a baseline before scoring
+    hist.push(rw.raw); if (hist.length < 3) continue; // a 3-reel baseline before scoring (11-11: was 4 — learning started a day later than needed)
     B.n[plat]++; x.r = rw.r;
     for (const arm of Object.keys(ARMS)) { const v = x[arm]; if (v == null) continue; const s = ((B[plat][arm] ??= {})[v] ??= { n: 0, sum: 0 }); s.n++; s.sum += rw.r; }
   }
@@ -67,6 +67,11 @@ for (const plat of ["ig", "fb"]) {
   B.hist[plat] = { posts: ps.length, medianViews: v.length ? [...v].sort((a, b) => a - b)[Math.floor(v.length / 2)] : null };
 }
 save("brain.json", B);
+// THE PYRAMID (11-11): every scored reel is a judged result for the social machine — clearly above its own account's normal
+// (r ≥ 0.5) = WIN, clearly below (r ≤ -0.5) = LOSS, once per post, into the shared ledger; its earned rank follows.
+{ const LG = "data/machines/ledger.jsonl", have = new Set(fs.existsSync(LG) ? fs.readFileSync(LG, "utf8").trim().split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l).key; } catch { return null; } }) : []);
+  for (const x of log) { if (x.r == null || Math.abs(x.r) < 0.5) continue; const key = `reel|${x.id}`; if (have.has(key)) continue;
+    fs.appendFileSync(LG, JSON.stringify({ at: new Date().toISOString(), key, machine: "social", kind: x.r > 0 ? "win" : "loss", what: `${x.plat} reel "${String(x.hook ?? x.title ?? x.model ?? "").slice(0, 40)}" scored ${x.r.toFixed(2)} vs its account's normal` }) + "\n"); } }
 
 // failed / missed posts in the last day
 const recentAlerts = fs.existsSync(`${DIR}/alerts.jsonl`) ? fs.readFileSync(`${DIR}/alerts.jsonl`, "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)).filter((a) => Date.now() - Date.parse(a.at) < 864e5) : [];

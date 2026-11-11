@@ -172,10 +172,15 @@ const watchExtra = [];
 // per day (during vs before): ×1.2 or better = KEEP (judged again weekly), otherwise RETIRED and remembered — a retired
 // target is not respawned for 28 days. At most 8 alive at once, so they can never take over the quota.
 const SP = "data/machines/spawned.json", spawned = J(SP, { branches: [] });
+// AUTHORITY (earned rank, last run): a branch's boost = 1.5 × its owner's authority, inside [1.2, 2] — proven owners get leverage
+const RANKS0 = J("data/machines/ranks.json", { ranks: {} }).ranks ?? {};
+const AUTH = (owner) => RANKS0[owner]?.authority ?? 1;
+const boostFor = (owner) => +Math.min(2, Math.max(1.2, 1.5 * AUTH(owner))).toFixed(2);
 const famOf = (p) => { const s0 = p.split("/").filter(Boolean); if (s0[0] === "news" && s0.length === 3) return `/news/${s0[1]}/`; if (s0[0] === "news" && s0.length === 2) return `/news/${s0[1].replace(/-\d{4}-\d{2}-\d{2}$/, "")}`; if (s0[0] === "economic-calendar" && s0[1]) return `/economic-calendar/${s0[1]}`; return s0.length === 1 ? `/${s0[0]}` : `/${s0[0]}/`; };
 const recentSurges = readLines("data/ai/surges.jsonl").filter((x) => x.kind === "page" && NOW - Date.parse(x.at) < 7 * DAY);
 const surgeDays = {}; for (const x of recentSurges) { const k = famOf(x.key); (surgeDays[k] ??= new Set()).add(x.at.slice(0, 10)); }
 const readsOf = (prefix, from, to) => { let n = 0; for (const w of crawl) { const t = Date.parse(w.to); if (t < from || t >= to) continue; for (const [b, v] of Object.entries(w.bots)) if (LIVE.test(b)) for (const [p0, k] of v.top) { const q = p0.split("?")[0]; if (q === prefix || q.startsWith(prefix.endsWith("/") ? prefix : prefix + "/") || q.startsWith(prefix + "-")) n += k; } } return n; };
+for (const b of spawned.branches) if (b.state === "alive" && b.boost != null) b.boost = boostFor(b.owner ?? "core");
 for (const b of spawned.branches) if (b.state === "alive" && NOW - Date.parse(b.judged ?? b.born) >= 7 * DAY) {
   const days = (NOW - Date.parse(b.born)) / DAY, during = readsOf(b.target, Date.parse(b.born), NOW) / Math.max(1, days), ratio = b.before ? during / b.before : during > 0 ? 2 : 0;
   b.judged = new Date().toISOString(); b.ratio = +ratio.toFixed(2);
@@ -187,7 +192,7 @@ for (const [target, ds] of Object.entries(surgeDays).sort((a, b) => b[1].size - 
   if (spawned.branches.some((b) => b.target === target && (b.state === "alive" || NOW - Date.parse(b.retired ?? 0) < 28 * DAY))) continue;
   const id = "focus-" + target.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").slice(0, 40);
   const before = readsOf(target, NOW - 7 * DAY, NOW) / 7;
-  spawned.branches.push({ id, target, born: new Date().toISOString(), state: "alive", boost: 1.5, before: +before.toFixed(1), why: `surged on ${ds.size} days this week` });
+  spawned.branches.push({ id, owner: "core", target, born: new Date().toISOString(), state: "alive", boost: boostFor("core"), before: +before.toFixed(1), why: `surged on ${ds.size} days this week` });
   append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `spawn|${id}|born`, machine: "core", kind: "lesson", what: `spawned focus branch for ${target} (surged on ${ds.size} days)` });
   feed.unshift({ t: new Date().toISOString(), m: "core", text: `built a new branch: focus on ${target}`, kind: "win" });
 }
@@ -305,6 +310,28 @@ for (const n of nodes) {
   n.xp = { xp, level: lv, next: hi, progress: +((xp - lo) / Math.max(1, hi - lo)).toFixed(2), wins, lessons, losses, acts30 };
   n.learns = LEARNS[n.id] ?? (n.id.startsWith("lead-") ? "Ranks its section's machines every hour and keeps them on the core rules" : n.id.startsWith("focus-") ? "Built by the core for one surging target; judged after 7 days, kept or retired" : "Learns from its own runs: what changed since last time, what failed, what to repeat");
 }
+// EARNED RANK (11-11, Kai: "machines rank up — a pyramid"). XP above counts activity too, so a busy machine levels up even
+// when it helps nothing. RANK counts only what was JUDGED: ledger wins minus losses (verdicts against a baseline), ±1 for its
+// outcome improving / hurting this week (outcomes.json). Tiers set AUTHORITY — how much leverage the machine gets: the boost
+// its focus branches carry in the AI machine's Bing sends, and how many it may run. Proven machines get more; failing ones
+// are put on probation. Read by the branch builder next run (data/machines/ranks.json).
+const TIERS = [[-99, "Probation", 0.5], [0, "Rookie", 1], [2, "Proven", 1.25], [5, "Trusted", 1.5], [10, "Elite", 2]];
+const prevRanks = (() => { try { return JSON.parse(fs.readFileSync("data/machines/ranks.json", "utf8")).ranks ?? {}; } catch { return {}; } })();
+const ranks = {};
+for (const n of nodes) {
+  const o = OUTC[n.id];
+  const trend = !o || o.neutral || o.change == null || (o.before ?? 0) < 10 ? 0 : (o.lowerBetter ? -o.change : o.change) >= 0.1 ? 1 : (o.lowerBetter ? -o.change : o.change) <= -0.2 ? -1 : 0;
+  const score = (n.xp?.wins ?? 0) - (n.xp?.losses ?? 0) + trend;
+  const [, tier, authority] = [...TIERS].reverse().find(([min]) => score >= min);
+  n.rank = { tier, score, authority, trend };
+  ranks[n.id] = n.rank;
+  const was = prevRanks[n.id]?.tier;
+  if (was && was !== tier) {
+    const up = TIERS.findIndex((t) => t[1] === tier) > TIERS.findIndex((t) => t[1] === was);
+    feed.unshift({ t: new Date().toISOString(), m: n.id, text: `${n.name ?? n.id} ${up ? "ranked up" : "dropped"} to ${tier} (authority ×${authority})`, kind: up ? "win" : "loss" });
+  }
+}
+fs.writeFileSync("data/machines/ranks.json", JSON.stringify({ at: new Date().toISOString(), ranks }, null, 1));
 for (const g of ["traffic", "conversion", "content", "security", "health", "core"]) { const ms = nodes.filter((n) => n.group === g && !n.id.startsWith("lead-")).sort((a, b) => b.xp.xp - a.xp.xp);
   if (ms[0]) ms[0].teaches = ms.slice(1).map((m) => m.id); }
 const ids = new Set(nodes.map((n) => n.id)), edges = [];

@@ -331,6 +331,14 @@ const verdicts = changes.map((c) => {
   return { ...c, before, after, verdict: !after ? `measuring (day ${Math.floor(age)} of 7)` : lift > 0.05 ? "WORKS — keep, apply to the family" : lift < -0.05 ? "WORSE — revert or rethink" : "no clear change yet" };
 });
 
+// VERDICTS EARN RANK (11-11): a change judged at 14 days becomes a ledger WIN / LOSS (once per change), so the machines that
+// make changes that work rank up and get more authority (core.mjs EARNED RANK). "No clear change" stays a lesson, not a loss.
+{ const LG = "data/machines/ledger.jsonl", seenK = new Set(readLines(LG).map((l) => l.key));
+  for (const v of verdicts) { if (!v.after || (NOW - Date.parse(v.at)) / DAY < 14) continue;
+    const key = `verdict|${v.at}|${v.family ?? v.path}`; if (seenK.has(key)) continue;
+    const kind = /^WORKS/.test(v.verdict) ? "win" : /^WORSE/.test(v.verdict) ? "loss" : "lesson";
+    append(LG, { at: new Date().toISOString(), key, machine: v.owner ?? "ai", kind, what: `${v.what} → ${v.verdict} (clicks/day ${v.before.clicks} → ${v.after.clicks}, reads/day ${v.before.reads} → ${v.after.reads})` }); seenK.add(key); } }
+
 // ── 4b. HOOK EXPERIMENTS — judge, decide, move on (site renders them: crtlab-standalone lib/aiHooks.ts) ─────────────
 // Half of a family's pages carry the hook (arm B = bucket(id+path) < split·100, the site's own function). Metric: AI-sent
 // value per page-day (live reads + clicks weighted by what a click is worth; exposure = pages × days running). Bayesian (Gamma–Poisson): the test
@@ -386,6 +394,7 @@ for (const e of hk.experiments.filter((x) => x.status === "running" && x.started
   if (decision) {
     e.status = decision; e.ended = new Date().toISOString();
     (LESSONS[e.template] ??= { won: 0, lost: 0, families: {} }); LESSONS[e.template][decision]++; LESSONS[e.template].families[e.family] = decision;
+    append("data/machines/ledger.jsonl", { at: e.ended, key: `hook|${e.id}|${decision}`, machine: "hooks", kind: decision === "won" ? "win" : "loss", what: `hook test ${e.id} (${e.template}) on ${e.family}: ${decision}` });
     append("data/ai/changes.jsonl", { at: e.ended, family: e.family, what: `hook test ${e.id} (${e.template}) ${decision.toUpperCase()} · P=${pr.toFixed(2)} after ${days.toFixed(0)}d · A ${A.clicks}/${A.pages}p · B ${B.clicks}/${B.pages}p` });
   }
   expReport.push({ id: e.id, family: e.family, template: e.template, ...e.last, status: e.status });
