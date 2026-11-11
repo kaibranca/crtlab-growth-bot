@@ -19,6 +19,8 @@ import { append, readLines } from "./lib.mjs";
 const DIR = "data/cost", NOW = Date.now(), H = 3.6e6, DAY = 24 * H, iso = (t) => new Date(t).toISOString().slice(0, 10);
 const PROJECT = "32042912-e5d4-47b9-a2a7-3dedb3d6e2a1", ENV = "40c5d3f7-4331-4169-b5aa-f6b7e6d17a06";
 const MEM_GB_MONTH = 10, EGRESS_GB = 0.05;
+// BUDGET (11-11, Kai: "as low as possible, under $10 — it creeps up every time we add stuff"): the machine holds the bill to this
+const BUDGET_MONTH = 10, WINDOW_DEPLOYS = 4; // the site deploys at 3 windows a day (promote-site) + the odd "deploy now"
 fs.mkdirSync(DIR, { recursive: true }); fs.mkdirSync("data/machines/self", { recursive: true });
 fs.writeFileSync("data/machines/self/cost.json", JSON.stringify({ id: "cost", name: "Cost machine", group: "health", parent: "lead-health",
   does: "Watches Railway memory and egress per service every hour, finds what made the bill move, and fixes cache bloat by itself in the quiet hours", every: 1, out: "data/cost/plan.json", feeds: ["health"] }));
@@ -50,6 +52,14 @@ for (const [svc, s] of Object.entries(series)) {
     incidents.push({ ...row, kind: bloat ? "cache bloat" : "memory growth", rssGB, why: bloat ? `Railway counts ${now.toFixed(2)} GB but the server itself uses ${rssGB.toFixed(2)} GB — file cache from the data swap` : `memory ${now.toFixed(2)} GB vs ~${normal.toFixed(2)} GB normal` });
   }
 }
+// DEPLOYS per service in the last 24 h — each one runs two containers side by side and boots a fresh server, billed.
+// 11-11: 14–22 web deploys a day were the whole spike; deploy windows cap it at ~3. More than WINDOW_DEPLOYS = a leak.
+const deploys = {};
+for (const sv of svcs) {
+  try { const d = await gql(`query { deployments(first: 40, input: { serviceId: "${sv.id}", environmentId: "${ENV}" }) { edges { node { createdAt status } } } }`);
+    deploys[sv.name] = d.deployments.edges.filter((e) => NOW - Date.parse(e.node.createdAt) < DAY && e.node.status !== "SKIPPED").length; } catch { /* optional */ }
+}
+for (const [svc, n] of Object.entries(deploys)) if (svc === "web" && n > WINDOW_DEPLOYS) incidents.push({ svc, kind: "too many deploys", n, why: `${n} web deploys in 24 h (windows allow ~${WINDOW_DEPLOYS}) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)` });
 // HANDS: restart the data service on cache bloat, quiet hours only, once per 20 h, not if that fix failed before
 const hr = new Date().getUTCHours(), lastFix = state.fixes.filter((f) => f.svc === "data").slice(-1)[0];
 const bloatFailed = state.fixes.filter((f) => f.kind === "cache bloat" && f.verdict === "did not help").length >= 2;
@@ -61,12 +71,23 @@ for (const inc of incidents) if (inc.kind === "cache bloat" && hr >= 2 && hr < 5
     append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|restart|${iso(NOW)}`, machine: "cost", kind: "lesson", what: `data service billed ${inc.memGB} GB for ${inc.rssGB?.toFixed(2)} GB real → restarted in the quiet hour to drop the file cache` }); }
   catch (e) { actions.push("restart failed: " + String(e).slice(0, 80)); }
 }
+// HANDS (11-11): web memory growth → a zero-downtime REDEPLOY (healthcheck + overlap, never a hard restart) in the quiet
+// hours, once per 20 h, judged 24 h later like the data fix; stops by itself if it did not help twice.
+const lastWeb = state.fixes.filter((f) => f.svc === "web").slice(-1)[0], webFailed = state.fixes.filter((f) => f.svc === "web" && f.verdict === "did not help").length >= 2;
+for (const inc of incidents) if (inc.svc === "web" && inc.kind === "memory growth" && hr >= 3 && hr < 5 && (!lastWeb || NOW - Date.parse(lastWeb.at) > 20 * H) && !webFailed) {
+  const dep = svcs.find((s) => s.name === "web")?.serviceInstances.edges.map((e) => e.node).find((n) => n.environmentId === ENV)?.latestDeployment?.id;
+  if (!dep) continue;
+  try { await gql(`mutation { deploymentRedeploy(id: "${dep}") { id } }`); state.fixes.push({ at: new Date().toISOString(), svc: "web", kind: "memory growth", before: inc.memGB, action: "redeploy" }); actions.push(`redeployed web (${inc.memGB} GB vs ${inc.normalGB} normal) — zero-downtime, quiet hour`);
+    append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|web-redeploy|${iso(NOW)}`, machine: "cost", kind: "lesson", what: `web held ${inc.memGB} GB vs ${inc.normalGB} normal → zero-downtime redeploy in the quiet hour` }); }
+  catch (e) { actions.push("web redeploy failed: " + String(e).slice(0, 80)); }
+}
 // LEARN: judge fixes 24 h later
 for (const f of state.fixes) if (!f.verdict && NOW - Date.parse(f.at) > DAY) { const r = rows.find((x) => x.svc === f.svc); if (!r) continue;
   f.after = r.memGB; f.verdict = r.memGB < f.before * 0.6 ? "helped" : "did not help";
   append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|verdict|${f.at}`, machine: "cost", kind: f.verdict === "helped" ? "win" : "loss", what: `${f.kind} fix on ${f.svc}: ${f.before} → ${f.after} GB a day later (${f.verdict})` }); }
 const total = rows.reduce((t, r) => t + r.dayCost, 0), avg = rows.reduce((t, r) => t + r.avgDayCost, 0);
-const plan = { at: new Date().toISOString(), status: "ok", dayCost: +total.toFixed(2), avgDayCost: +avg.toFixed(2), monthPace: +(total * 30).toFixed(2), services: rows.sort((a, b) => b.dayCost - a.dayCost), incidents, actions, fixes: state.fixes.slice(-10) };
+const weekPace = +(avg * 30).toFixed(2);
+const plan = { at: new Date().toISOString(), status: weekPace > BUDGET_MONTH ? "over budget" : "ok", budget: BUDGET_MONTH, weekPace, overBy: +Math.max(0, weekPace - BUDGET_MONTH).toFixed(2), deploys, dayCost: +total.toFixed(2), avgDayCost: +avg.toFixed(2), monthPace: +(total * 30).toFixed(2), services: rows.sort((a, b) => b.dayCost - a.dayCost), incidents, actions, fixes: state.fixes.slice(-10) };
 fs.writeFileSync(`${DIR}/plan.json`, JSON.stringify(plan, null, 1));
 append(`${DIR}/score.jsonl`, { at: plan.at, dayCost: plan.dayCost, mem: Object.fromEntries(rows.map((r) => [r.svc, r.memGB])) });
 if (incidents.length && state.emailed !== iso(NOW) && process.env.RESEND_API_KEY && process.env.ALERT_TO) {
