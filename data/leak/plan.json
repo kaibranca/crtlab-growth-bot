@@ -1,0 +1,210 @@
+{
+ "at": "2026-11-11T06:34:03.043Z",
+ "days": 14,
+ "overall": {
+  "visitors": 377,
+  "accounts": 220,
+  "activated": 140,
+  "paid": 3,
+  "landToAccount": 0.584,
+  "accountToReplay": 0.636,
+  "replayToPaid": 0.0214
+ },
+ "sources": [
+  {
+   "key": "source:bing",
+   "visitors": 30,
+   "accounts": 15,
+   "activated": 10,
+   "paid": 1
+  },
+  {
+   "key": "source:chatgpt",
+   "visitors": 74,
+   "accounts": 42,
+   "activated": 24,
+   "paid": 0
+  },
+  {
+   "key": "source:direct",
+   "visitors": 210,
+   "accounts": 132,
+   "activated": 87,
+   "paid": 2
+  },
+  {
+   "key": "source:google",
+   "visitors": 45,
+   "accounts": 26,
+   "activated": 16,
+   "paid": 0
+  },
+  {
+   "key": "source:other",
+   "visitors": 16,
+   "accounts": 4,
+   "activated": 2,
+   "paid": 0
+  },
+  {
+   "key": "source:other ai",
+   "visitors": 2,
+   "accounts": 1,
+   "activated": 1,
+   "paid": 0
+  }
+ ],
+ "leaks": [
+  {
+   "stage": "land → account",
+   "segment": "page:/backtest-<market>",
+   "base": 56,
+   "rate": 0.39,
+   "overall": 0.584,
+   "best": 0.657,
+   "lost": 14.9,
+   "fix": "the first screen: what they see and can do before signing up"
+  },
+  {
+   "stage": "land → account",
+   "segment": "source:direct",
+   "base": 210,
+   "rate": 0.625,
+   "overall": 0.584,
+   "best": 0.657,
+   "lost": 6.8,
+   "fix": "the first screen: what they see and can do before signing up"
+  },
+  {
+   "stage": "land → account",
+   "segment": "source:chatgpt",
+   "base": 74,
+   "rate": 0.571,
+   "overall": 0.584,
+   "best": 0.657,
+   "lost": 6.4,
+   "fix": "the first screen: what they see and can do before signing up"
+  },
+  {
+   "stage": "land → account",
+   "segment": "page:/<market> (app)",
+   "base": 63,
+   "rate": 0.586,
+   "overall": 0.584,
+   "best": 0.657,
+   "lost": 4.5,
+   "fix": "the first screen: what they see and can do before signing up"
+  },
+  {
+   "stage": "land → account",
+   "segment": "source:bing",
+   "base": 30,
+   "rate": 0.533,
+   "overall": 0.584,
+   "best": 0.657,
+   "lost": 3.7,
+   "fix": "the first screen: what they see and can do before signing up"
+  },
+  {
+   "stage": "land → account",
+   "segment": "source:google",
+   "base": 45,
+   "rate": 0.58,
+   "overall": 0.584,
+   "best": 0.657,
+   "lost": 3.5,
+   "fix": "the first screen: what they see and can do before signing up"
+  },
+  {
+   "stage": "land → account",
+   "segment": "source:other",
+   "base": 16,
+   "rate": 0.435,
+   "overall": 0.584,
+   "best": 0.657,
+   "lost": 3.5,
+   "fix": "the first screen: what they see and can do before signing up"
+  },
+  {
+   "stage": "account → first replay",
+   "segment": "source:chatgpt",
+   "base": 42,
+   "rate": 0.592,
+   "overall": 0.636,
+   "best": 0.656,
+   "lost": 2.7,
+   "fix": "the first chart: a ready-to-play move, play highlighted"
+  },
+  {
+   "stage": "land → account",
+   "segment": "page:/news/<type>/<market>",
+   "base": 10,
+   "rate": 0.422,
+   "overall": 0.584,
+   "best": 0.657,
+   "lost": 2.3,
+   "fix": "the first screen: what they see and can do before signing up"
+  },
+  {
+   "stage": "land → account",
+   "segment": "ai-page:/news/<type>/<market>",
+   "base": 9,
+   "rate": 0.437,
+   "overall": 0.584,
+   "best": 0.657,
+   "lost": 2,
+   "fix": "the first screen: what they see and can do before signing up"
+  },
+  {
+   "stage": "account → first replay",
+   "segment": "page:/auth/<page>",
+   "base": 15,
+   "rate": 0.535,
+   "overall": 0.636,
+   "best": 0.656,
+   "lost": 1.8,
+   "fix": "the first chart: a ready-to-play move, play highlighted"
+  },
+  {
+   "stage": "replay → paid",
+   "segment": "source:direct",
+   "base": 87,
+   "rate": 0.023,
+   "overall": 0.021,
+   "best": 0.039,
+   "lost": 1.5,
+   "fix": "the wall and checkout: offer, price, payment method"
+  },
+  {
+   "stage": "land → account",
+   "segment": "page:/<landing>",
+   "base": 7,
+   "rate": 0.506,
+   "overall": 0.584,
+   "best": 0.657,
+   "lost": 1.1,
+   "fix": "the first screen: what they see and can do before signing up"
+  },
+  {
+   "stage": "account → first replay",
+   "segment": "page:/<strategy>-backtester",
+   "base": 14,
+   "rate": 0.58,
+   "overall": 0.636,
+   "best": 0.656,
+   "lost": 1.1,
+   "fix": "the first chart: a ready-to-play move, play highlighted"
+  },
+  {
+   "stage": "account → first replay",
+   "segment": "page:/<market> (app)",
+   "base": 37,
+   "rate": 0.627,
+   "overall": 0.636,
+   "best": 0.656,
+   "lost": 1.1,
+   "fix": "the first chart: a ready-to-play move, play highlighted"
+  }
+ ],
+ "verdicts": []
+}
