@@ -51,6 +51,12 @@ if (process.env.CF_API_TOKEN && process.env.CF_ACCOUNT_ID) try {
   rum = (j.data?.viewer?.accounts?.[0]?.rumPerformanceEventsAdaptiveGroups ?? []).map((x) => ({ p: x.dimensions.requestPath, n: x.count, p50: r1(x.quantiles.pageLoadTimeP50 / 1e6), p90: r1(x.quantiles.pageLoadTimeP90 / 1e6) }));
 } catch (e) { console.log("brains: speed skipped (" + String(e.message).slice(0, 60) + ")"); }
 const isChart = (p) => /^\/(xauusd|nas100|btcusd|us30|sp500|eurusd|gbpusd|usdjpy|ethusd|solusd|xagusd|usoil|ger40|[a-z]{3,6}usd)$/.test(p);
+// dependency alerts, MEASURED every run (was a number typed in once — Kai's truth rule): open Dependabot alerts by severity
+let deps = null;
+if (process.env.GH_WATCH_TOKEN || process.env.GH_TOKEN) try {
+  const r = await fetch("https://api.github.com/repos/kaibranca/crtlab-standalone/dependabot/alerts?state=open&per_page=100", { headers: { Authorization: `Bearer ${process.env.GH_WATCH_TOKEN || process.env.GH_TOKEN}`, Accept: "application/vnd.github+json" }, signal: AbortSignal.timeout(15000) });
+  if (r.ok) { const xs = await r.json(); deps = { open: xs.length, high: xs.filter((x) => /high|critical/.test(x.security_advisory?.severity ?? "")).length }; } else deps = { open: null, error: r.status };
+} catch (e) { deps = { open: null, error: String(e.message).slice(0, 40) }; }
 // BRAINS TALK: every brain reads every other brain's mode from the last run (and the traffic + main engines')
 const peers = J("data/brains/index.json", { brains: [] }).brains ?? [];
 const trafficEco = J("data/traffic/ecosystem.json", {}), trafficBranches = J("data/traffic/branches.json", { branches: [] }).branches;
@@ -110,16 +116,17 @@ const BRAINS = [
       { id: "watch", label: "Watchdogs", machines: ["watchdog", "health"], does: "independent uptime + data checks" },
     ],
     sensors: () => ({ blockedHour: shield.lastHour?.blocked ?? null, bannedList: shield.lastHour?.listSize ?? null, shieldMode: shield.lastHour?.mode ?? null,
-      blocked24: (shield.history ?? []).filter((h) => NOW - Date.parse(h.at) < DAY).reduce((a, h) => a + (h.blocked ?? 0), 0), deps: J("data/security/deps.json")?.open ?? null }),
+      blocked24: (shield.history ?? []).filter((h) => NOW - Date.parse(h.at) < DAY).reduce((a, h) => a + (h.blocked ?? 0), 0), deps: deps?.open ?? null, depsHigh: deps?.high ?? null, depsUnmeasured: deps?.open == null ? (deps?.error ?? "no token") : null }),
     outcome: (s) => ({ label: "attacks blocked / 24 h", v: s.blocked24 ?? 0, higher: false }),
     signals: (s) => [s.blocked24 >= 1000 && { key: "attack-volume", target: "blocked / 24 h", v: s.blocked24, higher: false, days: 3, why: `${s.blocked24} blocked in 24 h` },
-      { key: "deps", target: "Dependabot alerts", v: s.deps ?? 17, higher: false, days: 7, why: "open dependency alerts on crtlab-standalone" }].filter(Boolean),
-    measureOf: (b, s) => b.key === "attack-volume" ? s.blocked24 : s.deps ?? 17,
+      s.deps > 0 && { key: "deps", target: "Dependabot alerts", v: s.deps, higher: false, days: 7, why: `${s.deps} open dependency alerts on crtlab-standalone (${s.depsHigh} high)` }].filter(Boolean),
+    measureOf: (b, s) => b.key === "attack-volume" ? s.blocked24 : s.deps,
     modes: (s) => [
       s.shieldMode && s.shieldMode !== "medium" && s.shieldMode !== "low" && { id: "under-attack", label: "Under attack", level: "critical", why: `Cloudflare in ${s.shieldMode} mode` },
       s.blockedHour >= 200 && { id: "attack", label: "Attack", level: "warn", why: `${s.blockedHour} blocked in the last hour` },
     ].filter(Boolean),
-    admin: () => ["Dependabot: 17 open alerts on crtlab-standalone (14 high) — dependency upgrades are an admin job (they need a build + test).", "Rotate the Cloudflare + Railway tokens that were pasted in chat; turn on 2FA."] },
+    admin: (s) => [s.deps > 0 ? `Dependabot: ${s.deps} open alerts on crtlab-standalone (${s.depsHigh} high) — dependency upgrades are an admin job (they need a build + test).` : s.depsUnmeasured ? `Dependabot alerts can't be read (${s.depsUnmeasured}) — give the bot token "Dependabot alerts: read" on crtlab-standalone.` : null,
+      "Rotate the Cloudflare + Railway tokens that were pasted in chat; turn on 2FA."].filter(Boolean) },
   { id: "content", name: "Content brain", color: "#ffd166",
     managers: [
       { id: "factory", label: "Page factory", machines: ["factory", "news", "recaps"], does: "release, reaction and recap pages, the morning after" },
