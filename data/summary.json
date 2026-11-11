@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-11T01:19:32.491Z",
+ "updated": "2026-11-11T01:33:48.858Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -427,6 +427,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-11T01:33:42.071Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
+  },
+  {
    "at": "2026-11-11T01:18:16.010Z",
    "job": "indexnow",
    "ok": true,
@@ -515,12 +521,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "716 crawler visits · PerplexityBot 447 · Amazonbot 171 · OAI-SearchBot 70 · ChatGPT-User 12"
-  },
-  {
-   "at": "2026-11-11T00:41:48.424Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
   },
   {
    "at": "2026-11-11T00:18:20.057Z",
@@ -1014,7 +1014,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-11T00:41:48.424Z",
+  "at": "2026-11-11T01:33:42.071Z",
   "alerts": [],
   "checks": [
    {
@@ -1040,7 +1040,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "22h old · 32.2 MB"
+    "note": "23h old · 32.2 MB"
    },
    {
     "name": "market data fresh",
@@ -1050,7 +1050,7 @@
    {
     "name": "AI radar",
     "ok": true,
-    "note": "6h ago · asked 7/7"
+    "note": "7h ago · asked 7/7"
    }
   ],
   "db": {
@@ -1088,24 +1088,24 @@
   },
   "weight": {
    "home": {
-    "kb": 2592,
-    "scripts": 23,
-    "ttfbMs": 240
+    "kb": 2593,
+    "scripts": 25,
+    "ttfbMs": 148
    },
    "backtest": {
-    "kb": 1448,
-    "scripts": 13,
-    "ttfbMs": 259
+    "kb": 1450,
+    "scripts": 15,
+    "ttfbMs": 160
    },
    "chart app": {
-    "kb": 2592,
-    "scripts": 23,
-    "ttfbMs": 520
+    "kb": 2593,
+    "scripts": 25,
+    "ttfbMs": 281
    },
    "statistics": {
-    "kb": 1211,
-    "scripts": 14,
-    "ttfbMs": 224
+    "kb": 1212,
+    "scripts": 16,
+    "ttfbMs": 132
    }
   },
   "heavier": []
@@ -2881,7 +2881,7 @@
    "listSize": 14,
    "mode": "medium"
   },
-  "blocked24h": 1122,
+  "blocked24h": 1117,
   "banned7d": 14
  }
 }
