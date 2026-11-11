@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T03:19:29.810Z",
+ "at": "2026-11-11T04:04:58.289Z",
  "ok": 12,
  "total": 12,
  "status": [
@@ -41,7 +41,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 1,
+   "lastRunH": 1.8,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -53,7 +53,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 19.2,
+   "lastRunH": 20,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -64,7 +64,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 20.6,
+   "lastRunH": 21.4,
    "everyH": 24,
    "kpi": null
   },
@@ -72,7 +72,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 8.4,
+   "lastRunH": 9.1,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -83,7 +83,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 16.5,
+   "lastRunH": 17.3,
    "everyH": 24,
    "kpi": null
   },
@@ -91,7 +91,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 3.4,
+   "lastRunH": 4.2,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -102,7 +102,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 1.7,
+   "lastRunH": 0.4,
    "everyH": 1,
    "kpi": null
   },
@@ -127,44 +127,44 @@
   {
    "move": "surge",
    "what": "/news/cpi/gold",
-   "why": "222 AI reads in 24 h vs ~10/day",
-   "z": 67.2
+   "why": "227 AI reads in 24 h vs ~10.1/day",
+   "z": 68.1
   },
   {
    "move": "surge",
    "what": "/news/ppi/gold",
-   "why": "46 AI reads in 24 h vs ~0.5/day",
-   "z": 64.3
+   "why": "47 AI reads in 24 h vs ~0.5/day",
+   "z": 65.8
   },
   {
    "move": "surge",
    "what": "/news/cpi/eurusd",
-   "why": "43 AI reads in 24 h vs ~0.5/day",
-   "z": 60.1
+   "why": "44 AI reads in 24 h vs ~0.5/day",
+   "z": 61.5
   },
   {
    "move": "climbing",
    "what": "/news",
-   "why": "46 reads in 3 days vs ~0.9",
-   "z": 47.5
+   "why": "48 reads in 3 days vs ~0.9",
+   "z": 49.6
   },
   {
    "move": "climbing",
    "what": "/nas100",
-   "why": "43 reads in 3 days vs ~0.9",
-   "z": 44.4
+   "why": "44 reads in 3 days vs ~0.9",
+   "z": 45.4
   },
   {
    "move": "surge",
    "what": "/answers/does-the-opening-range-breakout-work-on-gold",
-   "why": "45 AI reads in 24 h vs ~1.2/day",
-   "z": 39.9
+   "why": "46 AI reads in 24 h vs ~1.2/day",
+   "z": 40.9
   },
   {
    "move": "climbing",
    "what": "/backtest-eurusd",
-   "why": "52 reads in 3 days vs ~2.9",
-   "z": 28.6
+   "why": "53 reads in 3 days vs ~2.9",
+   "z": 29.3
   },
   {
    "move": "climbing",
@@ -181,20 +181,20 @@
   {
    "move": "surge",
    "what": "/gold-volume-profile",
-   "why": "43 AI reads in 24 h vs ~4.9/day",
-   "z": 17.2
+   "why": "44 AI reads in 24 h vs ~5/day",
+   "z": 17.4
   },
   {
    "move": "climbing",
    "what": "/economic-calendar/us-initial-jobless-claims",
-   "why": "13 reads in 3 days vs ~0.9",
-   "z": 12.8
+   "why": "14 reads in 3 days vs ~0.9",
+   "z": 13.8
   },
   {
    "move": "surge",
-   "what": "/news/cpi",
-   "why": "11 AI reads in 24 h vs ~0.9/day",
-   "z": 10.8
+   "what": "/economic-calendar/us-ppi-mom",
+   "why": "9 AI reads in 24 h vs ~0.5/day",
+   "z": 12
   }
  ],
  "ledger": [
