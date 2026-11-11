@@ -1,3 +1,26 @@
 {
- "branches": []
+ "branches": [
+  {
+   "id": "cost-data-cache-bloat",
+   "kind": "cost",
+   "target": "data cache bloat",
+   "born": "2026-11-11T01:24:35.078Z",
+   "state": "alive",
+   "base": 3.09,
+   "why": "Railway counts 3.09 GB but the server itself uses 0.19 GB — file cache from the data swap",
+   "better": "lower",
+   "days": 2
+  },
+  {
+   "id": "cost-web-memory-growth",
+   "kind": "cost",
+   "target": "web memory growth",
+   "born": "2026-11-11T01:24:35.079Z",
+   "state": "alive",
+   "base": 1.69,
+   "why": "memory 1.69 GB vs ~0.71 GB normal",
+   "better": "lower",
+   "days": 2
+  }
+ ]
 }

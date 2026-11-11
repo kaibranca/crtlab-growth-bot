@@ -160,6 +160,7 @@ const modeOut = { mode, since: mode === old.mode ? old.since : new Date().toISOS
 fs.mkdirSync("data/machines", { recursive: true });
 fs.writeFileSync("data/machines/mode.json", JSON.stringify(modeOut, null, 1));
 
+const watchExtra = [];
 // ── 3b. MACHINES BUILD MACHINES (bounded): a page type or release that surges again and again gets its own FOCUS branch —
 // a small machine made of data (data/machines/spawned.json) that the AI machine runs: its pages get ×1.5 and go to Bing
 // before the normal queue. Each branch is born with the 7 days before as its baseline, judged after 7 days on live AI reads
@@ -184,6 +185,35 @@ for (const [target, ds] of Object.entries(surgeDays).sort((a, b) => b[1].size - 
   spawned.branches.push({ id, target, born: new Date().toISOString(), state: "alive", boost: 1.5, before: +before.toFixed(1), why: `surged on ${ds.size} days this week` });
   append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `spawn|${id}|born`, machine: "core", kind: "lesson", what: `spawned focus branch for ${target} (surged on ${ds.size} days)` });
   feed.unshift({ t: new Date().toISOString(), m: "core", text: `built a new branch: focus on ${target}`, kind: "win" });
+}
+// THE BUILDER, GENERAL (Kai 11-11: "the machine that builds machines can be anything"). Besides surge focus branches, any
+// signal another machine raises can spawn a branch: each TEMPLATE says what triggers it, what it measures, when it is
+// judged and what counts as success. Branches are data (same spawned.json), shown on the web under their section, and
+// judged by the core: kept while they pay, retired (and not respawned for 28 days) when they don't. Max 12 alive in all.
+const TEMPLATES = [
+  { kind: "leak", group: "conversion", parent: "lead-conversion", src: () => (J("data/leak/plan.json")?.leaks ?? []).slice(0, 2).filter((l) => l.lost >= 5).map((l) => ({ target: `${l.segment} @ ${l.stage}`, why: `${l.lost} people lost in 14 days`, base: l.lost })),
+    measure: (b) => (J("data/leak/plan.json")?.leaks ?? []).find((l) => `${l.segment} @ ${l.stage}` === b.target)?.lost ?? 0, better: "lower", days: 7, does: "Watches one leak the leak machine found until it shrinks; escalates in the briefing while it doesn't" },
+  { kind: "cost", group: "health", parent: "lead-health", src: () => (J("data/cost/plan.json")?.incidents ?? []).map((i) => ({ target: `${i.svc} ${i.kind}`, why: i.why, base: i.memGB })),
+    measure: (b) => (J("data/cost/plan.json")?.services ?? []).find((x) => b.target.startsWith(x.svc + " "))?.memGB ?? 0, better: "lower", days: 2, does: "Watches one Railway cost incident until the service is back near its normal" },
+  { kind: "source", group: "traffic", parent: "lead-traffic", src: () => (men?.rising ?? []).map((x) => ({ target: x.host, why: `${x.v7} visitors this week`, base: x.v7 })),
+    measure: (b) => (men?.sources ?? []).find((x) => x.host === b.target)?.v7 ?? 0, better: "higher", days: 7, does: "Tracks one outside source that started sending people: does it keep sending people who sign up?" },
+];
+for (const T of TEMPLATES) {
+  let found = []; try { found = T.src(); } catch { found = []; }
+  for (const f of found) { const id = `${T.kind}-${f.target}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 48);
+    if (spawned.branches.filter((b) => b.state === "alive").length >= 12) break;
+    if (spawned.branches.some((b) => b.id === id && (b.state === "alive" || NOW - Date.parse(b.retired ?? 0) < 28 * DAY))) continue;
+    spawned.branches.push({ id, kind: T.kind, target: f.target, born: new Date().toISOString(), state: "alive", base: f.base, why: f.why, better: T.better, days: T.days });
+    append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `spawn|${id}|born`, machine: "core", kind: "lesson", what: `built a ${T.kind} branch: ${f.target} (${f.why})` });
+    feed.unshift({ t: new Date().toISOString(), m: "core", text: `built a new ${T.kind} branch: ${f.target}`, kind: "win" }); }
+  for (const b of spawned.branches.filter((x) => x.kind === T.kind && x.state === "alive" && NOW - Date.parse(x.judged ?? x.born) >= T.days * DAY)) {
+    let v = 0; try { v = T.measure(b); } catch { v = 0; }
+    const ok = T.better === "lower" ? v < b.base * 0.8 : v > b.base * 0.8; b.judged = new Date().toISOString(); b.now = v;
+    if (T.better === "lower" && ok) { b.state = "retired"; b.verdict = "solved"; b.retired = b.judged; append("data/machines/ledger.jsonl", { at: b.judged, key: `spawn|${b.id}|${iso(NOW)}`, machine: "core", kind: "win", what: `${T.kind} branch ${b.target}: ${b.base} → ${v} — solved, retired` }); }
+    else if (T.better === "higher" && !ok) { b.state = "retired"; b.verdict = "faded"; b.retired = b.judged; append("data/machines/ledger.jsonl", { at: b.judged, key: `spawn|${b.id}|${iso(NOW)}`, machine: "core", kind: "loss", what: `${T.kind} branch ${b.target}: ${b.base} → ${v} — faded, retired` }); }
+    else { b.verdict = T.better === "lower" ? "still open" : "keeps paying"; if (T.better === "lower") watchExtra.push(`${T.kind === "leak" ? "Leak" : "Cost"} still open after ${T.days} days: ${b.target} (${b.base} → ${v}).`); }
+  }
+  for (const b of spawned.branches.filter((x) => x.kind === T.kind && x.state === "alive")) REG.push({ id: b.id, name: `${T.kind[0].toUpperCase() + T.kind.slice(1)}: ${b.target}`.slice(0, 40), group: T.group, parent: T.parent, does: `Built by the core. ${T.does}. ${b.why}.`, every: 24, t: () => NOW, spawned: true });
 }
 fs.writeFileSync(SP, JSON.stringify(spawned, null, 1));
 for (const b of spawned.branches.filter((x) => x.state === "alive")) REG.push({ id: b.id, name: `Focus ${b.target}`, group: "core", parent: "core", does: `Built by the core: ${b.why}. Pages under ${b.target} ×${b.boost}, Bing first; judged weekly`, every: 1, t: () => NOW, feeds: ["bing"], spawned: true });
@@ -308,6 +338,7 @@ for (const st of sup?.status ?? []) if (st.kpi?.change != null && st.kpi.change 
 for (const l of readLines("data/machines/ledger.jsonl").filter((x) => x.kind === "win" && NOW - Date.parse(x.at) < DAY).slice(-2)) good.push(`Win: ${l.what}.`);
 for (const f of men?.fresh ?? []) good.push(`Someone mentioned CRTLAB: ${f.where}.`);
 const bad = nodes.filter((n) => n.state === "stopped" || n.state === "late");
+for (const w of watchExtra) watch.push(w);
 for (const m of modes.filter((x) => x.level === "critical" || (x.level === "warn" && x.id !== "dip"))) watch.push(`${m.label}: ${m.why}.`);
 for (const st of sup?.status ?? []) if (st.kpi?.change != null && st.kpi.change <= -0.2 && st.kpi.before >= 5 && !st.kpi.lowerBetter) watch.push(`${st.kpi.label} down ${Math.abs(Math.round(st.kpi.change * 100))}% on last week (${st.kpi.now} vs ${st.kpi.before}). More readers, fewer sign-ups — that's the leak to look at.`);
 if (bad.length) watch.push(`${bad.map((n) => n.name).join(", ")} ${bad.length === 1 ? "is" : "are"} behind.`);
