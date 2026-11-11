@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T22:19:43.331Z",
+ "at": "2026-11-11T23:02:56.535Z",
  "brains": [
   {
    "id": "money",
@@ -12,7 +12,9 @@
     "v": 2,
     "higher": true
    },
-   "authority": 1
+   "authority": 1,
+   "open": 4,
+   "escalated": 0
   },
   {
    "id": "data",
@@ -25,20 +27,24 @@
     "v": 23,
     "higher": false
    },
-   "authority": 1
+   "authority": 1,
+   "open": 4,
+   "escalated": 0
   },
   {
    "id": "security",
    "name": "Security brain",
    "color": "#f7525f",
-   "mode": "Normal",
-   "level": "info",
+   "mode": "Attack",
+   "level": "warn",
    "outcome": {
     "label": "attacks blocked / 24 h",
-    "v": 2072,
+    "v": 2311,
     "higher": false
    },
-   "authority": 1
+   "authority": 1,
+   "open": 1,
+   "escalated": 0
   },
   {
    "id": "content",
@@ -48,10 +54,12 @@
    "level": "info",
    "outcome": {
     "label": "AI clicks on factory pages (decayed)",
-    "v": 8.25,
+    "v": 8.24,
     "higher": true
    },
-   "authority": 1
+   "authority": 1,
+   "open": 0,
+   "escalated": 0
   },
   {
    "id": "retention",
@@ -64,7 +72,9 @@
     "v": 24,
     "higher": true
    },
-   "authority": 1
+   "authority": 1,
+   "open": 1,
+   "escalated": 0
   },
   {
    "id": "speed",
@@ -74,10 +84,27 @@
    "level": "warn",
    "outcome": {
     "label": "chart pages: slowest 10% load (s)",
-    "v": 6.32,
+    "v": 6.18,
     "higher": false
    },
-   "authority": 1
+   "authority": 1,
+   "open": 2,
+   "escalated": 0
+  },
+  {
+   "id": "fixer",
+   "name": "Fixer brain",
+   "color": "#e2b93b",
+   "mode": "Backlog",
+   "level": "warn",
+   "outcome": {
+    "label": "things that need you",
+    "v": 8,
+    "higher": false
+   },
+   "authority": 1,
+   "open": 6,
+   "escalated": 0
   }
  ]
 }

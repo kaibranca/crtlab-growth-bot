@@ -1,6 +1,6 @@
 {
- "at": "2026-11-11T22:19:42.814Z",
- "ok": 53,
+ "at": "2026-11-11T23:02:56.222Z",
+ "ok": 54,
  "total": 54,
  "hurting": [
   {
@@ -50,7 +50,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 1.3,
+   "lastRunH": 2,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -62,7 +62,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 14.2,
+   "lastRunH": 14.9,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -73,7 +73,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 15.6,
+   "lastRunH": 16.3,
    "everyH": 24,
    "kpi": null
   },
@@ -81,7 +81,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 15.6,
+   "lastRunH": 16.3,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -92,7 +92,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 15.5,
+   "lastRunH": 16.2,
    "everyH": 24,
    "kpi": null
   },
@@ -100,7 +100,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 15.6,
+   "lastRunH": 16.3,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -111,7 +111,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 0.6,
+   "lastRunH": 0.4,
    "everyH": 1,
    "kpi": null
   },
@@ -320,7 +320,7 @@
    "id": "traffic-brain",
    "name": "Traffic brain ↗",
    "state": "ok",
-   "lastRunH": 0.7,
+   "lastRunH": 0.3,
    "everyH": 1,
    "kpi": null,
    "from": "core"
@@ -328,8 +328,8 @@
   {
    "id": "brains",
    "name": "Brains (money · data · security · content · retention · speed)",
-   "state": "STOPPED",
-   "lastRunH": null,
+   "state": "ok",
+   "lastRunH": 0.3,
    "everyH": 1,
    "kpi": null,
    "from": "core"
@@ -338,7 +338,7 @@
    "id": "seo",
    "name": "Search console",
    "state": "ok",
-   "lastRunH": 56.5,
+   "lastRunH": 56.7,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -347,7 +347,7 @@
    "id": "news",
    "name": "News engine",
    "state": "ok",
-   "lastRunH": 13.9,
+   "lastRunH": 14.2,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -356,7 +356,7 @@
    "id": "recaps",
    "name": "Daily recaps",
    "state": "ok",
-   "lastRunH": 13.9,
+   "lastRunH": 14.2,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -365,7 +365,7 @@
    "id": "linkcheck",
    "name": "Link check",
    "state": "ok",
-   "lastRunH": 56.4,
+   "lastRunH": 56.7,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -374,7 +374,7 @@
    "id": "social",
    "name": "Reels",
    "state": "ok",
-   "lastRunH": 13.4,
+   "lastRunH": 13.6,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -406,7 +406,7 @@
    "id": "security",
    "name": "Login + key watch",
    "state": "ok",
-   "lastRunH": 0.4,
+   "lastRunH": 0.6,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -415,7 +415,7 @@
    "id": "datapull",
    "name": "Data pull",
    "state": "ok",
-   "lastRunH": 0.4,
+   "lastRunH": 0.6,
    "everyH": 24,
    "kpi": {
     "label": "trading days behind",
@@ -430,7 +430,7 @@
    "id": "backup",
    "name": "Nightly backup",
    "state": "ok",
-   "lastRunH": 0.4,
+   "lastRunH": 0.6,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -439,7 +439,7 @@
    "id": "calendar",
    "name": "Economic calendar",
    "state": "ok",
-   "lastRunH": 0,
+   "lastRunH": 0.3,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -448,7 +448,7 @@
    "id": "indicators",
    "name": "Indicator pages",
    "state": "ok",
-   "lastRunH": 0,
+   "lastRunH": 0.3,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -457,7 +457,7 @@
    "id": "livenews",
    "name": "Same-day news",
    "state": "ok",
-   "lastRunH": 0,
+   "lastRunH": 0.3,
    "everyH": 1,
    "kpi": null,
    "from": "core"
@@ -466,7 +466,7 @@
    "id": "gaps",
    "name": "Search gaps",
    "state": "ok",
-   "lastRunH": 56.5,
+   "lastRunH": 56.7,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -475,7 +475,7 @@
    "id": "bingseo",
    "name": "Bing webmaster",
    "state": "ok",
-   "lastRunH": 56.5,
+   "lastRunH": 56.7,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -505,7 +505,7 @@
    "id": "wall",
    "name": "Wall + checkout",
    "state": "ok",
-   "lastRunH": 15.4,
+   "lastRunH": 15.6,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -514,7 +514,7 @@
    "id": "restore",
    "name": "Restore test",
    "state": "ok",
-   "lastRunH": 82.1,
+   "lastRunH": 82.3,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -568,7 +568,7 @@
    "id": "leak",
    "name": "Conversion leak",
    "state": "ok",
-   "lastRunH": 15.4,
+   "lastRunH": 15.6,
    "everyH": 24,
    "kpi": {
     "label": "guests → account %",
@@ -591,7 +591,7 @@
    "id": "analyst",
    "name": "analyst",
    "state": "ok",
-   "lastRunH": 2,
+   "lastRunH": 2.3,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -608,7 +608,7 @@
    "move": "climbing",
    "what": "/news/cpi/gold",
    "why": "294 reads in 3 days vs ~18.1",
-   "z": 64.8
+   "z": 64.9
   },
   {
    "move": "climbing",
@@ -638,13 +638,13 @@
    "move": "climbing",
    "what": "/answers/does-the-opening-range-breakout-work-on-gold",
    "why": "52 reads in 3 days vs ~3.4",
-   "z": 26.3
+   "z": 26.4
   },
   {
    "move": "climbing",
    "what": "/economic-calendar/us-core-inflation-rate-mom",
    "why": "35 reads in 3 days vs ~2.3",
-   "z": 21.7
+   "z": 21.8
   },
   {
    "move": "climbing",
@@ -885,17 +885,7 @@
  ],
  "fix": [
   "AI accounts / week getting worse: 14 vs 31 last week (hooks)",
-  "Brains (money · data · security · content · retention · speed) is STOPPED (last run never h ago, normal every 1 h)",
   "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones"
  ],
- "mistakes": [
-  {
-   "where": "Daily data (live site)",
-   "n": 1,
-   "last": "data through 2026-11-09, expected 2026-11-10",
-   "at": "2026-11-11T14:00:00.000Z",
-   "repeating": false,
-   "url": null
-  }
- ]
+ "mistakes": []
 }

@@ -1,0 +1,53 @@
+{
+ "branches": [
+  {
+   "id": "checkout-step-pack-card",
+   "key": "checkout-step",
+   "target": "pack → card",
+   "base": 6.56,
+   "higher": true,
+   "days": 7,
+   "why": "8 of 122 pack-pickers typed a card",
+   "born": "2026-11-11T23:02:56.535Z",
+   "state": "open",
+   "now": 6.56
+  },
+  {
+   "id": "past-due-past-due-cards",
+   "key": "past-due",
+   "target": "past-due cards",
+   "base": 3,
+   "higher": false,
+   "days": 5,
+   "why": "3 customer card(s) declined on renewal — Stripe retries + win-back email (a business event, tracked, never an alarm)",
+   "born": "2026-11-11T23:02:56.535Z",
+   "state": "open",
+   "info": true,
+   "now": 3
+  },
+  {
+   "id": "leak-page-backtest-market-land-account",
+   "key": "leak",
+   "target": "page:/backtest-<market> @ land → account",
+   "base": 39,
+   "higher": true,
+   "days": 7,
+   "why": "56 people, 39% vs 58% overall",
+   "born": "2026-11-11T23:02:56.535Z",
+   "state": "open",
+   "now": 39
+  },
+  {
+   "id": "leak-source-chatgpt-land-account",
+   "key": "leak",
+   "target": "source:chatgpt @ land → account",
+   "base": 57,
+   "higher": true,
+   "days": 7,
+   "why": "74 people, 57% vs 58% overall",
+   "born": "2026-11-11T23:02:56.535Z",
+   "state": "open",
+   "now": 57
+  }
+ ]
+}

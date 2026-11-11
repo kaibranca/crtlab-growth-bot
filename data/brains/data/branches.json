@@ -1,0 +1,52 @@
+{
+ "branches": [
+  {
+   "id": "budget-railway-pace",
+   "key": "budget",
+   "target": "Railway pace",
+   "base": 23,
+   "higher": false,
+   "days": 3,
+   "why": "$23/month vs $10",
+   "born": "2026-11-11T23:02:56.535Z",
+   "state": "open",
+   "now": 23
+  },
+  {
+   "id": "pull-daily-data-failures-24-h-",
+   "key": "pull",
+   "target": "daily-data failures (24 h)",
+   "base": 3,
+   "higher": false,
+   "days": 2,
+   "why": "3 failures in the last 24 h",
+   "born": "2026-11-11T23:02:56.535Z",
+   "state": "open",
+   "now": 3
+  },
+  {
+   "id": "cost-incident-web-memory-growth",
+   "key": "cost-incident",
+   "target": "web memory growth",
+   "base": 1.88,
+   "higher": false,
+   "days": 2,
+   "why": "memory 1.88 GB vs ~0.72 GB normal",
+   "born": "2026-11-11T23:02:56.535Z",
+   "state": "open",
+   "now": 1.88
+  },
+  {
+   "id": "cost-incident-web-too-many-deploys",
+   "key": "cost-incident",
+   "target": "web too many deploys",
+   "base": 18,
+   "higher": false,
+   "days": 2,
+   "why": "18 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)",
+   "born": "2026-11-11T23:02:56.535Z",
+   "state": "open",
+   "now": 1
+  }
+ ]
+}
