@@ -49,11 +49,16 @@ async function guard(env, d) {
     if (!v?.end || v.end < want) why.push(`live data through ${v?.end ?? "unknown"}, should be ${want}`);
   } catch (e) { why.push("could not read crtlab.pro data version: " + String(e).slice(0, 60)); }
   if (!why.length) return;
+  // ONE EMAIL PER PROBLEM PER 12 H (11-11: the same "data through unknown" went 3× in a day). The edge cache remembers the
+  // last alert per problem; a NEW problem still alerts at once. No storage to add — the worker's own cache.
+  const key = new Request(`https://watchdog.crtlab.internal/alert/${encodeURIComponent(why.map((w) => w.replace(/[\d.]+ h\b/g, "")).join("|").slice(0, 300))}`);
+  try { if (await caches.default.match(key)) { console.log(`${d.toISOString()} watchdog: same problem already emailed < 12 h — skipped`); return; } } catch {}
   const r = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/watchdog-alert.yml/dispatches`, {
     method: "POST", headers: { Authorization: `Bearer ${env.GH_TOKEN}`, Accept: "application/vnd.github+json", "User-Agent": "crtlab-cron", "X-GitHub-Api-Version": "2022-11-28" },
     body: JSON.stringify({ ref: "main", inputs: { why: why.join(" | ").slice(0, 900) } }),
   });
   console.log(`${d.toISOString()} watchdog: ${why.join(" | ")} → alert ${r.status}`);
+  try { if (r.ok || r.status === 204) await caches.default.put(key, new Response("1", { headers: { "Cache-Control": "max-age=43200" } })); } catch {}
 }
 
 export default {
