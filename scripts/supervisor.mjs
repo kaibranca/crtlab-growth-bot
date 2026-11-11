@@ -95,7 +95,7 @@ if (men && (men.sources?.length ?? 0) < 5) fix.push("word of mouth is near zero 
 // Each mistake is counted per step over 7 days (data/machines/mistakes.jsonl), so a one-off is "once", a repeat is "REPEATING".
 const mistakes = [];
 /** newest SUCCESSFUL run per workflow name (11-11): a failure followed by a green run of the same workflow is fixed, not "repeating" */
-const lastGreen = {};
+const LG = "data/machines/lastgreen.json", lastGreen = (() => { try { return JSON.parse(fs.readFileSync(LG, "utf8")); } catch { return {}; } })(); // remembered between runs
 const REPO = process.env.GITHUB_REPOSITORY || "kaibranca/crtlab-growth-bot", GH = { accept: "application/vnd.github+json", ...(process.env.GH_TOKEN ? { authorization: `Bearer ${process.env.GH_TOKEN}` } : {}) };
 // 11-11: the daily data pull lives in crtlab-backtester — it failed 3× on 11-10 and 11-11 and the supervisor never saw it
 // (it only read this repo). Watched repos: this one (github.token) + the backtester (GH_WATCH_TOKEN = the cron worker's PAT).
@@ -123,12 +123,14 @@ try {
   const d = new Date(NOW); d.setUTCHours(0, 0, 0, 0); if (NOW - d.getTime() < 7.5 * H) d.setUTCDate(d.getUTCDate() - 1);
   do d.setUTCDate(d.getUTCDate() - 1); while (d.getUTCDay() === 0 || d.getUTCDay() === 6);
   const want = d.toISOString().slice(0, 10);
+  if (dv?.end && dv.end >= want) lastGreen["Daily data (live site)"] = new Date().toISOString(); // fresh now = that failure is history
   if (!dv?.end || dv.end < want) { dataStale = { want, have: dv?.end ?? "unknown", live: dv?.live ?? "?" }; fix.unshift(`DAILY DATA BEHIND: site data through ${dataStale.have}, should be ${want} (live ${dataStale.live})`); mistakes.push({ where: "Daily data (live site)", what: `data through ${dataStale.have}, expected ${want}`, at: new Date(Math.floor(NOW / H) * H).toISOString() }); }
 } catch (e) { fix.unshift("DAILY DATA: could not read crtlab.pro/api/data-version — " + String(e).slice(0, 60)); }
 for (const r of readLines("data/ai/runs.jsonl").filter((r) => NOW - Date.parse(r.at) < 26 * H && /HTTP (?!200)/.test(r.bing ?? ""))) mistakes.push({ where: "AI machine → Bing", what: `send refused (${r.bing})`, at: r.at });
 for (const l of men?.log ?? []) mistakes.push({ where: "Mentions machine", what: l, at: men.at });
 const MK = "data/machines/mistakes.jsonl", seenM = new Set(readLines(MK).map((m) => m.where + "|" + m.at));
 for (const m of mistakes) if (!seenM.has(m.where + "|" + m.at)) append(MK, m);
+fs.writeFileSync(LG, JSON.stringify(lastGreen));
 const week = readLines(MK).filter((m) => NOW - Date.parse(m.at) < 7 * DAY && !(lastGreen[m.where] && m.at < lastGreen[m.where])), per = {};
 for (const m of week) (per[m.where] ??= []).push(m);
 for (const m of mistakeRowsExtra) { (per[m.where] ??= []).push(m); fix.push(`${m.where} failed its run: ${m.what}`); }
