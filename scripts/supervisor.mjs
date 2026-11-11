@@ -53,6 +53,9 @@ const status = MACHINES.map((m) => {
   }
 }
 const OUTC = J("data/machines/outcomes.json")?.kpi ?? {};
+const mistakeRowsExtra = [];
+// INSIDE THE BRAINS (11-11): a brain that failed its run (isolated, the others ran) is a real system problem → mistakes
+for (const b of (J("data/brains/index.json")?.brains ?? []).filter((b) => b.mode === "Failed")) mistakeRowsExtra.push({ where: b.name, what: b.error ?? "failed its run", at: new Date().toISOString() });
 const hurting = Object.entries(OUTC).filter(([, k]) => k && !k.neutral && k.change != null && (k.before ?? 0) >= 10 && (k.lowerBetter ? k.change >= 0.2 : k.change <= -0.2)).map(([id, k]) => ({ id, label: k.label, now: k.now, before: k.before, change: k.change }));
 const seenH = new Set();
 
@@ -128,6 +131,7 @@ const MK = "data/machines/mistakes.jsonl", seenM = new Set(readLines(MK).map((m)
 for (const m of mistakes) if (!seenM.has(m.where + "|" + m.at)) append(MK, m);
 const week = readLines(MK).filter((m) => NOW - Date.parse(m.at) < 7 * DAY && !(lastGreen[m.where] && m.at < lastGreen[m.where])), per = {};
 for (const m of week) (per[m.where] ??= []).push(m);
+for (const m of mistakeRowsExtra) { (per[m.where] ??= []).push(m); fix.push(`${m.where} failed its run: ${m.what}`); }
 const mistakeRows = Object.entries(per).map(([where, xs]) => ({ where, n: xs.length, last: xs.at(-1).what, at: xs.at(-1).at, repeating: xs.length >= 3, url: xs.at(-1).url ?? null })).sort((a, b) => b.n - a.n);
 for (const m of mistakeRows.filter((x) => x.repeating)) fix.push(`${m.where} failed ${m.n}× this week (last: ${m.last})`);
 for (const m of mistakeRows) add(`mistake|${m.where}|${iso(Date.parse(m.at))}`, "supervisor", "mistake", `${m.where}: ${m.last}`);
