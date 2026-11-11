@@ -1,12 +1,26 @@
 {
  "tries": {},
- "done": {},
+ "done": {
+  "43095456248": true,
+  "43095119609": true
+ },
  "day": "2026-11-11",
- "at": "2026-11-11T20:07:08.905Z",
+ "at": "2026-11-11T21:04:57.185Z",
  "actions": [],
  "tasks": [
   {
+   "what": "hourly failed",
+   "evidence": "no failed job found",
+   "fix": "a real error: a re-run would repeat it — fix the cause (see the log line)",
+   "url": "https://github.com/kaibranca/crtlab-growth-bot/actions/runs/43095119609"
+  },
+  {
    "what": "AI accounts / week getting worse: 14 vs 31 last week (hooks)",
+   "evidence": "supervisor",
+   "fix": "needs a build or a decision"
+  },
+  {
+   "what": "Same-day news is STOPPED (last run 5.1 h ago, normal every 1 h)",
    "evidence": "supervisor",
    "fix": "needs a build or a decision"
   },
