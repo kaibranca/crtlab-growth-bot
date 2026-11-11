@@ -16,6 +16,13 @@ const JOBS = [
   ["daily-data.yml", 15, 6, "*", "kaibranca/crtlab-backtester"], // 06:15: built + verified by ~06:45, RELEASED at 07:00:00 UTC (11-10)
   ["daily-data.yml", 30, 8, "*", "kaibranca/crtlab-backtester", { retry: "1" }],  // retry slot: skips itself if 06:30 already went live
   ["daily-data.yml", 30, 11, "*", "kaibranca/crtlab-backtester", { retry: "1" }], // second retry slot
+  // 11-11 (Kai: "if it fails the counter won't refresh — it always has to"): a retry every 1–2 h through the afternoon. A
+  // retry run exits in seconds when today's update already went live, so the extra slots cost nothing on a good day.
+  ["daily-data.yml", 30, 7, "*", "kaibranca/crtlab-backtester", { retry: "1" }],
+  ["daily-data.yml", 30, 9, "*", "kaibranca/crtlab-backtester", { retry: "1" }],
+  ["daily-data.yml", 30, 13, "*", "kaibranca/crtlab-backtester", { retry: "1" }],
+  ["daily-data.yml", 30, 15, "*", "kaibranca/crtlab-backtester", { retry: "1" }],
+  ["daily-data.yml", 30, 17, "*", "kaibranca/crtlab-backtester", { retry: "1" }],
 ];
 const hit = (rule, v) => rule === "*" || (typeof rule === "number" ? rule === v : rule.startsWith("*/") ? v % +rule.slice(2) === 0 : rule.includes("-") ? v >= +rule.split("-")[0] && v <= +rule.split("-")[1] : +rule === v);
 
