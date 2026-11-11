@@ -22,7 +22,11 @@ try {
     when landing_path like '/statistics%' then '/statistics' when landing_path = '/' then 'home' when landing_path like '/auth%' then 'sign-in'
     when landing_path ~ '^/[a-z0-9]+$' then 'chart' else 'other pages' end`;
   const { rows } = await db.query(`select floor(extract(epoch from (now() - created_at)) / 86400)::int d, ${seg} src, ${land} lp,
-      coalesce(country, '?') cc, coalesce(device, '?') dev, count(*)::int n, count(*) filter (where converted_at is not null)::int acc
+      coalesce(country, '?') cc, coalesce(device, '?') dev,
+      -- REAL visitors only (11-11): stayed 30 s+ or made an account. One-hit bot bursts (102 "direct desktop homepage
+      -- visitors" on 11-05, 19 of them real) inflated the baseline and put the engine in Recovery for bots that left.
+      count(*) filter (where last_active - created_at > interval '30 seconds' or converted_at is not null)::int n,
+      count(*)::int raw, count(*) filter (where converted_at is not null)::int acc
     from guest_presence where created_at > now() - interval '15 days' and country is distinct from 'SG'
     group by 1, 2, 3, 4, 5`);
   const su = await db.query(`select floor(extract(epoch from (now() - created_at)) / 86400)::int d, count(*)::int n from users where created_at > now() - interval '15 days' group by 1`);
@@ -38,16 +42,18 @@ try {
     for (const v of vals) { const s = stat(day((r) => r[key] === v)); if (s.normal >= 2) why.push({ dim, seg: v, ...s, gap: +(s.now - s.normal).toFixed(1) }); }
   }
   why.sort((a, b) => a.gap - b.gap);
-  const drop = visitors.normal >= 20 && (visitors.ratio ?? 1) <= 0.7;
-  const rise = visitors.normal >= 20 && (visitors.ratio ?? 1) >= 1.4;
+  // a dip needs REAL people down AND sign-ups not holding up (sign-ups at ≥ 85% of normal = the drop was noise, not people)
+  const drop = visitors.normal >= 15 && (visitors.ratio ?? 1) <= 0.7 && (signups.ratio ?? 0) < 0.85;
+  const rise = visitors.normal >= 15 && (visitors.ratio ?? 1) >= 1.4;
   const top = why.filter((w) => w.gap < 0).slice(0, 4);
+  const rawDay = new Array(15).fill(0); for (const r of rows) if (r.d >= 0 && r.d < 15) rawDay[r.d] += r.raw;
   const out = {
-    at: new Date().toISOString(), visitors, signups, state: drop ? "dip" : rise ? "up" : "normal",
+    at: new Date().toISOString(), visitors, rawVisitors: stat(rawDay), signups, state: drop ? "dip" : rise ? "up" : "normal",
     why: top.map((w) => `${w.dim} ${w.seg}: ${w.now} vs ~${w.normal}/day`),
     gainers: why.filter((w) => w.gap > 0).sort((a, b) => b.gap - a.gap).slice(0, 3).map((w) => `${w.dim} ${w.seg}: ${w.now} vs ~${w.normal}/day`),
     segments: why.slice(0, 40),
   };
   fs.mkdirSync("data/machines", { recursive: true });
   fs.writeFileSync(OUT, JSON.stringify(out, null, 1));
-  console.log(`humans: ${visitors.now} visitors in 24 h vs ~${visitors.normal} (×${visitors.ratio}) · sign-ups ${signups.now} vs ~${signups.normal} · ${out.state}${top.length ? " · down most: " + out.why.join("; ") : ""}`);
+  console.log(`humans: ${visitors.now} real visitors in 24 h (raw ${out.rawVisitors.now} vs ~${out.rawVisitors.normal}) vs ~${visitors.normal} (×${visitors.ratio}) · sign-ups ${signups.now} vs ~${signups.normal} · ${out.state}${top.length ? " · down most: " + out.why.join("; ") : ""}`);
 } finally { await db.end(); }
