@@ -1,46 +1,49 @@
 {
- "at": "2026-11-11T19:59:17.365Z",
+ "at": "2026-11-11T20:00:46.592Z",
  "model": "openai:gpt-4.1-mini",
- "headline": "Focus AI traffic on /backtest pages to boost accounts, avoid zero-click news",
+ "headline": "Focus AI traffic on /backtest and leverage surge on position-size-calculator",
  "findings": [
   {
-   "claim": "AI reads many economic calendar and news pages but get zero clicks.",
+   "claim": "AI reads are high on / but clicks are very low at 3 from 499 reads",
    "numbers": [
-    "41",
-    "35",
-    "26",
-    "28",
-    "22",
-    "23"
+    499,
+    3
    ],
-   "so": "Machines should point AI traffic away from these zero-click economic/news pages."
+   "so": "machines should push more clicks from / to backtest pages"
   },
   {
-   "claim": "The /backtest page family has the highest AI accounts (48) and clicks (7.29) per 218 reads.",
+   "claim": "/backtest page has highest accounts 48 and clicks 7.29 from 218 reads",
    "numbers": [
-    "48",
-    "7.29",
-    "218"
+    48,
+    7.29,
+    218
    ],
-   "so": "Machines should direct AI traffic primarily to /backtest pages to maximize accounts."
+   "so": "machines should direct AI traffic primarily to /backtest"
   },
   {
-   "claim": "AI clicks per week are stable at 39 but AI accounts dropped from 31 to 14 per week.",
+   "claim": "source:chatgpt visitors convert at 0.57 rate, below overall 0.58",
    "numbers": [
-    "39",
-    "31",
-    "14"
+    0.57,
+    0.58
    ],
-   "so": "Machines should focus on pages with higher account conversion to reverse AI account drop."
+   "so": "machines should improve chatgpt visitor conversion by focusing on better landing pages"
   },
   {
-   "claim": "Direct source visitors convert better (63%) but lost 6.8 people in 14 days at land → account stage.",
+   "claim": "AI clicks stable at 39 per week but AI accounts dropped from 31 to 14",
    "numbers": [
-    "210",
-    "0.63",
-    "6.8"
+    39,
+    31,
+    14
    ],
-   "so": "Machines should optimize direct source landing pages to reduce leak and increase accounts."
+   "so": "machines should increase AI click-to-account conversion by focusing on proven pages"
+  },
+  {
+   "claim": "Surging page /tools/position-size-calculator has 47 reads in 24h vs normal 0.5",
+   "numbers": [
+    47,
+    0.5
+   ],
+   "so": "machines should leverage surge on /tools/position-size-calculator to convert AI readers to accounts"
   }
  ],
  "proposals": [
@@ -51,13 +54,13 @@
    "evidence": "winner: 48 accounts, 7.29 clicks, 218 reads"
   },
   {
-   "target": "/economic-calendar/us-core-inflation-rate-mom",
-   "why": "41 AI reads / 7 d, 0 clicks",
+   "target": "/tools/position-size-calculator",
+   "why": "surging: 47 reads in 24 h vs ~0.5",
    "explore": true,
-   "evidence": "41 AI reads / 7 d, 0 clicks"
+   "evidence": "surging: 47 reads in 24 h vs ~0.5"
   }
  ],
- "rejected": 1,
+ "rejected": 0,
  "record": {
   "proposed": 0,
   "alive": 0,
@@ -67,9 +70,9 @@
  },
  "candidates": 30,
  "usage": {
-  "prompt_tokens": 3201,
-  "completion_tokens": 382,
-  "total_tokens": 3583,
+  "prompt_tokens": 3403,
+  "completion_tokens": 328,
+  "total_tokens": 3731,
   "prompt_tokens_details": {
    "cached_tokens": 0,
    "audio_tokens": 0
