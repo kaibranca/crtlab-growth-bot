@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T01:19:32.278Z",
+ "at": "2026-11-11T02:02:25.298Z",
  "ok": 12,
  "total": 12,
  "status": [
@@ -41,7 +41,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 5,
+   "lastRunH": 5.7,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -53,7 +53,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 17.2,
+   "lastRunH": 17.9,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -64,7 +64,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 18.6,
+   "lastRunH": 19.3,
    "everyH": 24,
    "kpi": null
   },
@@ -72,7 +72,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 6.4,
+   "lastRunH": 7.1,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -83,7 +83,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 14.5,
+   "lastRunH": 15.2,
    "everyH": 24,
    "kpi": null
   },
@@ -91,7 +91,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 1.4,
+   "lastRunH": 2.2,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -102,7 +102,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 0.6,
+   "lastRunH": 0.5,
    "everyH": 1,
    "kpi": null
   },
@@ -128,7 +128,7 @@
    "move": "surge",
    "what": "/news/cpi/gold",
    "why": "222 AI reads in 24 h vs ~10/day",
-   "z": 66.9
+   "z": 67
   },
   {
    "move": "surge",
@@ -158,13 +158,13 @@
    "move": "surge",
    "what": "/answers/does-the-opening-range-breakout-work-on-gold",
    "why": "45 AI reads in 24 h vs ~1.2/day",
-   "z": 39.7
+   "z": 39.8
   },
   {
    "move": "climbing",
    "what": "/backtest-eurusd",
    "why": "52 reads in 3 days vs ~3",
-   "z": 28.4
+   "z": 28.5
   },
   {
    "move": "climbing",
@@ -181,7 +181,7 @@
   {
    "move": "surge",
    "what": "/gold-volume-profile",
-   "why": "43 AI reads in 24 h vs ~5/day",
+   "why": "43 AI reads in 24 h vs ~4.9/day",
    "z": 17.1
   },
   {
@@ -198,6 +198,27 @@
   }
  ],
  "ledger": [
+  {
+   "at": "2026-11-11T02:01:04.847Z",
+   "key": "cost|restart|2026-11-11",
+   "machine": "cost",
+   "kind": "lesson",
+   "what": "data service billed 3.09 GB for 0.19 GB real → restarted in the quiet hour to drop the file cache"
+  },
+  {
+   "at": "2026-11-11T01:24:35.079Z",
+   "key": "spawn|cost-web-memory-growth|born",
+   "machine": "core",
+   "kind": "lesson",
+   "what": "built a cost branch: web memory growth (memory 1.69 GB vs ~0.71 GB normal)"
+  },
+  {
+   "at": "2026-11-11T01:24:35.078Z",
+   "key": "spawn|cost-data-cache-bloat|born",
+   "machine": "core",
+   "kind": "lesson",
+   "what": "built a cost branch: data cache bloat (Railway counts 3.09 GB but the server itself uses 0.19 GB — file cache from the data swap)"
+  },
   {
    "at": "2026-11-11T01:06:57.585Z",
    "key": "surge|/news/cpi-2026-06-10|2026-11-11",
