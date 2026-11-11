@@ -313,6 +313,7 @@ for (const st of sup?.status ?? []) if (st.kpi?.change != null && st.kpi.change 
 if (bad.length) watch.push(`${bad.map((n) => n.name).join(", ")} ${bad.length === 1 ? "is" : "are"} behind.`);
 for (const m of (sup?.mistakes ?? []).filter((x) => x.repeating)) watch.push(`${m.where} keeps failing (${m.n}× this week).`);
 if (mode === "dip") watch.push(`Reads are down (${r24} vs ~${Math.round(mu)} a day). Recovery is on: the proven pages get pushed first.`);
+{ const lk = J("data/leak/plan.json"), l = lk?.leaks?.[0]; if (l) watch.unshift(`Biggest leak: ${l.segment.replace(/^\w+:/, "")} at "${l.stage}" — ${l.lost} people lost in 14 days. Fix to try: ${l.fix}.`); }
 if ((men?.sources?.length ?? 0) < 5) watch.push("Nobody outside links to CRTLAB yet — word of mouth is basically zero.");
 if (mode === "surge") next.push(`Surge mode: the hottest pages get up to ${Math.round(P.surgeCap * 100)}% of today's Bing sends, and the top ${P.sisterTop} pull their sister pages up with them.`);
 if (mode === "dip") next.push(`Recovery: the ${P.recoveryN} best pages go back to Bing first until reads come back.`);
@@ -352,6 +353,7 @@ for (const f of (ai.expand ?? []).filter((x) => x.pages >= 3).slice(0, 2)) scout
 { const g = J("data/gaps.json"); const n = Array.isArray(g) ? g.length : (g?.gaps?.length ?? 0); if (n) scout.push({ what: "Pages for search gaps", why: `${n} searches with no good CRTLAB page`, kind: "factory" }); }
 if ((men?.sources?.length ?? 0) < 5) scout.push({ what: "Word-of-mouth engine", why: "no outside site sends people yet", kind: "new" });
 if (!(widgets.aiAccounts7 >= widgets.aiAccountsPrev)) scout.push({ what: "AI landing machine", why: `AI accounts ${widgets.aiAccounts7} vs ${widgets.aiAccountsPrev} last week while reads are up — the first screen leaks`, kind: "new" });
+{ const lk = J("data/leak/plan.json"); for (const l of (lk?.leaks ?? []).slice(0, 2)) scout.unshift({ what: `Fix the leak: ${l.segment.replace(/^\w+:/, "")} at ${l.stage}`, why: `${l.lost} people lost in 14 days (${Math.round(l.rate * 100)}% vs ${Math.round(l.best * 100)}% best) — ${l.fix}`, kind: "leak" }); }
 scout.push({ what: "Cost machine (Railway)", why: "budget watch + backend optimiser — Kai asked 11-11", kind: "new" });
 
 const eco = { at: new Date().toISOString(), scout, widgets, modes, briefing, rules: CORE_RULES, capacity: cap, mode: modeOut, nodes, edges, feed: feed.slice(0, 160),
