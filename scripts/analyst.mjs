@@ -51,6 +51,8 @@ for (const w of ai.winners ?? []) addC(w.p, `winner: ${r1(w.accounts)} accounts,
 for (const s of ai.surges ?? []) if (s.kind === "page") addC(s.key, `surging: ${s.last24h} reads in 24 h vs ~${r1(s.normal)}`, true);
 for (const c of ai.convert ?? []) addC(c.p, `${c.reads7d} AI reads / 7 d, ${c.clicks7d} clicks`, (c.clicks7d ?? 0) > 0);
 for (const g of radar.gaps ?? []) addC(g.ourPage, `AI answer gap: "${g.q}"`, false);
+// the demand miner's page-1-bottom pages (Bing #4–20 with missed clicks): proven if Bing already sends a click
+for (const r of J("data/traffic/plan.json")?.rank ?? []) addC(r.page, `Bing #${r.pos}, ${r.missed} clicks missed / 28 d (${(r.queries ?? []).slice(0, 2).join(", ")})`, (J("data/traffic/plan.json")?.demand ?? []).some((d) => d.page === r.page && d.clicks > 0));
 const CANDS = [...cand].slice(0, 30).map(([p, c]) => ({ p, why: c.why, proven: c.proven }));
 
 // ── 3. TRACK RECORD (learning): what its own past proposals did ──────────────────────────────────────────────────────

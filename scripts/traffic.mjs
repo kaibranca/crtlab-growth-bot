@@ -52,7 +52,8 @@ const agg = (rows, key) => { const m = new Map();
     o.impr += x.Impressions; o.clicks += x.Clicks; o.posW += (x.AvgImpressionPosition > 0 ? x.AvgImpressionPosition : 99) * x.Impressions; m.set(k, o); }
   return [...m.values()].map((o) => ({ q: o.k, impr: o.impr, clicks: o.clicks, pos: o.impr ? +(o.posW / o.impr).toFixed(1) : 99 })).sort((a, b) => b.impr - a.impr); };
 const qRows = agg(await bing("GetQueryStats"), "Query").filter((q) => !BRAND.test(q.q) && !/c\w?r\w?t\s*la?b|crtab|cartlab|crtlap/i.test(q.q));
-const pRows = agg(await bing("GetPageStats"), "Query").map((x) => { try { return { ...x, p: new URL(x.q).pathname.replace(/\/$/, "") || "/" }; } catch { return null; } }).filter(Boolean);
+const pageRaw = await bing("GetPageStats");
+const pRows = agg(pageRaw, "Query").map((x) => { try { return { ...x, p: new URL(x.q).pathname.replace(/\/$/, "") || "/" }; } catch { return null; } }).filter(Boolean);
 const pageStat = new Map(pRows.map((x) => [x.p, x]));
 const ctrAt = (pos) => (pos < 1.5 ? 0.28 : pos < 2.5 ? 0.15 : pos < 3.5 ? 0.1 : pos < 4.5 ? 0.07 : pos < 5.5 ? 0.05 : pos < 10.5 ? 0.03 : pos < 20.5 ? 0.01 : 0.003);
 const demand = qRows.filter((q) => q.impr >= 2).slice(0, 200).map((q) => {
@@ -119,7 +120,11 @@ const sc = { at: new Date().toISOString(), queries: demand.length, impr: demand.
 append(`${OUT}/score.jsonl`, sc);
 
 const pagePos = Object.fromEntries(pRows.filter((x) => REAL.has(x.p) && x.impr >= 3).map((x) => [x.p, x.pos]));
-const plan = { at: sc.at, score: sc, rankN: state.rankN, rank, gaps, demand: demand.slice(0, 60), pagePos,
+// the LAST 7 DAYS' position per page — what the rank judge needs (the 28-day average is three-quarters history before a branch)
+const pagePos7 = (() => { const m = new Map(); for (const x of pageRaw) { if (when(x.Date) < NOW - 7 * DAY) continue; let p; try { p = new URL(x.Query).pathname.replace(/\/$/, "") || "/"; } catch { continue; }
+  const o = m.get(p) ?? { impr: 0, posW: 0 }; o.impr += x.Impressions; o.posW += (x.AvgImpressionPosition > 0 ? x.AvgImpressionPosition : 99) * x.Impressions; m.set(p, o); }
+  return Object.fromEntries([...m].filter(([p, o]) => REAL.has(p) && o.impr >= 2).map(([p, o]) => [p, +(o.posW / o.impr).toFixed(1)])); })();
+const plan = { at: sc.at, score: sc, rankN: state.rankN, rank, gaps, demand: demand.slice(0, 60), pagePos, pagePos7,
   ghosts: Object.entries(G).filter(([, g]) => g.to).sort((a, b) => (b[1].hits14 ?? 0) - (a[1].hits14 ?? 0)).slice(0, 30).map(([p, g]) => ({ p, to: g.to, hits14: g.hits14, who: g.who, fit: g.fit })),
   prev: prev.score ?? null };
 fs.writeFileSync(`${OUT}/plan.json`, JSON.stringify(plan, null, 1));

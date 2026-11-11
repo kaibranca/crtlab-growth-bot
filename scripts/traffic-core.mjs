@@ -123,7 +123,7 @@ const reward = (k, r) => { const w = W(k); w.v = +clamp(w.v + RATE * (r - w.v), 
   for (const k of Object.keys(seenV)) if (Object.keys(seenV).length > 400) delete seenV[k]; }
 
 // ── JUDGE every branch that is due (fractal: the same judge for every kind) ─────────────────────────────────────────
-const pagePos = tplan.pagePos ?? {};
+const pagePos = { ...(tplan.pagePos ?? {}), ...(tplan.pagePos7 ?? {}) }; // last-7-day position wins where Bing has it
 const KIND = {
   rank: { days: 7, judge: (b) => { const p = pagePos[b.target]; if (p == null) return null; return { v: p, win: p <= b.base - 1.5 || p <= 3.5 }; } },
   channel: { days: 5, judge: (b) => { const re = ASSIST[b.chan] ?? LIVE, d = (NOW - Date.parse(b.born)) / DAY, v = readsOf(b.target, Date.parse(b.born), NOW, re) / Math.max(1, d); return { v: r1(v), win: v >= Math.max(1, b.base) * 1.2 }; } },
