@@ -36,7 +36,7 @@ const MACHINES = [
 ];
 const status = MACHINES.map((m) => {
   const age = m.t ? (NOW - m.t) / H : null, slack = Math.max(2, m.every * 0.5);
-  const state = age == null ? "STOPPED" : age <= m.every + slack ? "ok" : age <= m.every * 3 + slack ? "late" : "STOPPED";
+  const state = age == null ? "waiting" : age <= m.every + slack ? "ok" : age <= m.every * 3 + slack ? "late" : "STOPPED";
   let k = null; try { k = m.kpi?.() ?? null; } catch { k = null; }
   if (k && k.before != null) k.change = k.before ? +((k.now - k.before) / k.before).toFixed(2) : null;
   return { id: m.id, name: m.name, state, lastRunH: age == null ? null : +age.toFixed(1), everyH: m.every, kpi: k };
@@ -48,7 +48,7 @@ const status = MACHINES.map((m) => {
 { const eco = J("data/machines/ecosystem.json"), have = new Set(status.map((x) => x.id));
   for (const n of eco?.nodes ?? []) {
     if (have.has(n.id) || n.id.startsWith("lead-") || n.spawned) continue;
-    const st = n.state === "ok" ? "ok" : n.state === "late" ? "late" : n.state ? "STOPPED" : "ok";
+    const st = n.state === "ok" ? "ok" : n.state === "late" ? "late" : n.state === "waiting" ? "waiting" : n.state ? "STOPPED" : "ok";
     status.push({ id: n.id, name: n.name ?? n.id, state: st, lastRunH: n.lastRunH ?? null, everyH: n.every ?? null, kpi: n.kpi ?? null, from: "core" });
   }
 }
