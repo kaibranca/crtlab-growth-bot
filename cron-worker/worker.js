@@ -37,12 +37,12 @@ const hit = (rule, v) => rule === "*" || (typeof rule === "number" ? rule === v 
 async function guard(env, d) {
   const why = [];
   try {
-    const s = await fetch(`https://raw.githubusercontent.com/${REPO}/main/data/machines/status.json?t=${d.getTime()}`).then((r) => (r.ok ? r.json() : null));
+    const s = await fetch(`https://raw.githubusercontent.com/${REPO}/main/data/machines/status.json?t=${d.getTime()}`, { headers: { "User-Agent": "crtlab-cron" } }).then((r) => (r.ok ? r.json() : null));
     const age = s?.at ? (d.getTime() - Date.parse(s.at)) / 3.6e6 : null;
     if (age == null || age > 3) why.push(`the hourly engine has not reported for ${age == null ? "an unknown time" : age.toFixed(1) + " h"} (supervisor + every machine behind it)`);
   } catch (e) { why.push("could not read the engine status: " + String(e).slice(0, 60)); }
   try {
-    const v = await fetch("https://crtlab.pro/api/data-version").then((r) => (r.ok ? r.json() : null));
+    const v = await fetch("https://crtlab.pro/api/data-version", { headers: { "User-Agent": "crtlab-cron" } }) // WAF rule 3 403s an empty UA.then((r) => (r.ok ? r.json() : null));
     const x = new Date(d); x.setUTCHours(0, 0, 0, 0); if (d - x < 7.5 * 3.6e6) x.setUTCDate(x.getUTCDate() - 1);
     do x.setUTCDate(x.getUTCDate() - 1); while (x.getUTCDay() === 0 || x.getUTCDay() === 6);
     const want = x.toISOString().slice(0, 10);
