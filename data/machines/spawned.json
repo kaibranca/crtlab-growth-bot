@@ -21,6 +21,28 @@
    "why": "memory 1.69 GB vs ~0.71 GB normal",
    "better": "lower",
    "days": 2
+  },
+  {
+   "id": "leak-page-backtest-market-land-account",
+   "kind": "leak",
+   "target": "page:/backtest-<market> @ land → account",
+   "born": "2026-11-11T07:05:55.789Z",
+   "state": "alive",
+   "base": 14.9,
+   "why": "14.9 people lost in 14 days",
+   "better": "lower",
+   "days": 7
+  },
+  {
+   "id": "leak-source-direct-land-account",
+   "kind": "leak",
+   "target": "source:direct @ land → account",
+   "born": "2026-11-11T07:05:55.789Z",
+   "state": "alive",
+   "base": 6.8,
+   "why": "6.8 people lost in 14 days",
+   "better": "lower",
+   "days": 7
   }
  ]
 }
