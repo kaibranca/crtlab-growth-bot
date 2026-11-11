@@ -60,6 +60,10 @@ jobs:
         continue-on-error: true
         run: npm i pg@8 --no-save --no-package-lock --silent && node scripts/humans.mjs
         env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}" }
+      - name: Outcomes (one real number per machine and lead, this week vs last)
+        continue-on-error: true
+        run: npm i pg@8 --no-save --no-package-lock --silent && node scripts/outcomes.mjs
+        env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}" }
       - name: Supervisor + engine core (every machine watched, mistakes, mode surge/dip, the /machine web)
         continue-on-error: true
         run: node scripts/supervisor.mjs; node scripts/fixer.mjs; node scripts/core.mjs

@@ -256,7 +256,9 @@ const CORE_RULES = ["Nothing shady: official APIs only, no scraping against term
 // ── 4. NODES + EDGES ─────────────────────────────────────────────────────────────────────────────────────────────────
 const statusOf = (m) => { let t = null; try { t = m.t(); } catch { t = null; } const age = t ? (NOW - t) / H : null, slack = Math.max(2, m.every * 0.5);
   return { t, age, state: age == null ? "waiting" : age <= m.every + slack ? "ok" : age <= m.every * 3 + slack ? "late" : "stopped" }; };
-const kpiOf = Object.fromEntries((sup?.status ?? []).map((s) => [s.id, s.kpi]));
+// OUTCOMES (11-11): one real number per machine/lead from outcomes.mjs wins over the supervisor run-level KPI
+const OUTC = (() => { try { return JSON.parse(fs.readFileSync("data/machines/outcomes.json", "utf8")).kpi ?? {}; } catch { return {}; } })();
+const kpiOf = { ...Object.fromEntries((sup?.status ?? []).map((s) => [s.id, s.kpi])), ...OUTC };
 const act = {}; for (const e of feed) if (NOW - Date.parse(e.t) < DAY && e.kind !== "run" && !/ read \//.test(e.text)) act[e.m] = (act[e.m] ?? 0) + 1;
 const hotIds = new Set(mode === "surge" ? ["surge", "sisters", "bing", "curator", "mode", "ai", "rising"] : mode === "dip" ? ["mode", "bing", "curator", "ai"] : []);
 const nodes = REG.map((m) => { const s = statusOf(m); return { id: m.id, name: m.name, group: m.group, parent: m.parent ?? null, does: m.does, every: m.every,
@@ -264,7 +266,7 @@ const nodes = REG.map((m) => { const s = statusOf(m); return { id: m.id, name: m
   recent: feed.filter((e) => e.m === m.id).slice(0, 6) }; });
 for (const n of nodes) if (n.id.startsWith("lead-")) { const mine = nodes.filter((x) => x.group === n.group && x.id !== n.id);
   const ok = mine.filter((x) => x.state === "ok").length, best = [...mine].sort((a, b) => b.act24 - a.act24)[0], bad = mine.filter((x) => x.state === "stopped" || x.state === "late");
-  n.kpi = { label: "machines alive", now: ok, before: mine.length }; n.kpi.change = null; n.act24 = mine.reduce((t, x) => t + x.act24, 0);
+  n.kpi = OUTC[n.id] ?? { label: "machines alive", now: ok, before: mine.length, change: null }; n.act24 = mine.reduce((t, x) => t + x.act24, 0);
   n.recent = [{ t: new Date().toISOString(), m: n.id, text: `${ok}/${mine.length} alive${best?.act24 ? ` · busiest: ${best.name} (${best.act24})` : ""}${bad.length ? ` · needs help: ${bad.map((x) => x.name).join(", ")}` : ""}`, kind: bad.length ? "bad" : "do" }]; }
 { const c = nodes.find((n) => n.id === "capacity"); if (c) { c.kpi = { label: "peak requests in flight (7 d)", now: cap.peakActive }; c.recent = [{ t: new Date().toISOString(), m: "capacity", text: `7 days: ${cap.served.toLocaleString("en-US")} chart loads · peak ${cap.peakActive} at once · queue ${cap.peakQueue} · memory ${cap.rssMB} MB · ${cap.shed} shed · ${cap.slow} slow`, kind: cap.shed || cap.slow ? "bad" : "do" }]; } }
 // NEW machines: first time the core saw each id (data/machines/seen.json) — the page tags anything under 48 h old as NEW
@@ -345,6 +347,12 @@ for (const f of men?.fresh ?? []) good.push(`Someone mentioned CRTLAB: ${f.where
 const bad = nodes.filter((n) => n.state === "stopped" || n.state === "late");
 for (const w of watchExtra) watch.push(w);
 for (const m of modes.filter((x) => x.level === "critical" || (x.level === "warn" && x.id !== "dip"))) watch.push(`${m.label}: ${m.why}.`);
+// OUTCOME RULES (11-11): the engine reads its own numbers. Reads up a lot while clicks stay flat = the step from an AI read
+// to a visit is the bottleneck (that week: reads x5.6, clicks +3%); a lead outcome down 20%+ is called out; cost over target.
+{ const rd = OUTC["lead-content"], ck = OUTC["bing"], co = OUTC["cost"];
+  if (rd?.change != null && ck?.change != null && rd.change >= 0.5 && ck.change < 0.1) watch.push(`AI reads ×${(1 + rd.change).toFixed(1)} on last week (${rd.now}) but AI clicks ${ck.change >= 0 ? "+" : ""}${Math.round(ck.change * 100)}% (${ck.now}) — the read → visit step is the bottleneck: hooks on the read pages, not more pages.`);
+  for (const id of ["lead-traffic", "lead-conversion"]) { const x = OUTC[id]; if (x?.change != null && x.before >= 10 && x.change <= -0.2) watch.push(`${x.label} down ${Math.round(-x.change * 100)}% on last week (${x.now} vs ${x.before}).`); if (x?.change != null && x.before >= 10 && x.change >= 0.2) good.push(`${x.label} up ${Math.round(x.change * 100)}% on last week (${x.now} vs ${x.before}).`); }
+  if (co?.now != null && co.target && co.now > co.target * 1.2) watch.push(`Railway at ~$${co.now.toFixed(0)}/month pace vs the $${co.target} target — the budget machine is on it (deploy windows, caps, heap tuner).`); }
 for (const st of sup?.status ?? []) if (st.kpi?.change != null && st.kpi.change <= -0.2 && st.kpi.before >= 5 && !st.kpi.lowerBetter) watch.push(`${st.kpi.label} down ${Math.abs(Math.round(st.kpi.change * 100))}% on last week (${st.kpi.now} vs ${st.kpi.before}). More readers, fewer sign-ups — that's the leak to look at.`);
 if (bad.length) watch.push(`${bad.map((n) => n.name).join(", ")} ${bad.length === 1 ? "is" : "are"} behind.`);
 for (const m of (sup?.mistakes ?? []).filter((x) => x.repeating)) watch.push(`${m.where} keeps failing (${m.n}× this week).`);
