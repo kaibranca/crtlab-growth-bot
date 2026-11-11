@@ -40,10 +40,13 @@ try {
   const drop = h >= 10 && lastweek >= 30 && today < lastweek * 0.5;
   check("signups flowing", !quiet, quiet ? "none in 6h" : "ok");
   check("visitors vs last week", !drop, drop ? "down >50%" : "ok");
-  check("payments", pay === 0, pay ? "failed payment" : "ok");
+  // TRUTH (Kai 11-11): one or two renewals going past due = customers' cards declining (Stripe retries them) — a business
+  // event, not a broken system. Only several at once (≥3 in 24 h) points at billing itself → that is the alert.
+  const paySystem = pay >= 3;
+  check("payments", !paySystem, paySystem ? `${pay} renewals failed in 24 h — billing may be broken` : pay ? `ok (${pay} customer card${pay > 1 ? "s" : ""} declined — Stripe retries)` : "ok");
   if (quiet) alerts.push(["no-signups", `No signups in the last 6 hours (it is ${h}:00 UTC). Check that signup + Google login work on crtlab.pro.`]);
   if (drop) alerts.push(["guest-drop", `Visitors today: ${today} so far vs ${lastweek} by this time last week (−${Math.round(100 - (100 * today) / lastweek)}%).`]);
-  if (pay) alerts.push(["payment-failed", `${pay} subscription(s) went past_due/unpaid in the last 24h — see Stripe.`]);
+  if (paySystem) alerts.push(["payment-failed", `${pay} subscriptions went past_due/unpaid in the last 24h — several at once: check Stripe + the webhook.`]);
 } catch (e) {
   check("database reachable", false, String(e.message || e).slice(0, 120));
   alerts.push(["db-down", `The health check could not query the database: ${String(e.message || e).slice(0, 200)}`]);

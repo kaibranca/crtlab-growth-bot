@@ -57,7 +57,7 @@ const trafficEco = J("data/traffic/ecosystem.json", {}), trafficBranches = J("da
 
 // the wall → checkout steps (behaviour machine), all devices
 const wallSteps = (() => { const out = {}; for (const rows of Object.values(beh.wall ?? {})) for (const s of rows ?? []) out[s.step] = (out[s.step] ?? 0) + (s.n ?? 0); return out; })();
-const lastData = mistakes.filter((m) => m.where === "daily-data").length;
+const lastData = mistakes.filter((m) => m.where === "daily-data").length, lastData24 = mistakes.filter((m) => m.where === "daily-data" && NOW - Date.parse(m.at) < DAY).length;
 
 // ── THE FOUR BRAINS (spec = managers → machines from the main engine + sensors + modes + the outcome it is judged on) ──
 const BRAINS = [
@@ -73,7 +73,7 @@ const BRAINS = [
       paymentsOk: check("payments")?.ok ?? null }),
     outcome: (s) => ({ label: "new paying customers / 7 d", v: s.newPaid7 ?? s.paid14 ?? 0, higher: true }),
     signals: (s) => [s.packClicks >= 20 && { key: "checkout-step", target: "pack → card", v: r1((s.cardEntered / s.packClicks) * 100), higher: true, days: 7, why: `${s.cardEntered} of ${s.packClicks} pack-pickers typed a card` },
-      s.pastDue > 0 && { key: "past-due", target: "past-due cards", v: s.pastDue, higher: false, days: 5, why: `${s.pastDue} subscription(s) past due` },
+      s.pastDue > 0 && { key: "past-due", info: true, target: "past-due cards", v: s.pastDue, higher: false, days: 5, why: `${s.pastDue} customer card(s) declined on renewal — Stripe retries + win-back email (a business event, tracked, never an alarm)` },
       ...(leak.leaks ?? []).filter((l) => l.rate < l.overall).slice(0, 2).map((l) => ({ key: "leak", target: `${l.segment} @ ${l.stage}`, v: r1(l.rate * 100), higher: true, days: 7, why: `${l.base} people, ${r1(l.rate * 100)}% vs ${r1(l.overall * 100)}% overall` }))].filter(Boolean),
     measureOf: (b, s) => b.key === "checkout-step" ? (s.packClicks ? r1((s.cardEntered / s.packClicks) * 100) : null) : b.key === "past-due" ? s.pastDue : r1(((leak.leaks ?? []).find((l) => `${l.segment} @ ${l.stage}` === b.target)?.rate ?? NaN) * 100),
     modes: (s) => [
@@ -81,25 +81,26 @@ const BRAINS = [
       s.packClicks >= 20 && s.cardEntered != null && s.cardEntered / s.packClicks < 0.15 && { id: "checkout-leak", label: "Checkout leak", level: "warn", why: `${s.packClicks} picked a pack, only ${s.cardEntered} typed card details, ${s.payClicks} pressed pay` },
     ].filter(Boolean),
     admin: (s) => [s.packClicks && s.cardEntered != null && s.cardEntered / s.packClicks < 0.15 ? `Only ${s.cardEntered} of ${s.packClicks} people who picked a pack typed a card — the step between pack and card is the money leak (wallets/PayPal first? fewer fields?).` : null,
-      s.paymentsOk === false ? "Stripe: turn on Smart Retries + failed-payment emails (dashboard, 5 min) — no machine can." : null].filter(Boolean) },
+      s.paymentsOk === false ? "Several renewals failed at once — check Stripe + the webhook (billing itself may be broken)." : null,
+      s.pastDue > 0 ? "Optional, one-time: Stripe Smart Retries + failed-payment emails make declined renewals recover by themselves (5 min) — not an alarm." : null].filter(Boolean) },
   { id: "data", name: "Data brain", color: "#ff9800",
     managers: [
       { id: "pull", label: "Daily pull", machines: ["datapull"], does: "every market's new day, published 07:00 UTC" },
       { id: "safety", label: "Backups", machines: ["backup", "restore"], does: "nightly backup + restore test" },
       { id: "budget", label: "Railway budget", machines: ["cost", "capacity", "load"], does: "cost pace, memory, capacity" },
     ],
-    sensors: () => ({ dataFresh: check("market data fresh")?.ok ?? null, dataNote: check("market data fresh")?.note ?? null, pullFails7: lastData,
+    sensors: () => ({ dataFresh: check("market data fresh")?.ok ?? null, dataNote: check("market data fresh")?.note ?? null, pullFails7: lastData, pullFails24: lastData24,
       backupOk: check("nightly backup")?.ok ?? null, monthPace: r1(cost.monthPace), budget: cost.budget ?? 10, deploys24: cost.deploys ?? null }),
     outcome: (s) => ({ label: "Railway $ / month pace", v: s.monthPace ?? 0, higher: false }),
     signals: (s) => [s.monthPace > s.budget && { key: "budget", target: "Railway pace", v: s.monthPace, higher: false, days: 3, why: `$${s.monthPace}/month vs $${s.budget}` },
-      s.pullFails7 >= 2 && { key: "pull", target: "daily-data failures", v: s.pullFails7, higher: false, days: 3, why: `${s.pullFails7} failures in 7 days` },
+      s.pullFails24 >= 2 && { key: "pull", target: "daily-data failures (24 h)", v: s.pullFails24, higher: false, days: 2, why: `${s.pullFails24} failures in the last 24 h` },
       ...(cost.incidents ?? []).slice(0, 2).map((i) => ({ key: "cost-incident", target: `${i.svc} ${i.kind}`, v: i.memGB ?? i.n ?? 1, higher: false, days: 2, why: i.why }))].filter(Boolean),
-    measureOf: (b, s) => b.key === "budget" ? s.monthPace : b.key === "pull" ? s.pullFails7 : (cost.incidents ?? []).some((i) => `${i.svc} ${i.kind}` === b.target) ? (cost.incidents.find((i) => `${i.svc} ${i.kind}` === b.target).memGB ?? 1) : 0,
+    measureOf: (b, s) => b.key === "budget" ? s.monthPace : b.key === "pull" ? s.pullFails24 : (cost.incidents ?? []).some((i) => `${i.svc} ${i.kind}` === b.target) ? (cost.incidents.find((i) => `${i.svc} ${i.kind}` === b.target).memGB ?? 1) : 0,
     modes: (s) => [
       s.dataFresh === false && { id: "data-late", label: "Data late", level: "critical", why: `market data not fresh (${s.dataNote})` },
       s.backupOk === false && { id: "backup", label: "Backup failing", level: "critical", why: "nightly backup check failing" },
       s.monthPace > s.budget * 1.5 && { id: "over-budget", label: "Over budget", level: "warn", why: `Railway pace $${s.monthPace}/month vs $${s.budget} target` },
-      s.pullFails7 >= 3 && { id: "pull-flaky", label: "Pull flaky", level: "warn", why: `daily-data failed ${s.pullFails7}× in 7 days` },
+      s.pullFails24 >= 2 && { id: "pull-flaky", label: "Pull flaky", level: "warn", why: `daily-data failed ${s.pullFails24}× in the last 24 h` },
     ].filter(Boolean),
     admin: (s) => [s.monthPace > s.budget * 1.5 ? `Railway pace $${s.monthPace}/mo vs $${s.budget}: fewer direct deploys (use the 07:15/13:00/19:00 windows), then check web memory once the heap tuner has 24 h of samples.` : null].filter(Boolean) },
   { id: "security", name: "Security brain", color: "#f7525f",
@@ -176,7 +177,7 @@ const BRAINS = [
 // the exact steps. Only what no machine can do lands here (auto-fixable things are the fixer's, verified next hour).
 function needQueue() {
   const raw = [];
-  for (const id of ["money", "data", "security", "content", "retention", "speed"]) for (const w of J(`data/brains/${id}/ecosystem.json`, {}).briefing?.watch ?? []) if (/^(Admin|Escalated):/.test(w)) raw.push({ from: id, text: w.replace(/^(Admin|Escalated):\s*/, "") });
+  for (const id of ["money", "data", "security", "content", "retention", "speed"]) for (const w of J(`data/brains/${id}/ecosystem.json`, {}).briefing?.watch ?? []) if (/^(Admin|Escalated):/.test(w) && !/Optional|not an alarm/i.test(w)) raw.push({ from: id, text: w.replace(/^(Admin|Escalated):\s*/, "") });
   for (const t of J("data/machines/fixer.json", {}).tasks ?? []) raw.push({ from: "fixer", text: `${t.what} — ${t.fix}` });
   const KNOWN = [[/Smart Retries|failed-payment/i, "stripe", "Stripe dashboard → Settings → Billing → turn on Smart Retries + failed-payment emails (5 min)"],
     [/Rotate|2FA|token/i, "tokens", "Cloudflare + Railway: roll the tokens pasted in chat, update GH secrets CF_API_TOKEN; turn on 2FA (10 min)"],
@@ -224,7 +225,7 @@ for (const S of BRAINS) try {
   for (const x of sig) { const id = `${x.key}-${x.target}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 50);
     if (BR.branches.some((b) => b.id === id && (b.state === "open" || NOW - Date.parse(b.closed ?? 0) < 14 * DAY))) continue;
     if (BR.branches.filter((b) => b.state === "open").length >= 8) break;
-    BR.branches.push({ id, key: x.key, target: x.target, base: x.v, higher: x.higher, days: x.days, why: x.why, born: iso(NOW), state: "open" });
+    BR.branches.push({ id, key: x.key, target: x.target, base: x.v, higher: x.higher, days: x.days, why: x.why, born: iso(NOW), state: "open", ...(x.info ? { info: true } : {}) });
     feed.push({ t: iso(NOW), m: "core", text: `opened a branch: ${x.target} (${x.why})`, kind: "hot" }); }
   for (const b of BR.branches.filter((b) => b.state === "open")) {
     let v = null; try { v = S.measureOf?.(b, sens); } catch { v = null; } if (v != null && Number.isFinite(+v)) b.now = v;
@@ -237,7 +238,7 @@ for (const S of BRAINS) try {
   BR.branches = BR.branches.filter((b) => b.state === "open" || NOW - Date.parse(b.closed ?? b.born) < 45 * DAY); // bin
   fs.writeFileSync(`${DIR}/branches.json`, JSON.stringify(BR, null, 1));
   // ESCALATION: kinds that don't fix themselves (neuron < .35 after 2 verdicts) or branches stuck 2+ windows → admin, first
-  const escalate = BR.branches.filter((b) => b.state === "open" && ((W[b.key]?.n ?? 0) >= 2 && W[b.key].v < 0.35 || (b.stuck ?? 0) >= 2)).map((b) => `${b.target}: ${b.why} — open ${b.stuck ?? 0}× windows; this kind doesn't fix itself → needs an admin`);
+  const escalate = BR.branches.filter((b) => b.state === "open" && !b.info && ((W[b.key]?.n ?? 0) >= 2 && W[b.key].v < 0.35 || (b.stuck ?? 0) >= 2)).map((b) => `${b.target}: ${b.why} — open ${b.stuck ?? 0}× windows; this kind doesn't fix itself → needs an admin`);
   const day = iso(NOW).slice(0, 10); mem.days = [...(mem.days ?? []).filter((d) => d.day !== day), { day, outcome: out.v, mode: lead.id }].slice(-120); // memory: 120 days, the rest binned
   fs.writeFileSync(`${DIR}/brain.json`, JSON.stringify(mem, null, 1));
 
