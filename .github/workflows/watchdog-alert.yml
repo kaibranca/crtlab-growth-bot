@@ -6,12 +6,22 @@ on:
   workflow_dispatch:
     inputs:
       why: { description: "what the worker found", required: true }
-permissions: { contents: read }
+permissions: { contents: read, actions: write }
 jobs:
   alert:
     runs-on: ubuntu-latest
     steps:
+      # ONE EMAIL PER PROBLEM PER 12 H (11-11): a key per problem + 12-hour window; a cache hit = already emailed → skip
+      - name: Key
+        id: k
+        env: { WHY: "${{ inputs.why }}" }
+        run: echo "key=wd-$(echo "$WHY" | sed -E 's/[0-9.]+ h\b//g' | sha1sum | cut -c1-12)-$(( $(date +%s) / 43200 ))" >> "$GITHUB_OUTPUT"
+      - name: Already emailed?
+        id: seen
+        uses: actions/cache/restore@v4
+        with: { path: .wd, key: "${{ steps.k.outputs.key }}" }
       - name: Email
+        if: steps.seen.outputs.cache-hit != 'true'
         env: { RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", WHY: "${{ inputs.why }}" }
         run: |
           node -e '
@@ -20,3 +30,9 @@ jobs:
               "\n\nCheck: gh run list -R kaibranca/crtlab-growth-bot -w hourly.yml -L 3 · gh run list -R kaibranca/crtlab-backtester -w daily-data.yml -L 3" };
           fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: "Bearer " + process.env.RESEND_API_KEY, "Content-Type": "application/json" }, body: JSON.stringify(body) })
             .then(async (r) => { console.log("resend", r.status, (await r.text()).slice(0, 120)); if (!r.ok) process.exit(1); });'
+      - name: Remember
+        if: steps.seen.outputs.cache-hit != 'true'
+        run: mkdir -p .wd && date -u > .wd/sent
+      - uses: actions/cache/save@v4
+        if: steps.seen.outputs.cache-hit != 'true'
+        with: { path: .wd, key: "${{ steps.k.outputs.key }}" }
