@@ -1,10 +1,10 @@
 {
- "at": "2026-11-11T04:32:20.046Z",
+ "at": "2026-11-11T06:41:46.541Z",
  "checks": [
   {
    "name": "database size",
    "ok": true,
-   "note": "279 MB"
+   "note": "280 MB"
   },
   {
    "name": "signups flowing",
@@ -18,13 +18,13 @@
   },
   {
    "name": "payments",
-   "ok": true,
-   "note": "ok"
+   "ok": false,
+   "note": "failed payment"
   },
   {
    "name": "nightly backup",
    "ok": true,
-   "note": "2h old · 32.9 MB"
+   "note": "4h old · 32.9 MB"
   },
   {
    "name": "market data fresh",
@@ -34,11 +34,11 @@
   {
    "name": "AI radar",
    "ok": true,
-   "note": "10h ago · asked 7/7"
+   "note": "0h ago · asked 6/6"
   }
  ],
  "db": {
-  "mb": 279,
+  "mb": 280,
   "tables": [
    [
     "user_events",
@@ -46,11 +46,11 @@
    ],
    [
     "ui_events",
-    59
+    60
    ],
    [
     "meter_identities",
-    55
+    56
    ],
    [
     "user_stores",
@@ -74,24 +74,27 @@
   "home": {
    "kb": 2593,
    "scripts": 23,
-   "ttfbMs": 233
+   "ttfbMs": 151
   },
   "backtest": {
    "kb": 1449,
    "scripts": 13,
-   "ttfbMs": 224
+   "ttfbMs": 130
   },
   "chart app": {
    "kb": 2593,
    "scripts": 23,
-   "ttfbMs": 438
+   "ttfbMs": 314
   },
   "statistics": {
    "kb": 1211,
    "scripts": 14,
-   "ttfbMs": 183
+   "ttfbMs": 134
   }
  },
  "heavier": [],
- "alerts": []
+ "alerts": [
+  "payment-failed"
+ ],
+ "emailed": 200
 }
