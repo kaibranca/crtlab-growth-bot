@@ -81,13 +81,40 @@ for (const inc of incidents) if (inc.svc === "web" && inc.kind === "memory growt
     append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|web-redeploy|${iso(NOW)}`, machine: "cost", kind: "lesson", what: `web held ${inc.memGB} GB vs ${inc.normalGB} normal → zero-downtime redeploy in the quiet hour` }); }
   catch (e) { actions.push("web redeploy failed: " + String(e).slice(0, 80)); }
 }
+// HEAP CAP TUNER (11-11): web's memory creeps ~0.03 GB/h under a 768 MB heap cap (V8 collects lazily when it has room).
+// EYES /api/ops/mem (x-ops-key): real heap in use, its peak since boot, the cap. BRAIN after ≥ 24 h of hourly peaks: cap =
+// 1.6 × the highest heap peak seen, rounded up to 64 MB, inside [384, 768]. HANDS sets Railway variable WEB_NODE_OPTIONS with
+// skipDeploys (it takes effect at the next deploy window, never a restart). SAFETY: a boot that was NOT a deploy (uptime
+// shorter than the time since the latest deployment) = a crash → back to 768 at once and the tuner stops itself.
+const HC = state.heap ??= { samples: [], cap: 768, stopped: false };
+let heapNote = null;
+try {
+  const mem = process.env.OPS_KEY ? await fetch("https://crtlab.pro/api/ops/mem", { headers: { "x-ops-key": process.env.OPS_KEY } }).then((r) => (r.ok ? r.json() : null)).catch(() => null) : null;
+  const webSvc = svcs.find((s) => s.name === "web"), webInst = webSvc?.serviceInstances.edges.map((e) => e.node).find((n) => n.environmentId === ENV);
+  if (mem && webSvc) {
+    HC.samples.push({ at: mem.at, peak: mem.peak.heapUsedMB, rss: mem.rssMB, cap: mem.heapCapMB, up: mem.uptimeH });
+    HC.samples = HC.samples.filter((x) => NOW - Date.parse(x.at) < 3 * DAY);
+    const sinceDeployH = webInst?.latestDeployment?.createdAt ? (NOW - Date.parse(webInst.latestDeployment.createdAt)) / H : null;
+    const setCap = async (mbCap) => gql(`mutation { variableUpsert(input: { projectId: "${PROJECT}", environmentId: "${ENV}", serviceId: "${webSvc.id}", name: "WEB_NODE_OPTIONS", value: "--max-old-space-size=${mbCap}", skipDeploys: true }) }`);
+    if (!HC.stopped && HC.cap < 768 && sinceDeployH != null && mem.uptimeH + 0.25 < sinceDeployH) {
+      await setCap(768); HC.cap = 768; HC.stopped = true; heapNote = `web restarted without a deploy at cap ${mem.heapCapMB} MB → cap back to 768, tuner stopped`;
+      append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|heap-revert|${iso(NOW)}`, machine: "cost", kind: "loss", what: heapNote });
+    } else if (!HC.stopped && HC.samples.length >= 24) {
+      const peak = Math.max(...HC.samples.map((x) => x.peak)), want = Math.min(768, Math.max(384, Math.ceil((peak * 1.6) / 64) * 64));
+      if (Math.abs(want - HC.cap) >= 64) { await setCap(want); heapNote = `heap peak ${peak} MB over ${HC.samples.length} h → cap ${HC.cap} → ${want} MB (applies at the next deploy window)`; HC.cap = want;
+        append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|heap-cap|${iso(NOW)}`, machine: "cost", kind: "lesson", what: heapNote }); }
+      else heapNote = `heap peak ${peak} MB → cap ${HC.cap} MB is right`;
+    } else heapNote = HC.stopped ? "heap tuner stopped after a crash (cap 768)" : `measuring heap (${HC.samples.length}/24 h, peak so far ${Math.max(...HC.samples.map((x) => x.peak))} MB)`;
+  } else heapNote = process.env.OPS_KEY ? "no /api/ops/mem yet (deploys at the next window)" : "no OPS_KEY";
+} catch (e) { heapNote = "heap tuner error: " + String(e).slice(0, 80); }
+if (heapNote && /→ cap|back to 768/.test(heapNote)) actions.push(heapNote); // only real changes count as actions
 // LEARN: judge fixes 24 h later
 for (const f of state.fixes) if (!f.verdict && NOW - Date.parse(f.at) > DAY) { const r = rows.find((x) => x.svc === f.svc); if (!r) continue;
   f.after = r.memGB; f.verdict = r.memGB < f.before * 0.6 ? "helped" : "did not help";
   append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|verdict|${f.at}`, machine: "cost", kind: f.verdict === "helped" ? "win" : "loss", what: `${f.kind} fix on ${f.svc}: ${f.before} → ${f.after} GB a day later (${f.verdict})` }); }
 const total = rows.reduce((t, r) => t + r.dayCost, 0), avg = rows.reduce((t, r) => t + r.avgDayCost, 0);
 const weekPace = +(avg * 30).toFixed(2);
-const plan = { at: new Date().toISOString(), status: weekPace > BUDGET_MONTH ? "over budget" : "ok", budget: BUDGET_MONTH, weekPace, overBy: +Math.max(0, weekPace - BUDGET_MONTH).toFixed(2), deploys, dayCost: +total.toFixed(2), avgDayCost: +avg.toFixed(2), monthPace: +(total * 30).toFixed(2), services: rows.sort((a, b) => b.dayCost - a.dayCost), incidents, actions, fixes: state.fixes.slice(-10) };
+const plan = { heap: { cap: HC.cap, stopped: HC.stopped, samples: HC.samples.length, note: heapNote }, at: new Date().toISOString(), status: weekPace > BUDGET_MONTH ? "over budget" : "ok", budget: BUDGET_MONTH, weekPace, overBy: +Math.max(0, weekPace - BUDGET_MONTH).toFixed(2), deploys, dayCost: +total.toFixed(2), avgDayCost: +avg.toFixed(2), monthPace: +(total * 30).toFixed(2), services: rows.sort((a, b) => b.dayCost - a.dayCost), incidents, actions, fixes: state.fixes.slice(-10) };
 fs.writeFileSync(`${DIR}/plan.json`, JSON.stringify(plan, null, 1));
 append(`${DIR}/score.jsonl`, { at: plan.at, dayCost: plan.dayCost, mem: Object.fromEntries(rows.map((r) => [r.svc, r.memGB])) });
 if (incidents.length && state.emailed !== iso(NOW) && process.env.RESEND_API_KEY && process.env.ALERT_TO) {

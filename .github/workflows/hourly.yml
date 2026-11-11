@@ -55,7 +55,7 @@ jobs:
       - name: Cost machine (Railway memory/egress per service, diagnoses spikes, fixes cache bloat in quiet hours)
         continue-on-error: true
         run: node scripts/cost.mjs
-        env: { RAILWAY_API_TOKEN: "${{ secrets.RAILWAY_API_TOKEN }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
+        env: { OPS_KEY: "${{ secrets.OPS_KEY }}", RAILWAY_API_TOKEN: "${{ secrets.RAILWAY_API_TOKEN }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
       - name: People machine (real visitors + sign-ups vs the same hours of 14 days; finds the segment that fell)
         continue-on-error: true
         run: npm i pg@8 --no-save --no-package-lock --silent && node scripts/humans.mjs
