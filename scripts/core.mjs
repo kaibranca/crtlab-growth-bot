@@ -183,7 +183,7 @@ const surgeDays = {}; for (const x of recentSurges) { const k = famOf(x.key); (s
 const readsOf = (prefix, from, to) => { let n = 0; for (const w of crawl) { const t = Date.parse(w.to); if (t < from || t >= to) continue; for (const [b, v] of Object.entries(w.bots)) if (LIVE.test(b)) for (const [p0, k] of v.top) { const q = p0.split("?")[0]; if (q === prefix || q.startsWith(prefix.endsWith("/") ? prefix : prefix + "/") || q.startsWith(prefix + "-")) n += k; } } return n; };
 for (const b of spawned.branches) if (b.state === "alive" && b.boost != null) b.boost = boostFor(b.owner ?? "core");
 for (const b of spawned.branches) if (b.state === "alive" && NOW - Date.parse(b.judged ?? b.born) >= 7 * DAY) {
-  const days = (NOW - Date.parse(b.born)) / DAY, during = readsOf(b.target, Date.parse(b.born), NOW) / Math.max(1, days), ratio = b.before ? during / b.before : during > 0 ? 2 : 0;
+  const days = (NOW - Date.parse(b.born)) / DAY, during = readsOf(b.target, Date.parse(b.born), NOW) / Math.max(1, days), ratio = during / Math.max(1, b.before ?? 0);
   b.judged = new Date().toISOString(); b.ratio = +ratio.toFixed(2);
   if (ratio >= 1.2) { b.verdict = "kept"; append("data/machines/ledger.jsonl", { at: b.judged, key: `spawn|${b.id}|${iso(NOW)}`, machine: b.owner ?? "core", kind: "win", what: `focus branch ${b.target} kept (×${b.ratio} reads/day)` }); }
   else { b.state = "retired"; b.verdict = "retired"; b.retired = b.judged; append("data/machines/ledger.jsonl", { at: b.judged, key: `spawn|${b.id}|${iso(NOW)}`, machine: b.owner ?? "core", kind: "loss", what: `focus branch ${b.target} retired (×${b.ratio}) — not respawned for 28 days` }); }
