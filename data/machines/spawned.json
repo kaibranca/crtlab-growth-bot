@@ -43,6 +43,16 @@
    "why": "6.8 people lost in 14 days",
    "better": "lower",
    "days": 7
+  },
+  {
+   "id": "cost-web-too-many-deploys",
+   "kind": "cost",
+   "target": "web too many deploys",
+   "born": "2026-11-11T15:04:29.621Z",
+   "state": "alive",
+   "why": "13 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)",
+   "better": "lower",
+   "days": 2
   }
  ]
 }

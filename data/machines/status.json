@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T14:20:17.932Z",
+ "at": "2026-11-11T15:04:29.522Z",
  "ok": 12,
  "total": 12,
  "status": [
@@ -41,7 +41,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 0,
+   "lastRunH": 0.7,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -53,7 +53,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 6.2,
+   "lastRunH": 6.9,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -64,7 +64,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 7.6,
+   "lastRunH": 8.4,
    "everyH": 24,
    "kpi": null
   },
@@ -72,7 +72,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 7.6,
+   "lastRunH": 8.4,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -83,7 +83,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 7.5,
+   "lastRunH": 8.3,
    "everyH": 24,
    "kpi": null
   },
@@ -91,7 +91,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 7.6,
+   "lastRunH": 8.4,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -102,7 +102,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 0.7,
+   "lastRunH": 1.5,
    "everyH": 1,
    "kpi": null
   },
@@ -134,7 +134,7 @@
    "move": "climbing",
    "what": "/news/cpi/gold",
    "why": "288 reads in 3 days vs ~18.5",
-   "z": 62.6
+   "z": 62.7
   },
   {
    "move": "climbing",
@@ -164,13 +164,13 @@
    "move": "climbing",
    "what": "/economic-calendar/us-core-inflation-rate-mom",
    "why": "36 reads in 3 days vs ~1.6",
-   "z": 27.4
+   "z": 27.5
   },
   {
    "move": "climbing",
    "what": "/answers/does-the-opening-range-breakout-work-on-gold",
-   "why": "51 reads in 3 days vs ~3.2",
-   "z": 26.9
+   "why": "51 reads in 3 days vs ~3.1",
+   "z": 27
   },
   {
    "move": "climbing",
@@ -182,22 +182,29 @@
    "move": "climbing",
    "what": "/economic-calendar/us-cpi-seasonally-adjusted",
    "why": "31 reads in 3 days vs ~1.6",
-   "z": 23.4
+   "z": 23.5
   },
   {
    "move": "climbing",
    "what": "/news/cpi-2026-10-14",
    "why": "27 reads in 3 days vs ~2",
-   "z": 17.8
+   "z": 17.9
   },
   {
    "move": "climbing",
-   "what": "/economic-calendar/us-initial-jobless-claims",
-   "why": "17 reads in 3 days vs ~0.9",
-   "z": 17
+   "what": "/economic-calendar/us-core-inflation-rate-yoy",
+   "why": "20 reads in 3 days vs ~1.2",
+   "z": 17.3
   }
  ],
  "ledger": [
+  {
+   "at": "2026-11-11T15:02:40.165Z",
+   "key": "surge|/economic-calendar/us-initial-jobless-claims|2026-11-11",
+   "machine": "ai",
+   "kind": "surge",
+   "what": "/economic-calendar/us-initial-jobless-claims surged (8 vs 1.2/day)"
+  },
   {
    "at": "2026-11-11T14:06:32.072Z",
    "key": "mistake|Daily data (live site)|2026-11-11",
@@ -400,28 +407,12 @@
    "machine": "ai",
    "kind": "surge",
    "what": "/gold-volume-profile surged (41 vs 4.8/day)"
-  },
-  {
-   "at": "2026-11-10T23:52:55.316Z",
-   "key": "surge|/answers/does-the-opening-range-breakout-work-on-gold|2026-11-10",
-   "machine": "ai",
-   "kind": "surge",
-   "what": "/answers/does-the-opening-range-breakout-work-on-gold surged (44 vs 1.1/day)"
   }
  ],
  "fix": [
-  "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones",
-  "daily-data failed 3× this week (last: run failure)"
+  "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones"
  ],
  "mistakes": [
-  {
-   "where": "daily-data",
-   "n": 3,
-   "last": "run failure",
-   "at": "2026-11-11T06:21:51Z",
-   "repeating": true,
-   "url": "https://github.com/kaibranca/crtlab-backtester/actions/runs/42971167648"
-  },
   {
    "where": "Daily data (live site)",
    "n": 1,
