@@ -55,7 +55,6 @@ const status = MACHINES.map((m) => {
 const OUTC = J("data/machines/outcomes.json")?.kpi ?? {};
 const hurting = Object.entries(OUTC).filter(([, k]) => k && !k.neutral && k.change != null && (k.before ?? 0) >= 10 && (k.lowerBetter ? k.change >= 0.2 : k.change <= -0.2)).map(([id, k]) => ({ id, label: k.label, now: k.now, before: k.before, change: k.change }));
 const seenH = new Set();
-for (const h of hurting) { const key = h.label + h.now; if (seenH.has(key)) continue; seenH.add(key); fix.push(`${h.label} getting worse: ${h.now} vs ${h.before} last week (${h.id})`); }
 
 // ── ALL IN: what the machines are pushing hardest, one ranked list ────────────────────────────────────────────────────
 const allIn = [];
@@ -78,6 +77,7 @@ const ledger = readLines(LED).slice(-30).reverse();
 
 // ── FIX: what to improve next (for the next session) ─────────────────────────────────────────────────────────────────
 const fix = [];
+for (const h of hurting) { const key = h.label + h.now; if (seenH.has(key)) continue; seenH.add(key); fix.push(`${h.label} getting worse: ${h.now} vs ${h.before} last week (${h.id})`); }
 for (const s of status) if (s.state !== "ok") fix.push(`${s.name} is ${s.state} (last run ${s.lastRunH ?? "never"} h ago, normal every ${s.everyH} h)`);
 // Bing: the daily quota can be spent early (fine); a problem is no accepted send at all for 30 h
 const runs = readLines("data/ai/runs.jsonl").filter((r) => NOW - Date.parse(r.at) < 30 * H);
