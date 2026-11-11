@@ -59,7 +59,7 @@ for (const m of status.mistakes ?? []) {
   const wf = run?.path?.split("/").pop(), k = `${repo}:${wf}`;
   const newer = wf ? await lastRun(repo, wf) : null;
   if (newer && String(newer.id) !== runId && newer.conclusion === "success") continue; // already fixed by a later run
-  if (w.transient && wf && canTry(k) && tok) { tried(k); const ok = await dispatch(repo, wf, wf === "daily-data.yml" ? { retry: "1" } : undefined); act(`${m.where} failed on a transient error ("${w.line.slice(0, 80)}") → re-ran it`, ok); }
+  if (w.transient && wf && canTry(k) && tok) { tried(k); const ok = await dispatch(repo, wf, wf === "daily-data.yml" ? { retry: "1" } : undefined); if (ok) (state.verify ??= {})[`rerun:${k}`] = { at: new Date().toISOString(), id: m.where, playbook: "rerun", repo, wf }; act(`${m.where} failed on a transient error ("${w.line.slice(0, 80)}") → re-ran it`, ok); }
   else tasks.push({ what: `${m.where} failed${m.repeating ? ` ${m.n}× this week` : ""}`, evidence: w.line || m.last, fix: w.transient ? "re-run budget used up today — look at the runner/network" : "a real error: a re-run would repeat it — fix the cause (see the log line)", url: m.url });
 }
 
@@ -76,7 +76,8 @@ for (const x of (status.status ?? []).filter((x) => x.state === "STOPPED" && x.l
 // VERIFY: every fix from an earlier run is checked now — did the problem actually go away? → the playbook's neuron learns
 state.w ??= {};
 for (const [k, v] of Object.entries(state.verify ?? {})) { if (NOW - Date.parse(v.at) < 50 * 60e3) continue;
-  const now = (status.status ?? []).find((x) => x.id === v.id), fixed = v.id === "daily-data" ? !(status.fix ?? []).some((f) => /^DAILY DATA BEHIND/.test(f)) : now ? now.state === "ok" : true;
+  if (v.playbook === "rerun") { const lr = await lastRun(v.repo, v.wf); if (lr && lr.status !== "completed") continue; v.fixedRun = lr?.conclusion === "success"; }
+  const now = (status.status ?? []).find((x) => x.id === v.id), fixed = v.playbook === "rerun" ? !!v.fixedRun : v.id === "daily-data" ? !(status.fix ?? []).some((f) => /^DAILY DATA BEHIND/.test(f)) : now ? now.state === "ok" : true;
   const w = (state.w[v.playbook] ??= { v: 0.5, n: 0 }); w.v = +Math.max(0.05, Math.min(0.95, w.v + 0.25 * ((fixed ? 1 : 0) - w.v))).toFixed(3); w.n++;
   append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `fixer-verify|${k}|${v.at}`, machine: "fixer", kind: fixed ? "win" : "loss", what: `${v.playbook} on ${v.id}: ${fixed ? "fixed" : "did NOT fix it"} (playbook ${w.v})` });
   actions.push({ at: new Date().toISOString(), what: `checked: ${v.playbook} on ${v.id} ${fixed ? "worked" : "did not work"}`, ok: fixed }); delete state.verify[k]; }
