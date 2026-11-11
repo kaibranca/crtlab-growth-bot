@@ -67,7 +67,7 @@ const gaps = demand.filter((d) => !d.page && d.impr >= 3).slice(0, 25);
 const byPage = new Map();
 for (const d of demand) if (d.page && (d.band === "page1-bottom" || d.band === "page2") && d.impr >= state.minImpr) {
   const o = byPage.get(d.page) ?? { page: d.page, missed: 0, impr: 0, queries: [] }; o.missed += d.missed; o.impr += d.impr; o.queries.push(`${d.q} (#${d.pos})`); byPage.set(d.page, o); }
-const rank = [...byPage.values()].map((o) => ({ ...o, missed: +o.missed.toFixed(1), pos: pageStat.get(o.page)?.pos ?? null, queries: o.queries.slice(0, 4) }))
+const rank = [...byPage.values()].map((o) => ({ ...o, missed: +o.missed.toFixed(1), pos: pageStat.get(o.page)?.pos ?? Math.min(...demand.filter((d) => d.page === o.page).map((d) => d.pos)), queries: o.queries.slice(0, 4) })) // no page stats yet → its searches' best position
   .filter((o) => o.pos != null && o.pos > 3.5).sort((a, b) => b.missed - a.missed).slice(0, state.rankN);
 
 // ── 3. GHOSTS: requested URLs that don't exist ───────────────────────────────────────────────────────────────────────
