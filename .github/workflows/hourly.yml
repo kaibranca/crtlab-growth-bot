@@ -52,6 +52,10 @@ jobs:
       - name: IndexNow (only URLs whose lastmod moved)
         continue-on-error: true
         run: node scripts/indexnow.mjs
+      - name: Supervisor + engine core (every machine watched, mistakes, mode surge/dip, the /machine web)
+        continue-on-error: true
+        run: node scripts/supervisor.mjs; node scripts/core.mjs
+        env: { RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", GH_TOKEN: "${{ github.token }}" }
       - run: node scripts/summary.mjs
       - name: Save
         run: |

@@ -27,6 +27,10 @@ jobs:
       - name: Daily full device QA (all devices, light + dark)
         continue-on-error: true
         run: 'curl -s -o /dev/null -w "device-qa dispatch %{http_code}\n" -X POST -H "Authorization: Bearer ${{ github.token }}" -H "Accept: application/vnd.github+json" https://api.github.com/repos/${{ github.repository }}/actions/workflows/device-qa.yml/dispatches -d "{\"ref\":\"main\"}"'
+      - name: Mentions machine (who sends people, who links, who talks about CRTLAB)
+        continue-on-error: true
+        run: npm i pg@8 --no-save --no-package-lock --silent && node scripts/mentions.mjs
+        env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}", BING_API_KEY: "${{ secrets.BING_API_KEY }}", OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
       - run: node scripts/summary.mjs
       - run: |
           bash scripts/push.sh "daily $(date -u +%F)"

@@ -204,11 +204,20 @@ const sisKeys = (p) => { const s = p.split("/").filter(Boolean);
   const m = /^[a-z0-9]+-(.+)$/.exec(s[0] ?? ""); if (s.length === 1 && family(p) === "/<market>-<concept>" && m) return [`*-${m[1]}`];
   return []; };
 const sisMatch = (k, q) => (k.startsWith("/news/*/") ? /^\/news\/[^/]+\/[^/]+$/.test(q) && q.endsWith("/" + k.slice(8)) : k.startsWith("*-") ? q.split("/").length === 2 && q.endsWith(k.slice(1)) && family(q) === "/<market>-<concept>" : q.startsWith(k));
-// the 3 hottest surges + 3 hottest climbers only, so sisters never eat the whole Bing quota
-const hot = [...surges.filter((x) => x.kind === "page").slice(0, 3), ...rising.slice(0, 3)].map((x) => x.key), sisterOf = new Map();
+// ECOSYSTEM MODE (scripts/core.mjs, data/machines/mode.json — learned, bounded parameters): SURGE = reach more sisters and
+// let urgent sends take more of the day; DIP = RECOVERY, the proven winners are re-sent first. Normal = the defaults.
+const MODE = (() => { try { return JSON.parse(fs.readFileSync("data/machines/mode.json", "utf8")); } catch { return { mode: "normal", params: {} }; } })();
+const MP = MODE.params ?? {}, SIS_TOP = MODE.mode === "surge" ? (MP.sisterTop ?? 5) : 3, URG_CAP = MODE.mode === "surge" ? (MP.surgeCap ?? 0.8) : 0.6;
+const recovery = new Set(MODE.mode === "dip" ? (MODE.targets ?? []) : []);
+// the hottest surges + climbers only (3 each normally, more in surge mode), so sisters never eat the whole Bing quota
+const hot = [...surges.filter((x) => x.kind === "page").slice(0, SIS_TOP), ...rising.slice(0, SIS_TOP)].map((x) => x.key), sisterOf = new Map();
 { const keys = hot.flatMap((h) => sisKeys(h).map((k) => [k, h]));
   if (keys.length) for (const q of lastmod.keys()) { if (surgePage.has(q) || risePage.has(q)) continue; const hit = keys.find(([k]) => sisMatch(k, q)); if (hit) sisterOf.set(q, hit[1]); } }
-const boost = (p) => (surgePage.has(p) ? 4 : risePage.has(p) ? 2.5 : sisterOf.has(p) ? 2 : surgeFam.has(family(p)) ? 1.5 : 1);
+// FOCUS BRANCHES the core built (data/machines/spawned.json): their pages ×boost while the branch is alive
+const FOCUS = (() => { try { return JSON.parse(fs.readFileSync("data/machines/spawned.json", "utf8")).branches.filter((b) => b.state === "alive"); } catch { return []; } })();
+const focusMul = (p) => { for (const b of FOCUS) if (p === b.target || p.startsWith(b.target.endsWith("/") ? b.target : b.target + "/") || p.startsWith(b.target + "-")) return b.boost; return 1; };
+const boost0 = (p) => (surgePage.has(p) ? 4 : risePage.has(p) ? 2.5 : sisterOf.has(p) ? 2 : surgeFam.has(family(p)) ? 1.5 : 1);
+const boost = (p) => boost0(p) * focusMul(p);
 // AI RADAR (11-10, scripts/ai-radar.mjs): pages that should win an AI answer but don't (absent ×2), are being cited (×1.5,
 // keep fresh) or just WON a question (×3, go all in). Multipliers are learned by the radar from its own verdicts.
 const radar = (() => { try { return JSON.parse(fs.readFileSync("data/radar/boost.json", "utf8")).pages || {}; } catch { return {}; } })();
@@ -267,12 +276,12 @@ const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
 const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY, evDue = ev && NOW - last > 2 * DAY;
-  const old = bingOld(p) && NOW - last > DAY, hotP = surgePage.has(p) && NOW - last > 6 * 3.6e6, riseP = risePage.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
-  return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * weekMul(x.fam) * trendMul(x.fam), conf: x.conf, fam: x.fam, why: hotP ? "SURGE" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+  const old = bingOld(p) && NOW - last > DAY, hotP = surgePage.has(p) && NOW - last > 6 * 3.6e6, riseP = risePage.has(p) && NOW - last > 2 * DAY, recP = recovery.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
+  return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * weekMul(x.fam) * trendMul(x.fam), conf: x.conf, fam: x.fam, why: hotP ? "SURGE" : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).filter((q) => q.why && !SKIP.test(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
-const urgent = (q) => (q.why === "SURGE" || q.why === "RADAR won" ? 3 : q.why === "RISING" || q.why.startsWith("SISTER") ? 2 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
+const urgent = (q) => (q.why === "SURGE" || q.why === "RADAR won" ? 3 : q.why === "RISING" || q.why === "RECOVERY" || q.why.startsWith("SISTER") ? 2 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
 const rank = (a, b) => urgent(b) - urgent(a) || b.value - a.value;
 const exploit = [...queue].sort(rank);
 const seenFam = new Set(), explore = [];
@@ -289,7 +298,7 @@ if (process.env.BING_API_KEY && queue.length) {
   const quota = await fetch(api("GetUrlSubmissionQuota") + `&siteUrl=${encodeURIComponent(SITE + "/")}`).then((r) => r.json()).then((j) => j.d?.DailyQuota ?? 0).catch(() => 0);
   // paced over the day (it runs hourly): releases due go at once, the rest share what is left of today's quota over the hours
   // left, so pages created later today (a fresh release, a new recap) still find room
-  const hoursLeft = Math.max(1, 24 - new Date().getUTCHours()), due = queue.filter((q) => urgent(q) >= 2).length;
+  const hoursLeft = Math.max(1, 24 - new Date().getUTCHours()), due = Math.min(queue.filter((q) => urgent(q) >= 2).length, Math.round(quota * URG_CAP)); // urgent goes now but never spends the whole day (11-11: 61 at 01:16 left 0 for later surges)
   const batch = pick(Math.min(quota, Math.max(Math.min(due, quota), Math.ceil(quota / hoursLeft))));
   if (batch.length) {
     const r = await fetch(api("SubmitUrlBatch"), { method: "POST", headers: { "content-type": "application/json; charset=utf-8" }, body: JSON.stringify({ siteUrl: SITE + "/", urlList: batch.map((q) => SITE + (q.p === "/" ? "" : q.p)) }) }).catch((e) => ({ status: String(e) }));
@@ -398,6 +407,7 @@ const plan = {
   truth: TRUTH && { at: TRUTH.at, ok: TRUTH.ok, problems: TRUTH.problems },
   surges: surges.slice(0, 15),
   rising: rising.slice(0, 15),
+  mode: { mode: MODE.mode, sisterTop: SIS_TOP, urgentCap: URG_CAP, recovery: recovery.size },
   sisters: [...sisterOf].slice(0, 40).map(([p, of]) => ({ p, of })),
   releaseLift: { global: LIFT, byRelease: famLift },
   trends: T_ON ? trends.slice(0, 20) : "warming up (needs 28 days of reads)",
