@@ -282,6 +282,8 @@ if (uncovered.length) watch.push(`Read but never clicked, and no hook test cover
 if (radar.sov != null) watch.push(`AI answers mention CRTLAB in ${Math.round(radar.sov * 100)}% of buyer questions.`);
 if (liveLose[0]) watch.push(`${liveLose[0].fetches} people got ${liveLose[0].p} through ChatGPT this week and none clicked.`);
 if (liveWin[0]) good.push(`${liveWin[0].p}: ${liveWin[0].clicks} of ${liveWin[0].fetches} ChatGPT askers clicked — ×${liveWin[0].lift} the site rate.`);
+// the other brains talk to this one (data/brains/index.json): their alerts lead the traffic briefing too
+{ const peers = J("data/brains/index.json", { brains: [] }).brains ?? []; const heard = peers.filter((p) => p.mode && p.mode !== "Normal").map((p) => `${p.name}: ${p.mode}`); if (heard.length) watch.unshift(`Other brains: ${heard.join(" · ")}`); }
 for (const b of alive().slice(0, 4)) next.push(`${b.kind} branch on ${b.target}: ${b.why}.`);
 if (!alive().length) next.push("No branch alive yet — the brain builds its first ones as signals clear the neuron bar.");
 const conclusion = lead.id === "breakout" ? `Breakout, Kai: ${lead.why}.` : lead.id === "stall" ? "Read but not clicked: AI is reading us more than it sends people. The brain is putting the hook tests on the most-read pages." : lead.id === "dip" ? "Quiet one: real visitors are under normal, so the brain is pushing the pages that already convert." : lead.id === "event" ? `Event mode: ${lead.why}.` : `Hunting: ${alive().length} branches alive, ${Object.keys(brain.w).length} neurons learning.`;
