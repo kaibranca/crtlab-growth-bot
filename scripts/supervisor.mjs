@@ -76,6 +76,8 @@ if (men && (men.sources?.length ?? 0) < 5) fix.push("word of mouth is near zero 
 // 2. machine-level failures they log themselves: Bing sends not accepted, mentions eyes that errored, truth contradictions
 // Each mistake is counted per step over 7 days (data/machines/mistakes.jsonl), so a one-off is "once", a repeat is "REPEATING".
 const mistakes = [];
+/** newest SUCCESSFUL run per workflow name (11-11): a failure followed by a green run of the same workflow is fixed, not "repeating" */
+const lastGreen = {};
 const REPO = process.env.GITHUB_REPOSITORY || "kaibranca/crtlab-growth-bot", GH = { accept: "application/vnd.github+json", ...(process.env.GH_TOKEN ? { authorization: `Bearer ${process.env.GH_TOKEN}` } : {}) };
 // 11-11: the daily data pull lives in crtlab-backtester — it failed 3× on 11-10 and 11-11 and the supervisor never saw it
 // (it only read this repo). Watched repos: this one (github.token) + the backtester (GH_WATCH_TOKEN = the cron worker's PAT).
@@ -88,6 +90,7 @@ for (const [REPO, GH] of WATCH) try {
     r.workflow_runs.push(...x.workflow_runs); if (x.workflow_runs.length < 100) break; }
   if (!Array.isArray(r.workflow_runs)) throw new Error(r.message ?? "no runs in answer"); // never read "can't see" as "all fine"
   for (const run of (r.workflow_runs ?? []).filter((w) => w.status === "completed")) {
+    if (run.conclusion === "success" && (!lastGreen[run.name] || run.updated_at > lastGreen[run.name])) lastGreen[run.name] = run.updated_at;
     if (run.conclusion === "success") { // a green run can still hide a quietly failed step
       const jb = await fetch(run.jobs_url, { headers: GH }).then((x) => x.json()).catch(() => ({}));
       for (const j of jb.jobs ?? []) for (const st of j.steps ?? []) if (st.conclusion === "failure") mistakes.push({ where: `${run.name} → ${st.name}`, what: "step failed (run continued)", at: st.completed_at ?? run.updated_at, url: run.html_url });
@@ -108,7 +111,7 @@ for (const r of readLines("data/ai/runs.jsonl").filter((r) => NOW - Date.parse(r
 for (const l of men?.log ?? []) mistakes.push({ where: "Mentions machine", what: l, at: men.at });
 const MK = "data/machines/mistakes.jsonl", seenM = new Set(readLines(MK).map((m) => m.where + "|" + m.at));
 for (const m of mistakes) if (!seenM.has(m.where + "|" + m.at)) append(MK, m);
-const week = readLines(MK).filter((m) => NOW - Date.parse(m.at) < 7 * DAY), per = {};
+const week = readLines(MK).filter((m) => NOW - Date.parse(m.at) < 7 * DAY && !(lastGreen[m.where] && m.at < lastGreen[m.where])), per = {};
 for (const m of week) (per[m.where] ??= []).push(m);
 const mistakeRows = Object.entries(per).map(([where, xs]) => ({ where, n: xs.length, last: xs.at(-1).what, at: xs.at(-1).at, repeating: xs.length >= 3, url: xs.at(-1).url ?? null })).sort((a, b) => b.n - a.n);
 for (const m of mistakeRows.filter((x) => x.repeating)) fix.push(`${m.where} failed ${m.n}× this week (last: ${m.last})`);
