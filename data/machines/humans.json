@@ -1,26 +1,26 @@
 {
- "at": "2026-11-11T15:02:40.089Z",
+ "at": "2026-11-11T15:18:25.336Z",
  "visitors": {
-  "now": 51,
-  "normal": 76.9,
-  "ratio": 0.66,
-  "z": -0.9
+  "now": 50,
+  "normal": 76.8,
+  "ratio": 0.65,
+  "z": -1
  },
  "signups": {
-  "now": 13,
+  "now": 12,
   "normal": 15.6,
-  "ratio": 0.83,
-  "z": -0.4
+  "ratio": 0.77,
+  "z": -0.5
  },
  "state": "dip",
  "why": [
-  "device desktop: 31 vs ~58.9/day",
+  "device desktop: 31 vs ~58.8/day",
   "landing home: 24 vs ~43.5/day",
   "source Direct: 36 vs ~54.9/day",
-  "landing /backtest pages: 7 vs ~10.5/day"
+  "landing /backtest pages: 6 vs ~10.5/day"
  ],
  "gainers": [
-  "device mobile: 20 vs ~17/day",
+  "device mobile: 19 vs ~17/day",
   "country US: 11 vs ~9.2/day",
   "country PK: 4 vs ~3.2/day"
  ],
@@ -29,10 +29,10 @@
    "dim": "device",
    "seg": "desktop",
    "now": 31,
-   "normal": 58.9,
+   "normal": 58.8,
    "ratio": 0.53,
    "z": -1.1,
-   "gap": -27.9
+   "gap": -27.8
   },
   {
    "dim": "landing",
@@ -55,29 +55,38 @@
   {
    "dim": "landing",
    "seg": "/backtest pages",
-   "now": 7,
+   "now": 6,
    "normal": 10.5,
-   "ratio": 0.67,
-   "z": -0.8,
-   "gap": -3.5
+   "ratio": 0.57,
+   "z": -1,
+   "gap": -4.5
+  },
+  {
+   "dim": "source",
+   "seg": "Google",
+   "now": 2,
+   "normal": 5.8,
+   "ratio": 0.35,
+   "z": -1,
+   "gap": -3.8
   },
   {
    "dim": "country",
    "seg": "IN",
    "now": 6,
-   "normal": 9.2,
-   "ratio": 0.65,
+   "normal": 9.1,
+   "ratio": 0.66,
    "z": -1.1,
-   "gap": -3.2
+   "gap": -3.1
   },
   {
-   "dim": "source",
-   "seg": "Google",
+   "dim": "country",
+   "seg": "GB",
    "now": 3,
-   "normal": 5.8,
-   "ratio": 0.52,
-   "z": -0.8,
-   "gap": -2.8
+   "normal": 5.9,
+   "ratio": 0.51,
+   "z": -0.3,
+   "gap": -2.9
   },
   {
    "dim": "landing",
@@ -92,10 +101,10 @@
    "dim": "source",
    "seg": "AI answers",
    "now": 8,
-   "normal": 10.3,
+   "normal": 10.2,
    "ratio": 0.78,
    "z": -0.6,
-   "gap": -2.3
+   "gap": -2.2
   },
   {
    "dim": "country",
@@ -108,15 +117,6 @@
   },
   {
    "dim": "country",
-   "seg": "GB",
-   "now": 4,
-   "normal": 5.8,
-   "ratio": 0.69,
-   "z": -0.2,
-   "gap": -1.8
-  },
-  {
-   "dim": "country",
    "seg": "DE",
    "now": 1,
    "normal": 2.1,
@@ -125,21 +125,21 @@
    "gap": -1.1
   },
   {
-   "dim": "landing",
-   "seg": "other pages",
-   "now": 5,
-   "normal": 6,
-   "ratio": 0.83,
-   "z": -0.6,
-   "gap": -1
-  },
-  {
    "dim": "source",
    "seg": "Bing",
    "now": 3,
    "normal": 3.9,
    "ratio": 0.76,
    "z": -0.4,
+   "gap": -0.9
+  },
+  {
+   "dim": "landing",
+   "seg": "other pages",
+   "now": 5,
+   "normal": 5.9,
+   "ratio": 0.84,
+   "z": -0.5,
    "gap": -0.9
   },
   {
@@ -172,11 +172,11 @@
   {
    "dim": "device",
    "seg": "mobile",
-   "now": 20,
+   "now": 19,
    "normal": 17,
-   "ratio": 1.18,
-   "z": 0.5,
-   "gap": 3
+   "ratio": 1.12,
+   "z": 0.3,
+   "gap": 2
   }
  ]
 }

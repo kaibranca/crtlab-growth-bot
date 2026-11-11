@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T15:04:29.522Z",
+ "at": "2026-11-11T15:19:58.070Z",
  "ok": 12,
  "total": 12,
  "status": [
@@ -41,7 +41,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 0.7,
+   "lastRunH": 1,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -53,7 +53,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 6.9,
+   "lastRunH": 7.2,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -64,7 +64,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 8.4,
+   "lastRunH": 8.6,
    "everyH": 24,
    "kpi": null
   },
@@ -72,7 +72,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 8.4,
+   "lastRunH": 8.6,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -83,7 +83,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 8.3,
+   "lastRunH": 8.5,
    "everyH": 24,
    "kpi": null
   },
@@ -91,7 +91,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 8.4,
+   "lastRunH": 8.6,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -102,7 +102,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 1.5,
+   "lastRunH": 1.7,
    "everyH": 1,
    "kpi": null
   },
@@ -133,8 +133,8 @@
   {
    "move": "climbing",
    "what": "/news/cpi/gold",
-   "why": "288 reads in 3 days vs ~18.5",
-   "z": 62.7
+   "why": "288 reads in 3 days vs ~18.4",
+   "z": 62.8
   },
   {
    "move": "climbing",
@@ -181,23 +181,30 @@
   {
    "move": "climbing",
    "what": "/economic-calendar/us-cpi-seasonally-adjusted",
-   "why": "31 reads in 3 days vs ~1.6",
-   "z": 23.5
-  },
-  {
-   "move": "climbing",
-   "what": "/news/cpi-2026-10-14",
-   "why": "27 reads in 3 days vs ~2",
-   "z": 17.9
+   "why": "29 reads in 3 days vs ~2.4",
+   "z": 17.4
   },
   {
    "move": "climbing",
    "what": "/economic-calendar/us-core-inflation-rate-yoy",
    "why": "20 reads in 3 days vs ~1.2",
    "z": 17.3
+  },
+  {
+   "move": "climbing",
+   "what": "/news/cpi-2026-10-14",
+   "why": "26 reads in 3 days vs ~2.4",
+   "z": 15.4
   }
  ],
  "ledger": [
+  {
+   "at": "2026-11-11T15:04:29.621Z",
+   "key": "spawn|cost-web-too-many-deploys|born",
+   "machine": "core",
+   "kind": "lesson",
+   "what": "built a cost branch: web too many deploys (13 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration))"
+  },
   {
    "at": "2026-11-11T15:02:40.165Z",
    "key": "surge|/economic-calendar/us-initial-jobless-claims|2026-11-11",
@@ -400,13 +407,6 @@
    "machine": "ai",
    "kind": "surge",
    "what": "/news/cpi-2026-10-14 surged (16 vs 1.8/day)"
-  },
-  {
-   "at": "2026-11-10T23:52:55.316Z",
-   "key": "surge|/gold-volume-profile|2026-11-10",
-   "machine": "ai",
-   "kind": "surge",
-   "what": "/gold-volume-profile surged (41 vs 4.8/day)"
   }
  ],
  "fix": [
