@@ -1,66 +1,66 @@
 {
- "at": "2026-11-11T06:34:36.299Z",
+ "at": "2026-11-11T06:41:29.385Z",
  "model": "gpt-5.4-mini",
- "sov": 0.02,
+ "sov": 0.014,
  "clusters": {
   "free": {
-   "share": 0.013886667853279022,
+   "share": 0.010240210436274884,
    "cited": 0,
    "first": 0,
    "n": 6.8,
    "value": 26.04
   },
   "replay": {
-   "share": 0.0297025185428494,
+   "share": 0.021900234531022203,
    "cited": 0,
    "first": 0,
    "n": 0,
    "value": 2.83
   },
   "ict": {
-   "share": 0.0297025185428494,
+   "share": 0.021900234531022203,
    "cited": 0,
    "first": 0,
    "n": 0,
    "value": 2.24
   },
   "prop": {
-   "share": 0.0297025185428494,
+   "share": 0.013140105591270792,
    "cited": 0,
    "first": 0,
-   "n": 0,
+   "n": 4,
    "value": 3.16
   },
   "flow": {
-   "share": 0.017821450097288225,
+   "share": 0.013141353652488311,
    "cited": 0,
    "first": 0,
    "n": 4,
    "value": 5.66
   },
   "gold": {
-   "share": 0.0297025185428494,
+   "share": 0.021900234531022203,
    "cited": 0,
    "first": 0,
    "n": 0,
    "value": 2.45
   },
   "news": {
-   "share": 0.02545924766550858,
+   "share": 0.014600485648922808,
    "cited": 0,
    "first": 0,
-   "n": 1,
+   "n": 3,
    "value": 3.32
   },
   "stats": {
-   "share": 0.0297025185428494,
+   "share": 0.021900234531022203,
    "cited": 0,
    "first": 0,
    "n": 0,
    "value": 2.83
   },
   "data": {
-   "share": 0.0297025185428494,
+   "share": 0.021900234531022203,
    "cited": 0,
    "first": 0,
    "n": 0,
@@ -268,7 +268,97 @@
     ]
    }
   ],
-  "news": []
+  "news": [],
+  "prop": [
+   {
+    "name": "PropFirmSim",
+    "n": 1,
+    "first": 1,
+    "free": 0,
+    "share": 0.25,
+    "freeShare": 0,
+    "reasons": [
+     "Lists as an example prop firm challenge simulator with demo-style rules."
+    ]
+   },
+   {
+    "name": "FTMO Free Trial",
+    "n": 1,
+    "first": 1,
+    "free": 1,
+    "share": 0.25,
+    "freeShare": 1,
+    "reasons": [
+     "FTMO free simplified trial for practicing FTMO Challenge rules"
+    ]
+   },
+   {
+    "name": "TerraTrade (prop firm simulator)",
+    "n": 1,
+    "first": 0,
+    "free": 0,
+    "share": 0.25,
+    "freeShare": 0,
+    "reasons": [
+     "Mentioned as another prop firm challenge simulator option."
+    ]
+   },
+   {
+    "name": "TradesViz (challenge mode)",
+    "n": 1,
+    "first": 0,
+    "free": 0,
+    "share": 0.25,
+    "freeShare": 0,
+    "reasons": [
+     "Included as an example prop firm challenge simulator."
+    ]
+   },
+   {
+    "name": "ScaleEdge (free simulator)",
+    "n": 1,
+    "first": 0,
+    "free": 1,
+    "share": 0.25,
+    "freeShare": 1,
+    "reasons": [
+     "Called out as a free prop firm challenge simulator option."
+    ]
+   },
+   {
+    "name": "OANDA (virtual challenge environment)",
+    "n": 1,
+    "first": 0,
+    "free": 0,
+    "share": 0.25,
+    "freeShare": 0,
+    "reasons": [
+     "Mentioned as a virtual environment for challenge-style trading."
+    ]
+   },
+   {
+    "name": "propfirmsim.eu",
+    "n": 1,
+    "first": 0,
+    "free": 0,
+    "share": 0.25,
+    "freeShare": 0,
+    "reasons": [
+     "Link provided to a tools page for prop firm challenge simulators."
+    ]
+   },
+   {
+    "name": "propfirmsim.com",
+    "n": 1,
+    "first": 0,
+    "free": 0,
+    "share": 0.25,
+    "freeShare": 0,
+    "reasons": [
+     "Link provided to FAQ describing simulators as demo/virtual environments."
+    ]
+   }
+  ]
  },
  "gaps": [
   {
@@ -389,14 +479,14 @@
   {
    "q": "How to backtest trading around news releases like CPI and NFP",
    "ourPage": "/backtest-with-news",
-   "p": 0.02,
+   "p": 0.01,
    "diag": "not found",
    "winners": []
   }
  ],
  "wrong": [],
  "events": [],
- "boost": 5,
+ "boost": 10,
  "kinds": {
   "unseen": 2.5,
   "unchosen": 1.2,
@@ -405,6 +495,6 @@
  },
  "verdicts": [],
  "questions": 47,
- "monthCost": 0.24,
+ "monthCost": 0.33,
  "budget": 2.5
 }

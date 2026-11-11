@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T06:34:36.299Z",
+ "at": "2026-11-11T06:41:29.385Z",
  "note": "Questions where CRTLAB is usually NOT recommended: who wins, with what claim, and the CRTLAB page that should win. Build list for Claude sessions (new pages need Kai's OK).",
  "gaps": [
   {
@@ -361,9 +361,144 @@
    "cluster": "news",
    "ourPage": "/backtest-with-news",
    "value": 3.32,
-   "p": 0.02,
+   "p": 0.01,
    "winners": [],
    "winningDomains": [],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "how-does-gold-react-to-cpi-releases",
+   "q": "How does gold react to CPI releases?",
+   "cluster": "news",
+   "ourPage": "/news/cpi/gold",
+   "value": 3.32,
+   "p": 0.01,
+   "winners": [],
+   "winningDomains": [
+    "federalreserve.gov",
+    "sciencedirect.com"
+   ],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "how-does-nas100-react-to-nfp",
+   "q": "How does NAS100 react to NFP?",
+   "cluster": "news",
+   "ourPage": "/news/nfp/nas100",
+   "value": 3.32,
+   "p": 0.01,
+   "winners": [],
+   "winningDomains": [
+    "bls.gov",
+    "federalreserve.gov"
+   ],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "how-can-i-practise-for-a-prop-firm-challenge-before-paying",
+   "q": "How can I practise for a prop firm challenge before paying?",
+   "cluster": "prop",
+   "ourPage": "/prop-firm-backtesting",
+   "value": 3.16,
+   "p": 0.01,
+   "winners": [],
+   "winningDomains": [],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "is-there-a-prop-firm-challenge-simulator",
+   "q": "Is there a prop firm challenge simulator?",
+   "cluster": "prop",
+   "ourPage": "/prop-firm-challenge-simulator",
+   "value": 3.16,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "PropFirmSim",
+     "r": 1,
+     "why": "Lists as an example prop firm challenge simulator with demo-style rules.",
+     "$": ""
+    },
+    {
+     "n": "TerraTrade (prop firm simulator)",
+     "r": 2,
+     "why": "Mentioned as another prop firm challenge simulator option.",
+     "$": ""
+    },
+    {
+     "n": "TradesViz (challenge mode)",
+     "r": 3,
+     "why": "Included as an example prop firm challenge simulator.",
+     "$": ""
+    },
+    {
+     "n": "ScaleEdge (free simulator)",
+     "r": 4,
+     "why": "Called out as a free prop firm challenge simulator option.",
+     "$": "free"
+    }
+   ],
+   "winningDomains": [
+    "propfirmsim.eu",
+    "propfirmsim.com"
+   ],
+   "diag": "found, not chosen",
+   "fix": "content: winners say \"Lists as an example prop firm challenge simulator with demo-style rules.\" / \"Mentioned as another prop firm challenge simulator option.\" — our page must answer that"
+  },
+  {
+   "id": "how-to-practise-for-the-ftmo-challenge-for-free",
+   "q": "How to practise for the FTMO challenge for free",
+   "cluster": "prop",
+   "ourPage": "/ftmo-challenge-simulator",
+   "value": 3.16,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "FTMO Free Trial",
+     "r": 1,
+     "why": "FTMO free simplified trial for practicing FTMO Challenge rules",
+     "$": "free plan (14 days)"
+    },
+    {
+     "n": "Account MetriX",
+     "r": 2,
+     "why": "FTMO tool accessible during the Free Trial",
+     "$": ""
+    },
+    {
+     "n": "Trading Journal",
+     "r": 3,
+     "why": "FTMO tool accessible during the Free Trial",
+     "$": ""
+    },
+    {
+     "n": "Account Analysis",
+     "r": 4,
+     "why": "Shortened FTMO Account Analysis available in Free Trial",
+     "$": ""
+    }
+   ],
+   "winningDomains": [
+    "ftmo.com"
+   ],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "best-way-to-prepare-for-a-funded-trader-challenge",
+   "q": "Best way to prepare for a funded trader challenge",
+   "cluster": "prop",
+   "ourPage": "/prop-firm-backtesting",
+   "value": 3.16,
+   "p": 0.01,
+   "winners": [],
+   "winningDomains": [
+    "cftc.gov"
+   ],
    "diag": "not found",
    "fix": "indexing: push our page to Bing"
   }
