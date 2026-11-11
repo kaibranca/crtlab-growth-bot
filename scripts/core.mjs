@@ -161,7 +161,7 @@ for (const [f, days, cap] of BIN) { if (!fs.existsSync(f)) continue; const befor
   const body = keep.map((x) => JSON.stringify(x)).join("\n") + (keep.length ? "\n" : ""); if (body.length < before) { fs.writeFileSync(f, body); freed += before - body.length; } }
 for (const d of ["data/watchdog", "data/load", "data/health"]) if (fs.existsSync(d)) for (const f of fs.readdirSync(d).filter((x) => /^\d{4}-\d{2}\.jsonl$/.test(x)))
   if (Date.parse(f.slice(0, 7) + "-01T00:00:00Z") < NOW - 100 * DAY) { freed += fs.statSync(`${d}/${f}`).size; fs.unlinkSync(`${d}/${f}`); }
-if (freed > 0) feed.unshift({ t: new Date().toISOString(), m: "bin", text: `threw out ${(freed / 1024).toFixed(0)} KB nobody reads`, kind: "do" });
+if (freed >= 1024) feed.unshift({ t: new Date().toISOString(), m: "bin", text: `threw out ${(freed / 1024).toFixed(0)} KB nobody reads`, kind: "do" });
 
 // ── 3d. CAPACITY: from the chart-data server's own hourly load counters (data/load) — peak requests in flight, memory,
 // requests shed. A real "how many at once" number needs a load test; this watches the live margin and warns early.
@@ -233,31 +233,34 @@ const LV = { critical: 3, warn: 2, good: 1, info: 0 }; modes.sort((a, b) => LV[b
 // Written from the numbers above, never invented. Its KEY = mode + the top items; when the key changes, `changed` moves,
 // and the page marks the briefing as updated. The greeting itself is set by the page from Kai's own clock.
 const pct = (x) => `${x >= 0 ? "+" : ""}${Math.round(x * 100)}%`;
+// Written the way Kai talks: short, plain, most important first. Every line is a number the machines measured.
 const good = [], watch = [], next = [];
-if (mode === "surge") good.push(`AI assistants read CRTLAB ${(r24 / Math.max(1, mu)).toFixed(1)}× more than normal in the last 24 h (${r24} reads vs ~${Math.round(mu)}/day).`);
-for (const x of (ai.surges ?? []).filter((y) => y.kind === "page").slice(0, 3)) good.push(`${x.key} is surging: ${x.last24h} reads in 24 h vs ~${x.normal}/day.`);
-for (const x of (ai.rising ?? []).slice(0, 2)) good.push(`${x.key} is climbing: ${x.last3d} reads in 3 days vs ~${x.normal3d} normally.`);
-for (const st of sup?.status ?? []) if (st.kpi?.change != null && st.kpi.change >= 0.15 && st.kpi.before >= 5) good.push(`${st.kpi.label}: ${st.kpi.now} this week, ${pct(st.kpi.change)} on last week.`);
-for (const l of readLines("data/machines/ledger.jsonl").filter((x) => x.kind === "win" && NOW - Date.parse(x.at) < DAY).slice(-2)) good.push(l.what);
-for (const f of men?.fresh ?? []) good.push(`New outside mention: ${f.where}.`);
+const xN = r24 / Math.max(1, mu);
+if (xN >= 1.5) good.push(`ChatGPT and co. are reading CRTLAB ${xN.toFixed(1)}× more than normal — ${r24} reads in 24 h vs ~${Math.round(mu)} a day.`);
+for (const x of (ai.surges ?? []).filter((y) => y.kind === "page").slice(0, 4)) good.push(`${x.key} is flying: ${x.last24h} reads today vs ~${x.normal} normally.`);
+for (const x of (ai.rising ?? []).slice(0, 3)) good.push(`${x.key} is climbing: ${x.last3d} reads in 3 days, normally ~${x.normal3d}.`);
+for (const st of sup?.status ?? []) if (st.kpi?.change != null && st.kpi.change >= 0.15 && st.kpi.before >= 5) good.push(`${st.kpi.label} up ${pct(st.kpi.change)} on last week (${st.kpi.now}).`);
+for (const l of readLines("data/machines/ledger.jsonl").filter((x) => x.kind === "win" && NOW - Date.parse(x.at) < DAY).slice(-2)) good.push(`Win: ${l.what}.`);
+for (const f of men?.fresh ?? []) good.push(`Someone mentioned CRTLAB: ${f.where}.`);
 const bad = nodes.filter((n) => n.state === "stopped" || n.state === "late");
-for (const m of modes.filter((x) => x.level === "critical" || (x.level === "warn" && x.id !== "dip"))) watch.unshift(`${m.label}: ${m.why}`);
-if (bad.length) watch.push(`${bad.map((n) => n.name).join(", ")} ${bad.length === 1 ? "is" : "are"} behind schedule.`);
-for (const st of sup?.status ?? []) if (st.kpi?.change != null && st.kpi.change <= -0.2 && st.kpi.before >= 5 && !st.kpi.lowerBetter) watch.push(`${st.kpi.label}: ${st.kpi.now} this week, ${pct(st.kpi.change)} on last week.`);
+for (const m of modes.filter((x) => x.level === "critical" || (x.level === "warn" && x.id !== "dip"))) watch.push(`${m.label}: ${m.why}.`);
+for (const st of sup?.status ?? []) if (st.kpi?.change != null && st.kpi.change <= -0.2 && st.kpi.before >= 5 && !st.kpi.lowerBetter) watch.push(`${st.kpi.label} down ${Math.abs(Math.round(st.kpi.change * 100))}% on last week (${st.kpi.now} vs ${st.kpi.before}). More readers, fewer sign-ups — that's the leak to look at.`);
+if (bad.length) watch.push(`${bad.map((n) => n.name).join(", ")} ${bad.length === 1 ? "is" : "are"} behind.`);
 for (const m of (sup?.mistakes ?? []).filter((x) => x.repeating)) watch.push(`${m.where} keeps failing (${m.n}× this week).`);
-if (mode === "dip") watch.push(`AI reads are below normal (${r24} vs ~${Math.round(mu)}/day) — recovery mode is re-sending the proven pages.`);
-if (mode === "surge") next.push(`Surge mode: urgent pages may take ${Math.round(P.surgeCap * 100)}% of today's Bing quota, and the ${P.sisterTop} hottest pages lift their sister pages.`);
-if (mode === "dip") next.push(`Recovery mode: the ${P.recoveryN} best pages are re-sent to Bing first until reads recover.`);
+if (mode === "dip") watch.push(`Reads are down (${r24} vs ~${Math.round(mu)} a day). Recovery is on: the proven pages get pushed first.`);
+if ((men?.sources?.length ?? 0) < 5) watch.push("Nobody outside links to CRTLAB yet — word of mouth is basically zero.");
+if (mode === "surge") next.push(`Surge mode: the hottest pages get up to ${Math.round(P.surgeCap * 100)}% of today's Bing sends, and the top ${P.sisterTop} pull their sister pages up with them.`);
+if (mode === "dip") next.push(`Recovery: the ${P.recoveryN} best pages go back to Bing first until reads come back.`);
 { const up = (J("data/events/upcoming.json", { events: [] }).events ?? []).filter((e) => e.t > NOW && e.t < NOW + 3 * DAY && e.imp >= 2 && e.fam);
   const seen = new Set(); for (const e of up) { if (seen.has(e.fam)) continue; seen.add(e.fam); if (seen.size > 3) break;
-    next.push(`${e.title} (${e.cur}) on ${new Date(e.t).toUTCString().slice(0, 11)} — its pages go to Bing ahead of the questions.`); } }
-for (const b of (spawned.branches ?? []).filter((x) => x.state === "alive").slice(0, 2)) next.push(`The core is running a focus branch on ${b.target} (${b.why}).`);
-const conclusion = mode === "surge" ? `A strong stretch: ${good.length ? "demand is well above normal and" : ""} the machines are pushing the hottest pages harder.${watch.length ? " One thing to watch below." : " Nothing is broken."}`
-  : mode === "dip" ? `A quiet stretch: reads are below normal, so the machines are in recovery — proven pages first.${watch.length ? " See what to watch." : ""}`
-  : `Steady: ${eco0ok(nodes)} of ${nodes.length} machines alive and learning.${watch.length ? " A few things to watch." : " Nothing needs you."}`;
-function eco0ok(ns) { return ns.filter((n) => n.state === "ok").length; }
+    next.push(`${e.title} drops ${new Date(e.t).toUTCString().slice(0, 11)} — its pages are already queued for Bing before people ask.`); } }
+for (const b of (spawned.branches ?? []).filter((x) => x.state === "alive").slice(0, 2)) next.push(`Focus branch on ${b.target} is running (${b.why}).`);
+const topSurge = (ai.surges ?? []).find((y) => y.kind === "page");
+const conclusion = mode === "surge" ? `Big day. AI is reading CRTLAB ${xN.toFixed(1)}× normal${topSurge ? `, led by ${topSurge.key}` : ""}. The machines are all in on it.${watch.length ? " One thing needs you below." : ""}`
+  : mode === "dip" ? `Quiet day. Reads are under normal, so the machines switched to recovery and are pushing the pages that already work.`
+  : `Steady. ${nodes.filter((n) => n.state === "ok").length} of ${nodes.length} machines running and learning.${watch.length ? " A couple of things to look at." : " Nothing needs you."}`;
 const prevEco = J("data/machines/ecosystem.json"), bKey = [mode, ...good.slice(0, 3), ...watch.slice(0, 2)].join("|").replace(/\d+/g, "#");
-const briefing = { key: bKey, changed: prevEco?.briefing?.key === bKey ? prevEco.briefing.changed : new Date().toISOString(), headline: modeOut.why, good: good.slice(0, 6), watch: watch.slice(0, 5), next: next.slice(0, 5), conclusion };
+const briefing = { key: bKey, changed: prevEco?.briefing?.key === bKey ? prevEco.briefing.changed : new Date().toISOString(), headline: modeOut.why, good: good.slice(0, 10), watch: watch.slice(0, 6), next: next.slice(0, 6), conclusion };
 
 // ── 6. WIDGETS: the live numbers the page shows as tiles (all from files the machines already wrote)
 const today = iso(NOW), runsToday = readLines("data/ai/runs.jsonl").filter((r) => r.at.slice(0, 10) === today);
