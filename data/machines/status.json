@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T09:19:53.294Z",
+ "at": "2026-11-11T10:06:40.754Z",
  "ok": 12,
  "total": 12,
  "status": [
@@ -41,7 +41,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 1,
+   "lastRunH": 1.8,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -53,7 +53,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 1.2,
+   "lastRunH": 1.9,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -64,7 +64,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 2.6,
+   "lastRunH": 3.4,
    "everyH": 24,
    "kpi": null
   },
@@ -72,7 +72,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 2.6,
+   "lastRunH": 3.4,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -83,7 +83,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 2.5,
+   "lastRunH": 3.3,
    "everyH": 24,
    "kpi": null
   },
@@ -91,7 +91,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 2.6,
+   "lastRunH": 3.4,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -102,7 +102,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 1.7,
+   "lastRunH": 0.4,
    "everyH": 1,
    "kpi": null
   },
@@ -134,7 +134,7 @@
    "move": "surge",
    "what": "/news/cpi/gold",
    "why": "228 AI reads in 24 h vs ~10.5/day",
-   "z": 67
+   "z": 67.1
   },
   {
    "move": "surge",
@@ -169,8 +169,8 @@
   {
    "move": "climbing",
    "what": "/backtest-eurusd",
-   "why": "53 reads in 3 days vs ~3.2",
-   "z": 27.6
+   "why": "52 reads in 3 days vs ~3.6",
+   "z": 25.4
   },
   {
    "move": "climbing",
@@ -198,6 +198,13 @@
   }
  ],
  "ledger": [
+  {
+   "at": "2026-11-11T10:05:03.782Z",
+   "key": "surge|/economic-calendar/us-core-ppi-mom|2026-11-11",
+   "machine": "ai",
+   "kind": "surge",
+   "what": "/economic-calendar/us-core-ppi-mom surged (8 vs 0.5/day)"
+  },
   {
    "at": "2026-11-11T08:04:41.164Z",
    "key": "surge|/economic-calendar/us-inflation-rate-mom|2026-11-11",
