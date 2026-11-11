@@ -279,7 +279,10 @@ for (const S of BRAINS) try {
     briefing: { key: S.id + lead.id, changed: mem.episode.since, headline: `${S.name}: ${lead.label}`, good: good.slice(0, 8), watch, next, conclusion: `${lead.label === "Normal" ? "All steady" : lead.label}: ${lead.why}. Judged on ${out.label} (${out.v ?? "—"}).` },
     mode: { mode: lead.level === "critical" ? "dip" : "normal", since: mem.episode.since, why: lead.why, z: 0, r24: 0, normal: 0 },
     nodes, edges, feed: [...feed, ...mainFeed], totals: { machines: nodes.length, ok: nodes.filter((n) => n.state === "ok").length, late: nodes.filter((n) => n.state === "late").length, stopped: nodes.filter((n) => n.state === "stopped").length, actions24: feed.length + mainFeed.length },
-    widgets: main.widgets, rules: ["Judged on one outcome number; mode intensity learns from every episode", "Never touches the web server", "What no machine can fix is listed as an admin job"],
+    widgets: main.widgets, rules: [...Object.entries(W).filter(([, w]) => w.n >= 1).map(([k, w]) => `${k.replace(/-/g, " ")} problems ${w.v >= 0.6 ? "usually fix themselves" : w.v <= 0.35 ? "do NOT fix themselves → escalated to an admin" : "sometimes fix themselves"} (${w.v} after ${w.n})`),
+      ...Object.entries(mem.modes).filter(([, m]) => m.episodes >= 2).map(([id, m]) => `${id}: ${m.wins}/${m.episodes} periods better → intensity ×${m.intensity}`),
+      ...(S.id === "fixer" ? Object.entries(J("data/machines/fixer.json", {}).w ?? {}).map(([k, w]) => `${k} playbook: ${w.v >= 0.6 ? "works" : w.v <= 0.35 ? "doesn't work → stopped" : "mixed"} (${w.v} after ${w.n})`) : []),
+      "Judged on one outcome number; mode intensity learns from every episode", "A business event (a declined card, a cancel) is information, not an alarm", "Never touches the web server"],
     allIn: [], fix: watch.slice(0, 4), mistakes: [], ledger: [], episodes: [], score: main.score ?? [],
     spawned: BR.branches.slice(-12).map((b) => ({ id: b.id, target: b.target, state: b.state, born: b.born, why: b.why, verdict: b.state === "resolved" ? "resolved" : b.stuck ? `open ${b.stuck}×` : "measuring", ratio: b.now })),
     neurons: Object.entries(W).map(([k, w]) => ({ k, v: w.v, n: w.n })) };

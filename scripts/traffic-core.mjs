@@ -301,8 +301,18 @@ if (liveWin[0]) good.push(`${liveWin[0].p}: ${liveWin[0].clicks} of ${liveWin[0]
 for (const b of alive().slice(0, 4)) next.push(`${b.kind} branch on ${b.target}: ${b.why}.`);
 if (!alive().length) next.push("No branch alive yet — the brain builds its first ones as signals clear the neuron bar.");
 const conclusion = lead.id === "breakout" ? `Breakout, Kai: ${lead.why}.` : lead.id === "stall" ? "Read but not clicked: AI is reading us more than it sends people. The brain is putting the hook tests on the most-read pages." : lead.id === "dip" ? "Quiet one: real visitors are under normal, so the brain is pushing the pages that already convert." : lead.id === "event" ? `Event mode: ${lead.why}.` : `Hunting: ${alive().length} branches alive, ${Object.keys(brain.w).length} neurons learning.`;
+const RULE_NAME = { "surge→bing": "Bing-first on a page surging in AI reads", "convergence→bing": "Bing-first where 3+ signs meet", "event→prepush": "pre-pushing a big release's pages",
+  "page1bottom→rank": "rank-pushing page-1-bottom pages", "readnoclick→hook": "hook tests on read-but-not-clicked pages", "peoplenoclick→hook": "hook tests on pages people get but never click",
+  "peopleclick→bing": "Bing-first on pages people click through", "gap→factory": "asking the factory for a missing page", "rising→watch": "watching a rising outside source" };
+const ruleOf = (k, w) => { const name = RULE_NAME[k] ?? (k.startsWith("breakout:") ? `riding a ${k.split(":")[1].split("→")[0]} breakout` : k), n = w.n ?? 0;
+  if (!n) return w.prior ? `${name}: starts strong — ${w.prior} (prior, not yet judged here)` : null;
+  return `${name}: ${w.v >= 0.6 ? "PAYS" : w.v <= 0.35 ? "doesn't pay → used less" : "mixed"} (${w.v} after ${n} verdict${n > 1 ? "s" : ""})`; };
+// LEARNED RULES (the rules the brain builds for itself): every judged neuron, every learned lesson, every mode's record
+const learnedRules = [...Object.entries(brain.w).map(([k, w]) => ruleOf(k, w)).filter(Boolean),
+  ...Object.entries(brain.lessons).filter(([, L]) => L.n >= 1).map(([k, L]) => `${k.replace("event:", "release ")}${k === "event:*" ? " (any)" : ""} lifts AI reads ×${L.lift}${L.prior ? " (prior from the AI machine)" : ` over ${L.n} release${L.n > 1 ? "s" : ""}`}`),
+  ...Object.entries(brain.modes).filter(([, m]) => m.episodes >= 2).map(([id, m]) => `${id} mode: ${m.wins}/${m.episodes} episodes paid → pushes ×${m.intensity}`)];
 const eco = { at: iso(NOW), engine: "traffic", groups: GROUPS,
-  widgets: main.widgets, modes, rules: ["Every branch is judged on its own number; nothing is kept on faith", "A signal fires only above its neuron's bar (15% explore)", "Wrong redirects are worse than 404s", "No paid ads, no Reddit, no creator pitches — machines only"],
+  widgets: main.widgets, modes, rules: [...learnedRules, "Every branch is judged on its own number; nothing is kept on faith", "A signal fires only above its neuron's bar (15% explore)", "Wrong redirects are worse than 404s", "No paid ads, no Reddit, no creator pitches — machines only"], learnedRules,
   briefing: { key: lead.id + alive().length, changed: "", headline: `${lead.label} · ${alive().length} branches · ${Object.keys(brain.w).length} neurons`, good, watch, next, conclusion },
   mode: { mode: lead.id === "dip" ? "dip" : ["breakout", "surge"].includes(lead.id) ? "surge" : "normal", since: brain.episode.since, why: lead.why, z: chan.chatgpt?.z ?? 0, r24: chan.chatgpt?.reads24 ?? 0, normal: chan.chatgpt?.normal ?? 0 },
   nodes, edges, feed: tFeed, totals: { machines: nodes.length, ok: nodes.filter((n) => n.state === "ok").length, late: nodes.filter((n) => n.state === "late").length, stopped: nodes.filter((n) => n.state === "stopped").length, actions24: tFeed.length },
