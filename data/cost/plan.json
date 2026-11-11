@@ -2,10 +2,10 @@
  "heap": {
   "cap": 768,
   "stopped": false,
-  "samples": 10,
-  "note": "measuring heap (10/24 h, peak so far 266 MB)"
+  "samples": 11,
+  "note": "measuring heap (11/24 h, peak so far 266 MB)"
  },
- "at": "2026-11-11T21:21:25.662Z",
+ "at": "2026-11-11T22:02:17.787Z",
  "status": "over budget",
  "budget": 10,
  "weekPace": 21.9,
@@ -13,36 +13,36 @@
  "deploys": {
   "Postgres": 0,
   "data": 1,
-  "web": 15,
+  "web": 16,
   "ops": 12
  },
- "dayCost": 0.82,
+ "dayCost": 0.78,
  "avgDayCost": 0.73,
- "monthPace": 24.6,
+ "monthPace": 23.4,
  "services": [
   {
    "svc": "web",
-   "memGB": 1.29,
+   "memGB": 1.88,
    "normalGB": 0.72,
    "dayCost": 0.47,
    "avgDayCost": 0.41,
-   "monthPace": 14.13
+   "monthPace": 14.16
   },
   {
    "svc": "data",
-   "memGB": 0.26,
+   "memGB": 0.25,
    "normalGB": 0.18,
-   "dayCost": 0.22,
+   "dayCost": 0.18,
    "avgDayCost": 0.2,
-   "monthPace": 6.72
+   "monthPace": 5.54
   },
   {
    "svc": "Postgres",
-   "memGB": 0.48,
+   "memGB": 0.54,
    "normalGB": 0.38,
    "dayCost": 0.13,
    "avgDayCost": 0.12,
-   "monthPace": 3.9
+   "monthPace": 3.96
   },
   {
    "svc": "ops",
@@ -56,9 +56,20 @@
  "incidents": [
   {
    "svc": "web",
+   "memGB": 1.88,
+   "normalGB": 0.72,
+   "dayCost": 0.47,
+   "avgDayCost": 0.41,
+   "monthPace": 14.16,
+   "kind": "memory growth",
+   "rssGB": 0.205,
+   "why": "memory 1.88 GB vs ~0.72 GB normal"
+  },
+  {
+   "svc": "web",
    "kind": "too many deploys",
-   "n": 15,
-   "why": "15 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
+   "n": 16,
+   "why": "16 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
   }
  ],
  "actions": [],

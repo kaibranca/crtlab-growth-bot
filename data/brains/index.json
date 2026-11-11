@@ -1,0 +1,83 @@
+{
+ "at": "2026-11-11T22:03:41.628Z",
+ "brains": [
+  {
+   "id": "money",
+   "name": "Money brain",
+   "color": "#22ab94",
+   "mode": "Money alert",
+   "level": "critical",
+   "outcome": {
+    "label": "new paying customers / 7 d",
+    "v": 2,
+    "higher": true
+   },
+   "authority": 1
+  },
+  {
+   "id": "data",
+   "name": "Data brain",
+   "color": "#ff9800",
+   "mode": "Over budget",
+   "level": "warn",
+   "outcome": {
+    "label": "Railway $ / month pace",
+    "v": 23,
+    "higher": false
+   },
+   "authority": 1
+  },
+  {
+   "id": "security",
+   "name": "Security brain",
+   "color": "#f7525f",
+   "mode": "Normal",
+   "level": "info",
+   "outcome": {
+    "label": "attacks blocked / 24 h",
+    "v": 1878,
+    "higher": false
+   },
+   "authority": 1
+  },
+  {
+   "id": "content",
+   "name": "Content brain",
+   "color": "#ffd166",
+   "mode": "Normal",
+   "level": "info",
+   "outcome": {
+    "label": "AI clicks on factory pages (decayed)",
+    "v": 8.26,
+    "higher": true
+   },
+   "authority": 1
+  },
+  {
+   "id": "retention",
+   "name": "Retention brain",
+   "color": "#5b8cff",
+   "mode": "Normal",
+   "level": "info",
+   "outcome": {
+    "label": "% of a week's sign-ups back in week 2",
+    "v": 24,
+    "higher": true
+   },
+   "authority": 1
+  },
+  {
+   "id": "speed",
+   "name": "Speed brain",
+   "color": "#00c2a8",
+   "mode": "Slow charts",
+   "level": "warn",
+   "outcome": {
+    "label": "chart pages: slowest 10% load (s)",
+    "v": 6.34,
+    "higher": false
+   },
+   "authority": 1
+  }
+ ]
+}

@@ -1,7 +1,7 @@
 {
- "at": "2026-11-11T21:22:54.510Z",
+ "at": "2026-11-11T22:03:41.216Z",
  "ok": 51,
- "total": 52,
+ "total": 53,
  "hurting": [
   {
    "id": "hooks",
@@ -50,7 +50,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 0.3,
+   "lastRunH": 1,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -62,7 +62,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 13.2,
+   "lastRunH": 13.9,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -73,7 +73,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 14.7,
+   "lastRunH": 15.4,
    "everyH": 24,
    "kpi": null
   },
@@ -81,7 +81,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 14.7,
+   "lastRunH": 15.3,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -92,7 +92,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 14.6,
+   "lastRunH": 15.3,
    "everyH": 24,
    "kpi": null
   },
@@ -100,7 +100,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 14.7,
+   "lastRunH": 15.4,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -111,7 +111,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 1.8,
+   "lastRunH": 0.3,
    "everyH": 1,
    "kpi": null
   },
@@ -317,10 +317,19 @@
    "from": "core"
   },
   {
+   "id": "traffic-brain",
+   "name": "Traffic brain ↗",
+   "state": "STOPPED",
+   "lastRunH": null,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
    "id": "seo",
    "name": "Search console",
    "state": "ok",
-   "lastRunH": 55.5,
+   "lastRunH": 55.8,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -329,7 +338,7 @@
    "id": "news",
    "name": "News engine",
    "state": "ok",
-   "lastRunH": 12.9,
+   "lastRunH": 13.2,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -338,7 +347,7 @@
    "id": "recaps",
    "name": "Daily recaps",
    "state": "ok",
-   "lastRunH": 12.9,
+   "lastRunH": 13.2,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -347,7 +356,7 @@
    "id": "linkcheck",
    "name": "Link check",
    "state": "ok",
-   "lastRunH": 55.4,
+   "lastRunH": 55.7,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -356,7 +365,7 @@
    "id": "social",
    "name": "Reels",
    "state": "ok",
-   "lastRunH": 12.4,
+   "lastRunH": 12.7,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -388,7 +397,7 @@
    "id": "security",
    "name": "Login + key watch",
    "state": "ok",
-   "lastRunH": 1.5,
+   "lastRunH": 1.8,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -397,7 +406,7 @@
    "id": "datapull",
    "name": "Data pull",
    "state": "ok",
-   "lastRunH": 1.5,
+   "lastRunH": 1.8,
    "everyH": 24,
    "kpi": {
     "label": "trading days behind",
@@ -412,7 +421,7 @@
    "id": "backup",
    "name": "Nightly backup",
    "state": "ok",
-   "lastRunH": 1.5,
+   "lastRunH": 1.8,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -421,7 +430,7 @@
    "id": "calendar",
    "name": "Economic calendar",
    "state": "ok",
-   "lastRunH": 6,
+   "lastRunH": 6.3,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -430,7 +439,7 @@
    "id": "indicators",
    "name": "Indicator pages",
    "state": "ok",
-   "lastRunH": 4.8,
+   "lastRunH": 5.1,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -439,7 +448,7 @@
    "id": "livenews",
    "name": "Same-day news",
    "state": "STOPPED",
-   "lastRunH": 6,
+   "lastRunH": 6.3,
    "everyH": 1,
    "kpi": null,
    "from": "core"
@@ -448,7 +457,7 @@
    "id": "gaps",
    "name": "Search gaps",
    "state": "ok",
-   "lastRunH": 55.5,
+   "lastRunH": 55.8,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -457,7 +466,7 @@
    "id": "bingseo",
    "name": "Bing webmaster",
    "state": "ok",
-   "lastRunH": 55.5,
+   "lastRunH": 55.8,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -487,7 +496,7 @@
    "id": "wall",
    "name": "Wall + checkout",
    "state": "ok",
-   "lastRunH": 14.4,
+   "lastRunH": 14.7,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -496,7 +505,7 @@
    "id": "restore",
    "name": "Restore test",
    "state": "ok",
-   "lastRunH": 81.1,
+   "lastRunH": 81.4,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -541,8 +550,8 @@
    "kpi": {
     "label": "real visitors / week",
     "now": 249,
-    "before": 261,
-    "change": -0.05
+    "before": 260,
+    "change": -0.04
    },
    "from": "core"
   },
@@ -550,12 +559,12 @@
    "id": "leak",
    "name": "Conversion leak",
    "state": "ok",
-   "lastRunH": 14.4,
+   "lastRunH": 14.7,
    "everyH": 24,
    "kpi": {
     "label": "guests → account %",
     "now": 48.59,
-    "before": 44.44,
+    "before": 44.62,
     "change": 0.09
    },
    "from": "core"
@@ -573,7 +582,7 @@
    "id": "analyst",
    "name": "analyst",
    "state": "ok",
-   "lastRunH": 1.1,
+   "lastRunH": 1.4,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -583,44 +592,44 @@
   {
    "move": "surge",
    "what": "/tools/position-size-calculator",
-   "why": "48 AI reads in 24 h vs ~0.5/day",
-   "z": 67.2
+   "why": "47 AI reads in 24 h vs ~0.5/day",
+   "z": 65.8
   },
   {
    "move": "climbing",
    "what": "/news/cpi/gold",
    "why": "294 reads in 3 days vs ~18.2",
-   "z": 64.6
+   "z": 64.7
   },
   {
    "move": "climbing",
    "what": "/news/ppi/gold",
-   "why": "58 reads in 3 days vs ~0.9",
-   "z": 60.2
+   "why": "57 reads in 3 days vs ~0.9",
+   "z": 59.1
   },
   {
    "move": "climbing",
    "what": "/news",
-   "why": "52 reads in 3 days vs ~0.9",
-   "z": 53.9
+   "why": "51 reads in 3 days vs ~0.9",
+   "z": 52.8
   },
   {
    "move": "climbing",
    "what": "/statistics/ger40",
-   "why": "49 reads in 3 days vs ~0.9",
-   "z": 50.7
-  },
-  {
-   "move": "climbing",
-   "what": "/news/cpi/eurusd",
    "why": "48 reads in 3 days vs ~0.9",
    "z": 49.6
   },
   {
    "move": "climbing",
+   "what": "/news/cpi/eurusd",
+   "why": "47 reads in 3 days vs ~0.9",
+   "z": 48.6
+  },
+  {
+   "move": "climbing",
    "what": "/answers/does-the-opening-range-breakout-work-on-gold",
-   "why": "53 reads in 3 days vs ~3",
-   "z": 28.7
+   "why": "51 reads in 3 days vs ~3.4",
+   "z": 25.8
   },
   {
    "move": "climbing",
@@ -641,22 +650,16 @@
    "z": 13.4
   },
   {
-   "move": "surge",
-   "what": "/economic-calendar/us-core-ppi-mom",
-   "why": "9 AI reads in 24 h vs ~0.5/day",
-   "z": 12
-  },
-  {
    "move": "climbing",
    "what": "/news/cpi-2026-10-14",
    "why": "24 reads in 3 days vs ~3",
-   "z": 12
+   "z": 12.1
   },
   {
    "move": "surge",
    "what": "/economic-calendar/us-core-ppi-mom",
    "why": "9 AI reads in 24 h vs ~0.5/day",
-   "z": 11.9
+   "z": 12
   }
  ],
  "ledger": [
@@ -873,7 +876,8 @@
  ],
  "fix": [
   "AI accounts / week getting worse: 14 vs 31 last week (hooks)",
-  "Same-day news is STOPPED (last run 6 h ago, normal every 1 h)",
+  "Traffic brain ↗ is STOPPED (last run never h ago, normal every 1 h)",
+  "Same-day news is STOPPED (last run 6.3 h ago, normal every 1 h)",
   "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones"
  ],
  "mistakes": [
