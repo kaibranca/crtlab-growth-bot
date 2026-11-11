@@ -1,0 +1,21 @@
+name: analyst
+# AI ANALYST (11-11): reads every machine's output (repo files only), writes findings tied to real numbers + ≤2 focus picks
+# (data/analyst/plan.json) that the core spawns and judges like any branch. gpt-4.1-mini, ~$0.10/month, cap $0.50.
+# Started by daily.yml after its data push; never touches the CRTLAB backend.
+on:
+  workflow_dispatch:
+    inputs:
+      force: { description: "run even if it ran in the last 20 h", required: false, default: "" }
+concurrency: { group: analyst, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node scripts/analyst.mjs
+        env: { OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}", FORCE: "${{ inputs.force }}" }
+      - run: bash scripts/push.sh "analyst $(date -u +%F)"

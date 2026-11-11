@@ -41,6 +41,7 @@ const REG = [
   { id: "bing", name: "Bing sender", group: "traffic", parent: "ai", does: "Sends the day's most valuable pages to Bing — the index ChatGPT searches", every: 1, t: () => lastAt("data/ai/runs.jsonl") },
   { id: "curator", name: "llms.txt curator", group: "traffic", parent: "ai", does: "Puts the pages that matter right now at the top of llms.txt for AI assistants", every: 1, t: () => atOf("data/ai/llms.json") },
   { id: "truth", name: "Truth gate", group: "traffic", parent: "ai", does: "Reads key pages as ChatGPT does; contradictions hold every verdict until fixed", every: 6, t: () => atOf("data/ai/truth.json"), feeds: ["hooks"] },
+  { id: "analyst", name: "AI analyst", group: "core", does: "Reads every machine daily (gpt-4.1-mini, ~$0.10/month); findings tied to real numbers + ≤2 focus picks the core judges", every: 24, t: () => atOf("data/analyst/plan.json"), feeds: ["core"] },
   { id: "radar", name: "AI radar", group: "traffic", does: "Asks AI the real buyer questions daily; who wins the answer", every: 24, t: () => atOf("data/radar/plan.json"), feeds: ["ai"] },
   { id: "indexnow", name: "IndexNow", group: "traffic", does: "Tells Bing and others the moment a page changes", every: 24, t: () => lastAt("data/indexnow.jsonl") },
   { id: "seo", name: "Search console", group: "traffic", does: "Google + Bing weekly: queries, pages, title rewrites", every: 168, t: () => lastAt("data/gsc-weekly.jsonl"), feeds: ["factory"] },
@@ -184,8 +185,8 @@ for (const b of spawned.branches) if (b.state === "alive" && b.boost != null) b.
 for (const b of spawned.branches) if (b.state === "alive" && NOW - Date.parse(b.judged ?? b.born) >= 7 * DAY) {
   const days = (NOW - Date.parse(b.born)) / DAY, during = readsOf(b.target, Date.parse(b.born), NOW) / Math.max(1, days), ratio = b.before ? during / b.before : during > 0 ? 2 : 0;
   b.judged = new Date().toISOString(); b.ratio = +ratio.toFixed(2);
-  if (ratio >= 1.2) { b.verdict = "kept"; append("data/machines/ledger.jsonl", { at: b.judged, key: `spawn|${b.id}|${iso(NOW)}`, machine: "core", kind: "win", what: `focus branch ${b.target} kept (×${b.ratio} reads/day)` }); }
-  else { b.state = "retired"; b.verdict = "retired"; b.retired = b.judged; append("data/machines/ledger.jsonl", { at: b.judged, key: `spawn|${b.id}|${iso(NOW)}`, machine: "core", kind: "loss", what: `focus branch ${b.target} retired (×${b.ratio}) — not respawned for 28 days` }); }
+  if (ratio >= 1.2) { b.verdict = "kept"; append("data/machines/ledger.jsonl", { at: b.judged, key: `spawn|${b.id}|${iso(NOW)}`, machine: b.owner ?? "core", kind: "win", what: `focus branch ${b.target} kept (×${b.ratio} reads/day)` }); }
+  else { b.state = "retired"; b.verdict = "retired"; b.retired = b.judged; append("data/machines/ledger.jsonl", { at: b.judged, key: `spawn|${b.id}|${iso(NOW)}`, machine: b.owner ?? "core", kind: "loss", what: `focus branch ${b.target} retired (×${b.ratio}) — not respawned for 28 days` }); }
 }
 for (const [target, ds] of Object.entries(surgeDays).sort((a, b) => b[1].size - a[1].size)) {
   if (ds.size < 2 || spawned.branches.filter((b) => b.state === "alive").length >= 8) continue;
@@ -196,6 +197,18 @@ for (const [target, ds] of Object.entries(surgeDays).sort((a, b) => b[1].size - 
   append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `spawn|${id}|born`, machine: "core", kind: "lesson", what: `spawned focus branch for ${target} (surged on ${ds.size} days)` });
   feed.unshift({ t: new Date().toISOString(), m: "core", text: `built a new branch: focus on ${target}`, kind: "win" });
 }
+// AI ANALYST picks (scripts/analyst.mjs, daily): ≤2 focus proposals on pages from its candidate list → same branch, owner
+// "analyst", same 7-day judge; its wins/losses go to ITS rank, which sets the boost its branches get. Shares the cap of 8.
+{ const an = J("data/analyst/plan.json");
+  if (an?.at && NOW - Date.parse(an.at) < 30 * 3600e3) for (const pr of (an.proposals ?? []).slice(0, 2)) {
+    const target = pr.target; if (!target || spawned.branches.filter((b) => b.state === "alive").length >= 8) continue;
+    if (spawned.branches.some((b) => b.target === target && (b.state === "alive" || NOW - Date.parse(b.retired ?? 0) < 28 * DAY))) continue;
+    const id = "focus-" + target.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").slice(0, 40);
+    if (spawned.branches.some((b) => b.id === id && b.state === "alive")) continue;
+    spawned.branches.push({ id, owner: "analyst", target, born: new Date().toISOString(), state: "alive", boost: boostFor("analyst"), before: +(readsOf(target, NOW - 7 * DAY, NOW) / 7).toFixed(1), why: `AI analyst: ${pr.why || pr.evidence}`.slice(0, 160), explore: !!pr.explore });
+    append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `spawn|${id}|born`, machine: "analyst", kind: "lesson", what: `AI analyst picked ${target} (${pr.evidence})` });
+    feed.unshift({ t: new Date().toISOString(), m: "analyst", text: `AI analyst picked a focus: ${target}`, kind: "win" });
+  } }
 // THE BUILDER, GENERAL (Kai 11-11: "the machine that builds machines can be anything"). Besides surge focus branches, any
 // signal another machine raises can spawn a branch: each TEMPLATE says what triggers it, what it measures, when it is
 // judged and what counts as success. Branches are data (same spawned.json), shown on the web under their section, and
@@ -391,6 +404,7 @@ if (mode === "dip") next.push(`Recovery: the ${P.recoveryN} best pages go back t
 { const up = (J("data/events/upcoming.json", { events: [] }).events ?? []).filter((e) => e.t > NOW && e.t < NOW + 3 * DAY && e.imp >= 2 && e.fam);
   const seen = new Set(); for (const e of up) { if (seen.has(e.fam)) continue; seen.add(e.fam); if (seen.size > 3) break;
     next.push(`${e.title} drops ${new Date(e.t).toUTCString().slice(0, 11)} — its pages are already queued for Bing before people ask.`); } }
+{ const an = J("data/analyst/plan.json"); if (an?.headline && NOW - Date.parse(an.at) < 30 * 3600e3) next.unshift(`AI analyst: ${an.headline}`); }
 for (const b of (spawned.branches ?? []).filter((x) => x.state === "alive").slice(0, 2)) next.push(`Focus branch on ${b.target} is running (${b.why}).`);
 const topSurge = (ai.surges ?? []).find((y) => y.kind === "page");
 const conclusion = mode === "surge" ? `Big day, Kai. AI is reading us ${xN.toFixed(1)}× normal${topSurge ? `, led by ${topSurge.key}` : ""}, and I've got every machine pushing it.${watch.length ? ` ${watch.length === 1 ? "One thing needs" : `${watch.length} things need`} you.` : " Nothing needs you."}`
