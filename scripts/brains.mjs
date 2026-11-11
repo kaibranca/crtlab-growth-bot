@@ -188,6 +188,7 @@ function needQueue() {
   for (const t of J("data/machines/fixer.json", {}).tasks ?? []) raw.push({ from: "fixer", text: `${t.what} — ${t.fix}` });
   const KNOWN = [[/Smart Retries|failed-payment/i, "stripe", "Stripe dashboard → Settings → Billing → turn on Smart Retries + failed-payment emails (5 min)"],
     [/Rotate|2FA|token/i, "tokens", "Cloudflare + Railway: roll the tokens pasted in chat, update GH secrets CF_API_TOKEN; turn on 2FA (10 min)"],
+    [/can't be read|Dependabot alerts: read/i, "deps-token", "GitHub → Settings → Developer settings → the bot's fine-grained token → add crtlab-standalone with \"Dependabot alerts: Read\" (2 min)"],
     [/Dependabot/i, "deps", "say \"fix dependabot\" — upgrades need a build + test session"],
     [/pack|card|checkout/i, "checkout", "decide the checkout fix (wallets/PayPal first, fewer fields) — a build session"],
     [/Chart pages|slowest 10%|candle/i, "speed", "say \"chart speed\" — edge-cache immutable candle windows (a build session)"],
