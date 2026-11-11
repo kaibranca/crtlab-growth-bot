@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T01:06:57.398Z",
+ "at": "2026-11-11T01:18:17.461Z",
  "status": "ok",
  "dayCost": 1.44,
  "avgDayCost": 0.71,
@@ -9,25 +9,25 @@
    "svc": "data",
    "memGB": 3.09,
    "normalGB": 0.16,
-   "dayCost": 0.78,
+   "dayCost": 0.77,
    "avgDayCost": 0.2,
-   "monthPace": 23.42
+   "monthPace": 23.04
   },
   {
    "svc": "web",
    "memGB": 1.69,
    "normalGB": 0.71,
-   "dayCost": 0.51,
+   "dayCost": 0.52,
    "avgDayCost": 0.39,
-   "monthPace": 15.37
+   "monthPace": 15.68
   },
   {
    "svc": "Postgres",
-   "memGB": 0.49,
+   "memGB": 0.47,
    "normalGB": 0.37,
    "dayCost": 0.15,
    "avgDayCost": 0.12,
-   "monthPace": 4.64
+   "monthPace": 4.63
   },
   {
    "svc": "ops",
@@ -43,22 +43,22 @@
    "svc": "data",
    "memGB": 3.09,
    "normalGB": 0.16,
-   "dayCost": 0.78,
+   "dayCost": 0.77,
    "avgDayCost": 0.2,
-   "monthPace": 23.42,
+   "monthPace": 23.04,
    "kind": "cache bloat",
-   "rssGB": 0.19,
+   "rssGB": 0.191,
    "why": "Railway counts 3.09 GB but the server itself uses 0.19 GB — file cache from the data swap"
   },
   {
    "svc": "web",
    "memGB": 1.69,
    "normalGB": 0.71,
-   "dayCost": 0.51,
+   "dayCost": 0.52,
    "avgDayCost": 0.39,
-   "monthPace": 15.37,
+   "monthPace": 15.68,
    "kind": "memory growth",
-   "rssGB": 0.19,
+   "rssGB": 0.191,
    "why": "memory 1.69 GB vs ~0.71 GB normal"
   }
  ],
