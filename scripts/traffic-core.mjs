@@ -66,6 +66,16 @@ const clicks = J("data/ai/clicks.json", {}); const clk = {};
 for (const [k, v] of Object.entries(clicks)) { const [d, src] = k.split("|"); const age = NOW - Date.parse(d + "T12:00:00Z"); if (age > 15 * DAY) continue;
   const o = (clk[src] ??= { d7: 0, prev: 0 }); if (age < 7.5 * DAY) o.d7 += v[0] ?? 0; else o.prev += v[0] ?? 0; }
 
+// ── SENSE 3: THE BOTTLENECK, PER PAGE — people who got the page through ChatGPT (ChatGPT-User fetches, 7 d) vs the
+// ones who clicked through (ai-pull, src chatgpt). Pages that convert attention get pushed; pages that never do get fixed.
+const liveF = new Map(), liveC = new Map();
+for (const w of crawl) { if (NOW - Date.parse(w.to) > 7 * DAY) continue; const v = w.bots?.["ChatGPT-User"]; for (const [p0, k] of v?.top ?? []) { const p = p0.split("?")[0]; liveF.set(p, (liveF.get(p) ?? 0) + k); } }
+for (const [k, v] of Object.entries(clicks)) { const [d, src, p] = k.split("|"); if (src !== "chatgpt" || NOW - Date.parse(d + "T12:00:00Z") > 7.5 * DAY) continue; liveC.set(p, (liveC.get(p) ?? 0) + (v[0] ?? 0)); }
+const liveTotF = [...liveF.values()].reduce((a, b) => a + b, 0), liveTotC = [...liveC.values()].reduce((a, b) => a + b, 0), liveCtr0 = liveTotF ? liveTotC / liveTotF : 0.015;
+// empirical-Bayes rate per page (prior = the site rate, worth 40 fetches) — small pages don't swing on one click
+const liveRows = [...liveF].filter(([p, f]) => f >= 8 && !/image|icon|\.(png|jpg|xml|txt)$/.test(p)).map(([p, f]) => { const c = liveC.get(p) ?? 0, r = (c + liveCtr0 * 40) / (f + 40); return { p, fetches: f, clicks: c, rate: +r.toFixed(4), lift: +(r / Math.max(1e-4, liveCtr0)).toFixed(2) }; }).sort((a, b) => b.fetches - a.fetches);
+const liveWin = liveRows.filter((x) => x.clicks >= 2 && x.lift >= 1.3).slice(0, 5), liveLose = liveRows.filter((x) => x.fetches >= 25 && x.clicks === 0).slice(0, 5);
+
 // ── MODES (several can be on; the first decides the intensity) ──────────────────────────────────────────────────────
 const M = (id) => (brain.modes[id] ??= { intensity: 1, episodes: 0, wins: 0, losses: 0 });
 const modes = [];
@@ -136,6 +146,8 @@ for (const e of soon) sign(e.fam.startsWith("/") ? e.fam : `/news/${e.fam}`, "re
 for (const r of tplan.rank ?? []) sign(r.page, "Bing page 1 bottom");
 for (const g of radar.gaps ?? []) sign(g.ourPage, "AI answer gap");
 for (const w of (ai.winners ?? []).slice(0, 8)) sign(w.p, "converts");
+for (const x of liveWin) sign(x.p, "people click it");
+for (const x of liveRows.slice(0, 6)) sign(x.p, "people ask for it");
 const nSigns = (p) => Math.max(signs.get(p)?.size ?? 0, signs.get(famKey(p))?.size ?? 0);
 const convergent = [...signs].filter(([p, s]) => s.size >= 3 && p.split("/").filter(Boolean).length >= 1).sort((a, b) => b[1].size - a[1].size);
 
@@ -161,6 +173,9 @@ for (const r of (tplan.rank ?? []).slice(0, 3)) build({ kind: "rank", owner: "ra
 // stall: read a lot, never clicked → the hook machine's priority list (no Bing boost — more reads won't fix it)
 const testOf = (fam) => (ai.experiments ?? []).find((e) => e.family === fam && e.status === "running");
 const uncovered = [...new Set((ai.convert ?? []).filter((x) => x.reads7d >= 20 && !x.clicks7d && !testOf(x.family)).map((x) => x.family))];
+const famOfP = (p) => (ai.convert ?? []).find((x) => x.p === p)?.family ?? (ai.families ?? []).find((f) => p.startsWith(f.family.split("<")[0]) && f.family !== "/")?.family ?? null;
+for (const x of liveLose.slice(0, 1)) { const fam = famOfP(x.p), t = fam ? testOf(fam) : null;
+  build({ kind: "stall", owner: "converter", target: x.p, neuron: "peoplenoclick→hook", base: 0, path: false, test: t?.id ?? null, why: `${x.fetches} people got it through ChatGPT in 7 d, 0 clicked${t ? ` — hook test ${t.template} running on ${fam}` : ` — no hook test covers it`}` }); }
 if (modes.some((m) => m.id === "stall") || rnd() < 0.3) for (const c of (ai.convert ?? []).filter((x) => x.reads7d >= 20 && !x.clicks7d).slice(0, 1)) { const t = testOf(c.family);
   build({ kind: "stall", owner: "converter", target: c.p, neuron: "readnoclick→hook", base: 0, path: false, test: t?.id ?? null, why: `${c.reads7d} AI reads in 7 d, 0 clicks${t ? ` — hook test ${t.template} running on ${c.family}` : ` — NO hook test covers ${c.family}`}` }); }
 // gaps: searches we're shown for with no page that fits (the factory backlog)
@@ -168,6 +183,8 @@ for (const g of (tplan.gaps ?? []).slice(0, 1)) build({ kind: "gap", owner: "dem
 // rising outside sources
 for (const s of (men.rising ?? []).slice(0, 1)) build({ kind: "source", owner: "referrals", target: s.host, neuron: "rising→watch", base: s.v7, path: false, why: `${s.v7} visitors this week` });
 
+// pages that turn people into clicks: more of that attention (Bing first)
+for (const x of liveWin.slice(0, 2)) build({ kind: "surge", owner: "converter", target: x.p, neuron: "peopleclick→bing", base: r1(readsOf(x.p, NOW - 8 * DAY, NOW - DAY) / 7), why: `${x.clicks} of ${x.fetches} people who got it through ChatGPT clicked (×${x.lift} the site rate)` });
 // convergence: 3+ independent signs on one page/family and nothing else covers it yet
 for (const [p, s] of convergent.slice(0, 2)) if (!alive().some((b) => b.target === p)) build({ kind: "surge", owner: "convergence", target: p, neuron: "convergence→bing", base: r1(readsOf(p, NOW - 8 * DAY, NOW - DAY) / 7), why: `${s.size} signs at once: ${[...s].join(" + ")}` });
 
@@ -210,7 +227,7 @@ reuse("ai", "ai", "lead-ai", "AI referral machine"); for (const id of ["hooks", 
 reuse("radar", "ai", "lead-ai"); reuse("analyst", "ai", "lead-ai", "AI analyst");
 own("channels", "Assistant channels", "ai", "lead-ai", `People vs indexing, per assistant, vs its own normal: ${Object.entries(chan).filter(([, c]) => c.reads24).map(([c, v]) => `${c} ${v.reads24}`).join(" · ")}; a ≥3× breakout gets its pages pushed`, 1,
   { label: "live ChatGPT fetches / 24 h", now: chan.chatgpt?.reads24 ?? 0, before: chan.chatgpt?.normal, change: chan.chatgpt?.x != null ? r1(chan.chatgpt.x - 1) : null });
-own("converter", "Read→click converter", "ai", "lead-ai", "Pages AI reads a lot that nobody clicks → the hook machine's priority list (more reads won't fix them, a better first line will)", 1, { label: "read-no-click pages", now: (ai.convert ?? []).filter((x) => !x.clicks7d).length });
+own("converter", "People→click converter", "ai", "lead-ai", `Per page: people who got it through ChatGPT vs who clicked (7 d, site rate ${(liveCtr0 * 100).toFixed(1)}%). Best: ${liveWin.slice(0, 2).map((x) => `${x.p} ×${x.lift}`).join(", ") || "—"}. Never clicked: ${liveLose.slice(0, 2).map((x) => `${x.p} (${x.fetches})`).join(", ") || "—"}`, 1, { label: "people → click %", now: +(liveCtr0 * 100).toFixed(2) });
 own("surges", "Surge rider", "ai", "lead-ai", "A page surging in AI reads gets a branch and Bing first while it lasts", 1, null);
 // SEARCH
 reuse("bing", "search", "lead-search", "Bing sender"); reuse("indexnow", "search", "lead-search"); reuse("seo", "search", "lead-search", "Google search console"); reuse("bingseo", "search", "seo"); reuse("gaps", "search", "seo");
@@ -242,6 +259,8 @@ if (aiReadsX >= 1.5 && (aiSeg?.ratio ?? 1) <= 1) watch.push("People asking ChatG
 if (chan.chatgpt?.reads24) watch.push(`${chan.chatgpt.reads24} live ChatGPT fetches in 24 h → ~${clk.chatgpt ? Math.round(clk.chatgpt.d7 / 7) : 0} clicks a day: ${chan.chatgpt.reads24 && clk.chatgpt ? ((clk.chatgpt.d7 / 7 / chan.chatgpt.reads24) * 100).toFixed(1) : "?"}% of the people who ask come.`);
 if (uncovered.length) watch.push(`Read but never clicked, and no hook test covers it: ${uncovered.slice(0, 3).join(", ")}.`);
 if (radar.sov != null) watch.push(`AI answers mention CRTLAB in ${Math.round(radar.sov * 100)}% of buyer questions.`);
+if (liveLose[0]) watch.push(`${liveLose[0].fetches} people got ${liveLose[0].p} through ChatGPT this week and none clicked.`);
+if (liveWin[0]) good.push(`${liveWin[0].p}: ${liveWin[0].clicks} of ${liveWin[0].fetches} ChatGPT askers clicked — ×${liveWin[0].lift} the site rate.`);
 for (const b of alive().slice(0, 4)) next.push(`${b.kind} branch on ${b.target}: ${b.why}.`);
 if (!alive().length) next.push("No branch alive yet — the brain builds its first ones as signals clear the neuron bar.");
 const conclusion = lead.id === "breakout" ? `Breakout, Kai: ${lead.why}.` : lead.id === "stall" ? "Read but not clicked: AI is reading us more than it sends people. The brain is putting the hook tests on the most-read pages." : lead.id === "dip" ? "Quiet one: real visitors are under normal, so the brain is pushing the pages that already convert." : lead.id === "event" ? `Event mode: ${lead.why}.` : `Hunting: ${alive().length} branches alive, ${Object.keys(brain.w).length} neurons learning.`;
@@ -253,7 +272,7 @@ const eco = { at: iso(NOW), engine: "traffic", groups: GROUPS,
   allIn: alive().filter((b) => b.boost).map((b) => ({ move: b.kind, what: b.target, why: `${b.why} · ×${b.boost}` })).slice(0, 10), fix: watch.slice(0, 3), mistakes: [],
   ledger: tl.slice(-30).reverse(), episodes: readLines(`${OUT}/modes.jsonl`).slice(-12).reverse().map((e) => ({ at: e.at, mode: e.mode, text: `${e.mode}: visitors ×${e.ratio}`, verdict: e.verdict })),
   spawned: B.branches.slice(-14).map((b) => ({ id: b.id, target: b.target, state: b.state, born: b.born, why: b.why, verdict: b.verdict, ratio: b.now })),
-  score: main.score ?? [], channels: chan, neurons: Object.entries(brain.w).map(([k, w]) => ({ k, v: w.v, n: w.n })).sort((a, b) => b.v - a.v) };
+  score: main.score ?? [], channels: chan, live: { rate: +(liveCtr0 * 100).toFixed(2), fetches7: liveTotF, clicks7: liveTotC, best: liveWin, never: liveLose, top: liveRows.slice(0, 15) }, neurons: Object.entries(brain.w).map(([k, w]) => ({ k, v: w.v, n: w.n })).sort((a, b) => b.v - a.v) };
 fs.writeFileSync(`${OUT}/ecosystem.json`, JSON.stringify(eco));
 append(`${OUT}/score.jsonl`, { at: iso(NOW), mode: lead.id, alive: alive().length, built, binned, chatgpt24: chan.chatgpt?.reads24, visitors24: hum.visitors?.now });
 console.log(`traffic brain: ${lead.label} (×${intensity})${modes.length > 1 ? " + " + modes.slice(1).map((m) => m.label).join(", ") : ""} · ${nodes.length} nodes · ${alive().length} branches alive (+${built}) · ${Object.keys(brain.w).length} neurons · binned ${binned}
