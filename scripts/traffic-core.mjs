@@ -47,7 +47,9 @@ const learn = (machine, kind, what, key) => { const row = { at: iso(NOW), key, m
 // ── SENSE 1: AI reads per assistant (crawl history), per page, 24 h vs the 7 days before ─────────────────────────────
 const months = [iso(NOW).slice(0, 7), iso(NOW - 15 * DAY).slice(0, 7)].filter((v, i, a) => a.indexOf(v) === i);
 const crawl = months.flatMap((m) => readLines(`data/aicrawl/${m}.jsonl`)).filter((w) => NOW - Date.parse(w.to) < 15 * DAY);
-const ASSIST = { chatgpt: /^(ChatGPT-User|OAI-SearchBot)$/, perplexity: /^Perplexity/, claude: /^Claude-(User|SearchBot)$/, bing: /^Bingbot$/, google: /^Googlebot$/, apple: /^Applebot$/, meta: /^Meta$/ };
+// ChatGPT is TWO channels (11-11 correction): ChatGPT-User = a real person asking right now (drives the modes);
+// OAI-SearchBot = ChatGPT building its search index (a leading signal: indexed today, answered tomorrow — not people).
+const ASSIST = { chatgpt: /^ChatGPT-User$/, "chatgpt-index": /^OAI-SearchBot$/, perplexity: /^Perplexity-User$/, "perplexity-index": /^PerplexityBot$/, claude: /^Claude-(User|SearchBot)$/, bing: /^Bingbot$/, google: /^Googlebot$/, apple: /^Applebot$/, meta: /^Meta$/ };
 const LIVE = /-User$|^OAI-SearchBot$|^Claude-SearchBot$|^PerplexityBot$|^Bingbot$/;
 const chan = {};
 for (const [c, re] of Object.entries(ASSIST)) { let d24 = 0, d7 = 0; const pages = new Map();
@@ -67,13 +69,14 @@ for (const [k, v] of Object.entries(clicks)) { const [d, src] = k.split("|"); co
 // ── MODES (several can be on; the first decides the intensity) ──────────────────────────────────────────────────────
 const M = (id) => (brain.modes[id] ??= { intensity: 1, episodes: 0, wins: 0, losses: 0 });
 const modes = [];
-const breakout = Object.entries(chan).filter(([, c]) => c.reads24 >= 30 && c.normal > 0 && c.x >= 3 && c.z >= 3).sort((a, b) => b[1].z - a[1].z);
+const PEOPLE = new Set(["chatgpt", "perplexity", "claude"]);
+const breakout = Object.entries(chan).filter(([k, c]) => PEOPLE.has(k) && c.reads24 >= 30 && c.normal > 0 && c.x >= 3 && c.z >= 3).sort((a, b) => b[1].z - a[1].z);
 if (breakout.length) modes.push({ id: "breakout", label: "Breakout", level: "good", why: `${breakout.map(([c, v]) => `${c} ${v.x}× normal (${v.reads24} reads in 24 h)`).join(", ")} — all in on that channel` });
 if (mode0.mode === "surge") modes.push({ id: "surge", label: "Surge", level: "good", why: mode0.why ?? "AI reads well above normal" });
 const soon = (up.events ?? []).filter((e) => e.fam && e.imp >= 2 && e.t > NOW && e.t < NOW + 36 * H);
 if (soon.length) modes.push({ id: "event", label: "Event", level: "info", why: `${soon.slice(0, 3).map((e) => e.title).join(", ")} within 36 h — pre-pushing their pages` });
 const aiSeg = seg["AI answers"]; const aiReadsX = chan.chatgpt?.x ?? 1;
-if (aiReadsX >= 1.5 && aiSeg && aiSeg.ratio <= 1) modes.push({ id: "stall", label: "Stall", level: "warn", why: `ChatGPT reads ${aiReadsX}× normal but AI visitors ${aiSeg.now} vs ~${r1(aiSeg.normal)} — read, not clicked: hook tests get the top pages` });
+if (aiReadsX >= 1.5 && aiSeg && aiSeg.ratio <= 1) modes.push({ id: "stall", label: "Stall", level: "warn", why: `people asking ChatGPT ${aiReadsX}× normal but AI visitors ${aiSeg.now} vs ~${r1(aiSeg.normal)} — read, not clicked: hook tests get the top pages` });
 if (hum.state === "dip") modes.push({ id: "dip", label: "Recovery", level: "warn", why: `real visitors ${hum.visitors?.now} vs ~${r1(hum.visitors?.normal)} in 24 h — pushing the pages that already convert` });
 if (!modes.length) modes.push({ id: "hunt", label: "Hunt", level: "info", why: "normal day — hunting demand: page-1-bottom pages, gaps, ghosts" });
 const lead = modes[0];
@@ -205,8 +208,8 @@ own("judge", "Judge", "brain", "lead-brain", "Judges every branch on its own num
 // AI ANSWERS
 reuse("ai", "ai", "lead-ai", "AI referral machine"); for (const id of ["hooks", "curator", "truth", "surge", "rising", "sisters", "eyes"]) reuse(id, "ai", "ai");
 reuse("radar", "ai", "lead-ai"); reuse("analyst", "ai", "lead-ai", "AI analyst");
-own("channels", "Assistant channels", "ai", "lead-ai", `Reads per assistant vs its own normal: ${Object.entries(chan).filter(([, c]) => c.reads24).map(([c, v]) => `${c} ${v.reads24}`).join(" · ")}; a ≥3× breakout gets its pages pushed`, 1,
-  { label: "ChatGPT reads / 24 h", now: chan.chatgpt?.reads24 ?? 0, before: chan.chatgpt?.normal, change: chan.chatgpt?.x != null ? r1(chan.chatgpt.x - 1) : null });
+own("channels", "Assistant channels", "ai", "lead-ai", `People vs indexing, per assistant, vs its own normal: ${Object.entries(chan).filter(([, c]) => c.reads24).map(([c, v]) => `${c} ${v.reads24}`).join(" · ")}; a ≥3× breakout gets its pages pushed`, 1,
+  { label: "live ChatGPT fetches / 24 h", now: chan.chatgpt?.reads24 ?? 0, before: chan.chatgpt?.normal, change: chan.chatgpt?.x != null ? r1(chan.chatgpt.x - 1) : null });
 own("converter", "Read→click converter", "ai", "lead-ai", "Pages AI reads a lot that nobody clicks → the hook machine's priority list (more reads won't fix them, a better first line will)", 1, { label: "read-no-click pages", now: (ai.convert ?? []).filter((x) => !x.clicks7d).length });
 own("surges", "Surge rider", "ai", "lead-ai", "A page surging in AI reads gets a branch and Bing first while it lasts", 1, null);
 // SEARCH
@@ -232,9 +235,11 @@ for (const [a, b] of [["demand", "rank"], ["rank", "bing"], ["surges", "bing"], 
   if (ids.has(a) && ids.has(b)) edges.push({ a, b, kind: "data", w: 0.5 });
 const tFeed = [...feed, ...(main.feed ?? []).filter((f) => ids.has(f.m) && f.m !== "core")].sort((a, b) => Date.parse(b.t) - Date.parse(a.t)).slice(0, 60);
 const good = [], watch = [], next = [];
-for (const [c, v] of Object.entries(chan)) if (v.x != null && v.x >= 1.5 && v.reads24 >= 20) good.push(`${c} reads ${v.reads24} in 24 h, ${v.x}× its normal.`);
+const LBL = { chatgpt: "People asking ChatGPT", "chatgpt-index": "ChatGPT's search index", perplexity: "People asking Perplexity", "perplexity-index": "Perplexity's index", claude: "People asking Claude", bing: "Bing's crawler", google: "Google's crawler", apple: "Apple's crawler", meta: "Meta's crawler" };
+for (const [c, v] of Object.entries(chan)) if (v.x != null && v.x >= 1.5 && v.reads24 >= 20) good.push(`${LBL[c] ?? c}: ${v.reads24} reads in 24 h, ${v.x}× normal${c.endsWith("-index") ? " (indexing — answers follow)" : ""}.`);
 if (clk.chatgpt) (clk.chatgpt.d7 >= clk.chatgpt.prev ? good : watch).push(`ChatGPT clicks ${clk.chatgpt.d7} this week vs ${clk.chatgpt.prev} the week before.`);
-if (aiReadsX >= 1.5 && (aiSeg?.ratio ?? 1) <= 1) watch.push("AI reads are up but AI visitors aren't — the read→click step is the bottleneck.");
+if (aiReadsX >= 1.5 && (aiSeg?.ratio ?? 1) <= 1) watch.push("People asking ChatGPT are up but AI visitors aren't — the read→click step is the bottleneck.");
+if (chan.chatgpt?.reads24) watch.push(`${chan.chatgpt.reads24} live ChatGPT fetches in 24 h → ~${clk.chatgpt ? Math.round(clk.chatgpt.d7 / 7) : 0} clicks a day: ${chan.chatgpt.reads24 && clk.chatgpt ? ((clk.chatgpt.d7 / 7 / chan.chatgpt.reads24) * 100).toFixed(1) : "?"}% of the people who ask come.`);
 if (uncovered.length) watch.push(`Read but never clicked, and no hook test covers it: ${uncovered.slice(0, 3).join(", ")}.`);
 if (radar.sov != null) watch.push(`AI answers mention CRTLAB in ${Math.round(radar.sov * 100)}% of buyer questions.`);
 for (const b of alive().slice(0, 4)) next.push(`${b.kind} branch on ${b.target}: ${b.why}.`);
