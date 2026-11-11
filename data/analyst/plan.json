@@ -1,0 +1,85 @@
+{
+ "at": "2026-11-11T19:59:17.365Z",
+ "model": "openai:gpt-4.1-mini",
+ "headline": "Focus AI traffic on /backtest pages to boost accounts, avoid zero-click news",
+ "findings": [
+  {
+   "claim": "AI reads many economic calendar and news pages but get zero clicks.",
+   "numbers": [
+    "41",
+    "35",
+    "26",
+    "28",
+    "22",
+    "23"
+   ],
+   "so": "Machines should point AI traffic away from these zero-click economic/news pages."
+  },
+  {
+   "claim": "The /backtest page family has the highest AI accounts (48) and clicks (7.29) per 218 reads.",
+   "numbers": [
+    "48",
+    "7.29",
+    "218"
+   ],
+   "so": "Machines should direct AI traffic primarily to /backtest pages to maximize accounts."
+  },
+  {
+   "claim": "AI clicks per week are stable at 39 but AI accounts dropped from 31 to 14 per week.",
+   "numbers": [
+    "39",
+    "31",
+    "14"
+   ],
+   "so": "Machines should focus on pages with higher account conversion to reverse AI account drop."
+  },
+  {
+   "claim": "Direct source visitors convert better (63%) but lost 6.8 people in 14 days at land → account stage.",
+   "numbers": [
+    "210",
+    "0.63",
+    "6.8"
+   ],
+   "so": "Machines should optimize direct source landing pages to reduce leak and increase accounts."
+  }
+ ],
+ "proposals": [
+  {
+   "target": "/backtest",
+   "why": "winner: 48 accounts, 7.29 clicks, 218 reads",
+   "explore": false,
+   "evidence": "winner: 48 accounts, 7.29 clicks, 218 reads"
+  },
+  {
+   "target": "/economic-calendar/us-core-inflation-rate-mom",
+   "why": "41 AI reads / 7 d, 0 clicks",
+   "explore": true,
+   "evidence": "41 AI reads / 7 d, 0 clicks"
+  }
+ ],
+ "rejected": 1,
+ "record": {
+  "proposed": 0,
+  "alive": 0,
+  "kept": 0,
+  "retired": 0,
+  "history": []
+ },
+ "candidates": 30,
+ "usage": {
+  "prompt_tokens": 3201,
+  "completion_tokens": 382,
+  "total_tokens": 3583,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "audio_tokens": 0
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "audio_tokens": 0,
+   "accepted_prediction_tokens": 0,
+   "rejected_prediction_tokens": 0
+  }
+ },
+ "fellBack": []
+}
