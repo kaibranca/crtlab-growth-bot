@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T05:19:44.607Z",
+ "at": "2026-11-11T06:03:54.078Z",
  "ok": 12,
  "total": 12,
  "status": [
@@ -41,7 +41,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 3,
+   "lastRunH": 3.7,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -53,7 +53,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 21.2,
+   "lastRunH": 21.9,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -64,7 +64,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 22.6,
+   "lastRunH": 23.4,
    "everyH": 24,
    "kpi": null
   },
@@ -72,7 +72,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 10.4,
+   "lastRunH": 11.1,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -83,7 +83,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 18.5,
+   "lastRunH": 19.2,
    "everyH": 24,
    "kpi": null
   },
@@ -91,7 +91,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 5.4,
+   "lastRunH": 6.2,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -102,7 +102,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 0.8,
+   "lastRunH": 1.5,
    "everyH": 1,
    "kpi": null
   },
@@ -128,7 +128,7 @@
    "move": "surge",
    "what": "/news/cpi/gold",
    "why": "226 AI reads in 24 h vs ~10.2/day",
-   "z": 67.6
+   "z": 67.7
   },
   {
    "move": "surge",
@@ -158,25 +158,19 @@
    "move": "surge",
    "what": "/answers/does-the-opening-range-breakout-work-on-gold",
    "why": "46 AI reads in 24 h vs ~1.2/day",
-   "z": 41
+   "z": 41.1
   },
   {
    "move": "climbing",
    "what": "/backtest-eurusd",
    "why": "53 reads in 3 days vs ~2.9",
-   "z": 29.4
+   "z": 29.5
   },
   {
    "move": "climbing",
    "what": "/economic-calendar/us-inflation-rate-yoy",
-   "why": "20 reads in 3 days vs ~0.9",
-   "z": 20.1
-  },
-  {
-   "move": "climbing",
-   "what": "/economic-calendar/us-core-inflation-rate-yoy",
-   "why": "20 reads in 3 days vs ~0.9",
-   "z": 20.1
+   "why": "19 reads in 3 days vs ~0.9",
+   "z": 19.1
   },
   {
    "move": "surge",
@@ -186,15 +180,21 @@
   },
   {
    "move": "climbing",
-   "what": "/news/cpi-2026-08-12",
-   "why": "17 reads in 3 days vs ~1.2",
-   "z": 14.1
+   "what": "/economic-calendar/us-core-inflation-rate-yoy",
+   "why": "19 reads in 3 days vs ~1.2",
+   "z": 16
   },
   {
    "move": "climbing",
    "what": "/economic-calendar/us-initial-jobless-claims",
-   "why": "14 reads in 3 days vs ~0.9",
-   "z": 13.8
+   "why": "15 reads in 3 days vs ~0.9",
+   "z": 14.9
+  },
+  {
+   "move": "climbing",
+   "what": "/news/cpi-2026-08-12",
+   "why": "17 reads in 3 days vs ~1.2",
+   "z": 14.2
   }
  ],
  "ledger": [
