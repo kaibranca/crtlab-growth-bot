@@ -95,6 +95,14 @@ for (const x of readLines("data/ai/changes.jsonl").slice(-10)) ev(Date.parse(x.a
 for (const x of readLines("data/machines/modes.jsonl").slice(-10)) ev(Date.parse(x.at), "mode", x.text, x.mode === "surge" ? "hot" : x.mode === "dip" ? "bad" : "do");
 { const t = J("data/ai/truth.json"); if (t) ev(Date.parse(t.at), "truth", (t.bad ?? []).length ? `${t.bad.length} contradiction(s) found` : "site consistent — no contradictions", (t.bad ?? []).length ? "bad" : "do"); }
 for (const x of readLines("data/reels/log.jsonl").slice(-5)) ev(Date.parse(x.at ?? x.t ?? 0), "social", x.what ?? x.msg ?? "reel step", "do");
+// LIVE AI READS: every logged window of ChatGPT / Claude / Perplexity reading CRTLAB pages (last 12 h) — the real pulse
+{ const BOT = { "ChatGPT-User": "ChatGPT", "Claude-User": "Claude", "Perplexity-User": "Perplexity", "MistralAI-User": "Mistral", OAI_SearchBot: "ChatGPT search", "OAI-SearchBot": "ChatGPT search", bingbot: "Bing", Googlebot: "Google" };
+  const wins = [month, iso(NOW - DAY).slice(0, 7)].filter((v, i, x) => x.indexOf(v) === i).flatMap((m) => readLines(`data/aicrawl/${m}.jsonl`)).filter((w) => NOW - Date.parse(w.to) < 12 * 3600e3);
+  for (const w of wins) for (const [bot, v] of Object.entries(w.bots ?? {})) { const who = BOT[bot]; if (!who) continue;
+    for (const [p0, n] of (v.top ?? []).slice(0, 2)) { const p = p0.split("?")[0]; if (/^\/(api|_next|favicon)/.test(p)) continue;
+      feed.push({ t: w.to, m: /Bing|Google/.test(who) ? "eyes" : "ai", text: `${who} read ${p}${n > 1 ? ` ×${n}` : ""}`, kind: /ChatGPT$|Claude|Perplexity/.test(who) ? "hot" : "do" }); } } }
+// every machine run in the last 24 h is an event too
+for (const m of REG) { let t = null; try { t = m.t(); } catch { t = null; } if (t && NOW - t < DAY && t < NOW - 60e3 && m.every >= 1) feed.push({ t: new Date(t).toISOString(), m: m.id, text: "ran", kind: "run" }); }
 feed.sort((a, b) => (a.t < b.t ? 1 : -1));
 
 // ── 3. MODE: the whole ecosystem's state, from live AI reads (24 h vs its own 14-day normal) ──────────────────────────
@@ -192,7 +200,7 @@ const CORE_RULES = ["Nothing shady: official APIs only, no scraping against term
 const statusOf = (m) => { let t = null; try { t = m.t(); } catch { t = null; } const age = t ? (NOW - t) / H : null, slack = Math.max(2, m.every * 0.5);
   return { t, age, state: age == null ? "waiting" : age <= m.every + slack ? "ok" : age <= m.every * 3 + slack ? "late" : "stopped" }; };
 const kpiOf = Object.fromEntries((sup?.status ?? []).map((s) => [s.id, s.kpi]));
-const act = {}; for (const e of feed) if (NOW - Date.parse(e.t) < DAY) act[e.m] = (act[e.m] ?? 0) + 1;
+const act = {}; for (const e of feed) if (NOW - Date.parse(e.t) < DAY && e.kind !== "run" && !/ read \//.test(e.text)) act[e.m] = (act[e.m] ?? 0) + 1;
 const hotIds = new Set(mode === "surge" ? ["surge", "sisters", "bing", "curator", "mode", "ai", "rising"] : mode === "dip" ? ["mode", "bing", "curator", "ai"] : []);
 const nodes = REG.map((m) => { const s = statusOf(m); return { id: m.id, name: m.name, group: m.group, parent: m.parent ?? null, does: m.does, every: m.every,
   state: s.state, lastRunH: s.age == null ? null : +s.age.toFixed(1), kpi: kpiOf[m.id] ?? null, act24: act[m.id] ?? 0, hot: hotIds.has(m.id), discovered: !!m.discovered, spawned: !!m.spawned,
@@ -324,7 +332,7 @@ if ((men?.sources?.length ?? 0) < 5) scout.push({ what: "Word-of-mouth engine", 
 if (!(widgets.aiAccounts7 >= widgets.aiAccountsPrev)) scout.push({ what: "AI landing machine", why: `AI accounts ${widgets.aiAccounts7} vs ${widgets.aiAccountsPrev} last week while reads are up — the first screen leaks`, kind: "new" });
 scout.push({ what: "Cost machine (Railway)", why: "budget watch + backend optimiser — Kai asked 11-11", kind: "new" });
 
-const eco = { at: new Date().toISOString(), scout, widgets, modes, briefing, rules: CORE_RULES, capacity: cap, mode: modeOut, nodes, edges, feed: feed.slice(0, 60),
+const eco = { at: new Date().toISOString(), scout, widgets, modes, briefing, rules: CORE_RULES, capacity: cap, mode: modeOut, nodes, edges, feed: feed.slice(0, 160),
   totals: { machines: nodes.length, ok: nodes.filter((n) => n.state === "ok").length, late: nodes.filter((n) => n.state === "late").length, stopped: nodes.filter((n) => n.state === "stopped").length, actions24: Object.values(act).reduce((a, b) => a + b, 0) },
   allIn: sup?.allIn ?? [], fix: sup?.fix ?? [], mistakes: sup?.mistakes ?? [], ledger: (sup?.ledger ?? []).slice(0, 15), episodes: readLines("data/machines/modes.jsonl").slice(-8).reverse(),
   spawned: spawned.branches.slice(-12),
