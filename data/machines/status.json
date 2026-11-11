@@ -1,7 +1,16 @@
 {
- "at": "2026-11-11T15:19:58.070Z",
- "ok": 12,
- "total": 12,
+ "at": "2026-11-11T20:07:08.870Z",
+ "ok": 50,
+ "total": 50,
+ "hurting": [
+  {
+   "id": "hooks",
+   "label": "AI accounts / week",
+   "now": 14,
+   "before": 31,
+   "change": -0.55
+  }
+ ],
  "status": [
   {
    "id": "ai",
@@ -41,7 +50,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 1,
+   "lastRunH": 5.8,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -53,7 +62,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 7.2,
+   "lastRunH": 12,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -64,7 +73,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 8.6,
+   "lastRunH": 13.4,
    "everyH": 24,
    "kpi": null
   },
@@ -72,7 +81,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 8.6,
+   "lastRunH": 13.4,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -83,7 +92,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 8.5,
+   "lastRunH": 13.3,
    "everyH": 24,
    "kpi": null
   },
@@ -91,7 +100,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 8.6,
+   "lastRunH": 13.4,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -102,7 +111,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 1.7,
+   "lastRunH": 0.5,
    "everyH": 1,
    "kpi": null
   },
@@ -121,80 +130,425 @@
    "lastRunH": 0,
    "everyH": 24,
    "kpi": null
+  },
+  {
+   "id": "core",
+   "name": "Engine core",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "mode",
+   "name": "Mode engine",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "supervisor",
+   "name": "Supervisor",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "mistakes",
+   "name": "Mistakes watch",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "ledger",
+   "name": "Ledger",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "surge",
+   "name": "Surge detector",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "rising",
+   "name": "Early traction",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "sisters",
+   "name": "Sister spread",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "lift",
+   "name": "Release lift",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "weekly",
+   "name": "Weekly cycle",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "trend",
+   "name": "4-week trend",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "yield",
+   "name": "Failure learning",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "hooks",
+   "name": "Hook tests",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "bing",
+   "name": "Bing sender",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "curator",
+   "name": "llms.txt curator",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "seo",
+   "name": "Search console",
+   "state": "ok",
+   "lastRunH": 49.7,
+   "everyH": 168,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "news",
+   "name": "News engine",
+   "state": "ok",
+   "lastRunH": 7.2,
+   "everyH": 24,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "recaps",
+   "name": "Daily recaps",
+   "state": "ok",
+   "lastRunH": 7.2,
+   "everyH": 24,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "linkcheck",
+   "name": "Link check",
+   "state": "ok",
+   "lastRunH": 49.7,
+   "everyH": 168,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "social",
+   "name": "Reels",
+   "state": "ok",
+   "lastRunH": 6.6,
+   "everyH": 24,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "watchdog",
+   "name": "Watchdog",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "load",
+   "name": "Load alert",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "security",
+   "name": "Login + key watch",
+   "state": "ok",
+   "lastRunH": 1.8,
+   "everyH": 24,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "datapull",
+   "name": "Data pull",
+   "state": "ok",
+   "lastRunH": 1.8,
+   "everyH": 24,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "backup",
+   "name": "Nightly backup",
+   "state": "ok",
+   "lastRunH": 1.8,
+   "everyH": 24,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "calendar",
+   "name": "Economic calendar",
+   "state": "ok",
+   "lastRunH": 0.3,
+   "everyH": 24,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "indicators",
+   "name": "Indicator pages",
+   "state": "ok",
+   "lastRunH": 7.3,
+   "everyH": 24,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "livenews",
+   "name": "Same-day news",
+   "state": "ok",
+   "lastRunH": 0.3,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "gaps",
+   "name": "Search gaps",
+   "state": "ok",
+   "lastRunH": 49.7,
+   "everyH": 168,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "bingseo",
+   "name": "Bing webmaster",
+   "state": "ok",
+   "lastRunH": 49.7,
+   "everyH": 168,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "capacity",
+   "name": "Capacity",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": {
+    "label": "peak requests in flight (7 d)",
+    "now": 3
+   },
+   "from": "core"
+  },
+  {
+   "id": "bin",
+   "name": "Bin",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "wall",
+   "name": "Wall + checkout",
+   "state": "ok",
+   "lastRunH": 8.7,
+   "everyH": 24,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "restore",
+   "name": "Restore test",
+   "state": "ok",
+   "lastRunH": 75.3,
+   "everyH": 168,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "cost",
+   "name": "Cost machine",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "fixer",
+   "name": "Fixer machine",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "humans",
+   "name": "People machine",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "leak",
+   "name": "Conversion leak",
+   "state": "ok",
+   "lastRunH": 8.6,
+   "everyH": 24,
+   "kpi": null,
+   "from": "core"
   }
  ],
  "allIn": [
   {
    "move": "surge",
    "what": "/tools/position-size-calculator",
-   "why": "46 AI reads in 24 h vs ~0.5/day",
-   "z": 64.3
+   "why": "47 AI reads in 24 h vs ~0.5/day",
+   "z": 65.8
   },
   {
    "move": "climbing",
    "what": "/news/cpi/gold",
-   "why": "288 reads in 3 days vs ~18.4",
-   "z": 62.8
+   "why": "294 reads in 3 days vs ~18.4",
+   "z": 64.3
   },
   {
    "move": "climbing",
    "what": "/news/ppi/gold",
-   "why": "54 reads in 3 days vs ~0.9",
-   "z": 56
+   "why": "57 reads in 3 days vs ~0.9",
+   "z": 59.1
   },
   {
    "move": "climbing",
    "what": "/news",
-   "why": "50 reads in 3 days vs ~0.9",
-   "z": 51.8
-  },
-  {
-   "move": "climbing",
-   "what": "/news/cpi/eurusd",
-   "why": "46 reads in 3 days vs ~0.9",
-   "z": 47.5
+   "why": "51 reads in 3 days vs ~0.9",
+   "z": 52.8
   },
   {
    "move": "climbing",
    "what": "/statistics/ger40",
-   "why": "46 reads in 3 days vs ~0.9",
-   "z": 47.5
+   "why": "48 reads in 3 days vs ~0.9",
+   "z": 49.6
   },
   {
    "move": "climbing",
-   "what": "/economic-calendar/us-core-inflation-rate-mom",
-   "why": "36 reads in 3 days vs ~1.6",
-   "z": 27.5
+   "what": "/news/cpi/eurusd",
+   "why": "47 reads in 3 days vs ~0.9",
+   "z": 48.6
   },
   {
    "move": "climbing",
    "what": "/answers/does-the-opening-range-breakout-work-on-gold",
-   "why": "51 reads in 3 days vs ~3.1",
-   "z": 27
+   "why": "52 reads in 3 days vs ~3.1",
+   "z": 28
+  },
+  {
+   "move": "climbing",
+   "what": "/economic-calendar/us-core-inflation-rate-mom",
+   "why": "35 reads in 3 days vs ~2.3",
+   "z": 21.6
   },
   {
    "move": "climbing",
    "what": "/economic-calendar/united-states",
-   "why": "24 reads in 3 days vs ~0.9",
-   "z": 24.3
+   "why": "23 reads in 3 days vs ~1.1",
+   "z": 20.4
+  },
+  {
+   "move": "climbing",
+   "what": "/economic-calendar/us-inflation-rate-yoy",
+   "why": "18 reads in 3 days vs ~1.5",
+   "z": 13.3
   },
   {
    "move": "climbing",
    "what": "/economic-calendar/us-cpi-seasonally-adjusted",
-   "why": "29 reads in 3 days vs ~2.4",
-   "z": 17.4
-  },
-  {
-   "move": "climbing",
-   "what": "/economic-calendar/us-core-inflation-rate-yoy",
-   "why": "20 reads in 3 days vs ~1.2",
-   "z": 17.3
+   "why": "26 reads in 3 days vs ~3.4",
+   "z": 12.2
   },
   {
    "move": "climbing",
    "what": "/news/cpi-2026-10-14",
-   "why": "26 reads in 3 days vs ~2.4",
-   "z": 15.4
+   "why": "24 reads in 3 days vs ~3.1",
+   "z": 12
   }
  ],
  "ledger": [
@@ -410,6 +764,7 @@
   }
  ],
  "fix": [
+  "AI accounts / week getting worse: 14 vs 31 last week (hooks)",
   "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones"
  ],
  "mistakes": [
