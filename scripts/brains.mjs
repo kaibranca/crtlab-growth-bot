@@ -65,6 +65,7 @@ if (process.env.ANALYTICS_DB_URL) try {
 // once both arms have enough judged people (sent ≥ 40, held ≥ 10) and P(sent beats held) < 0.15 the brain switches it OFF
 // (data/retention/comeback.json, read by the site's runComeback before every run); P > 0.9 → kept + a win. Never flips back
 // by itself — a switch-off is a loss in the ledger and a build item.
+const CURI = (e) => Math.max(1, Math.min(1.6, J("data/machines/self.json", {})?.engines?.[e]?.curiosity ?? 1)); // self-model curiosity
 let comebackRead = null;
 {
   const F = "data/retention/comeback.json", prev = J(F, { on: true }), S = comeback?.sent, Hh = comeback?.hold;
@@ -345,7 +346,7 @@ for (const S of BRAINS) try {
   let sig = []; try { sig = (S.signals?.(sens) ?? []).filter((x) => x && x.v != null && Number.isFinite(+x.v)); } catch { sig = []; }
   for (const x of sig) { const id = `${x.key}-${x.target}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 50);
     if (BR.branches.some((b) => b.id === id && (b.state === "open" || NOW - Date.parse(b.closed ?? 0) < 14 * DAY))) continue;
-    if (BR.branches.filter((b) => b.state === "open").length >= 8) break;
+    if (BR.branches.filter((b) => b.state === "open").length >= Math.round(8 * CURI(S.id))) break; // a stalled brain explores more (self.mjs curiosity, 8 → ≤ 12)
     BR.branches.push({ id, key: x.key, target: x.target, base: x.v, higher: x.higher, days: x.days, why: x.why, born: iso(NOW), state: "open", ...(x.info ? { info: true } : {}) });
     feed.push({ t: iso(NOW), m: "core", text: `opened a branch: ${x.target} (${x.why})`, kind: "hot" }); }
   for (const b of BR.branches.filter((b) => b.state === "open")) {
