@@ -6,3 +6,8 @@ preview_urls = false
 no_bundle = true
 [triggers]
 crons = ["* * * * *"]
+
+# 11-12: durable state for the sentinel baseline + watchdog alert dedupe (the Cache API is a silent no-op in cron triggers)
+[[kv_namespaces]]
+binding = "SENTINEL"
+id = "468c0a0f89af438dab209a17780251b6"

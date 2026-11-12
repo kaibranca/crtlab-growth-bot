@@ -51,15 +51,20 @@ async function guard(env, d) {
   if (!why.length) return;
   // ONE EMAIL PER PROBLEM PER 12 H (11-11: the same "data through unknown" went 3× in a day). The edge cache remembers the
   // last alert per problem; a NEW problem still alerts at once. No storage to add — the worker's own cache.
-  const key = new Request(`https://watchdog.crtlab.internal/alert/${encodeURIComponent(why.map((w) => w.replace(/[\d.]+ h\b/g, "")).join("|").slice(0, 300))}`);
-  try { if (await caches.default.match(key)) { console.log(`${d.toISOString()} watchdog: same problem already emailed < 12 h — skipped`); return; } } catch {}
+  const key = `alert:${why.map((w) => w.replace(/[\d.]+ h\b/g, "")).join("|").slice(0, 300)}`;
+  if (await kvGet(env, key)) { console.log(`${d.toISOString()} watchdog: same problem already emailed < 12 h — skipped`); return; }
   const r = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/watchdog-alert.yml/dispatches`, {
     method: "POST", headers: { Authorization: `Bearer ${env.GH_TOKEN}`, Accept: "application/vnd.github+json", "User-Agent": "crtlab-cron", "X-GitHub-Api-Version": "2022-11-28" },
     body: JSON.stringify({ ref: "main", inputs: { why: why.join(" | ").slice(0, 900) } }),
   });
   console.log(`${d.toISOString()} watchdog: ${why.join(" | ")} → alert ${r.status}`);
-  try { if (r.ok || r.status === 204) await caches.default.put(key, new Response("1", { headers: { "Cache-Control": "max-age=43200" } })); } catch {}
+  if (r.ok || r.status === 204) await kvPut(env, key, 1, 43200);
 }
+
+// DURABLE STATE (11-12): KV, not the Cache API — caches.default is a silent no-op in cron triggers (no zone route), which
+// meant the sentinel's baseline never persisted and the watchdog's "emailed < 12 h" dedupe never held (repeat emails)
+const kvGet = async (env, k) => { try { return env.SENTINEL ? JSON.parse((await env.SENTINEL.get(k)) ?? "null") : null; } catch { return null; } };
+const kvPut = async (env, k, v, ttl) => { try { if (env.SENTINEL) await env.SENTINEL.put(k, JSON.stringify(v), ttl ? { expirationTtl: ttl } : undefined); } catch {} };
 
 // THE SENTINEL (11-12 — reaction speed: every engine was triggered hourly, so a wave was seen up to an hour late). Every 5
 // minutes, Cloudflare's own edge counts of people asking AI assistants (ChatGPT-User / Claude-User / Perplexity-User) for
@@ -78,33 +83,31 @@ async function sentinel(env, d) {
     for (const r of j?.data?.viewer?.zones?.[0]?.httpRequestsAdaptiveGroups ?? []) { const p = r.dimensions.clientRequestPath.split("?")[0]; if (/^\/(api|_next)|\.(png|jpg|svg|ico|xml|txt)$/.test(p)) continue; pages[p] = (pages[p] ?? 0) + r.count; total += r.count; }
   }
   // rolling baseline (EWMA per 15-min window, total + per page), kept in the worker's edge cache for 3 days
-  const BK = new Request("https://sentinel.crtlab.internal/baseline");
-  let base = null; try { base = await (await caches.default.match(BK))?.json(); } catch {}
+  let base = await kvGet(env, "baseline");
   base ??= { total: total || 5, pages: {}, n: 0 };
   const hot = Object.entries(pages).filter(([p, n]) => n >= 6 && n >= 4 * Math.max(1, base.pages[p] ?? 0.5)).sort((a, b) => b[1] - a[1]);
   const spike = base.n >= 12 && ((total >= 15 && total >= 3 * base.total) || hot.length);
   // learn the baseline AFTER judging (a spike moves it slowly, so a long wave stays visible)
   const a = spike ? 0.05 : 0.15; base.total = base.total * (1 - a) + total * a; base.n++;
   for (const p of new Set([...Object.keys(base.pages), ...Object.keys(pages)])) { const v = (base.pages[p] ?? 0) * (1 - a) + (pages[p] ?? 0) * a; if (v < 0.05) delete base.pages[p]; else base.pages[p] = +v.toFixed(3); }
-  try { await caches.default.put(BK, new Response(JSON.stringify(base), { headers: { "Cache-Control": "max-age=259200" } })); } catch {}
+  await kvPut(env, "baseline", base, 259200);
   if (d.getUTCMinutes() === 2 || base.n <= 2) console.log(`${d.toISOString()} sentinel ok: ${total} people-fetches in 15 min vs ~${base.total.toFixed(1)} baseline (${base.n} windows learned, ${Object.keys(base.pages).length} pages tracked)`); // hourly heartbeat
   if (!spike) return;
-  const CK = new Request("https://sentinel.crtlab.internal/cooldown");
-  try { if (await caches.default.match(CK)) { console.log(`${d.toISOString()} sentinel: spike (${total} vs ~${base.total.toFixed(1)}) — cooling down`); return; } } catch {}
+  if (await kvGet(env, "cooldown")) { console.log(`${d.toISOString()} sentinel: spike (${total} vs ~${base.total.toFixed(1)}) — cooling down`); return; }
   const top = (hot.length ? hot : Object.entries(pages).sort((x, y) => y[1] - x[1])).slice(0, 8).map(([p]) => p);
   const why = `${total} people-fetches in 15 min vs ~${base.total.toFixed(1)} normal${hot.length ? ` · hot: ${hot.slice(0, 3).map(([p, n]) => `${p} ${n}`).join(", ")}` : ""}`;
   const r = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/hourly.yml/dispatches`, { method: "POST",
     headers: { Authorization: `Bearer ${env.GH_TOKEN}`, Accept: "application/vnd.github+json", "User-Agent": "crtlab-cron", "X-GitHub-Api-Version": "2022-11-28" },
     body: JSON.stringify({ ref: "main", inputs: { spike: JSON.stringify({ why, pages: top }).slice(0, 900) } }) });
   console.log(`${d.toISOString()} sentinel: SPIKE ${why} → hourly ${r.status}`);
-  try { await caches.default.put(CK, new Response("1", { headers: { "Cache-Control": "max-age=2700" } })); } catch {}
+  await kvPut(env, "cooldown", 1, 2700);
 }
 
 export default {
   async scheduled(event, env, ctx) {
     const d = new Date(event.scheduledTime), m = d.getUTCMinutes(), h = d.getUTCHours(), w = d.getUTCDay();
     if (m === 7 && h % 3 === 0) ctx.waitUntil(guard(env, d));
-    if (m % 5 === 2) ctx.waitUntil(sentinel(env, d).catch((e) => console.log("sentinel error " + String(e).slice(0, 80))));
+    if (m % 5 === 2) await sentinel(env, d).catch((e) => console.log("sentinel error " + String(e).slice(0, 80))); // awaited: its logs + KV writes finish inside the event
     const due = JOBS.filter(([, mm, hh, ww]) => hit(mm, m) && hit(hh, h) && hit(ww, w));
     for (const [wf, , , , repo = REPO, inputs] of due) {
       const r = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/${wf}/dispatches`, {
