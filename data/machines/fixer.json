@@ -8,7 +8,7 @@
   "43209752996": true
  },
  "day": "2026-11-12",
- "at": "2026-11-12T13:20:18.896Z",
+ "at": "2026-11-12T14:07:12.497Z",
  "actions": [
   {
    "at": "2026-11-12T12:03:51.703Z",
@@ -58,22 +58,12 @@
  ],
  "tasks": [
   {
-   "what": "Daily data still behind after 3 retries today",
-   "evidence": "DAILY DATA BEHIND: site data through 2026-11-10, should be 2026-11-11 (live d20261112-1136)",
-   "fix": "read the newest daily-data log: gh run list -R kaibranca/crtlab-backtester -w daily-data.yml"
-  },
-  {
    "what": "AI accounts / week getting worse: 11 vs 32 last week (hooks)",
    "evidence": "supervisor",
    "fix": "needs a build or a decision"
   },
   {
    "what": "Holdout is waiting (last run never h ago, normal every 1 h)",
-   "evidence": "supervisor",
-   "fix": "needs a build or a decision"
-  },
-  {
-   "what": "Same-day news is late (last run 3 h ago, normal every 1 h)",
    "evidence": "supervisor",
    "fix": "needs a build or a decision"
   },
