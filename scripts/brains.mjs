@@ -396,7 +396,7 @@ for (const S of BRAINS) try {
   if (heard.length) good.unshift(`Other brains: ${heard.join(" · ")}`);
   const mainFeed = (main.feed ?? []).filter((f) => ids.has(f.m) && f.m !== "core").slice(0, 30);
   const eco = { at: iso(NOW), engine: S.id, color: S.color, modes: modes.length ? modes : [lead], sensors: sens, authority,
-    briefing: { key: S.id + lead.id, changed: mem.episode.since, headline: `${S.name}: ${lead.label}`, good: good.slice(0, 8), ...splitNeeds(watch), next, conclusion: `${lead.label === "Normal" ? "All steady" : lead.label}: ${lead.why}. Judged on ${out.label} (${out.v ?? "—"}).` },
+    briefing: { key: S.id + lead.id, changed: mem.episode.since, headline: `${S.name}: ${lead.label}`, good: good.slice(0, 8), ...splitNeeds(watch), next: [...[J("data/machines/self.json", null)?.engines?.[S.id]?.say].filter(Boolean), ...next].slice(0, 7), conclusion: `${lead.label === "Normal" ? "All steady" : lead.label}: ${lead.why}. Judged on ${out.label} (${out.v ?? "—"}).` },
     mode: { mode: lead.level === "critical" ? "dip" : "normal", since: mem.episode.since, why: lead.why, z: 0, r24: 0, normal: 0 },
     nodes, edges, feed: [...feed, ...mainFeed], totals: { machines: nodes.length, ok: nodes.filter((n) => n.state === "ok").length, late: nodes.filter((n) => n.state === "late").length, stopped: nodes.filter((n) => n.state === "stopped").length, actions24: feed.length + mainFeed.length },
     widgets: main.widgets, rules: [...Object.entries(W).filter(([, w]) => w.n >= 1).map(([k, w]) => `${k.replace(/-/g, " ")} problems ${w.v >= 0.6 ? "usually fix themselves" : w.v <= 0.35 ? "do NOT fix themselves → escalated to an admin" : "sometimes fix themselves"} (${w.v} after ${w.n})`),

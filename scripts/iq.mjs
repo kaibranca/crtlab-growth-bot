@@ -79,7 +79,7 @@ export function measure(R) {
 // RATCHET: pruned logs are not forgetting — a machine's cumulative verdicts never count down (hi[id]). Facts, evidence
 // and neurons CAN fall (a fact decays, a model loses its sample) and that is shown as it is.
 function score(m, hi) {
-  const per = {};
+  const per = {}, parts = {};
   const ids = m.ids, lost = Object.keys(m.M).filter((id) => !ids.includes(id) && Object.values(m.M[id]).some(Boolean));
   if (lost.length && !score.warned) { score.warned = 1; console.log(`iq: learning credited to unknown machines (map them): ${lost.join(", ")}`); }
   if (!m.ids.length) return { iq: 70, per, parts: { knows: 0, facts: 0, judged: 0, evidence: 0, fixed: 0, machines: 0, learners: 0 } };
@@ -89,8 +89,10 @@ function score(m, hi) {
     const judged = (hi[id] = Math.max(hi[id] ?? 0, x.judged)), fixed = (hi["fix:" + id] = Math.max(hi["fix:" + id] ?? 0, x.fixed));
     const E = 10 * x.knows + 10 * judged + x.evidence / 5 + 5 * fixed, q = 70 + 10 * Math.log2(1 + E / 10);
     sum += q; if (E > 0) { learners++; per[id] = Math.round(q); }
+    if (E > 0) parts[id] = { v: judged, k: +x.knows.toFixed(2), e: Math.round(x.evidence), f: fixed };
     k += x.knows; j += judged; ev += x.evidence; fx += fixed;
   }
+  score.parts = parts; // what each learner's IQ is made of (v verdicts · k facts · e evidence · f fixes) — the self-model reads it
   return { iq: Math.round((sum / ids.length) * 10) / 10, per, parts: { knows: +k.toFixed(1), facts: m.facts, judged: j, evidence: Math.round(ev), fixed: fx, machines: ids.length, learners } };
 }
 
@@ -120,6 +122,10 @@ const slot = (t) => { const d = new Date(t); d.setUTCMinutes(0, 0, 0); d.setUTCH
 const prev = parse(fs.existsSync(OUT) ? fs.readFileSync(OUT, "utf8") : null, OUT) ?? { points: [] };
 const rows = new Map((prev.points ?? []).map((r) => [r.t, r]));
 let hi = prev.hi ?? {};
+// PER-MACHINE history (data/machines/iq-machines.json, 90 days, a machine's IQ at the day's last read) — the self-model
+// (scripts/self.mjs) reads its own trend from it; the /machine page never loads it (kept light).
+const HF = "data/machines/iq-machines.json", HP = parse(fs.existsSync(HF) ? fs.readFileSync(HF, "utf8") : null, HF) ?? { days: {} };
+const perDay = new Map(Object.entries(HP.days ?? {}));
 const ups = await upgrades();
 const nowIso = new Date().toISOString(), cur = slot(nowIso);
 
@@ -127,11 +133,13 @@ if (process.argv.includes("--backfill")) {
   const last = new Map(); // slot → last commit in it
   for (const l of (sh(`TZ=UTC git log --reverse --format='%H|%cI'`) ?? "").split("\n").filter(Boolean)) { const [h, d] = l.split("|"); last.set(slot(d), [h, new Date(d).toISOString()]); }
   hi = {};
-  for (const [t, [h, d]] of last) if (t < cur && t >= "2026-11-11") { const { per, ...r } = score(measure(reader(h)), hi); rows.set(t, { t, ...r, power: upTo(ups, d) }); }
+  for (const [t, [h, d]] of last) if (t < cur && t >= "2026-11-11") { const { per, ...r } = score(measure(reader(h)), hi); rows.set(t, { t, ...r, power: upTo(ups, d) }); perDay.set(t.slice(0, 10), per); }
 }
 const { per, ...nowS } = score(measure(reader(null)), hi);
 const now = { t: cur, ...nowS, power: upTo(ups, nowIso) ?? [...rows.values()].at(-1)?.power ?? null };
 rows.set(cur, now);
+perDay.set(cur.slice(0, 10), per);
+fs.writeFileSync(HF, JSON.stringify({ at: nowIso, note: "day → machine → IQ (70 = learned nothing; machines at 70 are left out)", days: Object.fromEntries([...perDay].sort((a, b) => a[0].localeCompare(b[0])).slice(-90)) }));
 const points = [...rows.values()].sort((a, b) => a.t.localeCompare(b.t)).slice(-720); // 90 days of 3-hour points
-fs.writeFileSync(OUT, JSON.stringify({ at: nowIso, hi, per, note: "IQ = mean of every machine's IQ from what it learned by itself (70 = nothing yet; 1 verdict ≈ 80, 10 ≈ 105, 100 ≈ 137). POWER = upgrades we built into them (non-run commits, cumulative).", points }, null, 1));
+fs.writeFileSync(OUT, JSON.stringify({ at: nowIso, hi, per, perParts: score.parts, note: "IQ = mean of every machine's IQ from what it learned by itself (70 = nothing yet; 1 verdict ≈ 80, 10 ≈ 105, 100 ≈ 137). POWER = upgrades we built into them (non-run commits, cumulative).", points }, null, 1));
 console.log(`iq ${now.iq} power ${now.power} · ${JSON.stringify(now.parts)} · ${points.length} points`);

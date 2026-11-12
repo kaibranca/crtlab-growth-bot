@@ -55,7 +55,7 @@ const pageDays = new Set([...fetches.keys(), ...hv.keys()]);
 const gamma = (k) => { if (k < 1) return gamma(k + 1) * Math.pow(Math.random(), 1 / k); const d = k - 1 / 3, c = 1 / Math.sqrt(9 * d);
   for (;;) { let x, v; do { const u1 = Math.random(), u2 = Math.random(); x = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2); v = 1 + c * x; } while (v <= 0); v = v * v * v; const u = Math.random(); if (u < 1 - 0.0331 * x ** 4 || Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v; } };
 const today = iso(NOW), tomorrow = iso(NOW + DAY), report = [];
-const EX = Math.max(0.1, Math.min(0.35, J("data/machines/executive.json", {}).knobs?.banditExplore ?? 0.15)); // the executive's knob
+const EX = Math.max(0.1, Math.min(0.35, (J("data/machines/executive.json", {}).knobs?.banditExplore ?? 0.15) * Math.max(1, Math.min(1.6, J("data/machines/self.json", {})?.engines?.money?.curiosity ?? 1)))); // the executive's knob × the money engine's curiosity (self.mjs)
 // HIERARCHICAL TRANSFER (11-12 — every click teaches every family): pass 1 counts each wording's clicks/fetches in every
 // family; a wording's LIFT across families (its pooled rate ÷ the pooled rate of all wordings, shrunk by its sample) becomes
 // the prior every family starts that wording from. A family then moves away from it only on its own evidence.

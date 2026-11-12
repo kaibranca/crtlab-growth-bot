@@ -342,7 +342,9 @@ const rank = (a, b) => urgent(b) - urgent(a) || b.value - a.value;
 const exploit = [...queue].sort(rank);
 const seenFam = new Set(), explore = [];
 for (const q of [...queue].sort((a, b) => a.conf - b.conf || (Math.sin(a.p.length * 7 + NOW / DAY) - Math.sin(b.p.length * 7 + NOW / DAY)))) if (!seenFam.has(q.fam)) { seenFam.add(q.fam); explore.push({ ...q, why: q.why + " · explore" }); }
-const pick = (n) => { const nX = Math.round(n * 0.15), out = [], used = new Set();
+// CURIOSITY (scripts/self.mjs): when the traffic engine's IQ stalls it explores harder — 15 % × curiosity (≤ ×1.6 → 24 %)
+const CUR = (() => { try { return Math.max(1, Math.min(1.6, JSON.parse(fs.readFileSync("data/machines/self.json", "utf8")).engines?.traffic?.curiosity ?? 1)); } catch { return 1; } })();
+const pick = (n) => { const nX = Math.round(n * 0.15 * CUR), out = [], used = new Set();
   for (const q of exploit) { if (out.length >= n - nX) break; out.push(q); used.add(q.p); }
   for (const q of explore) { if (out.length >= n) break; if (!used.has(q.p)) { out.push(q); used.add(q.p); } }
   for (const q of exploit) { if (out.length >= n) break; if (!used.has(q.p)) { out.push(q); used.add(q.p); } }

@@ -1,0 +1,87 @@
+// SELF-MODEL (11-12, Kai: "the ecosystem should act alive, conscious in a way, like a brain — every part reads all the
+// analytics on itself, understands its level, reads the front end, its own IQ and power"). Each hour, after iq.mjs:
+//   SENSE   every machine reads itself: its IQ now and 7 d ago, what that IQ is made of, its run state, its outcome KPI,
+//           the verdicts on the upgrades we gave it — the same numbers /machine shows (this file IS the page's numbers).
+//   KNOW    a level (Blank 70 · Novice · Capable · Strong · Expert) and ONE limit: the thing capping its IQ right now
+//           ("acts but never judges an outcome", "judges but rests on little evidence", "no outcome KPI to learn from" …).
+//   ENGINES each engine (main + traffic + the 7 brains) knows its own IQ = its members' mean, its trend, its weakest and
+//           strongest part, and says it in the first person in its briefing.
+//   ACT     CURIOSITY: an engine whose IQ stalls (< +0.5 in 7 d) explores more — ×1.1 an hour up to ×1.6, easing back ×0.95
+//           when it learns again. Real hands: the AI machine's explore share (15 % × traffic curiosity) and the conversion
+//           bandit's explore rate (× money curiosity). Every curiosity episode is JUDGED when it ends: did IQ start climbing
+//           again (win) or not (loss) → ledger, so the self-model learns whether its own curiosity pays.
+// Light by design: it reads files the machines already wrote; no database, no network.
+import fs from "node:fs";
+
+const NOW = Date.now(), DAY = 864e5, OUT = "data/machines/self.json";
+const J = (f, d = null) => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return d; } };
+const append = (f, o) => fs.appendFileSync(f, JSON.stringify(o) + "\n");
+const IQ = J("data/machines/iq.json", {}), HIST = J("data/machines/iq-machines.json", { days: {} }).days ?? {};
+const eco = J("data/machines/ecosystem.json", {}), nodes = (eco.nodes ?? []).filter((n) => !n.id.startsWith("lead-"));
+const KPI = J("data/machines/outcomes.json", {})?.kpi ?? {}, UPG = J("data/machines/upgrades.json", {}), prev = J(OUT, {});
+const per = IQ.per ?? {}, parts = IQ.perParts ?? {}, iqOf = (id) => per[id] ?? 70;
+const days = Object.keys(HIST).sort(), today = days.at(-1), wkAgo = new Date(NOW - 7 * DAY).toISOString().slice(0, 10);
+const then = days.filter((d) => d <= wkAgo).at(-1) ?? days[0]; // the oldest we have until 7 days of history exist
+const iqThen = (id) => (then ? HIST[then]?.[id] ?? 70 : null);
+const fd = (d) => (d ? new Date(d + "T12:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" }) : "");
+const level = (q) => (q < 72 ? "Blank" : q < 85 ? "Novice" : q < 100 ? "Capable" : q < 115 ? "Strong" : "Expert");
+
+// ── every machine reads itself ──
+const upgOf = (id) => { const j = (UPG.judged ?? []).filter((x) => x.machine === id && x.verdict !== "unjudgeable"), o = (UPG.open ?? []).filter((x) => x.machine === id);
+  return { paid: j.filter((x) => x.verdict === "paid").length, hurt: j.filter((x) => x.verdict === "hurt").length, flat: j.filter((x) => x.verdict === "flat").length, waiting: o.length }; };
+function limitOf(n, p, k) {
+  if (!p) return n.kpi?.activity || !KPI[n.id] ? "acts but learns nothing from what happens next — no outcome to judge itself by" : "acts but never judges its outcome — it has a KPI it doesn't learn from";
+  if (!p.v && p.e) return "collects evidence but hasn't reached a verdict yet";
+  if (p.v && p.e < 20 && !p.k) return "judges, but on little evidence — verdicts rest on a handful of cases";
+  if (k?.change != null && k.change < -0.1) return `its outcome is falling (${k.label} ${Math.round(k.change * 100)}%)`;
+  if (!p.k) return "learns case by case but no lasting fact has formed yet";
+  return "learning on every front — more data is the only limit";
+}
+const machines = {};
+for (const n of nodes) {
+  const q = iqOf(n.id), q0 = iqThen(n.id), k = KPI[n.id] && !KPI[n.id].activity ? KPI[n.id] : null;
+  machines[n.id] = { name: n.name, iq: q, iqWas: q0, level: level(q), state: n.state, kpi: k ? { label: k.label, now: k.now, before: k.before, change: k.change } : null,
+    made: parts[n.id] ?? null, upgrades: upgOf(n.id), limit: limitOf(n, parts[n.id], k) };
+}
+
+// ── engines read themselves ──
+const ENG = { main: null, traffic: "data/traffic/ecosystem.json", money: "data/brains/money/ecosystem.json", data: "data/brains/data/ecosystem.json", security: "data/brains/security/ecosystem.json",
+  content: "data/brains/content/ecosystem.json", retention: "data/brains/retention/ecosystem.json", speed: "data/brains/speed/ecosystem.json", fixer: "data/brains/fixer/ecosystem.json" };
+const GROUP = { traffic: "traffic", money: "conversion", content: "content", security: "security" }; // a machine's section joins its engine too
+const LED = fs.existsSync("data/machines/ledger.jsonl") ? fs.readFileSync("data/machines/ledger.jsonl", "utf8").split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return {}; } }) : [];
+const engines = {};
+for (const [e, f] of Object.entries(ENG)) {
+  const ids = e === "main" ? nodes.map((n) => n.id) : [...new Set([...(J(f, {})?.nodes ?? []).map((n) => n.id), ...nodes.filter((n) => n.group === GROUP[e]).map((n) => n.id)])].filter((id) => machines[id] && id !== "core");
+  // the engine's own brain: its verdicts in the ledger are its learning (money, data, … write as themselves)
+  const brainV = e === "main" ? 0 : LED.filter((l) => l.machine === e && ["win", "loss", "lesson"].includes(l.kind)).length;
+  const brainIQ = 70 + 10 * Math.log2(1 + brainV);
+  const qs = ids.map((id) => machines[id].iq), q = ids.length ? (e === "main" ? IQ.points?.at(-1)?.iq ?? 70 : (qs.reduce((a, b) => a + b, 0) + brainIQ) / (qs.length + 1)) : brainIQ;
+  const q0s = ids.map((id) => machines[id].iqWas ?? 70), q0 = e === "main" ? (IQ.points ?? []).find((p) => p.t.slice(0, 10) >= (then ?? "")) ?.iq ?? null : ids.length ? (q0s.reduce((a, b) => a + b, 0) + 70 + 10 * Math.log2(1 + LED.filter((l) => l.machine === e && ["win", "loss", "lesson"].includes(l.kind) && l.at.slice(0, 10) <= (then ?? "")).length)) / (q0s.length + 1) : null;
+  const sorted = ids.map((id) => ({ id, name: machines[id].name, iq: machines[id].iq, limit: machines[id].limit })).sort((a, b) => a.iq - b.iq);
+  const d = q0 == null ? null : +(q - q0).toFixed(1), learners = sorted.filter((x) => x.iq > 70).length;
+  // CURIOSITY: stalls → explore more; learning again → ease back. Needs 3 days of history before it moves.
+  const P = prev.engines?.[e] ?? {}, c0 = P.curiosity ?? 1, histDays = days.length;
+  const stalled = histDays >= 3 && d != null && d < 0.5;
+  const c = +(stalled ? Math.min(1.6, c0 * 1.1) : Math.max(1, c0 * 0.95)).toFixed(3);
+  const ep = P.episode ?? null;
+  let episode = ep;
+  if (c > 1.05 && !ep) episode = { since: new Date().toISOString(), iq0: +q.toFixed(1) };
+  if (c <= 1.0001 && ep) { // the episode ended: did curiosity get it learning again?
+    const gain = +(q - ep.iq0).toFixed(1), paid = gain >= 1;
+    append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `self|${e}|${ep.since}`, machine: "self", kind: paid ? "win" : "loss", what: `${e} engine curiosity episode (${((NOW - Date.parse(ep.since)) / 3.6e6).toFixed(0)} h): IQ ${ep.iq0} → ${q.toFixed(1)} (${gain >= 0 ? "+" : ""}${gain})` });
+    episode = null;
+  }
+  const weakest = sorted.filter((x) => x.iq <= 72).slice(0, 3), strongest = [...sorted].reverse().slice(0, 2);
+  const say = `My IQ is ${q.toFixed(1)} (${level(q)}${d != null ? `, ${d >= 0 ? "+" : "−"}${Math.abs(d)} since ${fd(then)}` : ""}) — ${learners} of ${ids.length} parts learn on their own` +
+    (weakest.length ? `; weakest: ${weakest.map((x) => x.name).join(", ")} (${weakest[0].limit})` : "") + (c > 1.05 ? `; I'm stalling, so I explore ×${c} harder` : "") + ".";
+  engines[e] = { iq: +q.toFixed(1), iqWas: q0 == null ? null : +q0.toFixed(1), since: then, level: level(q), members: ids.length, learners, brainVerdicts: brainV, curiosity: c, episode, weakest, strongest, say };
+}
+
+// ── the whole: power vs IQ — is what we build making it smarter? ──
+const pts = IQ.points ?? [], last = pts.at(-1), first = pts.find((p) => p.t.slice(0, 10) >= (then ?? "")) ?? pts[0];
+const dIQ = last && first ? +(last.iq - first.iq).toFixed(1) : null, dP = last && first ? (last.power ?? 0) - (first.power ?? 0) : null;
+const whole = { iq: last?.iq ?? null, power: last?.power ?? null, dIQ, dPower: dP, iqPerUpgrade: dIQ != null && dP ? +(dIQ / dP).toFixed(3) : null, upgrades: UPG.summary ?? null,
+  say: last ? `Machines IQ ${last.iq} (${dIQ >= 0 ? "+" : ""}${dIQ} since ${fd(then)}) on ${dP} upgrades — ${dIQ != null && dP ? (dIQ / dP).toFixed(2) : "–"} IQ per upgrade. ${UPG.summary?.judged ? `${UPG.summary.paid} of ${UPG.summary.judged} judged upgrades paid.` : `Upgrades get their first verdicts ${UPG.summary?.next ? fd(UPG.summary.next) : "after 7 days"}.`}` : "" };
+
+fs.writeFileSync(OUT, JSON.stringify({ at: new Date().toISOString(), note: "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.", whole, engines, machines }, null, 1));
+console.log(`self: ${Object.entries(engines).map(([e, x]) => `${e} ${x.iq}${x.curiosity > 1.0001 ? ` c×${x.curiosity}` : ""}`).join(" · ")}`);

@@ -516,7 +516,9 @@ const conclusion = mode === "surge" ? `Big day, Kai. AI is reading us ${xN.toFix
   : mode === "dip" ? `Quiet one, Kai. Reads are under normal, so I switched to recovery and I'm pushing the pages that already work.${watch.length ? " Have a look below." : ""}`
   : `All steady, Kai. ${nodes.filter((n) => n.state === "ok").length} of ${nodes.length} machines running and learning.${watch.length ? ` ${watch.length === 1 ? "One thing to look at." : `${watch.length} things to look at.`}` : " Nothing needs you."}`;
 const prevEco = J("data/machines/ecosystem.json"), bKey = [mode, ...good.slice(0, 3), ...watch.slice(0, 2)].join("|").replace(/\d+/g, "#");
-const briefing = { key: bKey, changed: prevEco?.briefing?.key === bKey ? prevEco.briefing.changed : new Date().toISOString(), headline: modeOut.why, good: good.slice(0, 10), watch: watch.slice(0, 6), notes: NW.notes.slice(0, 8), next: next.slice(0, 6), conclusion };
+// SELF (scripts/self.mjs): the Core reads itself — its own IQ, level, weakest parts, curiosity — and says it first
+const SELFJ = J("data/machines/self.json", null), SELFL = (e) => [SELFJ?.engines?.[e]?.say, e === "main" ? SELFJ?.whole?.say : null].filter(Boolean);
+const briefing = { key: bKey, changed: prevEco?.briefing?.key === bKey ? prevEco.briefing.changed : new Date().toISOString(), headline: modeOut.why, good: good.slice(0, 10), watch: watch.slice(0, 6), notes: NW.notes.slice(0, 8), next: [...SELFL("main"), ...next].slice(0, 7), conclusion };
 
 // ── 6. WIDGETS: the live numbers the page shows as tiles (all from files the machines already wrote)
 const today = iso(NOW), runsToday = readLines("data/ai/runs.jsonl").filter((r) => r.at.slice(0, 10) === today);
@@ -553,18 +555,22 @@ if (!(widgets.aiAccounts7 >= widgets.aiAccountsPrev)) scout.push({ what: "AI lan
 scout.push({ what: "Cost machine (Railway)", why: "budget watch + backend optimiser — Kai asked 11-11", kind: "new" });
 
 // MACHINES IQ + POWER (scripts/iq.mjs): IQ = learned by themselves; POWER = upgrades we built in. 7-day change for the tiles.
+// the page polls this file every 30 s — keep it light: 3-hour detail for the last 7 days, one point a day before that
+const thin = (P) => { const cut = new Date(NOW - 7 * DAY).toISOString().slice(0, 13), out = [];
+  for (let i = 0; i < P.length; i++) { const p = P[i]; if (p.t >= cut || i === P.length - 1 || P[i + 1].t.slice(0, 10) !== p.t.slice(0, 10)) out.push(p); }
+  return out; };
 function iqOut() {
   const d = J("data/machines/iq.json"), P = d?.points ?? [];
   if (!P.length) return null;
   const last = P.at(-1), wk = new Date(NOW - 7 * DAY).toISOString().slice(0, 13), ago = [...P].reverse().find((p) => p.t <= wk) ?? P[0];
   for (const n of nodes) if (!n.id.startsWith("lead-")) n.iq = d.per?.[n.id] ?? 70; // per machine (70 = learned nothing yet)
   const U = J("data/machines/upgrades.json")?.summary ?? null; // did what we built pay? (scripts/upgrades.mjs)
-  return { iq: last.iq, iqWas: ago.iq, power: last.power, powerWas: ago.power, since: ago.t, parts: last.parts, points: P.map((p) => [p.t, p.iq, p.power]), upgrades: U };
+  return { iq: last.iq, iqWas: ago.iq, power: last.power, powerWas: ago.power, since: ago.t, parts: last.parts, points: thin(P).map((p) => [p.t, p.iq, p.power]), upgrades: U };
 }
 const eco = { at: new Date().toISOString(), scout, widgets, modes, briefing, rules: CORE_RULES, capacity: cap, mode: modeOut, nodes, edges, feed: feed.slice(0, 160),
   totals: { machines: nodes.length, ok: nodes.filter((n) => n.state === "ok").length, late: nodes.filter((n) => n.state === "late").length, stopped: nodes.filter((n) => n.state === "stopped").length, actions24: Object.values(act).reduce((a, b) => a + b, 0) },
   allIn: sup?.allIn ?? [], fix: sup?.fix ?? [], mistakes: sup?.mistakes ?? [], ledger: (sup?.ledger ?? []).slice(0, 15), episodes: readLines("data/machines/modes.jsonl").slice(-8).reverse(),
   spawned: spawned.branches.slice(-12),
-  score: readLines("data/ai/score.jsonl").slice(-90).map((s) => ({ day: s.day, reads: s.reads, clicks: s.clicks, accounts: s.accounts })), iq: iqOut() };
+  score: readLines("data/ai/score.jsonl").slice(-90).map((s) => ({ day: s.day, reads: s.reads, clicks: s.clicks, accounts: s.accounts })), iq: iqOut(), self: SELFJ ? { say: SELFJ.engines?.main?.say ?? null, whole: SELFJ.whole?.say ?? null, curiosity: Object.fromEntries(Object.entries(SELFJ.engines ?? {}).map(([k, v]) => [k, v.curiosity])) } : null };
 fs.writeFileSync("data/machines/ecosystem.json", JSON.stringify(eco));
 console.log(`core: ${eco.totals.ok}/${eco.totals.machines} ok · mode ${mode} (${why}) · ${eco.totals.actions24} actions in 24 h`);

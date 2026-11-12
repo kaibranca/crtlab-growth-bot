@@ -1,0 +1,1793 @@
+{
+ "at": "2026-11-12T19:35:45.238Z",
+ "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
+ "whole": {
+  "iq": 77.2,
+  "power": 227,
+  "dIQ": 3.8,
+  "dPower": 122,
+  "iqPerUpgrade": 0.031,
+  "upgrades": {
+   "judged": 0,
+   "paid": 0,
+   "hurt": 0,
+   "flat": 0,
+   "waiting": 35,
+   "unmeasured": 0,
+   "next": "2026-11-19"
+  },
+  "say": "Machines IQ 77.2 (+3.8 since 11 Nov) on 122 upgrades — 0.03 IQ per upgrade. Upgrades get their first verdicts 19 Nov."
+ },
+ "engines": {
+  "main": {
+   "iq": 77.2,
+   "iqWas": 73.4,
+   "since": "2026-11-11",
+   "level": "Novice",
+   "members": 72,
+   "learners": 25,
+   "brainVerdicts": 0,
+   "curiosity": 1,
+   "episode": null,
+   "weakest": [
+    {
+     "id": "supervisor",
+     "name": "Supervisor",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "ledger",
+     "name": "Ledger",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "trend",
+     "name": "4-week trend",
+     "iq": 70,
+     "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+    }
+   ],
+   "strongest": [
+    {
+     "id": "world",
+     "name": "World model",
+     "iq": 123,
+     "limit": "collects evidence but hasn't reached a verdict yet"
+    },
+    {
+     "id": "traffic-brain",
+     "name": "Traffic brain ↗",
+     "iq": 113,
+     "limit": "learning on every front — more data is the only limit"
+    }
+   ],
+   "say": "My IQ is 77.2 (Novice, +3.8 since 11 Nov) — 25 of 72 parts learn on their own; weakest: Supervisor, Ledger, 4-week trend (acts but learns nothing from what happens next — no outcome to judge itself by)."
+  },
+  "traffic": {
+   "iq": 77.9,
+   "iqWas": 75.5,
+   "since": "2026-11-11",
+   "level": "Novice",
+   "members": 32,
+   "learners": 16,
+   "brainVerdicts": 0,
+   "curiosity": 1,
+   "episode": null,
+   "weakest": [
+    {
+     "id": "curator",
+     "name": "llms.txt curator",
+     "iq": 70,
+     "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+    },
+    {
+     "id": "truth",
+     "name": "Truth gate",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "bing",
+     "name": "Bing sender",
+     "iq": 70,
+     "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+    }
+   ],
+   "strongest": [
+    {
+     "id": "hooks",
+     "name": "Hook tests",
+     "iq": 112,
+     "limit": "its outcome is falling (AI accounts / week -30%)"
+    },
+    {
+     "id": "ai",
+     "name": "AI referral machine",
+     "iq": 104,
+     "limit": "collects evidence but hasn't reached a verdict yet"
+    }
+   ],
+   "say": "My IQ is 77.9 (Novice, +2.5 since 11 Nov) — 16 of 32 parts learn on their own; weakest: llms.txt curator, Truth gate, Bing sender (acts but never judges its outcome — it has a KPI it doesn't learn from)."
+  },
+  "money": {
+   "iq": 70.1,
+   "iqWas": 70.1,
+   "since": "2026-11-11",
+   "level": "Blank",
+   "members": 8,
+   "learners": 1,
+   "brainVerdicts": 0,
+   "curiosity": 1,
+   "episode": null,
+   "weakest": [
+    {
+     "id": "behaviour",
+     "name": "Behaviour machine",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "leak-page-backtest-market-land-account",
+     "name": "/backtest-<market> @ land ",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "leak-source-direct-land-account",
+     "name": "direct @ land → account",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    }
+   ],
+   "strongest": [
+    {
+     "id": "leak",
+     "name": "Conversion leak",
+     "iq": 71,
+     "limit": "collects evidence but hasn't reached a verdict yet"
+    },
+    {
+     "id": "bandit",
+     "name": "Conversion bandit",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    }
+   ],
+   "say": "My IQ is 70.1 (Blank, +0 since 11 Nov) — 1 of 8 parts learn on their own; weakest: Behaviour machine, /backtest-<market> @ land , direct @ land → account (acts but learns nothing from what happens next — no outcome to judge itself by)."
+  },
+  "data": {
+   "iq": 73.1,
+   "iqWas": 71,
+   "since": "2026-11-11",
+   "level": "Novice",
+   "members": 9,
+   "learners": 1,
+   "brainVerdicts": 0,
+   "curiosity": 1,
+   "episode": null,
+   "weakest": [
+    {
+     "id": "datapull",
+     "name": "Data pull",
+     "iq": 70,
+     "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+    },
+    {
+     "id": "backup",
+     "name": "Nightly backup",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "restore",
+     "name": "Restore test",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    }
+   ],
+   "strongest": [
+    {
+     "id": "cost",
+     "name": "Cost machine",
+     "iq": 101,
+     "limit": "learning on every front — more data is the only limit"
+    },
+    {
+     "id": "cost-web-too-many-deploys",
+     "name": "web too many deploys",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    }
+   ],
+   "say": "My IQ is 73.1 (Novice, +2.1 since 11 Nov) — 1 of 9 parts learn on their own; weakest: Data pull, Nightly backup, Restore test (acts but never judges its outcome — it has a KPI it doesn't learn from)."
+  },
+  "security": {
+   "iq": 73.2,
+   "iqWas": 70,
+   "since": "2026-11-11",
+   "level": "Novice",
+   "members": 4,
+   "learners": 1,
+   "brainVerdicts": 0,
+   "curiosity": 1,
+   "episode": null,
+   "weakest": [
+    {
+     "id": "security",
+     "name": "Login + key watch",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "watchdog",
+     "name": "Watchdog",
+     "iq": 70,
+     "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+    },
+    {
+     "id": "health",
+     "name": "Health",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    }
+   ],
+   "strongest": [
+    {
+     "id": "shield",
+     "name": "Shield",
+     "iq": 86,
+     "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+    },
+    {
+     "id": "health",
+     "name": "Health",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    }
+   ],
+   "say": "My IQ is 73.2 (Novice, +3.2 since 11 Nov) — 1 of 4 parts learn on their own; weakest: Login + key watch, Watchdog, Health (acts but learns nothing from what happens next — no outcome to judge itself by)."
+  },
+  "content": {
+   "iq": 71.1,
+   "iqWas": 70,
+   "since": "2026-11-11",
+   "level": "Blank",
+   "members": 8,
+   "learners": 1,
+   "brainVerdicts": 0,
+   "curiosity": 1,
+   "episode": null,
+   "weakest": [
+    {
+     "id": "factory",
+     "name": "Reaction factory",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "news",
+     "name": "News engine",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "recaps",
+     "name": "Daily recaps",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    }
+   ],
+   "strongest": [
+    {
+     "id": "social",
+     "name": "Reels",
+     "iq": 80,
+     "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+    },
+    {
+     "id": "livenews",
+     "name": "Same-day news",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    }
+   ],
+   "say": "My IQ is 71.1 (Blank, +1.1 since 11 Nov) — 1 of 8 parts learn on their own; weakest: Reaction factory, News engine, Daily recaps (acts but learns nothing from what happens next — no outcome to judge itself by)."
+  },
+  "retention": {
+   "iq": 70,
+   "iqWas": 70,
+   "since": "2026-11-11",
+   "level": "Blank",
+   "members": 2,
+   "learners": 0,
+   "brainVerdicts": 0,
+   "curiosity": 1,
+   "episode": null,
+   "weakest": [
+    {
+     "id": "behaviour",
+     "name": "Behaviour machine",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "humans",
+     "name": "People machine",
+     "iq": 70,
+     "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+    }
+   ],
+   "strongest": [
+    {
+     "id": "humans",
+     "name": "People machine",
+     "iq": 70,
+     "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+    },
+    {
+     "id": "behaviour",
+     "name": "Behaviour machine",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    }
+   ],
+   "say": "My IQ is 70.0 (Blank, +0 since 11 Nov) — 0 of 2 parts learn on their own; weakest: Behaviour machine, People machine (acts but learns nothing from what happens next — no outcome to judge itself by)."
+  },
+  "speed": {
+   "iq": 70,
+   "iqWas": 70,
+   "since": "2026-11-11",
+   "level": "Blank",
+   "members": 3,
+   "learners": 0,
+   "brainVerdicts": 0,
+   "curiosity": 1,
+   "episode": null,
+   "weakest": [
+    {
+     "id": "capacity",
+     "name": "Capacity",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "load",
+     "name": "Load alert",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "linkcheck",
+     "name": "Link check",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    }
+   ],
+   "strongest": [
+    {
+     "id": "linkcheck",
+     "name": "Link check",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "load",
+     "name": "Load alert",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    }
+   ],
+   "say": "My IQ is 70.0 (Blank, +0 since 11 Nov) — 0 of 3 parts learn on their own; weakest: Capacity, Load alert, Link check (acts but learns nothing from what happens next — no outcome to judge itself by)."
+  },
+  "fixer": {
+   "iq": 91.3,
+   "iqWas": 75.8,
+   "since": "2026-11-11",
+   "level": "Capable",
+   "members": 3,
+   "learners": 2,
+   "brainVerdicts": 4,
+   "curiosity": 1,
+   "episode": null,
+   "weakest": [
+    {
+     "id": "supervisor",
+     "name": "Supervisor",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    }
+   ],
+   "strongest": [
+    {
+     "id": "fixer",
+     "name": "Fixer machine",
+     "iq": 102,
+     "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+    },
+    {
+     "id": "mistakes",
+     "name": "Mistakes watch",
+     "iq": 100,
+     "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+    }
+   ],
+   "say": "My IQ is 91.3 (Capable, +15.6 since 11 Nov) — 2 of 3 parts learn on their own; weakest: Supervisor (acts but learns nothing from what happens next — no outcome to judge itself by)."
+  }
+ },
+ "machines": {
+  "core": {
+   "name": "Engine core",
+   "iq": 105,
+   "iqWas": 96,
+   "level": "Strong",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 10,
+    "k": 0,
+    "e": 0,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 2
+   },
+   "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+  },
+  "mode": {
+   "name": "Mode engine",
+   "iq": 86,
+   "iqWas": 70,
+   "level": "Capable",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 2,
+    "k": 0,
+    "e": 0,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+  },
+  "supervisor": {
+   "name": "Supervisor",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 2
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "mistakes": {
+   "name": "Mistakes watch",
+   "iq": 100,
+   "iqWas": 93,
+   "level": "Strong",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 7,
+    "k": 0,
+    "e": 0,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+  },
+  "ledger": {
+   "name": "Ledger",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "ai": {
+   "name": "AI referral machine",
+   "iq": 104,
+   "iqWas": 104,
+   "level": "Strong",
+   "state": "ok",
+   "kpi": {
+    "label": "AI-referred real visitors / week",
+    "now": 46,
+    "before": 44,
+    "change": 0.05
+   },
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 480,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 2
+   },
+   "limit": "collects evidence but hasn't reached a verdict yet"
+  },
+  "eyes": {
+   "name": "Eyes",
+   "iq": 78,
+   "iqWas": 78,
+   "level": "Novice",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 37,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "collects evidence but hasn't reached a verdict yet"
+  },
+  "surge": {
+   "name": "Surge detector",
+   "iq": 97,
+   "iqWas": 93,
+   "level": "Capable",
+   "state": "ok",
+   "kpi": {
+    "label": "AI clicks / week",
+    "now": 35,
+    "before": 41,
+    "change": -0.15
+   },
+   "made": {
+    "v": 3,
+    "k": 0,
+    "e": 125,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "its outcome is falling (AI clicks / week -15%)"
+  },
+  "rising": {
+   "name": "Early traction",
+   "iq": 83,
+   "iqWas": 83,
+   "level": "Novice",
+   "state": "ok",
+   "kpi": {
+    "label": "AI clicks / week",
+    "now": 35,
+    "before": 41,
+    "change": -0.15
+   },
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 75,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "collects evidence but hasn't reached a verdict yet"
+  },
+  "sisters": {
+   "name": "Sister spread",
+   "iq": 85,
+   "iqWas": 79,
+   "level": "Capable",
+   "state": "ok",
+   "kpi": {
+    "label": "AI clicks / week",
+    "now": 35,
+    "before": 41,
+    "change": -0.15
+   },
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 91,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "collects evidence but hasn't reached a verdict yet"
+  },
+  "lift": {
+   "name": "Release lift",
+   "iq": 95,
+   "iqWas": 84,
+   "level": "Capable",
+   "state": "ok",
+   "kpi": {
+    "label": "AI clicks / week",
+    "now": 35,
+    "before": 41,
+    "change": -0.15
+   },
+   "made": {
+    "v": 2,
+    "k": 1,
+    "e": 85,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "its outcome is falling (AI clicks / week -15%)"
+  },
+  "weekly": {
+   "name": "Weekly cycle",
+   "iq": 87,
+   "iqWas": 85,
+   "level": "Capable",
+   "state": "ok",
+   "kpi": {
+    "label": "AI clicks / week",
+    "now": 35,
+    "before": 41,
+    "change": -0.15
+   },
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 117,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "collects evidence but hasn't reached a verdict yet"
+  },
+  "trend": {
+   "name": "4-week trend",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": {
+    "label": "AI clicks / week",
+    "now": 35,
+    "before": 41,
+    "change": -0.15
+   },
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+  },
+  "yield": {
+   "name": "Failure learning",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": {
+    "label": "AI clicks / week",
+    "now": 35,
+    "before": 41,
+    "change": -0.15
+   },
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+  },
+  "hooks": {
+   "name": "Hook tests",
+   "iq": 112,
+   "iqWas": 110,
+   "level": "Strong",
+   "state": "ok",
+   "kpi": {
+    "label": "AI accounts / week",
+    "now": 21,
+    "before": 30,
+    "change": -0.3
+   },
+   "made": {
+    "v": 2,
+    "k": 0,
+    "e": 795,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "its outcome is falling (AI accounts / week -30%)"
+  },
+  "bing": {
+   "name": "Bing sender",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": {
+    "label": "AI clicks / week",
+    "now": 35,
+    "before": 41,
+    "change": -0.15
+   },
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+  },
+  "curator": {
+   "name": "llms.txt curator",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": {
+    "label": "AI clicks / week",
+    "now": 35,
+    "before": 41,
+    "change": -0.15
+   },
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+  },
+  "truth": {
+   "name": "Truth gate",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "traffic-brain": {
+   "name": "Traffic brain ↗",
+   "iq": 113,
+   "iqWas": 93,
+   "level": "Strong",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 14,
+    "k": 4.93,
+    "e": 0,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 2
+   },
+   "limit": "learning on every front — more data is the only limit"
+  },
+  "brains": {
+   "name": "Brains (money · data · security · content · retention · speed)",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 2
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "radar": {
+   "name": "AI radar",
+   "iq": 77,
+   "iqWas": 74,
+   "level": "Novice",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 29,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "collects evidence but hasn't reached a verdict yet"
+  },
+  "indexnow": {
+   "name": "IndexNow",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": {
+    "label": "pages submitted / week",
+    "now": 2923,
+    "before": 349,
+    "change": 7.38
+   },
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 1
+   },
+   "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+  },
+  "seo": {
+   "name": "Search console",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "world": {
+   "name": "World model",
+   "iq": 123,
+   "iqWas": 70,
+   "level": "Expert",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 0,
+    "k": 3.72,
+    "e": 1693,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 1
+   },
+   "limit": "collects evidence but hasn't reached a verdict yet"
+  },
+  "executive": {
+   "name": "Executive",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 1
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "memory": {
+   "name": "Long-term memory",
+   "iq": 78,
+   "iqWas": 70,
+   "level": "Novice",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 0,
+    "k": 0.8,
+    "e": 0,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 1
+   },
+   "limit": "learning on every front — more data is the only limit"
+  },
+  "bandit": {
+   "name": "Conversion bandit",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 1
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "holdout": {
+   "name": "Holdout",
+   "iq": 89,
+   "iqWas": 70,
+   "level": "Capable",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 140,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "collects evidence but hasn't reached a verdict yet"
+  },
+  "lockin": {
+   "name": "Lock-in",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "selfcheck": {
+   "name": "People self-check",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "deployjudge": {
+   "name": "Deploy judge",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 1
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "google": {
+   "name": "Google machine",
+   "iq": 80,
+   "iqWas": 70,
+   "level": "Novice",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 0,
+    "k": 0.96,
+    "e": 4,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "collects evidence but hasn't reached a verdict yet"
+  },
+  "recommend": {
+   "name": "Recommendation engine",
+   "iq": 77,
+   "iqWas": 70,
+   "level": "Novice",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 29,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 1
+   },
+   "limit": "collects evidence but hasn't reached a verdict yet"
+  },
+  "factory": {
+   "name": "Reaction factory",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "news": {
+   "name": "News engine",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "recaps": {
+   "name": "Daily recaps",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "linkcheck": {
+   "name": "Link check",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "social": {
+   "name": "Reels",
+   "iq": 80,
+   "iqWas": 70,
+   "level": "Novice",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 1,
+    "k": 0,
+    "e": 0,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+  },
+  "mentions": {
+   "name": "Mentions machine",
+   "iq": 74,
+   "iqWas": 74,
+   "level": "Novice",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 18,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 1
+   },
+   "limit": "collects evidence but hasn't reached a verdict yet"
+  },
+  "behaviour": {
+   "name": "Behaviour machine",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "devices": {
+   "name": "Device QA",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "health": {
+   "name": "Health",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 1
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "watchdog": {
+   "name": "Watchdog",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": {
+    "label": "uptime 7 d %",
+    "now": 99.63,
+    "before": null,
+    "change": null
+   },
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 1
+   },
+   "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+  },
+  "load": {
+   "name": "Load alert",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "shield": {
+   "name": "Shield",
+   "iq": 86,
+   "iqWas": 70,
+   "level": "Capable",
+   "state": "ok",
+   "kpi": {
+    "label": "attacks blocked / week",
+    "now": 5129,
+    "before": 0,
+    "change": null
+   },
+   "made": {
+    "v": 2,
+    "k": 0,
+    "e": 0,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 2
+   },
+   "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+  },
+  "security": {
+   "name": "Login + key watch",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "datapull": {
+   "name": "Data pull",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": {
+    "label": "trading days behind",
+    "now": 0,
+    "before": null,
+    "change": null
+   },
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+  },
+  "backup": {
+   "name": "Nightly backup",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "calendar": {
+   "name": "Economic calendar",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 1
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "indicators": {
+   "name": "Indicator pages",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "livenews": {
+   "name": "Same-day news",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "gaps": {
+   "name": "Search gaps",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "bingseo": {
+   "name": "Bing webmaster",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "capacity": {
+   "name": "Capacity",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "bin": {
+   "name": "Bin",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "wall": {
+   "name": "Wall + checkout",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "restore": {
+   "name": "Restore test",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "cost": {
+   "name": "Cost machine",
+   "iq": 101,
+   "iqWas": 80,
+   "level": "Strong",
+   "state": "ok",
+   "kpi": {
+    "label": "Railway $ / month pace (7 d)",
+    "now": 24,
+    "before": null,
+    "change": null
+   },
+   "made": {
+    "v": 7,
+    "k": 0.4,
+    "e": 0,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 2
+   },
+   "limit": "learning on every front — more data is the only limit"
+  },
+  "fixer": {
+   "name": "Fixer machine",
+   "iq": 102,
+   "iqWas": 70,
+   "level": "Strong",
+   "state": "ok",
+   "kpi": {
+    "label": "fixes started / 24 h",
+    "now": 3,
+    "before": null,
+    "change": null
+   },
+   "made": {
+    "v": 4,
+    "k": 0,
+    "e": 0,
+    "f": 8
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 2
+   },
+   "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+  },
+  "humans": {
+   "name": "People machine",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": {
+    "label": "real visitors / week",
+    "now": 252,
+    "before": 259,
+    "change": -0.03
+   },
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 2
+   },
+   "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+  },
+  "leak": {
+   "name": "Conversion leak",
+   "iq": 71,
+   "iqWas": 71,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": {
+    "label": "guests → account %",
+    "now": 48.81,
+    "before": 44.4,
+    "change": 0.1
+   },
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 4,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 1
+   },
+   "limit": "collects evidence but hasn't reached a verdict yet"
+  },
+  "outcomes": {
+   "name": "Outcome machine",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 2
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "analyst": {
+   "name": "analyst",
+   "iq": 86,
+   "iqWas": 86,
+   "level": "Capable",
+   "state": "ok",
+   "kpi": null,
+   "made": {
+    "v": 2,
+    "k": 0,
+    "e": 0,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 2
+   },
+   "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+  },
+  "traffic": {
+   "name": "traffic",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 1
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "leak-page-backtest-market-land-account": {
+   "name": "/backtest-<market> @ land ",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "leak-source-direct-land-account": {
+   "name": "direct @ land → account",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "cost-data-cache-bloat": {
+   "name": "data cache bloat",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "cost-web-memory-growth": {
+   "name": "web memory growth",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "cost-web-too-many-deploys": {
+   "name": "web too many deploys",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "focus-backtest": {
+   "name": "Focus /backtest",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "focus-tools-position-size-calculator": {
+   "name": "Focus /tools/position-size-calculator",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "focus-news-ppi": {
+   "name": "Focus /news/ppi/",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  }
+ }
+}
