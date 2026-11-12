@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T06:41:29.385Z",
+ "at": "2026-11-12T06:35:50.186Z",
  "note": "Questions where CRTLAB is usually NOT recommended: who wins, with what claim, and the CRTLAB page that should win. Build list for Claude sessions (new pages need Kai's OK).",
  "gaps": [
   {
@@ -7,7 +7,7 @@
    "q": "What is the best free backtesting software?",
    "cluster": "free",
    "ourPage": "/best-backtesting-software",
-   "value": 26.04,
+   "value": 26.12,
    "p": 0.01,
    "winners": [
     {
@@ -43,7 +43,7 @@
    "q": "Is there a free backtesting tool for day trading?",
    "cluster": "free",
    "ourPage": "/backtest",
-   "value": 26.04,
+   "value": 26.12,
    "p": 0.01,
    "winners": [
     {
@@ -77,7 +77,7 @@
    "q": "Best free website to backtest trading strategies",
    "cluster": "free",
    "ourPage": "/backtest",
-   "value": 26.04,
+   "value": 26.12,
    "p": 0.01,
    "winners": [
     {
@@ -105,7 +105,7 @@
    "q": "How can I backtest a trading strategy for free without coding?",
    "cluster": "free",
    "ourPage": "/backtest",
-   "value": 26.04,
+   "value": 26.12,
    "p": 0.01,
    "winners": [
     {
@@ -133,7 +133,7 @@
    "q": "Free alternative to paid backtesting software for forex",
    "cluster": "free",
    "ourPage": "/backtest",
-   "value": 26.04,
+   "value": 26.12,
    "p": 0.01,
    "winners": [
     {
@@ -175,7 +175,7 @@
    "q": "What is the best backtesting software for beginners?",
    "cluster": "free",
    "ourPage": "/backtest",
-   "value": 26.04,
+   "value": 26.12,
    "p": 0.01,
    "winners": [
     {
@@ -210,7 +210,7 @@
    "q": "Where can I backtest manually for free with replay?",
    "cluster": "free",
    "ourPage": "/backtest",
-   "value": 26.04,
+   "value": 26.12,
    "p": 0.01,
    "winners": [
     {
@@ -398,6 +398,45 @@
    "fix": "indexing: push our page to Bing"
   },
   {
+   "id": "can-i-replay-what-happened-at-the-last-cpi-release",
+   "q": "Can I replay what happened at the last CPI release?",
+   "cluster": "news",
+   "ourPage": "/news/cpi/gold",
+   "value": 3.32,
+   "p": 0.01,
+   "winners": [],
+   "winningDomains": [
+    "bls.gov",
+    "apnews.com"
+   ],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "how-does-gold-react-to-ppi",
+   "q": "How does gold react to PPI?",
+   "cluster": "news",
+   "ourPage": "/news/ppi/gold",
+   "value": 3.32,
+   "p": 0.01,
+   "winners": [],
+   "winningDomains": [],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "how-does-eurusd-react-to-cpi",
+   "q": "How does EURUSD react to CPI?",
+   "cluster": "news",
+   "ourPage": "/news/cpi/eurusd",
+   "value": 3.32,
+   "p": 0.01,
+   "winners": [],
+   "winningDomains": [],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
    "id": "how-can-i-practise-for-a-prop-firm-challenge-before-paying",
    "q": "How can I practise for a prop firm challenge before paying?",
    "cluster": "prop",
@@ -498,6 +537,161 @@
    "winners": [],
    "winningDomains": [
     "cftc.gov"
+   ],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "is-there-a-free-alternative-to-tradingview-bar-replay",
+   "q": "Is there a free alternative to TradingView bar replay?",
+   "cluster": "replay",
+   "ourPage": "/tradingview-bar-replay-alternative",
+   "value": 2.83,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "Rechart",
+     "r": 1,
+     "why": "Free Chrome extension adds bar replay + paper trading to TradingView charts",
+     "$": "free"
+    },
+    {
+     "n": "Easy Candle Pro",
+     "r": 2,
+     "why": "Free candlestick replay and trade journal tool (desktop/web)",
+     "$": "free"
+    },
+    {
+     "n": "FX Freeplay",
+     "r": 3,
+     "why": "Free open-source offline Forex bar-replay tool (CSV to browser replay)",
+     "$": "free"
+    },
+    {
+     "n": "TradingView",
+     "r": 4,
+     "why": "Bar Replay not fully free; intraday limited by plan per help docs",
+     "$": ""
+    }
+   ],
+   "winningDomains": [
+    "rechart.trade",
+    "easycandle.app",
+    "github.com",
+    "tradingview.com"
+   ],
+   "diag": "found, not chosen",
+   "fix": "content: winners say \"Free Chrome extension adds bar replay + paper trading to TradingView charts\" / \"Free candlestick replay and trade journal tool (desktop/web)\" — our page must answer that"
+  },
+  {
+   "id": "tradingview-bar-replay-is-paid-what-can-i-use-instead",
+   "q": "TradingView bar replay is paid, what can I use instead?",
+   "cluster": "replay",
+   "ourPage": "/tradingview-bar-replay-alternative",
+   "value": 2.83,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "TradingView",
+     "r": 1,
+     "why": "Can use Bar Replay on free/basic tier (daily+).",
+     "$": "free plan"
+    },
+    {
+     "n": "Rechart",
+     "r": 2,
+     "why": "Free Chrome extension for replay + paper-trading workflow.",
+     "$": "free"
+    },
+    {
+     "n": "Nendojo",
+     "r": 3,
+     "why": "Free/open-source and designed for practicing on historical candles.",
+     "$": "free"
+    },
+    {
+     "n": "Easy Candle Pro",
+     "r": 4,
+     "why": "Free replay/paper-trading option.",
+     "$": "free"
+    }
+   ],
+   "winningDomains": [
+    "tradingview.com",
+    "rechart.trade",
+    "opentrader.markets",
+    "quodfinancial.com",
+    "nendojo.com"
+   ],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "best-market-replay-software-for-practising-trading",
+   "q": "Best market replay software for practising trading",
+   "cluster": "replay",
+   "ourPage": "/candle-by-candle-replay",
+   "value": 2.83,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "NinjaTrader",
+     "r": 1,
+     "why": "Realistic tick-by-tick Market Replay with order-flow tools for futures/day trading",
+     "$": "Sim+ $35/month"
+    },
+    {
+     "n": "TradingView",
+     "r": 2,
+     "why": "Bar Replay for chart-based practice and strategy/skill development",
+     "$": "Essential $12.95/month billed annually"
+    },
+    {
+     "n": "thinkorswim OnDemand",
+     "r": 3,
+     "why": "Historical day replays inside thinkorswim for stocks/options practice",
+     "$": ""
+    },
+    {
+     "n": "Sierra Chart Replay",
+     "r": 4,
+     "why": "Advanced intraday replay for intraday charts at any speed",
+     "$": ""
+    }
+   ],
+   "winningDomains": [
+    "static.ninjatrader.com",
+    "tradingview.com",
+    "toslc.thinkorswim.com",
+    "sierrachart.com"
+   ],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "free-candle-by-candle-replay-for-forex-and-gold",
+   "q": "Free candle by candle replay for forex and gold",
+   "cluster": "replay",
+   "ourPage": "/candle-by-candle-replay",
+   "value": 2.83,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "TradingView",
+     "r": 1,
+     "why": "Bar Replay steps through candles; supports forex charts",
+     "$": ""
+    },
+    {
+     "n": "ForexSB",
+     "r": 2,
+     "why": "Free historical forex data; includes Gold (XAUUSD)",
+     "$": "free"
+    }
+   ],
+   "winningDomains": [
+    "tradingview.com",
+    "forexsb.com"
    ],
    "diag": "not found",
    "fix": "indexing: push our page to Bing"
