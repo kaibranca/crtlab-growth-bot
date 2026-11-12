@@ -22,7 +22,7 @@ jobs:
       - name: Deploy watch → device QA guard after each site deploy
         continue-on-error: true
         run: node scripts/deploy-watch.mjs
-        env: { GH_TOKEN: "${{ github.token }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}" }
+        env: { GH_TOKEN: "${{ github.token }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}", RAILWAY_API_TOKEN: "${{ secrets.RAILWAY_API_TOKEN }}" }
       - name: AI referral machine
         continue-on-error: true
         run: node scripts/ai-pull.mjs && node scripts/ai-eyes.mjs && node scripts/recommend.mjs; node scripts/ai-machine.mjs; node scripts/bandit.mjs; node scripts/ai-truth.mjs

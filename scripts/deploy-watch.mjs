@@ -6,7 +6,15 @@ const F = "data/mobile/build.txt";
 const html = await fetch(SITE + "/").then((r) => r.text()).catch(() => "");
 // 11-12: the new Next build's HTML carries no build id → the identity of a deploy is the `live` branch commit (what Railway
 // deploys). Falls back to the old HTML sniffing.
-let liveSha = null; try { const g = await fetch("https://api.github.com/repos/kaibranca/crtlab-standalone/commits/live", { headers: { Authorization: `Bearer ${process.env.GH_WATCH_TOKEN || process.env.GH_TOKEN}`, Accept: "application/vnd.github+json" } }).then((r) => r.json()); liveSha = g.sha?.slice(0, 12) ?? null; } catch {}
+// identity source 1: Railway's own latest web deployment (the real thing that serves people; same token the cost machine uses)
+let liveSha = null;
+if (process.env.RAILWAY_API_TOKEN) try { const PROJECT = process.env.RAILWAY_PROJECT_ID || "32042912-e5d4-47b9-a2a7-3dedb3d6e2a1";
+  const q = `query { project(id: "${PROJECT}") { services { edges { node { name deployments(first: 5) { edges { node { status meta } } } } } } } }`;
+  const j = await fetch("https://backboard.railway.com/graphql/v2", { method: "POST", headers: { Authorization: `Bearer ${process.env.RAILWAY_API_TOKEN}`, "content-type": "application/json" }, body: JSON.stringify({ query: q }) }).then((r) => r.json());
+  const web = j.data?.project?.services?.edges?.map((e) => e.node).find((n) => n.name === "web"); const ok = web?.deployments?.edges?.map((e) => e.node).find((d) => d.status === "SUCCESS");
+  liveSha = ok?.meta?.commitHash?.slice(0, 12) ?? null; } catch {}
+// source 2: the live branch on GitHub (needs a token that can read the site repo)
+if (!liveSha) try { const g = await fetch("https://api.github.com/repos/kaibranca/crtlab-standalone/commits/live", { headers: { Authorization: `Bearer ${process.env.GH_WATCH_TOKEN || process.env.GH_TOKEN}`, Accept: "application/vnd.github+json" } }).then((r) => r.json()); liveSha = g.sha?.slice(0, 12) ?? null; } catch {}
 const id = liveSha || (html.match(/\/_next\/static\/([A-Za-z0-9_-]{6,})\/_(buildManifest|ssgManifest)/) || html.match(/"buildId":"([^"]+)"/) || [])[1] || (html.match(/\/_next\/static\/chunks\/(app\/layout-[a-f0-9]+)\.js/) || [])[1];
 fs.mkdirSync("data/mobile", { recursive: true });
 const prev = fs.existsSync(F) ? fs.readFileSync(F, "utf8").trim() : "";
