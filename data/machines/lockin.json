@@ -1,15 +1,33 @@
 {
- "on": false,
+ "on": true,
+ "since": "2026-11-12T16:35:45.963Z",
+ "kind": "spike",
+ "triggers": [
+  "spike"
+ ],
+ "why": "edge sentinel: 24 people-fetches in 15 min vs ~4.8 normal",
  "bars": {
   "people": 2,
   "signups": 2.5,
   "ai": 2,
   "spike": 1.5
  },
- "last": {
-  "since": "2026-11-12T07:39:53.197Z",
-  "kind": "spike",
-  "verdict": "flat",
-  "ratio": 1.08
- }
+ "startSignups24": 17,
+ "normalSignups24": 15.8,
+ "peak": 0.63,
+ "targets": [
+  "/",
+  "/candle-by-candle-replay",
+  "/news/ppi-2018-06-13",
+  "/news/cpi-2026-02-13",
+  "/daily-market-data",
+  "/news/cpi/silver",
+  "/news/cpi-2026-07-14",
+  "/news/ppi",
+  "/news/claims/gold",
+  "/multi-chart-backtesting",
+  "/news/ppi/nasdaq",
+  "/topstep-challenge-simulator"
+ ],
+ "emailed": true
 }

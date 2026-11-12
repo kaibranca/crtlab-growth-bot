@@ -38,14 +38,14 @@
  "heap": {
   "cap": 512,
   "stopped": false,
-  "samples": 51,
+  "samples": 52,
   "note": "heap peak 313 MB → cap 512 MB is right"
  },
- "at": "2026-11-12T16:18:34.812Z",
+ "at": "2026-11-12T16:33:32.727Z",
  "status": "over budget",
  "budget": 10,
- "weekPace": 23.7,
- "overBy": 13.7,
+ "weekPace": 24,
+ "overBy": 14,
  "deploys": {
   "Postgres": 0,
   "data": 2,
@@ -53,16 +53,16 @@
   "ops": 1
  },
  "dayCost": 0.73,
- "avgDayCost": 0.79,
+ "avgDayCost": 0.8,
  "monthPace": 21.9,
  "services": [
   {
    "svc": "web",
-   "memGB": 0.6,
+   "memGB": 0.62,
    "normalGB": 0.75,
    "dayCost": 0.48,
-   "avgDayCost": 0.44,
-   "monthPace": 14.41
+   "avgDayCost": 0.45,
+   "monthPace": 14.48
   },
   {
    "svc": "Postgres",
@@ -74,7 +74,7 @@
   },
   {
    "svc": "data",
-   "memGB": 0.27,
+   "memGB": 0.28,
    "normalGB": 0.2,
    "dayCost": 0.1,
    "avgDayCost": 0.21,
@@ -98,10 +98,7 @@
   }
  ],
  "actions": [
-  "lock-in: hands off (no restart / redeploy while a wave is on)",
-  "heap peak 313 MB → cap 512 MB is right",
-  "lever web-malloc-arena-2 is live (deploy 2026-11-12T15:23)",
-  "lever web-heap-512 is live (deploy 2026-11-12T15:23)"
+  "heap peak 313 MB → cap 512 MB is right"
  ],
  "fixes": [
   {

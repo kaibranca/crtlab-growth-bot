@@ -1,20 +1,20 @@
 {
- "at": "2026-11-12T16:18:37.458Z",
+ "at": "2026-11-12T16:33:35.420Z",
  "selfCheck": {
   "devices": [
    {
     "dev": "desktop",
-    "raw24": 568,
-    "beat24": 0.639,
-    "beatNormal": 0.548,
-    "stay24": 0.019,
-    "stayNormal": 0.476
+    "raw24": 559,
+    "beat24": 0.633,
+    "beatNormal": 0.553,
+    "stay24": 0.02,
+    "stayNormal": 0.471
    },
    {
     "dev": "mobile",
     "raw24": 31,
     "beat24": 0.419,
-    "beatNormal": 0.342,
+    "beatNormal": 0.34,
     "stay24": 0.516,
     "stayNormal": 0.468
    }
@@ -23,40 +23,40 @@
    {
     "dim": "landing",
     "seg": "home",
-    "raw24": 575,
-    "rawNormal": 43.5,
+    "raw24": 566,
+    "rawNormal": 44.1,
     "stayed24": 16,
     "stayShare": 0.028
    },
    {
     "dim": "source",
     "seg": "Direct",
-    "raw24": 583,
-    "rawNormal": 54.6,
+    "raw24": 574,
+    "rawNormal": 55.1,
     "stayed24": 16,
-    "stayShare": 0.027
+    "stayShare": 0.028
    },
    {
     "dim": "device",
     "seg": "desktop",
-    "raw24": 568,
-    "rawNormal": 58.8,
+    "raw24": 559,
+    "rawNormal": 59.4,
     "stayed24": 11,
-    "stayShare": 0.019
+    "stayShare": 0.02
    },
    {
     "dim": "country",
     "seg": "US",
     "raw24": 197,
-    "rawNormal": 9.6,
+    "rawNormal": 9.5,
     "stayed24": 2,
     "stayShare": 0.01
    },
    {
     "dim": "country",
     "seg": "CN",
-    "raw24": 158,
-    "rawNormal": 5.9,
+    "raw24": 149,
+    "rawNormal": 6.6,
     "stayed24": 0,
     "stayShare": 0
    },
@@ -70,40 +70,40 @@
    }
   ],
   "flood": [
-   "US: 197 raw vs ~9.6, 2 stayed",
-   "CN: 158 raw vs ~5.9, 0 stayed",
+   "US: 197 raw vs ~9.5, 2 stayed",
+   "CN: 149 raw vs ~6.6, 0 stayed",
    "GB: 80 raw vs ~6, 0 stayed",
    "CA: 59 raw vs ~0.9, 1 stayed"
   ],
-  "verdict": "FLOOD: the raw surge is US (197 vs ~9.6, 2 stayed), CN (158 vs ~5.9, 0 stayed), GB (80 vs ~6, 0 stayed), CA (59 vs ~0.9, 1 stayed) — headless traffic, not people leaving"
+  "verdict": "FLOOD: the raw surge is US (197 vs ~9.5, 2 stayed), CN (149 vs ~6.6, 0 stayed), GB (80 vs ~6, 0 stayed), CA (59 vs ~0.9, 1 stayed) — headless traffic, not people leaving"
  },
  "wave": {
   "window": "3h",
   "visitors": {
    "now": 4,
-   "normal": 6.1,
-   "ratio": 0.65,
+   "normal": 6.4,
+   "ratio": 0.63,
    "z": -0.7
   },
   "signups": {
    "now": 3,
-   "normal": 2.5,
-   "ratio": 1.2,
-   "z": 0.2
+   "normal": 2.7,
+   "ratio": 1.11,
+   "z": 0.1
   },
   "riding": []
  },
  "visitors": {
   "now": 27,
-  "normal": 36.8,
-  "ratio": 0.73,
-  "z": -0.9
+  "normal": 36.7,
+  "ratio": 0.74,
+  "z": -0.8
  },
  "rawVisitors": {
-  "now": 599,
-  "normal": 76.6,
-  "ratio": 7.82,
-  "z": 20.1
+  "now": 590,
+  "normal": 77.1,
+  "ratio": 7.65,
+  "z": 20.2
  },
  "signups": {
   "now": 17,
@@ -114,7 +114,7 @@
  "state": "normal",
  "why": [
   "device desktop: 11 vs ~28/day",
-  "source Direct: 16 vs ~22.7/day",
+  "source Direct: 16 vs ~22.6/day",
   "landing chart: 0 vs ~5.8/day",
   "landing /backtest pages: 3 vs ~7.1/day"
  ],
@@ -130,17 +130,17 @@
    "now": 11,
    "normal": 28,
    "ratio": 0.39,
-   "z": -1.8,
+   "z": -1.7,
    "gap": -17
   },
   {
    "dim": "source",
    "seg": "Direct",
    "now": 16,
-   "normal": 22.7,
-   "ratio": 0.7,
-   "z": -0.9,
-   "gap": -6.7
+   "normal": 22.6,
+   "ratio": 0.71,
+   "z": -0.8,
+   "gap": -6.6
   },
   {
    "dim": "landing",
@@ -148,7 +148,7 @@
    "now": 0,
    "normal": 5.8,
    "ratio": 0,
-   "z": -2.3,
+   "z": -2.2,
    "gap": -5.8
   },
   {
@@ -175,7 +175,7 @@
    "now": 2,
    "normal": 3.8,
    "ratio": 0.53,
-   "z": -0.7,
+   "z": -0.8,
    "gap": -1.8
   },
   {
@@ -184,7 +184,7 @@
    "now": 16,
    "normal": 17,
    "ratio": 0.94,
-   "z": -0.1,
+   "z": -0.2,
    "gap": -1
   },
   {
@@ -237,8 +237,8 @@
    "seg": "mobile",
    "now": 16,
    "normal": 7.9,
-   "ratio": 2.02,
-   "z": 2.1,
+   "ratio": 2.04,
+   "z": 2,
    "gap": 8.1
   }
  ]
