@@ -1,5 +1,6 @@
 // RESTORE TEST — a backup you've never restored is only a hope. Weekly: takes the newest dump, restores it into a throwaway
 // database on this runner, and checks real rows came back. Never touches production. Logs carry pass/fail only (public repo).
+import "./mailguard.mjs";
 import fs from "node:fs";
 import { execSync } from "node:child_process";
 import pg from "pg";

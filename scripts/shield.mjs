@@ -2,6 +2,7 @@
 // enforced by the first custom WAF rule). Also flips "Under Attack" on during a flood and back off when it's quiet.
 // Never bans shared networks (iCloud Private Relay / WARP / Apple): one bad user there would lock out thousands (10-31 lesson).
 // PUBLIC REPO: only counts and salted hashes are written here; IPs live in the Cloudflare list and the alert email.
+import "./mailguard.mjs";
 import fs from "node:fs";
 import crypto from "node:crypto";
 

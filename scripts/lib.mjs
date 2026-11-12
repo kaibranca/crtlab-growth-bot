@@ -1,3 +1,4 @@
+import "./mailguard.mjs"; // every bot mail under one day budget (Resend free 100/day is shared with the site)
 // shared helpers for the growth bot jobs (Node 20, no dependencies)
 import fs from "node:fs";
 export const SITE = "https://crtlab.pro";
