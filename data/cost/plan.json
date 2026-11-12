@@ -2,10 +2,10 @@
  "heap": {
   "cap": 512,
   "stopped": false,
-  "samples": 33,
+  "samples": 34,
   "note": "heap peak 313 MB → cap 512 MB is right"
  },
- "at": "2026-11-12T07:38:17.733Z",
+ "at": "2026-11-12T08:18:22.758Z",
  "status": "over budget",
  "budget": 10,
  "weekPace": 22.5,
@@ -16,17 +16,17 @@
   "web": 11,
   "ops": 3
  },
- "dayCost": 0.72,
+ "dayCost": 0.71,
  "avgDayCost": 0.75,
- "monthPace": 21.6,
+ "monthPace": 21.3,
  "services": [
   {
    "svc": "web",
    "memGB": 1.03,
    "normalGB": 0.73,
-   "dayCost": 0.48,
+   "dayCost": 0.47,
    "avgDayCost": 0.42,
-   "monthPace": 14.27
+   "monthPace": 14.25
   },
   {
    "svc": "Postgres",
@@ -34,15 +34,15 @@
    "normalGB": 0.38,
    "dayCost": 0.14,
    "avgDayCost": 0.13,
-   "monthPace": 4.21
+   "monthPace": 4.23
   },
   {
    "svc": "data",
-   "memGB": 0.25,
+   "memGB": 0.24,
    "normalGB": 0.2,
    "dayCost": 0.1,
    "avgDayCost": 0.2,
-   "monthPace": 2.9
+   "monthPace": 2.89
   },
   {
    "svc": "ops",
@@ -62,6 +62,7 @@
   }
  ],
  "actions": [
+  "lock-in: hands off (no restart / redeploy while a wave is on)",
   "heap peak 313 MB → cap 512 MB is right"
  ],
  "fixes": [
