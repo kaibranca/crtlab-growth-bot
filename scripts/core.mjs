@@ -558,7 +558,8 @@ function iqOut() {
   if (!P.length) return null;
   const last = P.at(-1), wk = new Date(NOW - 7 * DAY).toISOString().slice(0, 13), ago = [...P].reverse().find((p) => p.t <= wk) ?? P[0];
   for (const n of nodes) if (!n.id.startsWith("lead-")) n.iq = d.per?.[n.id] ?? 70; // per machine (70 = learned nothing yet)
-  return { iq: last.iq, iqWas: ago.iq, power: last.power, powerWas: ago.power, since: ago.t, parts: last.parts, points: P.map((p) => [p.t, p.iq, p.power]) };
+  const U = J("data/machines/upgrades.json")?.summary ?? null; // did what we built pay? (scripts/upgrades.mjs)
+  return { iq: last.iq, iqWas: ago.iq, power: last.power, powerWas: ago.power, since: ago.t, parts: last.parts, points: P.map((p) => [p.t, p.iq, p.power]), upgrades: U };
 }
 const eco = { at: new Date().toISOString(), scout, widgets, modes, briefing, rules: CORE_RULES, capacity: cap, mode: modeOut, nodes, edges, feed: feed.slice(0, 160),
   totals: { machines: nodes.length, ok: nodes.filter((n) => n.state === "ok").length, late: nodes.filter((n) => n.state === "late").length, stopped: nodes.filter((n) => n.state === "stopped").length, actions24: Object.values(act).reduce((a, b) => a + b, 0) },
