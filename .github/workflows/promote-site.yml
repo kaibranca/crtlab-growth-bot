@@ -15,7 +15,14 @@ jobs:
         run: |
           # LOCK-IN (growth bot core.mjs): a wave of real people is on — the window holds, the site must not restart under it.
           # Kai's "deploy now" (push rebuild-integration:live directly) still works; the next window after the wave deploys.
-          if curl -fsS https://raw.githubusercontent.com/kaibranca/crtlab-growth-bot/main/data/machines/lockin.json | grep -q '"on": true'; then echo "lock-in is on — window held, no deploy"; exit 0; fi
+          # 11-12: a lock-in holds ONE window at most. Deploys are zero-downtime (healthcheck + overlap, pages keep the last live
+          # data version), and a good day kept lock-in on from 07:39 → every window held, nothing shipped, the cost machine starved.
+          L=$(curl -fsS https://raw.githubusercontent.com/kaibranca/crtlab-growth-bot/main/data/machines/lockin.json || echo '{}')
+          if echo "$L" | grep -q '"on": true'; then
+            since=$(echo "$L" | python3 -c 'import json,sys,datetime as d;j=json.load(sys.stdin);print(int((d.datetime.now(d.timezone.utc)-d.datetime.fromisoformat(j["since"].replace("Z","+00:00"))).total_seconds()//3600))' 2>/dev/null || echo 0)
+            if [ "${since:-0}" -lt 6 ]; then echo "lock-in on for ${since} h — this window held, the next one deploys"; exit 0; fi
+            echo "lock-in on for ${since} h (≥ 6) — deploying anyway: zero-downtime, one window held is the limit"
+          fi
           git fetch -q origin live
           head=$(git rev-parse HEAD); live=$(git rev-parse origin/live)
           if [ "$head" = "$live" ]; then echo "live is current ($(git rev-parse --short HEAD)) — no deploy"; exit 0; fi
