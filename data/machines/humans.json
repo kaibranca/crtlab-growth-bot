@@ -1,5 +1,42 @@
 {
- "at": "2026-11-12T01:01:19.877Z",
+ "at": "2026-11-12T01:18:24.260Z",
+ "selfCheck": {
+  "devices": [
+   {
+    "dev": "desktop",
+    "raw24": 261,
+    "beat24": 0.479,
+    "beatNormal": 0.549,
+    "stay24": 0.027,
+    "stayNormal": 0.482
+   },
+   {
+    "dev": "mobile",
+    "raw24": 21,
+    "beat24": 0.381,
+    "beatNormal": 0.34,
+    "stay24": 0.476,
+    "stayNormal": 0.462
+   }
+  ],
+  "verdict": "PEOPLE LEAVING: heartbeats fine, but the share who stay 30 s fell on desktop (0.027 vs 0.482)"
+ },
+ "wave": {
+  "window": "3h",
+  "visitors": {
+   "now": 0,
+   "normal": 2.4,
+   "ratio": 0,
+   "z": -1
+  },
+  "signups": {
+   "now": 0,
+   "normal": 1.4,
+   "ratio": 0,
+   "z": -0.9
+  },
+  "riding": []
+ },
  "visitors": {
   "now": 17,
   "normal": 37,
@@ -7,10 +44,10 @@
   "z": -1.9
  },
  "rawVisitors": {
-  "now": 279,
+  "now": 282,
   "normal": 76.6,
-  "ratio": 3.64,
-  "z": 8.2
+  "ratio": 3.68,
+  "z": 8.3
  },
  "signups": {
   "now": 10,
