@@ -35,7 +35,7 @@ if (process.env.ANALYTICS_DB_URL) try {
 
 // retention: of the people who signed up 8–14 days ago, how many were back in the last 7 days (vs the cohort before)
 let ret = null;
-let comeback = null;
+let comeback = null, emailBudget = null;
 const gam = (k) => { if (k < 1) return gam(k + 1) * Math.random() ** (1 / k); const d = k - 1 / 3, c = 1 / Math.sqrt(9 * d); for (;;) { let x, v; do { const u1 = Math.random(), u2 = Math.random(); x = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2); v = 1 + c * x; } while (v <= 0); v = v * v * v; const u = Math.random(); if (u < 1 - 0.0331 * x ** 4 || Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v; } };
 if (process.env.ANALYTICS_DB_URL) try {
   const pg = (await import("pg")).default, c = new pg.Client({ connectionString: process.env.ANALYTICS_DB_URL, ssl: { rejectUnauthorized: false }, connectionTimeoutMillis: 15000, query_timeout: 15000 }); await c.connect();
@@ -50,9 +50,15 @@ if (process.env.ANALYTICS_DB_URL) try {
     try { const cb = await c.query(`select s.type, count(*)::int n,
         count(*) filter (where s.sent_at < now() - interval '7 days')::int judged,
         count(*) filter (where s.sent_at < now() - interval '7 days' and exists (select 1 from ui_events e where e.user_id = s.user_id and e.created_at > s.sent_at and e.created_at < s.sent_at + interval '7 days'))::int back7,
-        count(*) filter (where exists (select 1 from ui_events e where e.user_id = s.user_id and e.created_at > s.sent_at))::int backAny
+        count(*) filter (where exists (select 1 from ui_events e where e.user_id = s.user_id and e.created_at > s.sent_at))::int "backAny"
         from email_sends s where s.type in ('comeback', 'comeback-hold') group by 1`);
       comeback = Object.fromEntries(cb.rows.map((x) => [x.type === "comeback" ? "sent" : "hold", x])); } catch (e) { console.log("brains: comeback read skipped (" + String(e.message).slice(0, 60) + ")"); }
+    // EMAIL BUDGET (11-12, Kai: "Resend hit 80% of its free limit today" — comeback launched at 16 / h): Resend free = 100 / day,
+    // 3,000 / month, shared with login / welcome / payment emails that MUST get through. Every send is in email_log.
+    try { const eb = await c.query(`select count(*) filter (where created_at >= date_trunc('day', now() at time zone 'UTC'))::int today,
+        count(*) filter (where created_at >= date_trunc('day', now() at time zone 'UTC') and kind = 'comeback')::int "comebackToday",
+        count(*) filter (where created_at >= date_trunc('month', now() at time zone 'UTC'))::int "month" from email_log where created_at > now() - interval '32 days'`);
+      emailBudget = eb.rows[0]; } catch (e) { console.log("brains: email budget read skipped (" + String(e.message).slice(0, 60) + ")"); }
   } finally { await c.end().catch(() => {}); }
 } catch (e) { console.log("brains: retention skipped (" + String(e.message).slice(0, 60) + ")"); }
 // RETENTION LEVER (11-12): the comeback email is the retention brain's hands. Beta-binomial on 7-day returns, sent vs held:
@@ -73,6 +79,16 @@ let comebackRead = null;
     if (prev.on !== false && enough && pWin != null && pWin < 0.15) { next.on = false; next.why = `sent ${(rate(S) * 100).toFixed(0)}% back in 7 d vs held ${(rate(Hh) * 100).toFixed(0)}% (P sent wins ${pWin})`;
       append("data/machines/ledger.jsonl", { at: next.at, key: "retention|comeback|off", machine: "retention", kind: "loss", what: `comeback email switched OFF: ${next.why}` }); }
     if (enough && pWin != null && pWin > 0.9 && !prev.verdict) { next.verdict = "wins"; append("data/machines/ledger.jsonl", { at: next.at, key: "retention|comeback|win", machine: "retention", kind: "win", what: `comeback email brings people back: sent ${(rate(S) * 100).toFixed(0)}% vs held ${(rate(Hh) * 100).toFixed(0)}% in 7 d (P ${pWin})` }); }
+    fs.mkdirSync("data/retention", { recursive: true }); fs.writeFileSync(F, JSON.stringify(next, null, 1));
+  }
+  // EMAIL BUDGET HANDS: optional mail pauses for the rest of the UTC day once the day reaches 40 sends (or the month 2,400), so
+  // login / welcome / payment mail and alerts always have room under Resend's 100 / day. Resumes by itself the next day.
+  // Never overrides the brain's own verdict (an "off" with no pausedBy is the brain's, and it stays off).
+  if (emailBudget) {
+    const cur = J(F, { on: true }), over = emailBudget.today >= 40 || emailBudget.month >= 2400;
+    const next = { ...cur, budget: { ...emailBudget, dayCap: 40, monthCap: 2400, at: new Date().toISOString() } };
+    if (over && cur.on !== false) { next.on = false; next.pausedBy = "email budget"; next.why = `email budget: ${emailBudget.today} sent today / ${emailBudget.month} this month — paused so login and welcome mail keep room (Resend free 100/day)`; }
+    else if (!over && cur.on === false && cur.pausedBy === "email budget") { next.on = true; delete next.pausedBy; delete next.why; }
     fs.mkdirSync("data/retention", { recursive: true }); fs.writeFileSync(F, JSON.stringify(next, null, 1));
   }
 }
