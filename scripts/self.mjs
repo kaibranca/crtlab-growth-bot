@@ -53,7 +53,8 @@ const engines = {};
 for (const [e, f] of Object.entries(ENG)) {
   const ids = e === "main" ? nodes.map((n) => n.id) : [...new Set([...(J(f, {})?.nodes ?? []).map((n) => n.id), ...nodes.filter((n) => n.group === GROUP[e]).map((n) => n.id)])].filter((id) => machines[id] && id !== "core");
   // the engine's own brain: its verdicts in the ledger are its learning (money, data, … write as themselves)
-  const brainV = e === "main" ? 0 : LED.filter((l) => l.machine === e && ["win", "loss", "lesson"].includes(l.kind)).length;
+  const brB = e === "main" || e === "traffic" ? [] : (J(`data/brains/${e}/branches.json`, {})?.branches ?? []);
+  const brainV = e === "main" ? 0 : LED.filter((l) => l.machine === e && ["win", "loss", "lesson"].includes(l.kind)).length + brB.filter((b) => b.state && !/open|alive/.test(b.state)).length;
   const brainIQ = 70 + 10 * Math.log2(1 + brainV);
   const qs = ids.map((id) => machines[id].iq), q = ids.length ? (e === "main" ? IQ.points?.at(-1)?.iq ?? 70 : (qs.reduce((a, b) => a + b, 0) + brainIQ) / (qs.length + 1)) : brainIQ;
   const q0s = ids.map((id) => machines[id].iqWas ?? 70), q0 = e === "main" ? (IQ.points ?? []).find((p) => p.t.slice(0, 10) >= (then ?? "")) ?.iq ?? null : ids.length ? (q0s.reduce((a, b) => a + b, 0) + 70 + 10 * Math.log2(1 + LED.filter((l) => l.machine === e && ["win", "loss", "lesson"].includes(l.kind) && l.at.slice(0, 10) <= (then ?? "")).length)) / (q0s.length + 1) : null;

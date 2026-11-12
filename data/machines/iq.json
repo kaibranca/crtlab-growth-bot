@@ -1,5 +1,5 @@
 {
- "at": "2026-11-12T19:33:58.781Z",
+ "at": "2026-11-12T19:36:27.654Z",
  "hi": {
   "core": 10,
   "fix:core": 0,
@@ -55,7 +55,7 @@
   "fix:social": 0,
   "mentions": 0,
   "fix:mentions": 0,
-  "behaviour": 0,
+  "behaviour": 12,
   "fix:behaviour": 0,
   "devices": 0,
   "fix:devices": 0,
@@ -167,10 +167,12 @@
   "recommend": 77,
   "social": 80,
   "mentions": 74,
+  "behaviour": 111,
   "shield": 86,
   "cost": 101,
   "fixer": 102,
-  "leak": 71,
+  "humans": 82,
+  "leak": 84,
   "analyst": 86
  },
  "perParts": {
@@ -294,6 +296,12 @@
    "e": 18,
    "f": 0
   },
+  "behaviour": {
+   "v": 12,
+   "k": 0,
+   "e": 230,
+   "f": 0
+  },
   "shield": {
    "v": 2,
    "k": 0,
@@ -312,10 +320,16 @@
    "e": 0,
    "f": 8
   },
+  "humans": {
+   "v": 0,
+   "k": 0,
+   "e": 65,
+   "f": 0
+  },
   "leak": {
    "v": 0,
    "k": 0,
-   "e": 4,
+   "e": 79,
    "f": 0
   },
   "analyst": {
@@ -329,213 +343,213 @@
  "points": [
   {
    "t": "2026-11-11T00",
-   "iq": 73.4,
+   "iq": 74.3,
    "parts": {
     "knows": 0,
     "facts": 0,
-    "judged": 3,
-    "evidence": 1445,
+    "judged": 15,
+    "evidence": 1655,
     "fixed": 0,
     "machines": 49,
-    "learners": 11
+    "learners": 12
    },
    "power": 105
   },
   {
    "t": "2026-11-11T03",
-   "iq": 73.5,
+   "iq": 74.3,
    "parts": {
     "knows": 0,
     "facts": 0,
-    "judged": 3,
-    "evidence": 1482,
+    "judged": 15,
+    "evidence": 1692,
     "fixed": 0,
     "machines": 49,
-    "learners": 11
+    "learners": 12
    },
    "power": 105
   },
   {
    "t": "2026-11-11T06",
-   "iq": 73.7,
+   "iq": 74.7,
    "parts": {
     "knows": 0,
     "facts": 0,
-    "judged": 5,
-    "evidence": 1545,
+    "judged": 17,
+    "evidence": 1840,
     "fixed": 0,
     "machines": 51,
-    "learners": 13
+    "learners": 14
    },
    "power": 105
   },
   {
    "t": "2026-11-11T09",
-   "iq": 73.7,
+   "iq": 74.8,
    "parts": {
     "knows": 0,
     "facts": 0,
-    "judged": 5,
-    "evidence": 1594,
+    "judged": 17,
+    "evidence": 1889,
     "fixed": 0,
     "machines": 51,
-    "learners": 13
+    "learners": 14
    },
    "power": 105
   },
   {
    "t": "2026-11-11T12",
-   "iq": 74,
+   "iq": 75.1,
    "parts": {
     "knows": 0,
     "facts": 0,
-    "judged": 7,
-    "evidence": 1615,
+    "judged": 19,
+    "evidence": 1910,
     "fixed": 0,
     "machines": 51,
-    "learners": 14
+    "learners": 15
    },
    "power": 113
   },
   {
    "t": "2026-11-11T15",
-   "iq": 73.9,
+   "iq": 75.1,
    "parts": {
     "knows": 0,
     "facts": 0,
-    "judged": 8,
-    "evidence": 1624,
+    "judged": 20,
+    "evidence": 1984,
     "fixed": 0,
     "machines": 54,
-    "learners": 14
+    "learners": 16
    },
    "power": 121
   },
   {
    "t": "2026-11-11T18",
-   "iq": 73.9,
+   "iq": 75,
    "parts": {
     "knows": 0,
     "facts": 0,
-    "judged": 10,
-    "evidence": 1665,
+    "judged": 22,
+    "evidence": 2025,
     "fixed": 0,
     "machines": 58,
-    "learners": 15
+    "learners": 17
    },
    "power": 125
   },
   {
    "t": "2026-11-11T21",
-   "iq": 74.4,
+   "iq": 75.5,
    "parts": {
     "knows": 0,
     "facts": 0,
-    "judged": 18,
-    "evidence": 1672,
+    "judged": 30,
+    "evidence": 2032,
     "fixed": 0,
     "machines": 60,
-    "learners": 16
+    "learners": 18
    },
    "power": 157
   },
   {
    "t": "2026-11-12T00",
-   "iq": 76.1,
+   "iq": 77,
    "parts": {
     "knows": 11.8,
     "facts": 16,
-    "judged": 29,
-    "evidence": 3579,
+    "judged": 41,
+    "evidence": 3939,
     "fixed": 0,
     "machines": 70,
-    "learners": 23
+    "learners": 25
    },
    "power": 196
   },
   {
    "t": "2026-11-12T03",
-   "iq": 76.2,
+   "iq": 77.1,
    "parts": {
     "knows": 11.8,
     "facts": 16,
-    "judged": 33,
-    "evidence": 3601,
+    "judged": 45,
+    "evidence": 3961,
     "fixed": 0,
     "machines": 71,
-    "learners": 23
+    "learners": 25
    },
    "power": 196
   },
   {
    "t": "2026-11-12T06",
-   "iq": 76.8,
+   "iq": 77.7,
    "parts": {
     "knows": 11.8,
     "facts": 16,
-    "judged": 43,
-    "evidence": 3659,
+    "judged": 55,
+    "evidence": 4029,
     "fixed": 3,
     "machines": 72,
-    "learners": 25
+    "learners": 27
    },
    "power": 196
   },
   {
    "t": "2026-11-12T09",
-   "iq": 77,
+   "iq": 77.9,
    "parts": {
     "knows": 11.8,
     "facts": 16,
-    "judged": 47,
-    "evidence": 3662,
+    "judged": 59,
+    "evidence": 4032,
     "fixed": 7,
     "machines": 72,
-    "learners": 25
+    "learners": 27
    },
    "power": 196
   },
   {
    "t": "2026-11-12T12",
-   "iq": 77,
+   "iq": 78,
    "parts": {
     "knows": 11.8,
     "facts": 16,
-    "judged": 49,
-    "evidence": 3684,
+    "judged": 61,
+    "evidence": 4054,
     "fixed": 8,
     "machines": 72,
-    "learners": 25
+    "learners": 27
    },
    "power": 211
   },
   {
    "t": "2026-11-12T15",
-   "iq": 77.2,
+   "iq": 78.1,
    "parts": {
     "knows": 11.8,
     "facts": 16,
-    "judged": 56,
-    "evidence": 3721,
+    "judged": 68,
+    "evidence": 4091,
     "fixed": 8,
     "machines": 72,
-    "learners": 25
+    "learners": 27
    },
    "power": 219
   },
   {
    "t": "2026-11-12T18",
-   "iq": 77.2,
+   "iq": 78.1,
    "parts": {
     "knows": 11.8,
     "facts": 16,
-    "judged": 56,
-    "evidence": 3722,
+    "judged": 68,
+    "evidence": 4092,
     "fixed": 8,
     "machines": 72,
-    "learners": 25
+    "learners": 27
    },
-   "power": 227
+   "power": 228
   }
  ]
 }

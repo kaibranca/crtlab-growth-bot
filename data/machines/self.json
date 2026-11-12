@@ -1,11 +1,11 @@
 {
- "at": "2026-11-12T19:35:45.238Z",
+ "at": "2026-11-12T19:36:39.956Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
-  "iq": 77.2,
-  "power": 227,
+  "iq": 78.1,
+  "power": 228,
   "dIQ": 3.8,
-  "dPower": 122,
+  "dPower": 123,
   "iqPerUpgrade": 0.031,
   "upgrades": {
    "judged": 0,
@@ -16,16 +16,16 @@
    "unmeasured": 0,
    "next": "2026-11-19"
   },
-  "say": "Machines IQ 77.2 (+3.8 since 11 Nov) on 122 upgrades — 0.03 IQ per upgrade. Upgrades get their first verdicts 19 Nov."
+  "say": "Machines IQ 78.1 (+3.8 since 11 Nov) on 123 upgrades — 0.03 IQ per upgrade. Upgrades get their first verdicts 19 Nov."
  },
  "engines": {
   "main": {
-   "iq": 77.2,
-   "iqWas": 73.4,
+   "iq": 78.1,
+   "iqWas": 74.3,
    "since": "2026-11-11",
    "level": "Novice",
    "members": 72,
-   "learners": 25,
+   "learners": 27,
    "brainVerdicts": 0,
    "curiosity": 1,
    "episode": null,
@@ -63,15 +63,15 @@
      "limit": "learning on every front — more data is the only limit"
     }
    ],
-   "say": "My IQ is 77.2 (Novice, +3.8 since 11 Nov) — 25 of 72 parts learn on their own; weakest: Supervisor, Ledger, 4-week trend (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 78.1 (Novice, +3.8 since 11 Nov) — 27 of 72 parts learn on their own; weakest: Supervisor, Ledger, 4-week trend (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "traffic": {
-   "iq": 77.9,
-   "iqWas": 75.5,
+   "iq": 78.3,
+   "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Novice",
    "members": 32,
-   "learners": 16,
+   "learners": 17,
    "brainVerdicts": 0,
    "curiosity": 1,
    "episode": null,
@@ -109,25 +109,19 @@
      "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 77.9 (Novice, +2.5 since 11 Nov) — 16 of 32 parts learn on their own; weakest: llms.txt curator, Truth gate, Bing sender (acts but never judges its outcome — it has a KPI it doesn't learn from)."
+   "say": "My IQ is 78.3 (Novice, +2.5 since 11 Nov) — 17 of 32 parts learn on their own; weakest: llms.txt curator, Truth gate, Bing sender (acts but never judges its outcome — it has a KPI it doesn't learn from)."
   },
   "money": {
-   "iq": 70.1,
-   "iqWas": 70.1,
+   "iq": 76.1,
+   "iqWas": 76,
    "since": "2026-11-11",
-   "level": "Blank",
+   "level": "Novice",
    "members": 8,
-   "learners": 1,
+   "learners": 2,
    "brainVerdicts": 0,
    "curiosity": 1,
    "episode": null,
    "weakest": [
-    {
-     "id": "behaviour",
-     "name": "Behaviour machine",
-     "iq": 70,
-     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
-    },
     {
      "id": "leak-page-backtest-market-land-account",
      "name": "/backtest-<market> @ land ",
@@ -139,23 +133,29 @@
      "name": "direct @ land → account",
      "iq": 70,
      "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
-    }
-   ],
-   "strongest": [
-    {
-     "id": "leak",
-     "name": "Conversion leak",
-     "iq": 71,
-     "limit": "collects evidence but hasn't reached a verdict yet"
     },
     {
-     "id": "bandit",
-     "name": "Conversion bandit",
+     "id": "wall",
+     "name": "Wall + checkout",
      "iq": 70,
      "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
     }
    ],
-   "say": "My IQ is 70.1 (Blank, +0 since 11 Nov) — 1 of 8 parts learn on their own; weakest: Behaviour machine, /backtest-<market> @ land , direct @ land → account (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "strongest": [
+    {
+     "id": "behaviour",
+     "name": "Behaviour machine",
+     "iq": 111,
+     "limit": "learns case by case but no lasting fact has formed yet"
+    },
+    {
+     "id": "leak",
+     "name": "Conversion leak",
+     "iq": 84,
+     "limit": "collects evidence but hasn't reached a verdict yet"
+    }
+   ],
+   "say": "My IQ is 76.1 (Novice, +0.1 since 11 Nov) — 2 of 8 parts learn on their own; weakest: /backtest-<market> @ land , direct @ land → account, Wall + checkout (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "data": {
    "iq": 73.1,
@@ -296,44 +296,31 @@
    "say": "My IQ is 71.1 (Blank, +1.1 since 11 Nov) — 1 of 8 parts learn on their own; weakest: Reaction factory, News engine, Daily recaps (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "retention": {
-   "iq": 70,
-   "iqWas": 70,
+   "iq": 87.7,
+   "iqWas": 87.7,
    "since": "2026-11-11",
-   "level": "Blank",
+   "level": "Capable",
    "members": 2,
-   "learners": 0,
+   "learners": 2,
    "brainVerdicts": 0,
    "curiosity": 1,
    "episode": null,
-   "weakest": [
-    {
-     "id": "behaviour",
-     "name": "Behaviour machine",
-     "iq": 70,
-     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
-    },
-    {
-     "id": "humans",
-     "name": "People machine",
-     "iq": 70,
-     "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
-    }
-   ],
+   "weakest": [],
    "strongest": [
     {
-     "id": "humans",
-     "name": "People machine",
-     "iq": 70,
-     "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
-    },
-    {
      "id": "behaviour",
      "name": "Behaviour machine",
-     "iq": 70,
-     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+     "iq": 111,
+     "limit": "learns case by case but no lasting fact has formed yet"
+    },
+    {
+     "id": "humans",
+     "name": "People machine",
+     "iq": 82,
+     "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 70.0 (Blank, +0 since 11 Nov) — 0 of 2 parts learn on their own; weakest: Behaviour machine, People machine (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 87.7 (Capable, +0 since 11 Nov) — 2 of 2 parts learn on their own."
   },
   "speed": {
    "iq": 70,
@@ -1203,19 +1190,24 @@
   },
   "behaviour": {
    "name": "Behaviour machine",
-   "iq": 70,
-   "iqWas": 70,
-   "level": "Blank",
+   "iq": 111,
+   "iqWas": 111,
+   "level": "Strong",
    "state": "ok",
    "kpi": null,
-   "made": null,
+   "made": {
+    "v": 12,
+    "k": 0,
+    "e": 230,
+    "f": 0
+   },
    "upgrades": {
     "paid": 0,
     "hurt": 0,
     "flat": 0,
     "waiting": 0
    },
-   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+   "limit": "learns case by case but no lasting fact has formed yet"
   },
   "devices": {
    "name": "Device QA",
@@ -1563,9 +1555,9 @@
   },
   "humans": {
    "name": "People machine",
-   "iq": 70,
-   "iqWas": 70,
-   "level": "Blank",
+   "iq": 82,
+   "iqWas": 82,
+   "level": "Novice",
    "state": "ok",
    "kpi": {
     "label": "real visitors / week",
@@ -1573,20 +1565,25 @@
     "before": 259,
     "change": -0.03
    },
-   "made": null,
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 65,
+    "f": 0
+   },
    "upgrades": {
     "paid": 0,
     "hurt": 0,
     "flat": 0,
     "waiting": 2
    },
-   "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+   "limit": "collects evidence but hasn't reached a verdict yet"
   },
   "leak": {
    "name": "Conversion leak",
-   "iq": 71,
-   "iqWas": 71,
-   "level": "Blank",
+   "iq": 84,
+   "iqWas": 83,
+   "level": "Novice",
    "state": "ok",
    "kpi": {
     "label": "guests → account %",
@@ -1597,7 +1594,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 4,
+    "e": 79,
     "f": 0
    },
    "upgrades": {
