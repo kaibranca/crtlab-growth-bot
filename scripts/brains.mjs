@@ -34,6 +34,8 @@ if (process.env.ANALYTICS_DB_URL) try {
 
 // retention: of the people who signed up 8–14 days ago, how many were back in the last 7 days (vs the cohort before)
 let ret = null;
+let comeback = null;
+const gam = (k) => { if (k < 1) return gam(k + 1) * Math.random() ** (1 / k); const d = k - 1 / 3, c = 1 / Math.sqrt(9 * d); for (;;) { let x, v; do { const u1 = Math.random(), u2 = Math.random(); x = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2); v = 1 + c * x; } while (v <= 0); v = v * v * v; const u = Math.random(); if (u < 1 - 0.0331 * x ** 4 || Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v; } };
 if (process.env.ANALYTICS_DB_URL) try {
   const pg = (await import("pg")).default, c = new pg.Client({ connectionString: process.env.ANALYTICS_DB_URL, ssl: { rejectUnauthorized: false }, connectionTimeoutMillis: 15000, query_timeout: 15000 }); await c.connect();
   try { const r = await c.query(`select
@@ -41,8 +43,38 @@ if (process.env.ANALYTICS_DB_URL) try {
       count(*) filter (where created_at between now() - interval '14 days' and now() - interval '7 days' and last_active > now() - interval '7 days')::int b1,
       count(*) filter (where created_at between now() - interval '21 days' and now() - interval '14 days')::int c0,
       count(*) filter (where created_at between now() - interval '21 days' and now() - interval '14 days' and last_active between now() - interval '14 days' and now() - interval '7 days')::int b0,
-      count(*) filter (where created_at < now() - interval '1 day' and last_active > now() - interval '1 day')::int back24 from users`); ret = r.rows[0]; } finally { await c.end().catch(() => {}); }
+      count(*) filter (where created_at < now() - interval '1 day' and last_active > now() - interval '1 day')::int back24 from users`); ret = r.rows[0];
+    // COMEBACK EMAIL (11-12): sent vs held-out (20 %), "came back" = any app event within 7 days of the claim. Judged arms only
+    // count claims ≥ 7 days old; the early read counts every claim (back so far).
+    try { const cb = await c.query(`select s.type, count(*)::int n,
+        count(*) filter (where s.sent_at < now() - interval '7 days')::int judged,
+        count(*) filter (where s.sent_at < now() - interval '7 days' and exists (select 1 from ui_events e where e.user_id = s.user_id and e.created_at > s.sent_at and e.created_at < s.sent_at + interval '7 days'))::int back7,
+        count(*) filter (where exists (select 1 from ui_events e where e.user_id = s.user_id and e.created_at > s.sent_at))::int backAny
+        from email_sends s where s.type in ('comeback', 'comeback-hold') group by 1`);
+      comeback = Object.fromEntries(cb.rows.map((x) => [x.type === "comeback" ? "sent" : "hold", x])); } catch (e) { console.log("brains: comeback read skipped (" + String(e.message).slice(0, 60) + ")"); }
+  } finally { await c.end().catch(() => {}); }
 } catch (e) { console.log("brains: retention skipped (" + String(e.message).slice(0, 60) + ")"); }
+// RETENTION LEVER (11-12): the comeback email is the retention brain's hands. Beta-binomial on 7-day returns, sent vs held:
+// once both arms have enough judged people (sent ≥ 40, held ≥ 10) and P(sent beats held) < 0.15 the brain switches it OFF
+// (data/retention/comeback.json, read by the site's runComeback before every run); P > 0.9 → kept + a win. Never flips back
+// by itself — a switch-off is a loss in the ledger and a build item.
+let comebackRead = null;
+{
+  const F = "data/retention/comeback.json", prev = J(F, { on: true }), S = comeback?.sent, Hh = comeback?.hold;
+  if (S || Hh) {
+    const rate = (x) => (x && x.judged ? x.back7 / x.judged : null);
+    let pWin = null;
+    if (S?.judged && Hh?.judged) { let w = 0; const draws = 4000, g = (a, b) => { const x = gam(a), y = gam(b); return x / (x + y); };
+      for (let i = 0; i < draws; i++) if (g(1 + S.back7, 1 + S.judged - S.back7) > g(1 + Hh.back7, 1 + Hh.judged - Hh.back7)) w++; pWin = +(w / draws).toFixed(3); }
+    comebackRead = { sent: S?.n ?? 0, held: Hh?.n ?? 0, judgedSent: S?.judged ?? 0, judgedHeld: Hh?.judged ?? 0, back7Sent: rate(S), back7Held: rate(Hh), backAnySent: S?.n ? +(S.backAny / S.n).toFixed(3) : null, backAnyHeld: Hh?.n ? +(Hh.backAny / Hh.n).toFixed(3) : null, pWin };
+    const enough = (S?.judged ?? 0) >= 40 && (Hh?.judged ?? 0) >= 10;
+    let next = { ...prev, at: new Date().toISOString(), read: comebackRead };
+    if (prev.on !== false && enough && pWin != null && pWin < 0.15) { next.on = false; next.why = `sent ${(rate(S) * 100).toFixed(0)}% back in 7 d vs held ${(rate(Hh) * 100).toFixed(0)}% (P sent wins ${pWin})`;
+      append("data/machines/ledger.jsonl", { at: next.at, key: "retention|comeback|off", machine: "retention", kind: "loss", what: `comeback email switched OFF: ${next.why}` }); }
+    if (enough && pWin != null && pWin > 0.9 && !prev.verdict) { next.verdict = "wins"; append("data/machines/ledger.jsonl", { at: next.at, key: "retention|comeback|win", machine: "retention", kind: "win", what: `comeback email brings people back: sent ${(rate(S) * 100).toFixed(0)}% vs held ${(rate(Hh) * 100).toFixed(0)}% in 7 d (P ${pWin})` }); }
+    fs.mkdirSync("data/retention", { recursive: true }); fs.writeFileSync(F, JSON.stringify(next, null, 1));
+  }
+}
 // speed: real visitors' page loads (Cloudflare Web Analytics, 24 h), the slowest 10% per page
 let rum = null;
 if (process.env.CF_API_TOKEN && process.env.CF_ACCOUNT_ID) try {
@@ -171,7 +203,8 @@ const BRAINS = [
       { id: "firstday", label: "First day", machines: ["behaviour"], does: "first-day actions that bring people back" },
       { id: "return", label: "Coming back", machines: ["humans"], does: "returners, cohorts, streaks" },
     ],
-    sensors: () => ({ cohort: ret?.c1 ?? null, backWeek2: ret ? r1((ret.b1 / Math.max(1, ret.c1)) * 100) : null, backWeek2Before: ret ? r1((ret.b0 / Math.max(1, ret.c0)) * 100) : null, returners24: ret?.back24 ?? null }),
+    sensors: () => ({ cohort: ret?.c1 ?? null, backWeek2: ret ? r1((ret.b1 / Math.max(1, ret.c1)) * 100) : null, backWeek2Before: ret ? r1((ret.b0 / Math.max(1, ret.c0)) * 100) : null, returners24: ret?.back24 ?? null,
+      comebackSent: comebackRead?.sent ?? 0, comebackHeld: comebackRead?.held ?? 0, comebackBackSent: comebackRead?.backAnySent ?? null, comebackBackHeld: comebackRead?.backAnyHeld ?? null, comebackPWin: comebackRead?.pWin ?? null }),
     outcome: (s) => ({ label: "% of a week's sign-ups back in week 2", v: s.backWeek2 ?? 0, higher: true }),
     signals: (s) => [s.backWeek2 != null && s.backWeek2 < 30 && { key: "week2", target: "week-2 return", v: s.backWeek2, higher: true, days: 7, why: `${s.backWeek2}% of a cohort back in week 2` }].filter(Boolean),
     measureOf: (b, s) => s.backWeek2,
@@ -179,7 +212,7 @@ const BRAINS = [
     // 11-12 audit (read in the site code): since the 11-06 daily switch NO retention email runs — runLifecycle skips on
     // dailyOn(), runWeeklyReset skips on sampleOn(). The one machine that reaches a sign-up who left is off.
     admin: (s) => [s.backWeek2 != null && s.backWeek2 < 25 ? `Only ${s.backWeek2}% of the people who signed up 8–14 days ago came back this week — the first session decides it (behaviour machine: golden actions).` : null,
-      "No retention email has run since the 11-06 daily switch (sample + weekly-reset emails both skip in daily mode) — nothing reaches a sign-up who left. A daily-era \"your 2,000 candles are back\" email needs Kai's wording."].filter(Boolean) },
+      s.comebackSent ? `Comeback email (lever): ${s.comebackSent} sent / ${s.comebackHeld} held out — back since: ${s.comebackBackSent != null ? Math.round(s.comebackBackSent * 100) + "%" : "?"} vs ${s.comebackBackHeld != null ? Math.round(s.comebackBackHeld * 100) + "%" : "?"}${s.comebackPWin != null ? ` · P(email wins, 7 d) ${s.comebackPWin}` : " · judged after 7 days"}. Optional, not an alarm.` : null].filter(Boolean) },
   { id: "speed", name: "Speed brain", color: "#00c2a8",
     managers: [
       { id: "charts", label: "Chart pages", machines: ["capacity", "load"], does: "real visitors' load time on the replay pages" },
