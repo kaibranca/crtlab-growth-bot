@@ -54,7 +54,10 @@ if (fresh.length) await cf(`/accounts/${ACC}/rules/lists/${LIST}/items`, { metho
 const total = ev.length - crawlerEv.length, FLOOD = 4000; // attacks only
 const lvl = (await cf(`/zones/${Z}/settings/security_level`)).result.value;
 let mode = lvl;
-if (total >= FLOOD && lvl !== "under_attack") { await cf(`/zones/${Z}/settings/security_level`, { method: "PATCH", body: JSON.stringify({ value: "under_attack" }) }); mode = "under_attack"; st.attackSince = new Date().toISOString(); st.quiet = 0; }
+// LOCK-IN (core.mjs): a wave of real people is arriving — "Under Attack" would put a 5-second check on every one of them,
+// so it needs 3× the flood while lock-in is on (bans and WAF rules still work as normal)
+const LOCKED = (() => { try { return JSON.parse(fs.readFileSync("data/machines/lockin.json", "utf8")).on === true; } catch { return false; } })();
+if (total >= FLOOD * (LOCKED ? 3 : 1) && lvl !== "under_attack") { await cf(`/zones/${Z}/settings/security_level`, { method: "PATCH", body: JSON.stringify({ value: "under_attack" }) }); mode = "under_attack"; st.attackSince = new Date().toISOString(); st.quiet = 0; }
 else if (lvl === "under_attack" && st.attackSince) { st.quiet = total < FLOOD / 4 ? (st.quiet || 0) + 1 : 0;
   if (st.quiet >= 2) { await cf(`/zones/${Z}/settings/security_level`, { method: "PATCH", body: JSON.stringify({ value: "medium" }) }); mode = "medium"; delete st.attackSince; st.quiet = 0; } }
 

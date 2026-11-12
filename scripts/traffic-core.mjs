@@ -194,13 +194,15 @@ const AUTH = Object.fromEntries(["brain", "ai", "search", "content", "social", "
 const epAll = Object.values(brain.modes).reduce((a, m) => ({ e: a.e + m.episodes, w: a.w + m.wins }), { e: 0, w: 0 });
 const ENGINE_AUTH = epAll.e >= 4 ? +clamp(0.85 + 0.5 * (epAll.w / epAll.e), 0.85, 1.25).toFixed(2) : 1;
 brain.authority = { engine: ENGINE_AUTH, managers: AUTH, scores: groupScore };
-const boost = (p, owner) => +clamp(1.5 * intensity * ENGINE_AUTH * (AUTH[OWNER_GROUP[owner]] ?? 1) + 0.25 * Math.max(0, nSigns(p ?? "") - 1), 1.2, 2.2).toFixed(2);
+const boost = (p, owner) => +clamp(1.5 * intensity * ENGINE_AUTH * (AUTH[OWNER_GROUP[owner]] ?? 1) * (J("data/machines/lockin.json", {}).on ? 1.25 : 1) + 0.25 * Math.max(0, nSigns(p ?? "") - 1), 1.2, J("data/machines/lockin.json", {}).on ? 2.6 : 2.2).toFixed(2);
 const REALP = (() => { const x = J(`${OUT}/pages.json`); return x?.pages?.length > 500 ? new Set(x.pages) : null; })(); // sitemap, from the demand miner
 const isReal = (p) => !REALP || REALP.has(p) || [...REALP].some((q) => q.startsWith(p.endsWith("/") ? p : p + "/")); // a family prefix counts if real pages sit under it
 // HOLDOUT (ai-machine.mjs): the 5% of pages no push machine touches — the brain never builds on one (it would spoil the measure)
 const HO = J("data/ai/holdout.json", null), fnv = (str) => { let h = 0x811c9dc5; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h % 100; };
 const HELD = (p) => !!HO && p !== "/" && fnv(HO.salt + p) < HO.pct;
-const build = (o) => { if (built >= 4 || alive().length >= 14) return false;
+const LOCK = J("data/machines/lockin.json", { on: false }); // lock-in: build more, push harder, on the wave's pages first
+if (LOCK.on) say("modes", `LOCK-IN (${LOCK.kind}): ${LOCK.why} — building up to 6 branches, boosts up to 2.6`, "hot");
+const build = (o) => { if (built >= (LOCK.on ? 6 : 4) || alive().length >= (LOCK.on ? 18 : 14)) return false;
   if (o.path !== false && HELD(o.target)) return false;
   if (o.path !== false && !isReal(o.target)) { say(o.owner, `refused a branch on ${o.target}: not a real page (sitemap)`, "bad"); return false; } const id = `${o.kind}-${o.target}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 52);
   if (blocked(id) || !(fire(o.neuron) || nSigns(o.target) >= 3)) return false;
@@ -212,6 +214,8 @@ for (const [c, v] of breakout) for (const [p] of v.top.slice(0, 2)) if (p !== "/
 for (const e of soon.slice(0, 3)) { const fam = e.fam.startsWith("/") ? e.fam : `/news/${e.fam}`; const L = brain.lessons[`event:${e.fam}`];
   if (L && L.n >= 2 && L.lift < 1.05) continue; // learned: this release never moves reads — skip it
   build({ kind: "event", owner: "events", fam: e.fam, target: fam, neuron: "event→prepush", base: r1(readsOf(fam, NOW - 7 * DAY, NOW) / 7), why: `${e.title} at ${iso(e.t).slice(11, 16)} UTC${L ? ` (past lift ×${L.lift})` : ""}` }); }
+// lock-in: the wave's pages get branches before anything else
+for (const p of (LOCK.on ? LOCK.targets ?? [] : []).slice(0, 3)) build({ kind: "surge", owner: "convergence", target: p, neuron: "lockin→bing", base: r1(readsOf(p, NOW - 8 * DAY, NOW - DAY) / 7), why: `LOCK-IN ${LOCK.kind} wave: ${String(LOCK.why).slice(0, 80)}` });
 // surges the AI machine saw
 for (const s of (ai.surges ?? []).filter((x) => x.kind === "page").slice(0, 2)) build({ kind: "surge", owner: "surges", target: s.key, neuron: "surge→bing", base: r1(s.normal), why: `${s.last24h} reads in 24 h vs ~${r1(s.normal)}` });
 // rank: page-1-bottom pages with the most missed clicks

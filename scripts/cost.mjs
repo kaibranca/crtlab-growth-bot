@@ -64,7 +64,10 @@ for (const [svc, n] of Object.entries(deploys)) if (svc === "web" && n > WINDOW_
 const hr = new Date().getUTCHours(), lastFix = state.fixes.filter((f) => f.svc === "data").slice(-1)[0];
 const bloatFailed = state.fixes.filter((f) => f.kind === "cache bloat" && f.verdict === "did not help").length >= 2;
 const actions = [];
-for (const inc of incidents) if (inc.kind === "cache bloat" && hr >= 2 && hr < 5 && (!lastFix || NOW - Date.parse(lastFix.at) > 20 * H) && !bloatFailed) {
+// LOCK-IN (core.mjs): during a wave no machine restarts or redeploys anything — the site must not blink while people arrive
+const LOCKED = (() => { try { return JSON.parse(fs.readFileSync("data/machines/lockin.json", "utf8")).on === true; } catch { return false; } })();
+if (LOCKED) actions.push("lock-in: hands off (no restart / redeploy while a wave is on)");
+for (const inc of incidents) if (!LOCKED && inc.kind === "cache bloat" && hr >= 2 && hr < 5 && (!lastFix || NOW - Date.parse(lastFix.at) > 20 * H) && !bloatFailed) {
   const dep = svcs.find((s) => s.name === "data")?.serviceInstances.edges.map((e) => e.node).find((n) => n.environmentId === ENV)?.latestDeployment?.id;
   if (!dep) continue;
   try { await gql(`mutation { deploymentRestart(id: "${dep}") }`); state.fixes.push({ at: new Date().toISOString(), svc: "data", kind: "cache bloat", before: inc.memGB, action: "restart" }); actions.push(`restarted data (${inc.memGB} GB billed, ${inc.rssGB?.toFixed(2)} GB real)`);
@@ -74,7 +77,7 @@ for (const inc of incidents) if (inc.kind === "cache bloat" && hr >= 2 && hr < 5
 // HANDS (11-11): web memory growth → a zero-downtime REDEPLOY (healthcheck + overlap, never a hard restart) in the quiet
 // hours, once per 20 h, judged 24 h later like the data fix; stops by itself if it did not help twice.
 const lastWeb = state.fixes.filter((f) => f.svc === "web").slice(-1)[0], webFailed = state.fixes.filter((f) => f.svc === "web" && f.verdict === "did not help").length >= 2;
-for (const inc of incidents) if (inc.svc === "web" && inc.kind === "memory growth" && hr >= 3 && hr < 5 && (!lastWeb || NOW - Date.parse(lastWeb.at) > 20 * H) && !webFailed) {
+for (const inc of incidents) if (!LOCKED && inc.svc === "web" && inc.kind === "memory growth" && hr >= 3 && hr < 5 && (!lastWeb || NOW - Date.parse(lastWeb.at) > 20 * H) && !webFailed) {
   const dep = svcs.find((s) => s.name === "web")?.serviceInstances.edges.map((e) => e.node).find((n) => n.environmentId === ENV)?.latestDeployment?.id;
   if (!dep) continue;
   try { await gql(`mutation { deploymentRedeploy(id: "${dep}") { id } }`); state.fixes.push({ at: new Date().toISOString(), svc: "web", kind: "memory growth", before: inc.memGB, action: "redeploy" }); actions.push(`redeployed web (${inc.memGB} GB vs ${inc.normalGB} normal) — zero-downtime, quiet hour`);

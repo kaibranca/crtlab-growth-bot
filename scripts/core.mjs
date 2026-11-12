@@ -162,6 +162,41 @@ if (mode !== old.mode) {
     append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `meta|sisters|${iso(NOW)}`, machine: "core", kind: rate > 0.5 ? "win" : rate < 0.25 ? "loss" : "lesson", what: `sister pages paid ${paid}/${due.length} times${P.sisterTop !== was ? ` → spread to ${P.sisterTop} hot pages` : ""}` }); }
   P.sisterPaid = due.length ? +(paid / due.length).toFixed(2) : P.sisterPaid ?? null; }
 
+// ── 3b. LOCK-IN (11-12, Kai: "anything abnormal — a spike or a wave — is our golden ticket: the WHOLE system locks in") ──
+// One detector, one file every engine obeys (data/machines/lockin.json). Triggers on REAL people (3 h vs the same 3 h of
+// 14 days — never raw hits: a bot flood is the shield's, not a ticket), on sign-ups, or on a people-fetch surge in AI
+// answers. While on: Bing all-in on the wave's pages, the traffic brain pushes harder, the cost machine keeps its hands
+// off, deploy windows hold, the shield needs 3× the flood to challenge anyone, Kai gets one email. Every wave is
+// remembered (waves.jsonl) and judged on sign-ups during it vs normal; each trigger's bar learns from its own record.
+{ const LF = "data/machines/lockin.json", L0 = J(LF, { on: false, bars: {} }), bars = { people: 2, signups: 2.5, ai: 2, ...(L0.bars ?? {}) };
+  const W = HU?.wave, fresh = W && NOW - Date.parse(HU.at) < 2 * H, trig = [];
+  if (fresh && W.visitors.now >= 6 && (W.visitors.ratio ?? 0) >= bars.people && W.visitors.z >= 3) trig.push({ kind: "people", why: `${W.visitors.now} real visitors in 3 h vs ~${W.visitors.normal} (×${W.visitors.ratio})${W.riding?.[0] ? ` — riding ${W.riding[0].dim} ${W.riding[0].seg} (${W.riding[0].now} vs ~${W.riding[0].normal})` : ""}` });
+  if (fresh && W.signups.now >= 3 && (W.signups.ratio ?? 0) >= bars.signups) trig.push({ kind: "signups", why: `${W.signups.now} sign-ups in 3 h vs ~${W.signups.normal} (×${W.signups.ratio})` });
+  // AI: a RATIO to normal, not z alone — reads grew ×20 in a month, so z vs the 14-day mean stays high on ordinary days
+  if (r24 >= mu * bars.ai && z >= 4 && !peopleDip) trig.push({ kind: "ai", why: `people asking AI about CRTLAB pages: ${r24} in 24 h vs ~${Math.round(mu)} (×${(r24 / mu).toFixed(1)})` });
+  const signNow = HU?.signups?.now ?? 0, minH = 6;
+  let L = { ...L0, bars };
+  if (trig.length && !L0.on) { L = { on: true, since: new Date().toISOString(), kind: trig[0].kind, triggers: trig.map((t) => t.kind), why: trig.map((t) => t.why).join(" · "), bars,
+      startSignups24: signNow, normalSignups24: HU?.signups?.normal ?? null, peak: W?.visitors?.ratio ?? null, targets: [...new Set([...(ai.surges ?? []).filter((x) => x.kind === "page").map((x) => x.key), ...(old.targets ?? [])])].slice(0, 12), emailed: false };
+    append("data/machines/ledger.jsonl", { at: L.since, key: `lockin|${L.since}`, machine: "core", kind: "lesson", what: `LOCK-IN on (${L.kind}): ${L.why}` }); }
+  else if (L0.on) { L.peak = Math.max(L0.peak ?? 0, W?.visitors?.ratio ?? 0); L.why = trig.length ? trig.map((t) => t.why).join(" · ") : L0.why; L.quiet = trig.length ? 0 : (L0.quiet ?? 0) + 1;
+    // ends after 6 h minimum and 2 quiet hours; judged on sign-ups in the 24 h since it began vs the normal day
+    // SAFETY: 48 h hard cap — a stuck trigger can never hold deploys for days; hitting it counts as a false alarm (bar rises)
+    const capped = NOW - Date.parse(L0.since) >= 48 * H;
+    if ((NOW - Date.parse(L0.since) >= minH * H && L.quiet >= 2) || capped) { const hrs = (NOW - Date.parse(L0.since)) / H, normal = Math.max(1, L0.normalSignups24 ?? 1), got = signNow, ratio = +(got / normal).toFixed(2);
+      const verdict = capped && ratio < 1.3 ? "false alarm" : ratio >= 1.3 ? "paid" : ratio <= 0.9 ? "false alarm" : "flat";
+      bars[L0.kind] = +Math.max(1.5, Math.min(4, bars[L0.kind] + (verdict === "paid" ? -0.1 : verdict === "false alarm" ? 0.25 : 0))).toFixed(2);
+      append("data/machines/waves.jsonl", { at: new Date().toISOString(), since: L0.since, hours: +hrs.toFixed(1), kind: L0.kind, triggers: L0.triggers, why: L0.why, peak: L.peak, signups24: got, normal: normal, ratio, verdict, bar: bars[L0.kind] });
+      append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `lockin|end|${L0.since}`, machine: "core", kind: verdict === "paid" ? "win" : verdict === "false alarm" ? "loss" : "lesson", what: `LOCK-IN ${L0.kind} over after ${hrs.toFixed(0)} h: sign-ups ${got} vs ~${normal} (×${ratio}) — ${verdict}; ${L0.kind} bar → ×${bars[L0.kind]}` });
+      L = { on: false, bars, last: { since: L0.since, kind: L0.kind, verdict, ratio } }; } }
+  // ONE email to Kai when it starts (Resend, the alert address the other machines use)
+  if (L.on && !L.emailed && process.env.RESEND_API_KEY && process.env.ALERT_TO) try {
+    const r = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "content-type": "application/json" }, body: JSON.stringify({ from: process.env.ALERT_FROM || "CRTLAB bot <hello@crtlab.pro>", to: process.env.ALERT_TO, subject: `CRTLAB LOCK-IN — ${L.kind} wave`, text: `${L.why}\n\nThe whole system is locked in: Bing all-in on ${L.targets.slice(0, 5).join(", ") || "the wave's pages"}, brains pushing harder, no restarts, deploys held, shield relaxed (3× flood).\nIt ends by itself after 2 quiet hours (min 6 h) and is judged on sign-ups.` }) });
+    if (r.ok) L.emailed = true; } catch { /* next run retries */ }
+  fs.writeFileSync(LF, JSON.stringify(L, null, 1));
+  if (L.on) feed.unshift({ t: new Date().toISOString(), m: "core", text: `LOCK-IN (${L.kind}): ${L.why}`, kind: "hot" });
+  console.log(`lock-in: ${L.on ? `ON (${L.kind}) since ${L.since} — ${L.why}` : `off · bars people ×${bars.people} signups ×${bars.signups} ai ×${bars.ai}${L.last ? ` · last ${L.last.kind} ${L.last.verdict}` : ""}`}`); }
+
 const modeOut = { mode, since: mode === old.mode ? old.since : new Date().toISOString(), why, z, r24, normal: Math.round(mu), pageSurges, params: P,
   startMu: mode === old.mode ? old.startMu ?? Math.round(mu) : Math.round(mu), startR24: mode === old.mode ? old.startR24 ?? r24 : r24,
   targets: mode === "surge" ? (ai.surges ?? []).filter((s) => s.kind === "page").slice(0, 8).map((s) => s.key) : mode === "dip" ? (ai.winners ?? []).slice(0, P.recoveryN).map((w) => w.p) : [] };

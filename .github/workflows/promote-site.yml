@@ -13,6 +13,9 @@ jobs:
         with: { repository: kaibranca/crtlab-standalone, ref: rebuild-integration, ssh-key: "${{ secrets.SITE_DEPLOY_KEY }}", fetch-depth: 0 }
       - name: Fast-forward live
         run: |
+          # LOCK-IN (growth bot core.mjs): a wave of real people is on — the window holds, the site must not restart under it.
+          # Kai's "deploy now" (push rebuild-integration:live directly) still works; the next window after the wave deploys.
+          if curl -fsS https://raw.githubusercontent.com/kaibranca/crtlab-growth-bot/main/data/machines/lockin.json | grep -q '"on": true'; then echo "lock-in is on — window held, no deploy"; exit 0; fi
           git fetch -q origin live
           head=$(git rev-parse HEAD); live=$(git rev-parse origin/live)
           if [ "$head" = "$live" ]; then echo "live is current ($(git rev-parse --short HEAD)) — no deploy"; exit 0; fi

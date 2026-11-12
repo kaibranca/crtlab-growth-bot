@@ -30,6 +30,17 @@ try {
     from guest_presence where created_at > now() - interval '15 days' and country is distinct from 'SG'
     group by 1, 2, 3, 4, 5`);
   const su = await db.query(`select floor(extract(epoch from (now() - created_at)) / 86400)::int d, count(*)::int n from users where created_at > now() - interval '15 days' group by 1`);
+  // WAVE SENSOR (11-12, Kai: "a spike or a wave is our golden ticket — the whole system locks in"): the last 3 h vs the same
+  // 3 h of each of the 14 days before (time of day can't fake it), REAL visitors + sign-ups, per source and landing type.
+  let wv = { rows: [] }, wsu = { rows: [] };
+  try {
+  wv = await db.query(`select floor(extract(epoch from (now() - created_at)) / 86400)::int d, ${seg} src, ${land} lp,
+      count(*) filter (where last_active - created_at > interval '30 seconds' or converted_at is not null)::int n, count(*) filter (where converted_at is not null)::int acc
+    from guest_presence where created_at > now() - interval '15 days' and country is distinct from 'SG'
+      and mod(extract(epoch from (now() - created_at))::bigint, 86400) < 10800 group by 1, 2, 3`);
+  wsu = await db.query(`select floor(extract(epoch from (now() - created_at)) / 86400)::int d, count(*)::int n from users
+    where created_at > now() - interval '15 days' and mod(extract(epoch from (now() - created_at))::bigint, 86400) < 10800 group by 1`);
+  } catch (e) { console.log("humans: wave sensor skipped (" + String(e.message).slice(0, 80) + ")"); }
   const day = (pred) => { const a = new Array(15).fill(0); for (const r of rows) if (r.d >= 0 && r.d < 15 && pred(r)) a[r.d] += r.n; return a; };
   const stat = (a) => { const b = a.slice(1), mu = b.reduce((x, y) => x + y, 0) / b.length, sd = Math.sqrt(b.reduce((x, y) => x + (y - mu) ** 2, 0) / Math.max(1, b.length - 1)) || 1; return { now: a[0], normal: +mu.toFixed(1), ratio: mu ? +(a[0] / mu).toFixed(2) : null, z: +((a[0] - mu) / sd).toFixed(1) }; };
   const visitors = stat(day(() => true));
@@ -47,13 +58,17 @@ try {
   const rise = visitors.normal >= 15 && (visitors.ratio ?? 1) >= 1.4;
   const top = why.filter((w) => w.gap < 0).slice(0, 4);
   const rawDay = new Array(15).fill(0); for (const r of rows) if (r.d >= 0 && r.d < 15) rawDay[r.d] += r.raw;
+  const wDay = (pred) => { const a = new Array(15).fill(0); for (const r of wv.rows) if (r.d >= 0 && r.d < 15 && pred(r)) a[r.d] += r.n; return a; };
+  const wsArr = new Array(15).fill(0); for (const r of wsu.rows) if (r.d >= 0 && r.d < 15) wsArr[r.d] += r.n;
+  const wSegs = []; for (const [dim, key] of [["source", "src"], ["landing", "lp"]]) for (const v of [...new Set(wv.rows.map((r) => r[key]))]) { const x = stat(wDay((r) => r[key] === v)); if (x.now >= 3) wSegs.push({ dim, seg: v, ...x, gain: +(x.now - x.normal).toFixed(1) }); }
+  const wave = { window: "3h", visitors: stat(wDay(() => true)), signups: stat(wsArr), riding: wSegs.sort((a, b) => b.gain - a.gain).slice(0, 3) };
   const out = {
-    at: new Date().toISOString(), visitors, rawVisitors: stat(rawDay), signups, state: drop ? "dip" : rise ? "up" : "normal",
+    at: new Date().toISOString(), wave, visitors, rawVisitors: stat(rawDay), signups, state: drop ? "dip" : rise ? "up" : "normal",
     why: top.map((w) => `${w.dim} ${w.seg}: ${w.now} vs ~${w.normal}/day`),
     gainers: why.filter((w) => w.gap > 0).sort((a, b) => b.gap - a.gap).slice(0, 3).map((w) => `${w.dim} ${w.seg}: ${w.now} vs ~${w.normal}/day`),
     segments: why.slice(0, 40),
   };
   fs.mkdirSync("data/machines", { recursive: true });
   fs.writeFileSync(OUT, JSON.stringify(out, null, 1));
-  console.log(`humans: ${visitors.now} real visitors in 24 h (raw ${out.rawVisitors.now} vs ~${out.rawVisitors.normal}) vs ~${visitors.normal} (×${visitors.ratio}) · sign-ups ${signups.now} vs ~${signups.normal} · ${out.state}${top.length ? " · down most: " + out.why.join("; ") : ""}`);
+  console.log(`humans: ${visitors.now} real visitors in 24 h (raw ${out.rawVisitors.now} vs ~${out.rawVisitors.normal}) vs ~${visitors.normal} (×${visitors.ratio}) · sign-ups ${signups.now} vs ~${signups.normal} · ${out.state}${top.length ? " · down most: " + out.why.join("; ") : ""} · 3 h: ${wave.visitors.now} vs ~${wave.visitors.normal} (×${wave.visitors.ratio})`);
 } finally { await db.end(); }
