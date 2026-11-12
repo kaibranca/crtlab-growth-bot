@@ -41,6 +41,15 @@ const clicks = new Map(); for (const [k, v] of Object.entries(J("data/ai/clicks.
 const gamma = (k) => { if (k < 1) return gamma(k + 1) * Math.pow(Math.random(), 1 / k); const d = k - 1 / 3, c = 1 / Math.sqrt(9 * d);
   for (;;) { let x, v; do { const u1 = Math.random(), u2 = Math.random(); x = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2); v = 1 + c * x; } while (v <= 0); v = v * v * v; const u = Math.random(); if (u < 1 - 0.0331 * x ** 4 || Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v; } };
 const today = iso(NOW), tomorrow = iso(NOW + DAY), report = [];
+// HIERARCHICAL TRANSFER (11-12 — every click teaches every family): pass 1 counts each wording's clicks/fetches in every
+// family; a wording's LIFT across families (its pooled rate ÷ the pooled rate of all wordings, shrunk by its sample) becomes
+// the prior every family starts that wording from. A family then moves away from it only on its own evidence.
+const judged = (S, d) => d < today && S.written[d] && S.written[d] < d + "T00:00:00Z";
+const ALL = Object.fromEntries(ARMS.map((a) => [a, { f: 0, c: 0 }]));
+for (const f of FAMS) { const S = st.families[f]; for (const [d, probs] of Object.entries(S.probs)) { if (!judged(S, d)) continue;
+  for (const [k, n] of fetches) { const [p, dd] = k.split("|"); if (dd !== d || famOf(p) !== f) continue; const a = pick(S.salt, p, d, probs); if (a) { ALL[a].f += n; ALL[a].c += clicks.get(k) ?? 0; } } } }
+const allF = ARMS.reduce((x, a) => x + ALL[a].f, 0), allC = ARMS.reduce((x, a) => x + ALL[a].c, 0), allRate = (allC + 1) / (allF + 100);
+const LIFT = Object.fromEntries(ARMS.map((a) => [a, (((ALL[a].c + allRate * 300) / (ALL[a].f + 300)) / allRate)])); // shrunk to 1 with 300 fetches
 for (const f of FAMS) {
   const S = st.families[f], live = ARMS.filter((a) => !S.retired.includes(a));
   // 1. SCORE every judged day: shares written before the day began, day finished
@@ -50,7 +59,7 @@ for (const f of FAMS) {
   const totF = ARMS.reduce((s, a) => s + A[a].f, 0), totC = ARMS.reduce((s, a) => s + A[a].c, 0), pooled = (totC + 1) / (totF + 100), B0 = 200;
   // 2. THOMPSON: P(best) per live wording
   const wins = Object.fromEntries(live.map((a) => [a, 0])), N = 4000;
-  for (let i = 0; i < N; i++) { let best = null, bv = -1; for (const a of live) { const v = gamma(A[a].c + pooled * B0) / (A[a].f + B0); if (v > bv) { bv = v; best = a; } } wins[best]++; }
+  for (let i = 0; i < N; i++) { let best = null, bv = -1; for (const a of live) { const v = gamma(A[a].c + pooled * LIFT[a] * B0) / (A[a].f + B0); if (v > bv) { bv = v; best = a; } } wins[best]++; }
   const pBest = Object.fromEntries(live.map((a) => [a, wins[a] / N]));
   // 3. RETIRE clear losers, record a clear leader (once) — real verdicts in the ledger
   for (const a of live) if (A[a].f >= 400 && pBest[a] < 0.02 && live.length > 2) { S.retired.push(a);
@@ -72,6 +81,7 @@ for (const f of FAMS) {
   S.stats = { at: new Date().toISOString(), arms: Object.fromEntries(ARMS.map((a) => [a, { fetches: A[a].f, clicks: A[a].c, pageDays: A[a].units, pBest: pBest[a] ?? 0, share: S.probs[tomorrow]?.[a] ?? 0, retired: S.retired.includes(a) }])), pooledRate: +pooled.toFixed(4), judgedDays: Object.keys(S.probs).filter((d) => d < today && S.written[d] < d + "T00:00:00Z").length };
   report.push(`${f}: ${S.stats.judgedDays} judged days · ${totC}/${totF} · ${ARMS.map((a) => `${a} ${((pBest[a] ?? 0) * 100).toFixed(0)}%${S.retired.includes(a) ? "✗" : ""}`).join(" ")}`);
 }
+st.transfer = { at: new Date().toISOString(), fetches: allF, clicks: allC, lift: Object.fromEntries(ARMS.map((a) => [a, +LIFT[a].toFixed(3)])) };
 st.at = new Date().toISOString(); st.note = "Conversion bandit: per family, tomorrow's share of each ReplayHook wording (site lib/bandit.ts). Shares are written before their day starts.";
 fs.writeFileSync(F_OUT, JSON.stringify(st, null, 1));
 console.log("bandit: " + report.join(" | "));
