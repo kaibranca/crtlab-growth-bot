@@ -1,5 +1,5 @@
 {
- "at": "2026-11-12T15:05:41.047Z",
+ "at": "2026-11-12T15:10:28.909Z",
  "ok": 65,
  "total": 65,
  "hurting": [
@@ -50,7 +50,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 0,
+   "lastRunH": 0.1,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -62,7 +62,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 7,
+   "lastRunH": 7.1,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -73,7 +73,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 8.4,
+   "lastRunH": 8.5,
    "everyH": 24,
    "kpi": null
   },
@@ -81,7 +81,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 8.4,
+   "lastRunH": 8.5,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -100,7 +100,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 8.4,
+   "lastRunH": 8.5,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -127,7 +127,7 @@
    "id": "indexnow",
    "name": "IndexNow",
    "state": "ok",
-   "lastRunH": 0,
+   "lastRunH": 0.1,
    "everyH": 24,
    "kpi": null
   },
@@ -155,7 +155,13 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -164,7 +170,13 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -173,7 +185,13 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -320,27 +338,45 @@
    "id": "traffic-brain",
    "name": "Traffic brain ↗",
    "state": "ok",
-   "lastRunH": 0.2,
+   "lastRunH": 0.7,
    "everyH": 1,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "brains",
    "name": "Brains (money · data · security · content · retention · speed)",
    "state": "ok",
-   "lastRunH": 0.2,
+   "lastRunH": 0.7,
    "everyH": 1,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "seo",
    "name": "Search console",
    "state": "ok",
-   "lastRunH": 72.7,
+   "lastRunH": 73.5,
    "everyH": 168,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -349,25 +385,43 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "executive",
    "name": "Executive",
    "state": "ok",
-   "lastRunH": 12,
+   "lastRunH": 12.8,
    "everyH": 24,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "memory",
    "name": "Long-term memory",
    "state": "ok",
-   "lastRunH": 12,
+   "lastRunH": 12.8,
    "everyH": 24,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -376,7 +430,13 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -385,7 +445,13 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -394,7 +460,13 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -403,7 +475,13 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -412,16 +490,28 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "google",
    "name": "Google machine",
    "state": "ok",
-   "lastRunH": 7.6,
+   "lastRunH": 8.4,
    "everyH": 24,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -430,43 +520,73 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "news",
    "name": "News engine",
    "state": "ok",
-   "lastRunH": 6.3,
+   "lastRunH": 7,
    "everyH": 24,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "recaps",
    "name": "Daily recaps",
    "state": "ok",
-   "lastRunH": 6.3,
+   "lastRunH": 7,
    "everyH": 24,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "linkcheck",
    "name": "Link check",
    "state": "ok",
-   "lastRunH": 72.7,
+   "lastRunH": 73.4,
    "everyH": 168,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "social",
    "name": "Reels",
    "state": "ok",
-   "lastRunH": 5.6,
+   "lastRunH": 6.4,
    "everyH": 24,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -477,7 +597,7 @@
    "everyH": 1,
    "kpi": {
     "label": "uptime 7 d %",
-    "now": 100,
+    "now": 99.62,
     "before": null,
     "change": null
    },
@@ -496,16 +616,22 @@
    "id": "security",
    "name": "Login + key watch",
    "state": "ok",
-   "lastRunH": 0.8,
+   "lastRunH": 1.6,
    "everyH": 24,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "datapull",
    "name": "Data pull",
    "state": "ok",
-   "lastRunH": 0.8,
+   "lastRunH": 1.6,
    "everyH": 24,
    "kpi": {
     "label": "trading days behind",
@@ -520,18 +646,30 @@
    "id": "backup",
    "name": "Nightly backup",
    "state": "ok",
-   "lastRunH": 0.8,
+   "lastRunH": 1.6,
    "everyH": 24,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "calendar",
    "name": "Economic calendar",
    "state": "ok",
-   "lastRunH": 0.3,
+   "lastRunH": 0,
    "everyH": 24,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -540,7 +678,13 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 24,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -549,25 +693,43 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "gaps",
    "name": "Search gaps",
    "state": "ok",
-   "lastRunH": 72.7,
+   "lastRunH": 73.5,
    "everyH": 168,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "bingseo",
    "name": "Bing webmaster",
    "state": "ok",
-   "lastRunH": 72.7,
+   "lastRunH": 73.5,
    "everyH": 168,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -595,18 +757,30 @@
    "id": "wall",
    "name": "Wall + checkout",
    "state": "ok",
-   "lastRunH": 7.7,
+   "lastRunH": 8.4,
    "everyH": 24,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
    "id": "restore",
    "name": "Restore test",
    "state": "ok",
-   "lastRunH": 98.4,
+   "lastRunH": 99.1,
    "everyH": 168,
-   "kpi": null,
+   "kpi": {
+    "label": "days its output changed (7 d)",
+    "now": 0,
+    "before": null,
+    "change": null,
+    "activity": true
+   },
    "from": "core"
   },
   {
@@ -617,7 +791,7 @@
    "everyH": 1,
    "kpi": {
     "label": "Railway $ / month pace (7 d)",
-    "now": 23.1,
+    "now": 23.7,
     "before": null,
     "change": null,
     "lowerBetter": true,
@@ -649,8 +823,8 @@
    "kpi": {
     "label": "real visitors / week",
     "now": 250,
-    "before": 263,
-    "change": -0.05
+    "before": 261,
+    "change": -0.04
    },
    "from": "core"
   },
@@ -658,12 +832,12 @@
    "id": "leak",
    "name": "Conversion leak",
    "state": "ok",
-   "lastRunH": 7.7,
+   "lastRunH": 8.4,
    "everyH": 24,
    "kpi": {
     "label": "guests → account %",
     "now": 48,
-    "before": 45.63,
+    "before": 45.59,
     "change": 0.05
    },
    "from": "core"
@@ -681,7 +855,7 @@
    "id": "analyst",
    "name": "analyst",
    "state": "ok",
-   "lastRunH": 18.3,
+   "lastRunH": 19.1,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -690,7 +864,7 @@
    "id": "traffic",
    "name": "traffic",
    "state": "ok",
-   "lastRunH": 7.6,
+   "lastRunH": 8.4,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -700,77 +874,84 @@
   {
    "move": "surge",
    "what": "/news/claims/gold",
-   "why": "51 AI reads in 24 h vs ~0.5/day",
-   "z": 71.4
+   "why": "52 AI reads in 24 h vs ~0.5/day",
+   "z": 72.8
   },
   {
    "move": "surge",
    "what": "/news/ppi/nasdaq",
-   "why": "48 AI reads in 24 h vs ~0.5/day",
-   "z": 67.2
+   "why": "49 AI reads in 24 h vs ~0.5/day",
+   "z": 68.6
   },
   {
    "move": "surge",
    "what": "/topstep-challenge-simulator",
-   "why": "48 AI reads in 24 h vs ~0.5/day",
-   "z": 67.2
+   "why": "49 AI reads in 24 h vs ~0.5/day",
+   "z": 68.6
   },
   {
    "move": "climbing",
    "what": "/news/ppi/gold",
-   "why": "58 reads in 3 days vs ~1",
-   "z": 55.8
+   "why": "59 reads in 3 days vs ~1",
+   "z": 56.8
   },
   {
    "move": "climbing",
    "what": "/news/claims/gold",
-   "why": "52 reads in 3 days vs ~0.9",
-   "z": 53.9
+   "why": "53 reads in 3 days vs ~0.9",
+   "z": 54.9
   },
   {
    "move": "climbing",
    "what": "/news/ppi/nasdaq",
-   "why": "49 reads in 3 days vs ~0.9",
-   "z": 50.7
+   "why": "50 reads in 3 days vs ~0.9",
+   "z": 51.8
   },
   {
    "move": "climbing",
    "what": "/statistics/ger40",
-   "why": "49 reads in 3 days vs ~0.9",
-   "z": 50.7
+   "why": "50 reads in 3 days vs ~0.9",
+   "z": 51.8
   },
   {
    "move": "climbing",
    "what": "/news/cpi/eurusd",
+   "why": "50 reads in 3 days vs ~0.9",
+   "z": 51.8
+  },
+  {
+   "move": "climbing",
+   "what": "/tools/position-size-calculator",
    "why": "49 reads in 3 days vs ~0.9",
    "z": 50.7
   },
   {
    "move": "climbing",
-   "what": "/tools/position-size-calculator",
-   "why": "48 reads in 3 days vs ~0.9",
-   "z": 49.6
-  },
-  {
-   "move": "climbing",
    "what": "/topstep-challenge-simulator",
-   "why": "48 reads in 3 days vs ~0.9",
-   "z": 49.6
+   "why": "49 reads in 3 days vs ~0.9",
+   "z": 50.7
   },
   {
    "move": "climbing",
    "what": "/news/cpi/gold",
-   "why": "253 reads in 3 days vs ~34",
-   "z": 37.5
+   "why": "258 reads in 3 days vs ~34.7",
+   "z": 37.9
   },
   {
    "move": "climbing",
    "what": "/answers/does-the-opening-range-breakout-work-on-gold",
-   "why": "55 reads in 3 days vs ~3.5",
-   "z": 27.6
+   "why": "56 reads in 3 days vs ~3.5",
+   "z": 28.2
   }
  ],
  "ledger": [
+  {
+   "at": "2026-11-12T15:08:31.488Z",
+   "key": "surge|/news/ppi-retail-sales-claims-2026-10-15|2026-11-12",
+   "machine": "ai",
+   "kind": "surge",
+   "what": "/news/ppi-retail-sales-claims-2026-10-15 surged (8 vs 0.7/day)"
+  },
   {
    "at": "2026-11-12T15:05:41.047Z",
    "key": "mistake|hourly|2026-11-12",
@@ -973,27 +1154,11 @@
    "machine": "supervisor",
    "kind": "mistake",
    "what": "reels-post: run startup_failure"
-  },
-  {
-   "at": "2026-11-11T20:07:08.994Z",
-   "key": "spawn|focus-tools-position-size-calculator|born",
-   "machine": "analyst",
-   "kind": "lesson",
-   "what": "AI analyst picked /tools/position-size-calculator (surging: 47 reads in 24 h vs ~0.5)"
   }
  ],
  "fix": [
   "AI accounts / week getting worse: 11 vs 32 last week (hooks)",
   "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones"
  ],
- "mistakes": [
-  {
-   "where": "hourly",
-   "n": 1,
-   "last": "run failure",
-   "at": "2026-11-12T14:20:55Z",
-   "repeating": false,
-   "url": "https://github.com/kaibranca/crtlab-growth-bot/actions/runs/43235675503"
-  }
- ]
+ "mistakes": []
 }
