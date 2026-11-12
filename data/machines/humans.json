@@ -1,120 +1,120 @@
 {
- "at": "2026-11-12T16:33:35.420Z",
+ "at": "2026-11-12T17:18:29.377Z",
  "selfCheck": {
   "devices": [
    {
     "dev": "desktop",
-    "raw24": 559,
-    "beat24": 0.633,
-    "beatNormal": 0.553,
+    "raw24": 557,
+    "beat24": 0.621,
+    "beatNormal": 0.557,
     "stay24": 0.02,
-    "stayNormal": 0.471
+    "stayNormal": 0.459
    },
    {
     "dev": "mobile",
-    "raw24": 31,
-    "beat24": 0.419,
-    "beatNormal": 0.34,
-    "stay24": 0.516,
-    "stayNormal": 0.468
+    "raw24": 30,
+    "beat24": 0.433,
+    "beatNormal": 0.339,
+    "stay24": 0.533,
+    "stayNormal": 0.466
    }
   ],
   "rawSurge": [
    {
     "dim": "landing",
     "seg": "home",
-    "raw24": 566,
-    "rawNormal": 44.1,
+    "raw24": 563,
+    "rawNormal": 45.4,
     "stayed24": 16,
     "stayShare": 0.028
    },
    {
     "dim": "source",
     "seg": "Direct",
-    "raw24": 574,
-    "rawNormal": 55.1,
+    "raw24": 571,
+    "rawNormal": 56.4,
     "stayed24": 16,
     "stayShare": 0.028
    },
    {
     "dim": "device",
     "seg": "desktop",
-    "raw24": 559,
-    "rawNormal": 59.4,
+    "raw24": 557,
+    "rawNormal": 60.5,
     "stayed24": 11,
     "stayShare": 0.02
    },
    {
     "dim": "country",
     "seg": "US",
-    "raw24": 197,
-    "rawNormal": 9.5,
+    "raw24": 204,
+    "rawNormal": 9.6,
     "stayed24": 2,
     "stayShare": 0.01
    },
    {
     "dim": "country",
     "seg": "CN",
-    "raw24": 149,
-    "rawNormal": 6.6,
+    "raw24": 132,
+    "rawNormal": 7.9,
     "stayed24": 0,
     "stayShare": 0
    },
    {
     "dim": "country",
     "seg": "GB",
-    "raw24": 80,
+    "raw24": 82,
     "rawNormal": 6,
     "stayed24": 0,
     "stayShare": 0
    }
   ],
   "flood": [
-   "US: 197 raw vs ~9.5, 2 stayed",
-   "CN: 149 raw vs ~6.6, 0 stayed",
-   "GB: 80 raw vs ~6, 0 stayed",
-   "CA: 59 raw vs ~0.9, 1 stayed"
+   "US: 204 raw vs ~9.6, 2 stayed",
+   "CN: 132 raw vs ~7.9, 0 stayed",
+   "GB: 82 raw vs ~6, 0 stayed",
+   "CA: 61 raw vs ~0.9, 1 stayed"
   ],
-  "verdict": "FLOOD: the raw surge is US (197 vs ~9.5, 2 stayed), CN (149 vs ~6.6, 0 stayed), GB (80 vs ~6, 0 stayed), CA (59 vs ~0.9, 1 stayed) — headless traffic, not people leaving"
+  "verdict": "FLOOD: the raw surge is US (204 vs ~9.6, 2 stayed), CN (132 vs ~7.9, 0 stayed), GB (82 vs ~6, 0 stayed), CA (61 vs ~0.9, 1 stayed) — headless traffic, not people leaving"
  },
  "wave": {
   "window": "3h",
   "visitors": {
-   "now": 4,
-   "normal": 6.4,
-   "ratio": 0.63,
-   "z": -0.7
+   "now": 3,
+   "normal": 6.8,
+   "ratio": 0.44,
+   "z": -1.1
   },
   "signups": {
-   "now": 3,
-   "normal": 2.7,
-   "ratio": 1.11,
-   "z": 0.1
+   "now": 2,
+   "normal": 2.8,
+   "ratio": 0.72,
+   "z": -0.3
   },
   "riding": []
  },
  "visitors": {
   "now": 27,
-  "normal": 36.7,
+  "normal": 36.5,
   "ratio": 0.74,
-  "z": -0.8
+  "z": -0.9
  },
  "rawVisitors": {
-  "now": 590,
-  "normal": 77.1,
-  "ratio": 7.65,
-  "z": 20.2
+  "now": 587,
+  "normal": 78.3,
+  "ratio": 7.5,
+  "z": 22.2
  },
  "signups": {
   "now": 17,
-  "normal": 15.8,
-  "ratio": 1.08,
+  "normal": 15.6,
+  "ratio": 1.09,
   "z": 0.2
  },
  "state": "normal",
  "why": [
-  "device desktop: 11 vs ~28/day",
-  "source Direct: 16 vs ~22.6/day",
+  "device desktop: 11 vs ~27.8/day",
+  "source Direct: 16 vs ~22.5/day",
   "landing chart: 0 vs ~5.8/day",
   "landing /backtest pages: 3 vs ~7.1/day"
  ],
@@ -128,19 +128,19 @@
    "dim": "device",
    "seg": "desktop",
    "now": 11,
-   "normal": 28,
-   "ratio": 0.39,
+   "normal": 27.8,
+   "ratio": 0.4,
    "z": -1.7,
-   "gap": -17
+   "gap": -16.8
   },
   {
    "dim": "source",
    "seg": "Direct",
    "now": 16,
-   "normal": 22.6,
+   "normal": 22.5,
    "ratio": 0.71,
    "z": -0.8,
-   "gap": -6.6
+   "gap": -6.5
   },
   {
    "dim": "landing",
@@ -148,7 +148,7 @@
    "now": 0,
    "normal": 5.8,
    "ratio": 0,
-   "z": -2.2,
+   "z": -2.3,
    "gap": -5.8
   },
   {
@@ -157,7 +157,7 @@
    "now": 3,
    "normal": 7.1,
    "ratio": 0.42,
-   "z": -1.3,
+   "z": -1.1,
    "gap": -4.1
   },
   {
@@ -166,26 +166,26 @@
    "now": 1,
    "normal": 2.9,
    "ratio": 0.35,
-   "z": -0.9,
+   "z": -0.8,
    "gap": -1.9
   },
   {
    "dim": "source",
    "seg": "Google",
    "now": 2,
-   "normal": 3.8,
-   "ratio": 0.53,
+   "normal": 3.7,
+   "ratio": 0.54,
    "z": -0.8,
-   "gap": -1.8
+   "gap": -1.7
   },
   {
    "dim": "landing",
    "seg": "home",
    "now": 16,
-   "normal": 17,
-   "ratio": 0.94,
+   "normal": 16.9,
+   "ratio": 0.95,
    "z": -0.2,
-   "gap": -1
+   "gap": -0.9
   },
   {
    "dim": "country",
@@ -193,7 +193,7 @@
    "now": 2,
    "normal": 2.5,
    "ratio": 0.8,
-   "z": -0.1,
+   "z": -0.2,
    "gap": -0.5
   },
   {
@@ -220,7 +220,7 @@
    "now": 7,
    "normal": 6.3,
    "ratio": 1.11,
-   "z": 0.2,
+   "z": 0.3,
    "gap": 0.7
   },
   {
@@ -238,7 +238,7 @@
    "now": 16,
    "normal": 7.9,
    "ratio": 2.04,
-   "z": 2,
+   "z": 2.4,
    "gap": 8.1
   }
  ]
