@@ -211,6 +211,9 @@ const sisMatch = (k, q) => (k.startsWith("/news/*/") ? /^\/news\/[^/]+\/[^/]+$/.
 // ECOSYSTEM MODE (scripts/core.mjs, data/machines/mode.json — learned, bounded parameters): SURGE = reach more sisters and
 // let urgent sends take more of the day; DIP = RECOVERY, the proven winners are re-sent first. Normal = the defaults.
 const MODE = (() => { try { return JSON.parse(fs.readFileSync("data/machines/mode.json", "utf8")); } catch { return { mode: "normal", params: {} }; } })();
+// WORLD MODEL CONTEXT CREDIT: where Bing sends measurably pay (per family, shrunk by sample size) → that family's value ×weight
+const WCF = (() => { try { return JSON.parse(fs.readFileSync("data/world/credit.json", "utf8")).credit?.["bing-send"]?.byFamily ?? {}; } catch { return {}; } })();
+const wFam = (p) => { const s0 = p.split("/").filter(Boolean); const f = !s0.length ? "/" : s0.length === 1 ? (/-challenge-simulator$/.test(s0[0]) ? "/<firm>-sim" : /^backtest-/.test(s0[0]) ? "/backtest-<x>" : "/<page>") : `/${s0[0]}/<${s0.length > 2 ? "x/y" : "x"}>`; return Math.max(0.7, Math.min(1.5, WCF[f]?.weight ?? 1)); };
 // WORLD MODEL (world.mjs): pages forecast to jump tomorrow (a release × the learned lift) go to Bing before the demand comes
 const FCJ = new Map(((() => { try { return JSON.parse(fs.readFileSync("data/world/forecast.json", "utf8")).jumps ?? []; } catch { return []; } })()).map((x) => [x.p, x.why]));
 const LOCK = (() => { try { return JSON.parse(fs.readFileSync("data/machines/lockin.json", "utf8")); } catch { return { on: false }; } })(); // core.mjs lock-in
@@ -311,7 +314,7 @@ const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY, evDue = ev && NOW - last > 2 * DAY;
   const fcP = FCJ.has(p) && NOW - last > 2 * DAY, old = bingOld(p) && NOW - last > DAY, lockP = LOCK.on && (LOCK.targets ?? []).includes(p) && NOW - last > 3 * 3.6e6, hotP = (surgePage.has(p) && NOW - last > 6 * 3.6e6) || lockP, riseP = risePage.has(p) && NOW - last > 2 * DAY, recP = recovery.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
-  return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * weekMul(x.fam) * trendMul(x.fam), conf: x.conf, fam: x.fam, why: lockP ? "LOCK-IN" : hotP ? "SURGE" : fcP ? `FORECAST ${FCJ.get(p)}` : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+  return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * weekMul(x.fam) * trendMul(x.fam) * wFam(p), conf: x.conf, fam: x.fam, why: lockP ? "LOCK-IN" : hotP ? "SURGE" : fcP ? `FORECAST ${FCJ.get(p)}` : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).filter((q) => q.why && !SKIP.test(q.p) && !HELD(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).

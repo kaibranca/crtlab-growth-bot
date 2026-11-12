@@ -86,6 +86,12 @@ for (const a of Object.keys(ACTIONS)) {
   credit[a] = { units: units.length, days: Object.keys(perDay).length, lift: +lift.toFixed(2), ci: [+lo.toFixed(2), +hi.toFixed(2)], clicksPerFetchDiff: +mean(units.map((u) => u.c)).toFixed(4),
     verdict: lo > 1.05 ? "WORKS" : hi < 0.95 ? "HURTS" : "no clear effect yet" };
 }
+// CONTEXT: the same credit split by FAMILY (where does each push pay?) — the AI machine allocates the Bing quota by it.
+// Shrunk to 1 by sample size (K 30) so a thin family can't swing; only families with 8+ treated page-days are reported.
+for (const a of ["bing-send", "brain-boost"]) { const byF = {};
+  for (const [k, rs] of cells) { const ctl = rs.filter((r) => !Object.values(r.acts).some(Boolean)); if (ctl.length < 3) continue; const mc = mean(ctl.map((r) => r.lr)), f = k.split("|")[0];
+    for (const r of rs.filter((x) => x.acts[a])) (byF[f] ??= []).push(r.lr - mc); }
+  credit[a] && (credit[a].byFamily = Object.fromEntries(Object.entries(byF).filter(([, xs]) => xs.length >= 8).map(([f, xs]) => { const raw = Math.exp(mean(xs)); return [f, { units: xs.length, lift: +raw.toFixed(2), weight: +(1 + (raw - 1) * xs.length / (xs.length + 30)).toFixed(3) }]; }))); }
 // the holdout's view through the same model (held pages vs the rest, same cells) — a second, independent read on pushing
 { const u = []; for (const [, rs] of cells) { const h = rs.filter((r) => r.held), o = rs.filter((r) => !r.held); if (h.length && o.length >= 3) for (const r of h) u.push(r.lr - mean(o.map((x) => x.lr))); }
   credit["held-out (not pushed)"] = { units: u.length, lift: u.length >= 5 ? +Math.exp(mean(u)).toFixed(2) : null }; }
