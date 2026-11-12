@@ -163,7 +163,10 @@ const BRAINS = [
     signals: (s) => [s.backWeek2 != null && s.backWeek2 < 30 && { key: "week2", target: "week-2 return", v: s.backWeek2, higher: true, days: 7, why: `${s.backWeek2}% of a cohort back in week 2` }].filter(Boolean),
     measureOf: (b, s) => s.backWeek2,
     modes: (s) => [s.backWeek2 != null && s.backWeek2Before != null && s.cohort >= 20 && s.backWeek2 < s.backWeek2Before * 0.8 && { id: "churn", label: "Churn up", level: "warn", why: `${s.backWeek2}% of last cohort came back in week 2 vs ${s.backWeek2Before}% before` }].filter(Boolean),
-    admin: (s) => [s.backWeek2 != null && s.backWeek2 < 25 ? `Only ${s.backWeek2}% of the people who signed up 8–14 days ago came back this week — the first session decides it (behaviour machine: golden actions).` : null].filter(Boolean) },
+    // 11-12 audit (read in the site code): since the 11-06 daily switch NO retention email runs — runLifecycle skips on
+    // dailyOn(), runWeeklyReset skips on sampleOn(). The one machine that reaches a sign-up who left is off.
+    admin: (s) => [s.backWeek2 != null && s.backWeek2 < 25 ? `Only ${s.backWeek2}% of the people who signed up 8–14 days ago came back this week — the first session decides it (behaviour machine: golden actions).` : null,
+      "No retention email has run since the 11-06 daily switch (sample + weekly-reset emails both skip in daily mode) — nothing reaches a sign-up who left. A daily-era \"your 2,000 candles are back\" email needs Kai's wording."].filter(Boolean) },
   { id: "speed", name: "Speed brain", color: "#00c2a8",
     managers: [
       { id: "charts", label: "Chart pages", machines: ["capacity", "load"], does: "real visitors' load time on the replay pages" },
@@ -214,6 +217,7 @@ function needQueue() {
     [/pack|card|checkout/i, "checkout", "decide the checkout fix (wallets/PayPal first, fewer fields) — a build session"],
     [/Chart pages|slowest 10%|candle/i, "speed", "say \"chart speed\" — edge-cache immutable candle windows (a build session)"],
     [/Railway pace|deploys/i, "budget", "fewer direct deploys (use the windows); heap tuner after 24 h of samples"],
+    [/retention email/i, "retention-email", "approve the wording of a daily-era \"your candles are back\" email (people who replayed, gone 2+ days) — then it's a build + switchback test"],
     [/came back|week 2|first session/i, "retention", "decide a first-session change (golden actions from the behaviour machine)"],
     [/no page|Bing shows/i, "gap", "approve a page for the search (content brain's top gap)"]];
   const out = new Map();
