@@ -77,6 +77,8 @@ export function measure(R) {
   // the machine that took the action owns the result — a settled WORKS / HURTS is its verdict, treated page-days its evidence
   { const WC = R("data/world/credit.json")?.credit ?? {}, OWN = { "bing-send": "bing", "llms-listed": "curator", "brain-boost": "traffic-brain", "sister-spread": "sisters", "lock-in": "lockin", "indexnow-send": "indexnow" };
     for (const [a, id] of Object.entries(OWN)) { const c = WC[a]; if (!c?.units) continue; at(id).evidence += c.units; if (c.verdict === "WORKS" || c.verdict === "HURTS") at(id).judged += 1 + Object.values(c.byFamily ?? {}).filter((f) => f.verdict === "WORKS" || f.verdict === "HURTS").length; } }
+  // self-tuning knobs: blocks judged so far are evidence for the knob's owner (verdicts reach it through the ledger)
+  { const KN = { "ai.exploreShare": "ai" }; for (const [id, k] of Object.entries(R("data/machines/knobs.json")?.knobs ?? {})) { const o = KN[id]; if (o) at(o).evidence += ((k.challenge?.read?.blocksA ?? 0) + (k.challenge?.read?.blocksB ?? 0)) * 5 + (k.history?.length ?? 0) * 20; } }
   // fixed: its own repairs that worked
   at("fixer").fixed += arr(R("data/machines/fixer.json")?.actions).filter((a) => a.ok).length;
   // every machine counts in the average, also the ones that learned nothing (lead summaries are not machines)

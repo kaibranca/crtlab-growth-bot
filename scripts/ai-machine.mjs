@@ -24,6 +24,8 @@ import { SITE, readLines, append, month } from "./lib.mjs";
 
 const DAY = 86400000, HALF = 14, NOW = Date.now();
 const iso = (t) => new Date(t).toISOString().slice(0, 10);
+// SELF-TUNING KNOBS (scripts/tuner.mjs): today's value of a constant the tuner is experimenting on
+const KNOB = (id, d) => { try { const v = JSON.parse(fs.readFileSync("data/machines/knobs.json", "utf8")).active?.[id]; return typeof v === "number" ? v : d; } catch { return d; } };
 const w = (dayIso) => Math.pow(0.5, (NOW - Date.parse(dayIso + "T12:00:00Z")) / DAY / HALF); // recency weight
 const LIVE = /^(ChatGPT-User|Claude-User|Perplexity-User)$/, INDEXER = /^(OAI-SearchBot|PerplexityBot|Claude-SearchBot|Bingbot)$/;
 const SKIP = /^\/(api|_next|admin|account|auth|login|signup|unsubscribe|app)(\/|$)|\.(png|jpg|svg|ico|webp|xml|js|css)$|opengraph-image|twitter-image/;
@@ -344,7 +346,7 @@ const seenFam = new Set(), explore = [];
 for (const q of [...queue].sort((a, b) => a.conf - b.conf || (Math.sin(a.p.length * 7 + NOW / DAY) - Math.sin(b.p.length * 7 + NOW / DAY)))) if (!seenFam.has(q.fam)) { seenFam.add(q.fam); explore.push({ ...q, why: q.why + " · explore" }); }
 // CURIOSITY (scripts/self.mjs): when the traffic engine's IQ stalls it explores harder — 15 % × curiosity (≤ ×1.6 → 24 %)
 const CUR = (() => { try { return Math.max(1, Math.min(1.6, JSON.parse(fs.readFileSync("data/machines/self.json", "utf8")).engines?.traffic?.curiosity ?? 1)); } catch { return 1; } })();
-const pick = (n) => { const nX = Math.round(n * 0.15 * CUR), out = [], used = new Set();
+const pick = (n) => { const nX = Math.round(n * KNOB("ai.exploreShare", 0.15) * CUR), out = [], used = new Set();
   for (const q of exploit) { if (out.length >= n - nX) break; out.push(q); used.add(q.p); }
   for (const q of explore) { if (out.length >= n) break; if (!used.has(q.p)) { out.push(q); used.add(q.p); } }
   for (const q of exploit) { if (out.length >= n) break; if (!used.has(q.p)) { out.push(q); used.add(q.p); } }
