@@ -231,7 +231,7 @@ const LOCK_CREDIT = (() => { try { return JSON.parse(fs.readFileSync("data/world
 const famRe = (k) => new RegExp("^" + k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/<([^>]+)>/g, (_, inner) => inner.split("/").map(() => "[^/]+").join("/")) + "$");
 const lockPays = (p) => { const f = Object.entries(LOCK_CREDIT).find(([k]) => famRe(k).test(p)); return !f || (f[1].units ?? 0) < 5 || (f[1].lift ?? 1) >= 0.95; };
 const EXK = (() => { try { return JSON.parse(fs.readFileSync("data/machines/executive.json", "utf8")).knobs ?? {}; } catch { return {}; } })(); // the executive's knobs
-const MP = MODE.params ?? {}, SIS_TOP = (MODE.mode === "surge" ? (MP.sisterTop ?? 5) : 3) + (LOCK.on ? 2 : 0) + (EXK.sisterAdd ?? 0), URG_CAP = LOCK.on ? 1 : Math.min(1, (MODE.mode === "surge" ? (MP.surgeCap ?? 0.8) : 0.6) + (EXK.urgentCapAdd ?? 0));
+const MP = MODE.params ?? {}, SIS_TOP = (MODE.mode === "surge" ? (MP.sisterTop ?? 5) : 3) + (LOCK.on ? 2 : 0) + (EXK.sisterAdd ?? 0), URG_CAP = LOCK.on ? 1 : Math.min(1, (MODE.mode === "surge" ? (MP.surgeCap ?? 0.8) : KNOB("ai.urgentCapNormal", 0.6, { ladder: [0.4, 0.5, 0.6, 0.7, 0.8], owner: "bing", what: "share of the Bing quota urgent pages may take on a normal day" })) + (EXK.urgentCapAdd ?? 0));
 const recovery = new Set(MODE.mode === "dip" ? (MODE.targets ?? []) : []);
 // the hottest surges + climbers only (3 each normally, more in surge mode), so sisters never eat the whole Bing quota
 const hot = [...surges.filter((x) => x.kind === "page").slice(0, SIS_TOP), ...rising.slice(0, SIS_TOP)].map((x) => x.key), sisterOf = new Map();
@@ -243,7 +243,9 @@ const FOCUS = (() => { const rd = (f) => { try { return JSON.parse(fs.readFileSy
   return [...rd("data/traffic/branches.json").sort((a, b) => b.boost - a.boost), ...rd("data/machines/spawned.json")]; })();
 // both engines can claim a page; the SUPER-CORE rule: the strongest claim wins, claims never stack (no runaway boosts)
 const focusMul = (p) => { let m = 1; for (const b of FOCUS) if (p === b.target || p.startsWith(b.target.endsWith("/") ? b.target : b.target + "/") || p.startsWith(b.target + "-")) m = Math.max(m, b.boost); return m; };
-const boost0 = (p) => (surgePage.has(p) ? (MP.surgeBoost ?? 4) : risePage.has(p) ? 2.5 : sisterOf.has(p) ? 2 : surgeFam.has(family(p)) ? 1.5 : 1);
+const RISE_B = KNOB("ai.riseBoost", 2.5, { ladder: [1.5, 2, 2.5, 3.2, 4], owner: "rising", what: "Bing priority boost for early-traction (rising) pages" }),
+  SIS_B = KNOB("ai.sisterBoost", 2, { ladder: [1.25, 1.5, 2, 2.6, 3.4], owner: "sisters", what: "Bing priority boost for sister pages of a hot page" });
+const boost0 = (p) => (surgePage.has(p) ? (MP.surgeBoost ?? 4) : risePage.has(p) ? RISE_B : sisterOf.has(p) ? SIS_B : surgeFam.has(family(p)) ? 1.5 : 1);
 const boost = (p) => boost0(p) * focusMul(p);
 // AI RADAR (11-10, scripts/ai-radar.mjs): pages that should win an AI answer but don't (absent ×2), are being cited (×1.5,
 // keep fresh) or just WON a question (×3, go all in). Multipliers are learned by the radar from its own verdicts.
