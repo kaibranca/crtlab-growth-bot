@@ -1,10 +1,10 @@
 {
- "at": "2026-11-12T13:30:28.757Z",
+ "at": "2026-11-12T15:41:47.827Z",
  "checks": [
   {
    "name": "database size",
    "ok": true,
-   "note": "289 MB"
+   "note": "290 MB"
   },
   {
    "name": "signups flowing",
@@ -24,7 +24,7 @@
   {
    "name": "nightly backup",
    "ok": true,
-   "note": "10h old · 33.4 MB"
+   "note": "13h old · 33.4 MB"
   },
   {
    "name": "market data fresh",
@@ -34,11 +34,11 @@
   {
    "name": "AI radar",
    "ok": true,
-   "note": "7h ago · asked 4/4"
+   "note": "9h ago · asked 4/4"
   }
  ],
  "db": {
-  "mb": 289,
+  "mb": 290,
   "tables": [
    [
     "user_events",
@@ -73,23 +73,23 @@
  "weight": {
   "home": {
    "kb": 2606,
-   "scripts": 23,
-   "ttfbMs": 205
+   "scripts": 24,
+   "ttfbMs": 172
   },
   "backtest": {
    "kb": 1449,
    "scripts": 13,
-   "ttfbMs": 206
+   "ttfbMs": 214
   },
   "chart app": {
    "kb": 2606,
-   "scripts": 23,
-   "ttfbMs": 441
+   "scripts": 24,
+   "ttfbMs": 336
   },
   "statistics": {
    "kb": 1213,
    "scripts": 14,
-   "ttfbMs": 203
+   "ttfbMs": 163
   }
  },
  "heavier": [],

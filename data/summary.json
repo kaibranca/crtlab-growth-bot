@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12T15:20:59.266Z",
+ "updated": "2026-11-12T15:41:57.219Z",
  "watchdog": {
   "up24h": 98.04,
   "up7d": 99.62,
@@ -449,6 +449,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-12T15:41:47.827Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
+  },
+  {
    "at": "2026-11-12T15:18:09.007Z",
    "job": "watchdog",
    "ok": true,
@@ -573,12 +579,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "477 crawler visits · OAI-SearchBot 273 · Amazonbot 151 · ChatGPT-User 17 · Bingbot 12"
-  },
-  {
-   "at": "2026-11-12T13:30:28.757Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
   },
   {
    "at": "2026-11-12T13:18:08.363Z",
@@ -1036,13 +1036,13 @@
   ]
  },
  "health": {
-  "at": "2026-11-12T13:30:28.757Z",
+  "at": "2026-11-12T15:41:47.827Z",
   "alerts": [],
   "checks": [
    {
     "name": "database size",
     "ok": true,
-    "note": "289 MB"
+    "note": "290 MB"
    },
    {
     "name": "signups flowing",
@@ -1062,7 +1062,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "10h old · 33.4 MB"
+    "note": "13h old · 33.4 MB"
    },
    {
     "name": "market data fresh",
@@ -1072,11 +1072,11 @@
    {
     "name": "AI radar",
     "ok": true,
-    "note": "7h ago · asked 4/4"
+    "note": "9h ago · asked 4/4"
    }
   ],
   "db": {
-   "mb": 289,
+   "mb": 290,
    "tables": [
     [
      "user_events",
@@ -1111,23 +1111,23 @@
   "weight": {
    "home": {
     "kb": 2606,
-    "scripts": 23,
-    "ttfbMs": 205
+    "scripts": 24,
+    "ttfbMs": 172
    },
    "backtest": {
     "kb": 1449,
     "scripts": 13,
-    "ttfbMs": 206
+    "ttfbMs": 214
    },
    "chart app": {
     "kb": 2606,
-    "scripts": 23,
-    "ttfbMs": 441
+    "scripts": 24,
+    "ttfbMs": 336
    },
    "statistics": {
     "kb": 1213,
     "scripts": 14,
-    "ttfbMs": 203
+    "ttfbMs": 163
    }
   },
   "heavier": []
