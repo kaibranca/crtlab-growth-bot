@@ -1,19 +1,9 @@
 {
- "at": "2026-11-12T19:39:22.723Z",
+ "at": "2026-11-12T19:50:05.953Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
  "items": [
-  {
-   "kind": "learn",
-   "machine": "bing",
-   "name": "Bing sender",
-   "engine": "traffic",
-   "what": "Teach Bing sender to judge itself on its KPI (AI clicks / week)",
-   "why": "acts but never judges its outcome — it has a KPI it doesn't learn from",
-   "score": 6,
-   "buildPays": 0.5
-  },
   {
    "kind": "learn",
    "machine": "curator",
@@ -238,6 +228,16 @@
    "name": "Search gaps",
    "engine": "traffic",
    "what": "Teach Search gaps to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 2,
+   "buildPays": 0.5
+  },
+  {
+   "kind": "learn",
+   "machine": "bingseo",
+   "name": "Bing webmaster",
+   "engine": "traffic",
+   "what": "Teach Bing webmaster to judge itself on an outcome it can measure",
    "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
    "score": 2,
    "buildPays": 0.5
