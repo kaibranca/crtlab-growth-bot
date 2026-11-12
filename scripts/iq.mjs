@@ -73,6 +73,10 @@ export function measure(R) {
     at("behaviour").evidence += (+B.daysLearned || 0) * 10; }
   at("humans").evidence += n0(R("data/machines/humans.json")?.segments) * 5; // segments it learned the normal of
   { const L2 = R("data/leak/plan.json") ?? {}; at("leak").evidence += n0(L2.leaks) * 5; at("leak").judged += n0(L2.verdicts); }
+  // THE WORLD MODEL JUDGES EVERY ACTING MACHINE (treated page-days vs untouched pages, same family + day, bootstrap CI):
+  // the machine that took the action owns the result — a settled WORKS / HURTS is its verdict, treated page-days its evidence
+  { const WC = R("data/world/credit.json")?.credit ?? {}, OWN = { "bing-send": "bing", "llms-listed": "curator", "brain-boost": "traffic-brain", "sister-spread": "sisters", "lock-in": "lockin", "indexnow-send": "indexnow" };
+    for (const [a, id] of Object.entries(OWN)) { const c = WC[a]; if (!c?.units) continue; at(id).evidence += c.units; if (c.verdict === "WORKS" || c.verdict === "HURTS") at(id).judged += 1 + Object.values(c.byFamily ?? {}).filter((f) => f.verdict === "WORKS" || f.verdict === "HURTS").length; } }
   // fixed: its own repairs that worked
   at("fixer").fixed += arr(R("data/machines/fixer.json")?.actions).filter((a) => a.ok).length;
   // every machine counts in the average, also the ones that learned nothing (lead summaries are not machines)

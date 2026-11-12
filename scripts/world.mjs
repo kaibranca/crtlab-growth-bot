@@ -57,8 +57,11 @@ const HO = J("data/ai/holdout.json", null), fnv = (str) => { let h = 0x811c9dc5;
 const held = (p) => !!HO && p !== "/" && fnv(HO.salt + p) < HO.pct;
 const sentBy = new Map(); for (const s of sends) (sentBy.get(norm(s.p)) ?? sentBy.set(norm(s.p), []).get(norm(s.p))).push(Date.parse(s.at));
 const llmsBy = new Map(lines(`${OUT}/llms.jsonl`).map((r) => [r.day, new Set(r.paths)]));
+// IndexNow pushes (11-12: IndexNow acted but never learned whether its pushes did anything) — its own log of URLs sent
+const inxBy = new Map(); for (const r of lines("data/indexnow.jsonl")) for (const u of r.urls ?? []) { const p = norm(u.replace(/^https?:\/\/[^/]+/, "") || "/"); (inxBy.get(p) ?? inxBy.set(p, []).get(p)).push(Date.parse(r.at)); }
 const ACTIONS = {
   "llms-listed": (p, d) => !!llmsBy.get(back(d, 1))?.has(p) || !!llmsBy.get(d)?.has(p), // in llms.txt "right now" the day before / that day
+  "indexnow-send": (p, d) => (inxBy.get(p) ?? []).some((t) => t < Date.parse(d + "T00:00:00Z") && t >= Date.parse(d + "T00:00:00Z") - 2 * DAY),
   "bing-send": (p, d) => (sentBy.get(p) ?? []).some((t) => t < Date.parse(d + "T00:00:00Z") && t >= Date.parse(d + "T00:00:00Z") - 2 * DAY),
   "brain-boost": (p, d) => branches.some((b) => b.path !== false && b.boost && (p === b.target || p.startsWith(b.target + "/")) && iso(Date.parse(b.born)) < d && (!b.retired || iso(Date.parse(b.retired)) >= d)),
   "sister-spread": (p, d) => sisters.some((x) => norm(x.p) === p && x.d < d && Date.parse(d) - Date.parse(x.d) <= 3 * DAY),
