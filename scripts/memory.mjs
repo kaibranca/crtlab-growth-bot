@@ -31,6 +31,9 @@ if (W?.releaseLift && W.releaseLift !== 1) fact("release-lift", "demand", `relea
 const TB = J("data/traffic/brain.json", {});
 for (const [k, o] of Object.entries(TB.pretrain?.out ?? {})) if (o.samples) fact(`prior:${k}`, "what history says", `${k}: expected reward ${o.mean} over ${o.samples} past cases`, o.samples, o.mean >= 0.5 ? 1 : -1, "traffic-pretrain");
 for (const [k, o] of Object.entries(TB.signW ?? {})) if (o.n) fact(`sign:${k}`, "what predicts clicks", `"${k}" → clicks ×${o.lift} vs any read page (${o.n} moments)`, o.n, o.lift >= 1.2 ? 1 : o.lift <= 0.8 ? -1 : 0, "traffic-pretrain");
+// 11-12: what people DO after they arrive (outcomes.mjs → quality.json): which sources bring people who really replay
+{ const Q = (() => { try { return JSON.parse(fs.readFileSync("data/machines/quality.json", "utf8")); } catch { return null; } })();
+  for (const [src, x] of Object.entries(Q?.sources ?? {})) if (x.signups >= 10) fact(`quality:${src}`, "who really uses CRTLAB", `${src} sign-ups: ${Math.round(x.rawRate * 100)}% replay ≥ 10 min in their first week (site ${Math.round(Q.siteRate * 100)}%, ${x.avgMin} min avg, ${x.signups} sign-ups) — value ×${x.value}`, x.signups, x.value >= 1.15 ? 1 : x.value <= 0.85 ? -1 : 0, "outcomes"); }
 for (const [k, w] of Object.entries(TB.w ?? {})) if (w.n >= 2) fact(`neuron:${k}`, "what pays (live)", `${k}: weight ${w.v} after ${w.n} verdicts`, w.n, w.v >= 0.55 ? 1 : w.v <= 0.4 ? -1 : 0, "traffic-brain");
 // 3. CONVERSION: bandit wordings, hook lessons, homepage switchback
 const BD = J("data/ai/bandit.json", null);
