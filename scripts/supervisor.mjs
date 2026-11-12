@@ -34,13 +34,25 @@ const MACHINES = [
   { id: "shield", name: "Shield", every: 1, t: at(J("data/shield.json")) },
   { id: "indexnow", name: "IndexNow", every: 24, t: at(last("data/indexnow.jsonl")) },
 ];
+// RHYTHM (11-12 — "learns each machine's normal rhythm" was a hand-typed `every`): each time a machine's output stamp moves,
+// the gap is recorded (data/machines/rhythm.json, last 30). With ≥ 4 gaps the LEARNED median replaces the typed cadence and
+// the slack is the machine's own spread (p90 − median): a daily job that really runs every 25 h stops looking late, an
+// hourly one that drifts to 3 h gets caught at 3 h, not 6. Gaps > 7 d (outages) are not learned as normal.
+const RH = J("data/machines/rhythm.json", {}) ?? {};
+const q = (xs, p) => { const a = [...xs].sort((x, y) => x - y); return a[Math.min(a.length - 1, Math.floor(p * a.length))]; };
 const status = MACHINES.map((m) => {
-  const age = m.t ? (NOW - m.t) / H : null, slack = Math.max(2, m.every * 0.5);
-  const state = age == null ? "waiting" : age <= m.every + slack ? "ok" : age <= m.every * 3 + slack ? "late" : "STOPPED";
+  const r = (RH[m.id] ??= { gaps: [] });
+  if (m.t && r.last && m.t > r.last) { const g = (m.t - r.last) / H; if (g >= 0.25 && g < 168) { r.gaps.push(+g.toFixed(2)); r.gaps = r.gaps.slice(-30); } }
+  if (m.t) r.last = Math.max(r.last ?? 0, m.t);
+  const learned = r.gaps.length >= 4 ? q(r.gaps, 0.5) : null, every = learned ?? m.every;
+  r.learned = learned; r.typed = m.every;
+  const age = m.t ? (NOW - m.t) / H : null, slack = Math.max(2, every * 0.5, learned ? q(r.gaps, 0.9) - learned : 0);
+  const state = age == null ? "waiting" : age <= every + slack ? "ok" : age <= every * 3 + slack ? "late" : "STOPPED";
   let k = null; try { k = m.kpi?.() ?? null; } catch { k = null; }
   if (k && k.before != null) k.change = k.before ? +((k.now - k.before) / k.before).toFixed(2) : null;
-  return { id: m.id, name: m.name, state, lastRunH: age == null ? null : +age.toFixed(1), everyH: m.every, kpi: k };
+  return { id: m.id, name: m.name, state, lastRunH: age == null ? null : +age.toFixed(1), everyH: +(+every).toFixed(1), learnedH: learned, kpi: k };
 });
+fs.writeFileSync("data/machines/rhythm.json", JSON.stringify(RH, null, 1));
 
 // ── THE PYRAMID (11-11): the supervisor watched 12 machines; the core knows 59. Every machine the core registered (last
 // hour's ecosystem.json) now has the same contract here: RAN ON TIME (else late / STOPPED → email + fixer) and its OUTCOME
