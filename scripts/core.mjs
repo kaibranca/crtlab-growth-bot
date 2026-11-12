@@ -14,7 +14,7 @@ import { readLines, append } from "./lib.mjs";
 const NOW = Date.now(), H = 3.6e6, DAY = 24 * H, iso = (t) => new Date(t).toISOString().slice(0, 10);
 const J = (f, d = null) => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return d; } };
 const lastAt = (f) => { const l = readLines(f).slice(-1)[0]; return l?.at ? Date.parse(l.at) : null; };
-const atOf = (f) => { const j = J(f), t = j?.at ?? j?.changed; return t ? Date.parse(t) : null; };
+const atOf = (f) => { const j = J(f), t = j?.at ?? j?.last?.at ?? j?.changed; return t ? Date.parse(t) : null; }; // last.at = holdout.json (11-12: it read "never")
 const month = iso(NOW).slice(0, 7);
 
 // ── 1. THE REGISTRY: every machine and branch, what it does, what it feeds ────────────────────────────────────────────
@@ -78,7 +78,7 @@ const REG = [
   { id: "backup", name: "Nightly backup", group: "health", parent: "health", does: "Database backed up every night; restore test proves it comes back", every: 24, t: () => atOf("data/health.json") },
   { id: "calendar", name: "Economic calendar", group: "content", does: "Every upcoming release with forecasts, refreshed daily — what the release pages and Bing timing run on", every: 24, t: () => atOf("data/events/upcoming.json"), feeds: ["lift", "factory"] },
   { id: "indicators", name: "Indicator pages", group: "content", parent: "calendar", does: "346 indicator pages kept current from the calendar history", every: 24, t: () => atOf("data/indicators/index.json") },
-  { id: "livenews", name: "Same-day news", group: "content", parent: "news", does: "A release page goes up the same day it drops, crypto measured live", every: 1, t: () => atOf("data/events/upcoming.json") },
+  { id: "livenews", name: "Same-day news", group: "content", parent: "news", does: "A release page goes up the same day it drops, crypto measured live", every: 1, t: () => atOf("data/events/upcoming-run.json") ?? atOf("data/events/upcoming.json") },
   { id: "gaps", name: "Search gaps", group: "traffic", parent: "seo", does: "Queries people search where CRTLAB has no good page yet", every: 168, t: () => atOf("data/gaps.json"), feeds: ["factory"] },
   { id: "bingseo", name: "Bing webmaster", group: "traffic", parent: "seo", does: "Bing clicks, impressions and buyer queries weekly", every: 168, t: () => atOf("data/bing.json") },
   { id: "capacity", name: "Capacity", group: "health", parent: "health", does: "How many people the server holds at once: peak in flight, memory, requests shed — warns before a rush hits the ceiling", every: 1, t: () => lastAt(`data/load/${month}.jsonl`) },

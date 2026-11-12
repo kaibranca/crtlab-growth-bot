@@ -8,6 +8,8 @@
 import fs from "node:fs";
 import { XFAM } from "./fams.mjs";
 const OUT = "data/events/upcoming.json";
+// 11-12: heartbeat — upcoming.json only moves when the calendar changes, so a quiet hour read as "Same-day news is late" (false "needs you")
+process.on("exit", (c) => { if (!c) fs.writeFileSync("data/events/upcoming-run.json", JSON.stringify({ at: new Date().toISOString() })); });
 const FAM = [ // US headline row per release type → its /news/<type> page
   [/^Inflation Rate YoY$/, "cpi", "CPI"], [/^Non Farm Payrolls$/, "nfp", "NFP"], [/^Core PCE Price Index MoM$/, "pce", "PCE"],
   [/^GDP Growth Rate QoQ/, "gdp", "GDP"], [/^PPI MoM$/, "ppi", "PPI"], [/^Retail Sales MoM$/, "retail-sales", "Retail Sales"],
