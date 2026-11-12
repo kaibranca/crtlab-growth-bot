@@ -396,6 +396,16 @@ const winRate = (t) => ((LESSONS[t]?.won ?? 0) + 1) / ((LESSONS[t]?.won ?? 0) + 
 const hk = fs.existsSync(HOOKS) ? JSON.parse(fs.readFileSync(HOOKS, "utf8")) : { experiments: [] };
 const expReport = [];
 for (const e of hk.experiments) if (e.mode === "switchback" && e.status === "paused" && !e.grain) e.grain = "2h"; // waiting tests start on 2h
+// TEST INTEGRITY GUARD (11-12 — the sitewide ReplayHook changed both arms of two running tests mid-test): any change logged
+// in changes.jsonl on a running test's family after its start restarts the test's baseline at that change — a verdict never
+// mixes "before the change" with "after". Hook-test log lines themselves don't count.
+{ const CHG = readLines("data/ai/changes.jsonl");
+  for (const e of hk.experiments.filter((x) => x.status === "running" && x.started)) {
+    const hit = CHG.filter((c) => c.family === e.family && Date.parse(c.at) > Date.parse(e.started) && Date.parse(c.at) <= NOW && !/^hook test/.test(c.what ?? "")).sort((a, b) => (a.at < b.at ? 1 : -1))[0];
+    if (!hit) continue;
+    e.restarts = [...(e.restarts ?? []), { at: hit.at, why: String(hit.what).slice(0, 120) }].slice(-5); e.started = hit.at;
+    append("data/ai/changes.jsonl", { at: new Date().toISOString(), family: e.family, what: `hook test ${e.id} baseline RESTARTED at ${hit.at} — the family changed mid-test (${String(hit.what).slice(0, 60)})` });
+    console.log(`hooks: ${e.id} restarted at ${hit.at} (family changed mid-test)`); } }
 // SELF-START (11-12): a paused test whose template the live site now renders starts by itself. The homepage prints every
 // template its code supports (data-hooks="…", lib/aiHooks.ts TEMPLATES) — one light GET an hour, only while one waits.
 if (hk.experiments.some((x) => x.status === "paused" && x.auto)) try {
