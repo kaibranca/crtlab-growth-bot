@@ -367,6 +367,7 @@ const LES = "data/ai/lessons.json", LESSONS = fs.existsSync(LES) ? JSON.parse(fs
 const winRate = (t) => ((LESSONS[t]?.won ?? 0) + 1) / ((LESSONS[t]?.won ?? 0) + (LESSONS[t]?.lost ?? 0) + 2);
 const hk = fs.existsSync(HOOKS) ? JSON.parse(fs.readFileSync(HOOKS, "utf8")) : { experiments: [] };
 const expReport = [];
+for (const e of hk.experiments) if (e.mode === "switchback" && e.status === "paused" && !e.grain) e.grain = "2h"; // waiting tests start on 2h
 // SELF-START (11-12): a paused test whose template the live site now renders starts by itself. The homepage prints every
 // template its code supports (data-hooks="…", lib/aiHooks.ts TEMPLATES) — one light GET an hour, only while one waits.
 if (hk.experiments.some((x) => x.status === "paused" && x.auto)) try {
@@ -378,19 +379,34 @@ if (hk.experiments.some((x) => x.status === "paused" && x.auto)) try {
 // SWITCHBACK JUDGE (11-12): a one-page family (the homepage) is split by UTC DAY, not by page — arm(day) = bucket(id + day),
 // the same hash the site uses. Only finished days count (from the day after the start). Outcome = AI clicks on the page per
 // people-fetch (ChatGPT-User / Claude-User / Perplexity-User): the day's page decides whether the assistant links.
+// 2H GRAIN (11-12 overclock): the unit is a 2-hour UTC block (site lib/aiHooks.ts blockKey) — 12 units a day instead of 1.
+// A crawl window that straddles a block edge is split by time overlap; clicks come from data/ai/clicks-hourly.json, and
+// only blocks after that file's first full hour count. Migrates a waiting daily homepage test to 2h before it starts.
+const CH = fs.existsSync("data/ai/clicks-hourly.json") ? JSON.parse(fs.readFileSync("data/ai/clicks-hourly.json", "utf8")) : null;
+const H = 3600e3, blk = (t) => { const s0 = new Date(t).toISOString(); return `${s0.slice(0, 11)}${String(Math.floor(new Date(t).getUTCHours() / 2) * 2).padStart(2, "0")}`; };
 for (const e of hk.experiments.filter((x) => x.status === "running" && x.started && x.mode === "switchback")) {
-  const path = e.family, d0 = iso(Date.parse(e.started) + DAY), today = iso(NOW);
+  const path = e.family, two = e.grain === "2h", today = two ? blk(NOW) : iso(NOW);
+  if (two && !CH) { e.last = { at: new Date().toISOString(), waiting: "hourly clicks (data/ai/clicks-hourly.json) not there yet — no verdict" }; expReport.push({ id: e.id, family: e.family, template: e.template, mode: "switchback", ...e.last, status: e.status }); continue; }
+  const d0 = two ? [blk(Date.parse(e.started) + 2 * H), CH?.from ? blk(Date.parse(CH.from + ":00:00Z") + 2 * H) : "9999"].sort().at(-1) : iso(Date.parse(e.started) + DAY);
   const arm = (d) => (bucket(e.id + d) < e.split * 100 ? "B" : "A"), daysT = {};
-  for (const win of crawl) { const d = iso(Date.parse(win.to) - 1); if (d < d0 || d >= today) continue;
-    for (const [bot, v] of Object.entries(win.bots)) if (LIVE.test(bot)) for (const [p0, n] of v.top) if ((p0.split("?")[0].replace(/\/$/, "") || "/") === path) (daysT[d] ??= { f: 0, c: 0, a: 0 }).f += n; }
-  for (const [k, [vis, acc]] of Object.entries(clicks)) { const [d, eng, p0] = k.split("|"); if (!AIENG.test(eng) || (p0.replace(/\/$/, "") || "/") !== path || d < d0 || d >= today) continue; const o = (daysT[d] ??= { f: 0, c: 0, a: 0 }); o.c += vis; o.a += acc; }
+  const BW = two ? 2 * H : DAY, start = (k) => Date.parse(two ? k + ":00:00Z" : k + "T00:00:00Z");
+  for (const win of crawl) { const a = Date.parse(win.from ?? win.to), b = Date.parse(win.to); if (!(b > a)) continue;
+    let tot = 0; for (const [bot, v] of Object.entries(win.bots)) if (LIVE.test(bot)) for (const [p0, n] of v.top) if ((p0.split("?")[0].replace(/\/$/, "") || "/") === path) tot += n;
+    if (!tot) continue;
+    for (let t = start(two ? blk(a) : iso(a)); t < b; t += BW) { const k = two ? blk(t) : iso(t); if (k < d0 || k >= today) continue; // time overlap share
+      const ov = Math.min(b, t + BW) - Math.max(a, t); if (ov > 0) (daysT[k] ??= { f: 0, c: 0, a: 0 }).f += (tot * ov) / (b - a); } }
+  for (const [k, [vis, acc]] of Object.entries(two ? CH?.rows ?? {} : clicks)) { const [d1, eng, p0] = k.split("|"); const d = two ? blk(Date.parse(d1 + ":00:00Z")) : d1;
+    if (!AIENG.test(eng) || (p0.replace(/\/$/, "") || "/") !== path || d < d0 || d >= today) continue; const o = (daysT[d] ??= { f: 0, c: 0, a: 0 }); o.c += vis; o.a += acc; }
+  for (const o of Object.values(daysT)) o.f = Math.round(o.f);
   const A = { days: 0, fetches: 0, clicks: 0, accounts: 0 }, B = { days: 0, fetches: 0, clicks: 0, accounts: 0 };
   for (const [d, o] of Object.entries(daysT)) { const x = arm(d) === "B" ? B : A; x.days++; x.fetches += o.f; x.clicks += o.c; x.accounts += o.a; }
   for (const x of [A, B]) x.rate = x.fetches ? +(x.clicks / x.fetches).toFixed(4) : null;
-  const pr = A.days && B.days ? pBeats(B.clicks, B.fetches, A.clicks, A.fetches) : 0.5, n = A.days + B.days, enough = A.days >= 5 && B.days >= 5 && A.fetches >= 150 && B.fetches >= 150;
+  const pr = A.days && B.days ? pBeats(B.clicks, B.fetches, A.clicks, A.fetches) : 0.5, n = A.days + B.days, minU = two ? 30 : 5, enough = A.days >= minU && B.days >= minU && A.fetches >= 150 && B.fetches >= 150;
+  const elapsedD = (NOW - Date.parse(e.started)) / DAY; // 2h: at least 5 days (every weekday-hour mixes), daily: 14 units
   const truthBad = fs.existsSync("data/ai/truth.json") && JSON.parse(fs.readFileSync("data/ai/truth.json", "utf8")).problems?.some((x) => !/: missing "/.test(x));
-  let decision = null; if (!truthBad) { if (n >= 14 && enough && pr >= 0.975) decision = "won"; else if (n >= 14 && enough && pr <= 0.025) decision = "lost"; else if (n >= 42) decision = "lost"; }
-  e.last = { at: new Date().toISOString(), days: n, A, B, pBbeatsA: +pr.toFixed(3), enough, unit: "clicks per people-fetch, by day" };
+  const ready = two ? elapsedD >= 5 : n >= 14, cap = two ? elapsedD >= 28 : n >= 42;
+  let decision = null; if (!truthBad) { if (ready && enough && pr >= 0.975) decision = "won"; else if (ready && enough && pr <= 0.025) decision = "lost"; else if (cap) decision = "lost"; }
+  e.last = { at: new Date().toISOString(), units: n, grain: two ? "2h" : "day", days: +elapsedD.toFixed(1), A, B, pBbeatsA: +pr.toFixed(3), enough, unit: `clicks per people-fetch, by ${two ? "2-hour block" : "day"}` };
   if (decision) { e.status = decision; e.ended = new Date().toISOString();
     (LESSONS[e.template] ??= { won: 0, lost: 0, families: {} }); LESSONS[e.template][decision]++; LESSONS[e.template].families[e.family] = decision;
     append("data/machines/ledger.jsonl", { at: e.ended, key: `hook|${e.id}|${decision}`, machine: "hooks", kind: decision === "won" ? "win" : "loss", what: `homepage switchback ${e.id} (${e.template}): ${decision} — on-days ${B.clicks}/${B.fetches}, off-days ${A.clicks}/${A.fetches}` });
@@ -442,7 +458,7 @@ for (const [famName, tpls] of Object.entries(LIBRARY)) {
   if (mine.some((x) => x.status === "running" || x.status === "won" || x.status === "paused")) continue;
   const next = [...tpls].sort((a, b) => winRate(b) - winRate(a)).find((t) => !mine.some((x) => x.template === t));
   if (next) hk.experiments.push(ONE_PAGE.has(famName)
-    ? { id: `home-${next}-${iso(NOW)}`, family: famName, template: next, split: 0.5, mode: "switchback", status: "paused", auto: true }
+    ? { id: `home-${next}-${iso(NOW)}`, family: famName, template: next, split: 0.5, mode: "switchback", grain: "2h", status: "paused", auto: true }
     : { id: `${famName.replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "")}-${next}-${iso(NOW)}`, family: famName, template: next, split: 0.5, status: "running", started: new Date().toISOString() });
 }
 fs.writeFileSync(HOOKS, JSON.stringify(hk, null, 1));
