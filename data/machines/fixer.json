@@ -1,14 +1,19 @@
 {
  "tries": {
-  "daily-data:behind": 2
+  "daily-data:behind": 3
  },
  "done": {
   "43095456248": true,
   "43095119609": true
  },
  "day": "2026-11-12",
- "at": "2026-11-12T10:05:15.639Z",
+ "at": "2026-11-12T10:20:12.112Z",
  "actions": [
+  {
+   "at": "2026-11-12T10:20:12.112Z",
+   "what": "data behind → started a daily-data retry (3/3 today)",
+   "ok": true
+  },
   {
    "at": "2026-11-12T10:05:15.639Z",
    "what": "data behind — a daily-data run is fresh, waiting for it",
@@ -60,7 +65,7 @@
  "w": {},
  "verify": {
   "data": {
-   "at": "2026-11-12T09:19:49.971Z",
+   "at": "2026-11-12T10:20:10.274Z",
    "id": "daily-data",
    "playbook": "data-retry"
   }
