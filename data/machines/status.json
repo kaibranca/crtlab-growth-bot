@@ -1,7 +1,7 @@
 {
- "at": "2026-11-12T02:19:53.073Z",
- "ok": 55,
- "total": 55,
+ "at": "2026-11-12T02:36:48.677Z",
+ "ok": 61,
+ "total": 63,
  "hurting": [
   {
    "id": "hooks",
@@ -50,7 +50,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 5.3,
+   "lastRunH": 5.5,
    "everyH": 6,
    "kpi": {
     "label": "contradictions",
@@ -62,7 +62,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 18.2,
+   "lastRunH": 18.5,
    "everyH": 24,
    "kpi": {
     "label": "reaction pages",
@@ -73,7 +73,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 19.6,
+   "lastRunH": 19.9,
    "everyH": 24,
    "kpi": null
   },
@@ -81,7 +81,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 19.6,
+   "lastRunH": 19.9,
    "everyH": 24,
    "kpi": {
     "label": "share of AI answers",
@@ -92,7 +92,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 19.5,
+   "lastRunH": 19.8,
    "everyH": 24,
    "kpi": null
   },
@@ -100,7 +100,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 19.6,
+   "lastRunH": 19.9,
    "everyH": 24,
    "kpi": {
     "label": "word-of-mouth visitors / week",
@@ -111,7 +111,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 0.7,
+   "lastRunH": 1,
    "everyH": 1,
    "kpi": null
   },
@@ -127,7 +127,7 @@
    "id": "indexnow",
    "name": "IndexNow",
    "state": "ok",
-   "lastRunH": 1.3,
+   "lastRunH": 1.6,
    "everyH": 24,
    "kpi": null
   },
@@ -320,7 +320,7 @@
    "id": "traffic-brain",
    "name": "Traffic brain ↗",
    "state": "ok",
-   "lastRunH": 0.7,
+   "lastRunH": 0.3,
    "everyH": 1,
    "kpi": null,
    "from": "core"
@@ -329,7 +329,7 @@
    "id": "brains",
    "name": "Brains (money · data · security · content · retention · speed)",
    "state": "ok",
-   "lastRunH": 0.7,
+   "lastRunH": 0.3,
    "everyH": 1,
    "kpi": null,
    "from": "core"
@@ -338,8 +338,89 @@
    "id": "seo",
    "name": "Search console",
    "state": "ok",
-   "lastRunH": 60.5,
+   "lastRunH": 60.7,
    "everyH": 168,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "world",
+   "name": "World model",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "executive",
+   "name": "Executive",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 24,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "memory",
+   "name": "Long-term memory",
+   "state": "waiting",
+   "lastRunH": null,
+   "everyH": 24,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "bandit",
+   "name": "Conversion bandit",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "holdout",
+   "name": "Holdout",
+   "state": "waiting",
+   "lastRunH": null,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "lockin",
+   "name": "Lock-in",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "selfcheck",
+   "name": "People self-check",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "deployjudge",
+   "name": "Deploy judge",
+   "state": "ok",
+   "lastRunH": 0,
+   "everyH": 1,
+   "kpi": null,
+   "from": "core"
+  },
+  {
+   "id": "google",
+   "name": "Google machine",
+   "state": "ok",
+   "lastRunH": 0.7,
+   "everyH": 24,
    "kpi": null,
    "from": "core"
   },
@@ -347,7 +428,7 @@
    "id": "news",
    "name": "News engine",
    "state": "ok",
-   "lastRunH": 17.9,
+   "lastRunH": 18.2,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -356,7 +437,7 @@
    "id": "recaps",
    "name": "Daily recaps",
    "state": "ok",
-   "lastRunH": 17.9,
+   "lastRunH": 18.2,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -365,7 +446,7 @@
    "id": "linkcheck",
    "name": "Link check",
    "state": "ok",
-   "lastRunH": 60.4,
+   "lastRunH": 60.7,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -374,7 +455,7 @@
    "id": "social",
    "name": "Reels",
    "state": "ok",
-   "lastRunH": 17.4,
+   "lastRunH": 17.6,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -406,7 +487,7 @@
    "id": "security",
    "name": "Login + key watch",
    "state": "ok",
-   "lastRunH": 0.5,
+   "lastRunH": 0.7,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -415,7 +496,7 @@
    "id": "datapull",
    "name": "Data pull",
    "state": "ok",
-   "lastRunH": 0.5,
+   "lastRunH": 0.7,
    "everyH": 24,
    "kpi": {
     "label": "trading days behind",
@@ -430,7 +511,7 @@
    "id": "backup",
    "name": "Nightly backup",
    "state": "ok",
-   "lastRunH": 0.5,
+   "lastRunH": 0.7,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -439,7 +520,7 @@
    "id": "calendar",
    "name": "Economic calendar",
    "state": "ok",
-   "lastRunH": 1,
+   "lastRunH": 1.3,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -448,7 +529,7 @@
    "id": "indicators",
    "name": "Indicator pages",
    "state": "ok",
-   "lastRunH": 1,
+   "lastRunH": 1.3,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -457,7 +538,7 @@
    "id": "livenews",
    "name": "Same-day news",
    "state": "ok",
-   "lastRunH": 1,
+   "lastRunH": 1.3,
    "everyH": 1,
    "kpi": null,
    "from": "core"
@@ -466,7 +547,7 @@
    "id": "gaps",
    "name": "Search gaps",
    "state": "ok",
-   "lastRunH": 60.5,
+   "lastRunH": 60.7,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -475,7 +556,7 @@
    "id": "bingseo",
    "name": "Bing webmaster",
    "state": "ok",
-   "lastRunH": 60.5,
+   "lastRunH": 60.7,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -505,7 +586,7 @@
    "id": "wall",
    "name": "Wall + checkout",
    "state": "ok",
-   "lastRunH": 19.4,
+   "lastRunH": 19.6,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -514,7 +595,7 @@
    "id": "restore",
    "name": "Restore test",
    "state": "ok",
-   "lastRunH": 86.1,
+   "lastRunH": 86.3,
    "everyH": 168,
    "kpi": null,
    "from": "core"
@@ -568,7 +649,7 @@
    "id": "leak",
    "name": "Conversion leak",
    "state": "ok",
-   "lastRunH": 19.4,
+   "lastRunH": 19.6,
    "everyH": 24,
    "kpi": {
     "label": "guests → account %",
@@ -591,16 +672,7 @@
    "id": "analyst",
    "name": "analyst",
    "state": "ok",
-   "lastRunH": 6.1,
-   "everyH": 24,
-   "kpi": null,
-   "from": "core"
-  },
-  {
-   "id": "google",
-   "name": "google",
-   "state": "ok",
-   "lastRunH": 0.4,
+   "lastRunH": 6.3,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -670,13 +742,13 @@
   {
    "move": "climbing",
    "what": "/economic-calendar/united-states",
-   "why": "21 reads in 3 days vs ~1.9",
+   "why": "21 reads in 3 days vs ~1.8",
    "z": 14.1
   },
   {
    "move": "climbing",
    "what": "/economic-calendar/us-core-inflation-rate-yoy",
-   "why": "18 reads in 3 days vs ~1.9",
+   "why": "18 reads in 3 days vs ~1.8",
    "z": 11.9
   }
  ],
@@ -894,6 +966,8 @@
  ],
  "fix": [
   "AI accounts / week getting worse: 11 vs 32 last week (hooks)",
+  "Long-term memory is waiting (last run never h ago, normal every 24 h)",
+  "Holdout is waiting (last run never h ago, normal every 1 h)",
   "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones"
  ],
  "mistakes": []

@@ -75,9 +75,32 @@
    "template": "yesterday-charts",
    "split": 0.5,
    "mode": "switchback",
-   "status": "paused",
-   "auto": true,
-   "grain": "2h"
+   "status": "running",
+   "grain": "2h",
+   "started": "2026-11-12T02:34:48.455Z",
+   "last": {
+    "at": "2026-11-12T02:34:48.458Z",
+    "units": 0,
+    "grain": "2h",
+    "days": 0,
+    "A": {
+     "days": 0,
+     "fetches": 0,
+     "clicks": 0,
+     "accounts": 0,
+     "rate": null
+    },
+    "B": {
+     "days": 0,
+     "fetches": 0,
+     "clicks": 0,
+     "accounts": 0,
+     "rate": null
+    },
+    "pBbeatsA": 0.5,
+    "enough": false,
+    "unit": "clicks per people-fetch, by 2-hour block"
+   }
   }
  ]
 }

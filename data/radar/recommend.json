@@ -1,0 +1,302 @@
+{
+ "at": "2026-11-12T02:34:46.459Z",
+ "asked": 18,
+ "namedRate": 0,
+ "citedRate": 0,
+ "sov": 0.014,
+ "clusters": {
+  "free": {
+   "asked": 7,
+   "namedRate": 0,
+   "citedRate": 0,
+   "namedInstead": [
+    "TradingView",
+    "QuantConnect",
+    "NinjaTrader",
+    "QSTrader",
+    "Trading Strategy Backtester"
+   ],
+   "trusted": [
+    {
+     "d": "tradingview.com",
+     "n": 12
+    },
+    {
+     "d": "quantconnect.com",
+     "n": 8
+    },
+    {
+     "d": "ninjatrader.com",
+     "n": 6
+    },
+    {
+     "d": "github.com",
+     "n": 4
+    },
+    {
+     "d": "cdn.quantconnect.com",
+     "n": 2
+    },
+    {
+     "d": "metatrader5.com",
+     "n": 2
+    }
+   ],
+   "lostTargets": [
+    {
+     "page": "/backtest",
+     "q": "Where can I backtest manually for free with replay?"
+    },
+    {
+     "page": "/best-backtesting-software",
+     "q": "What is the best free backtesting software?"
+    }
+   ]
+  },
+  "flow": {
+   "asked": 4,
+   "namedRate": 0,
+   "citedRate": 0,
+   "namedInstead": [
+    "TradingView",
+    "Sierra Chart",
+    "Replay Footprint (TradingView indicator)",
+    "Bookmap",
+    "BalancePIVOT (Orderflows.com)"
+   ],
+   "trusted": [
+    {
+     "d": "tradingview.com",
+     "n": 4
+    },
+    {
+     "d": "sierrachart.com",
+     "n": 4
+    },
+    {
+     "d": "bookmap.com",
+     "n": 2
+    },
+    {
+     "d": "orderflows.com",
+     "n": 2
+    },
+    {
+     "d": "help.atas.net",
+     "n": 2
+    }
+   ],
+   "lostTargets": [
+    {
+     "page": "/footprint-chart-backtesting",
+     "q": "Free footprint chart software for practice"
+    },
+    {
+     "page": "/order-flow-backtesting",
+     "q": "How can I backtest order flow?"
+    }
+   ]
+  },
+  "news": {
+   "asked": 3,
+   "namedRate": 0,
+   "citedRate": 0,
+   "namedInstead": [],
+   "trusted": [
+    {
+     "d": "federalreserve.gov",
+     "n": 4
+    },
+    {
+     "d": "sciencedirect.com",
+     "n": 2
+    },
+    {
+     "d": "bls.gov",
+     "n": 2
+    }
+   ],
+   "lostTargets": [
+    {
+     "page": "/backtest-with-news",
+     "q": "How to backtest trading around news releases like CPI and NFP"
+    },
+    {
+     "page": "/news/cpi/gold",
+     "q": "How does gold react to CPI releases?"
+    },
+    {
+     "page": "/news/nfp/nas100",
+     "q": "How does NAS100 react to NFP?"
+    }
+   ]
+  },
+  "prop": {
+   "asked": 4,
+   "namedRate": 0,
+   "citedRate": 0,
+   "namedInstead": [
+    "PropFirmSim",
+    "TerraTrade (prop firm simulator)",
+    "TradesViz (challenge mode)",
+    "ScaleEdge (free simulator)",
+    "OANDA (virtual challenge environment)"
+   ],
+   "trusted": [
+    {
+     "d": "propfirmsim.eu",
+     "n": 2
+    },
+    {
+     "d": "propfirmsim.com",
+     "n": 2
+    },
+    {
+     "d": "ftmo.com",
+     "n": 2
+    },
+    {
+     "d": "cftc.gov",
+     "n": 2
+    }
+   ],
+   "lostTargets": [
+    {
+     "page": "/prop-firm-backtesting",
+     "q": "Best way to prepare for a funded trader challenge"
+    },
+    {
+     "page": "/prop-firm-challenge-simulator",
+     "q": "Is there a prop firm challenge simulator?"
+    },
+    {
+     "page": "/ftmo-challenge-simulator",
+     "q": "How to practise for the FTMO challenge for free"
+    }
+   ]
+  }
+ },
+ "targets": [
+  {
+   "page": "/backtest",
+   "cluster": "free",
+   "q": "Where can I backtest manually for free with replay?",
+   "weight": 1
+  },
+  {
+   "page": "/best-backtesting-software",
+   "cluster": "free",
+   "q": "What is the best free backtesting software?",
+   "weight": 1
+  },
+  {
+   "page": "/footprint-chart-backtesting",
+   "cluster": "flow",
+   "q": "Free footprint chart software for practice",
+   "weight": 1
+  },
+  {
+   "page": "/order-flow-backtesting",
+   "cluster": "flow",
+   "q": "How can I backtest order flow?",
+   "weight": 1
+  },
+  {
+   "page": "/backtest-with-news",
+   "cluster": "news",
+   "q": "How to backtest trading around news releases like CPI and NFP",
+   "weight": 1
+  },
+  {
+   "page": "/news/cpi/gold",
+   "cluster": "news",
+   "q": "How does gold react to CPI releases?",
+   "weight": 1
+  },
+  {
+   "page": "/news/nfp/nas100",
+   "cluster": "news",
+   "q": "How does NAS100 react to NFP?",
+   "weight": 1
+  },
+  {
+   "page": "/prop-firm-backtesting",
+   "cluster": "prop",
+   "q": "Best way to prepare for a funded trader challenge",
+   "weight": 1
+  },
+  {
+   "page": "/prop-firm-challenge-simulator",
+   "cluster": "prop",
+   "q": "Is there a prop firm challenge simulator?",
+   "weight": 1
+  },
+  {
+   "page": "/ftmo-challenge-simulator",
+   "cluster": "prop",
+   "q": "How to practise for the FTMO challenge for free",
+   "weight": 1
+  }
+ ],
+ "intensity": {},
+ "pushes": {
+  "free": {
+   "at": "2026-11-12T02:34:46.459Z",
+   "namedRate": 0
+  },
+  "flow": {
+   "at": "2026-11-12T02:34:46.459Z",
+   "namedRate": 0
+  },
+  "news": {
+   "at": "2026-11-12T02:34:46.459Z",
+   "namedRate": 0
+  },
+  "prop": {
+   "at": "2026-11-12T02:34:46.459Z",
+   "namedRate": 0
+  }
+ },
+ "trustedTop": [
+  {
+   "d": "tradingview.com",
+   "n": 16
+  },
+  {
+   "d": "quantconnect.com",
+   "n": 8
+  },
+  {
+   "d": "ninjatrader.com",
+   "n": 6
+  },
+  {
+   "d": "github.com",
+   "n": 4
+  },
+  {
+   "d": "sierrachart.com",
+   "n": 4
+  },
+  {
+   "d": "federalreserve.gov",
+   "n": 4
+  },
+  {
+   "d": "cdn.quantconnect.com",
+   "n": 2
+  },
+  {
+   "d": "metatrader5.com",
+   "n": 2
+  },
+  {
+   "d": "backtrader.com",
+   "n": 2
+  },
+  {
+   "d": "ainvest.com",
+   "n": 2
+  }
+ ]
+}
