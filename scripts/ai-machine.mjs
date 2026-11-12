@@ -257,9 +257,16 @@ const radarMul = (p) => radar[p]?.mul || 1;
 const readDays = new Map(); // path → sorted read days
 for (const win of crawl) { const d = win.to.slice(0, 10); for (const [bot, v] of Object.entries(win.bots)) if (LIVE.test(bot)) for (const [p0] of v.top) { const p = p0.split("?")[0].replace(/\/$/, "") || "/"; const a = readDays.get(p) ?? []; if (a[a.length - 1] !== d) a.push(d); readDays.set(p, a); } }
 const SUBD = fs.existsSync("data/ai/submitted.json") ? JSON.parse(fs.readFileSync("data/ai/submitted.json", "utf8")) : {};
+// FIX 11-12: this judged submitted.json, which keeps only each page's LAST send — and every page is re-sent within 7 days,
+// so no send was ever old enough: 0 judged since it was built. Now every send in the history (world/sends.jsonl) ≥ 3 days
+// old is judged on a live AI read within 3 days (crawl lag median 37–61 h); a re-send inside an open window counts once.
 const yHit = {}, yMiss = {}; let tH = 0, tM = 0;
-for (const [p, at] of Object.entries(SUBD)) { const t = Date.parse(at); if (NOW - t < 7 * DAY) continue; const f = family(p), d0 = iso(t), d1 = iso(t + 7 * DAY);
-  const hit = (readDays.get(p) ?? []).some((d) => d >= d0 && d <= d1); if (hit) { yHit[f] = (yHit[f] ?? 0) + 1; tH++; } else { yMiss[f] = (yMiss[f] ?? 0) + 1; tM++; } }
+{ const YW = 3 * DAY, byP = new Map();
+  for (const x of readLines("data/world/sends.jsonl")) { const t = Date.parse(x.at); if (!(t > 0) || NOW - t < YW) continue; const a = byP.get(x.p) ?? []; a.push(t); byP.set(x.p, a); }
+  for (const [p0, at] of Object.entries(SUBD)) { const t = Date.parse(at); if (NOW - t >= YW && !byP.has(p0)) byP.set(p0, [t]); } // sends from before the log
+  for (const [p, ts] of byP) { let last = -Infinity; const f = family(p);
+    for (const t of ts.sort((a, b) => a - b)) { if (t - last < YW) continue; last = t; const d0 = iso(t), d1 = iso(t + YW);
+      const hit = (readDays.get(p) ?? []).some((d) => d >= d0 && d <= d1); if (hit) { yHit[f] = (yHit[f] ?? 0) + 1; tH++; } else { yMiss[f] = (yMiss[f] ?? 0) + 1; tM++; } } } }
 const gYield = (tH + 1) / (tH + tM + 2);
 const famYield = (f) => ((yHit[f] ?? 0) + 4 * gYield) / ((yHit[f] ?? 0) + (yMiss[f] ?? 0) + 4); // prior worth 4 sends
 const yieldMul = (f) => Math.max(0.25, Math.min(3, famYield(f) / gYield));
