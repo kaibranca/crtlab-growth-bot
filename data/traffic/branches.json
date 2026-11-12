@@ -147,6 +147,52 @@
    "neuron": "surge→bing",
    "base": 2.8,
    "why": "14 reads in 24 h vs ~2.8 forecast (site growth included)"
+  },
+  {
+   "id": "rank-tools-position-size-calculator",
+   "born": "2026-11-12T07:05:14.920Z",
+   "state": "alive",
+   "boost": 2.09,
+   "signs": [
+    "AI surge",
+    "rising",
+    "Bing page 1 bottom"
+   ],
+   "kind": "rank",
+   "owner": "rank",
+   "target": "/tools/position-size-calculator",
+   "neuron": "page1bottom→rank",
+   "base": 9,
+   "why": "Bing #9, 7.9 clicks missed / 28 d (position size calculator forex (#9), position size calculator (#8))"
+  },
+  {
+   "id": "rank-tools-nas100-lot-size-calculator",
+   "born": "2026-11-12T07:05:14.920Z",
+   "state": "alive",
+   "boost": 1.5,
+   "signs": [
+    "Bing page 1 bottom"
+   ],
+   "kind": "rank",
+   "owner": "rank",
+   "target": "/tools/nas100-lot-size-calculator",
+   "neuron": "page1bottom→rank",
+   "base": 8,
+   "why": "Bing #8, 0.7 clicks missed / 28 d (nas100 lot size calculator (#7))"
+  },
+  {
+   "id": "gap-fundedtradermarkets-trial",
+   "born": "2026-11-12T07:05:14.920Z",
+   "state": "alive",
+   "boost": null,
+   "signs": [],
+   "kind": "gap",
+   "owner": "demand",
+   "target": "fundedtradermarkets trial",
+   "neuron": "gap→factory",
+   "base": 32,
+   "path": false,
+   "why": "Bing shows us for it (32 impressions, #4) with no page that fits"
   }
  ]
 }

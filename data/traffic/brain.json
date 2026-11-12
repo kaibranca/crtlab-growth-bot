@@ -33,6 +33,16 @@
    "n": 0,
    "used": "2026-11-12T02:03:55.850Z",
    "prior": "history 0 cases → —"
+  },
+  "page1bottom→rank": {
+   "v": 0.5,
+   "n": 0,
+   "used": "2026-11-12T07:05:14.920Z"
+  },
+  "gap→factory": {
+   "v": 0.5,
+   "n": 0,
+   "used": "2026-11-12T07:05:14.920Z"
   }
  },
  "modes": {
@@ -49,6 +59,12 @@
    "losses": 1
   },
   "event": {
+   "intensity": 1.1,
+   "episodes": 1,
+   "wins": 1,
+   "losses": 0
+  },
+  "surge": {
    "intensity": 1,
    "episodes": 0,
    "wins": 0,
@@ -63,9 +79,9 @@
   }
  },
  "episode": {
-  "mode": "event",
-  "since": "2026-11-12T02:03:55.850Z",
-  "startVisitors": 17
+  "mode": "surge",
+  "since": "2026-11-12T07:05:14.920Z",
+  "startVisitors": 28
  },
  "born": "2026-11-11T21:22:54.664Z",
  "seeded": "2026-11-11T21:22:54.664Z",
@@ -81,7 +97,7 @@
   },
   "scores": {
    "ai": 0,
-   "brain": -1,
+   "brain": 0,
    "content": 0
   }
  },
