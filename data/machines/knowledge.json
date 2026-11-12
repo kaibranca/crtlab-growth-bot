@@ -1,0 +1,196 @@
+{
+ "facts": {
+  "world:bing-send": {
+   "id": "world:bing-send",
+   "topic": "what our actions do",
+   "claim": "bing-send: ×0.99 [0.73–1.39] vs untouched pages (40 page-days) — no clear effect yet",
+   "n": 40,
+   "dir": 0,
+   "strength": 0.836,
+   "first": "2026-11-12T02:19:58.107Z",
+   "last": "2026-11-12T02:19:58.107Z",
+   "source": "world"
+  },
+  "world:bing-send:/economic-calendar/<x>": {
+   "id": "world:bing-send:/economic-calendar/<x>",
+   "topic": "where our actions pay",
+   "claim": "bing-send on /economic-calendar/<x>: ×1.21 (25 page-days)",
+   "n": 25,
+   "dir": 1,
+   "strength": 0.77,
+   "first": "2026-11-12T02:19:58.107Z",
+   "last": "2026-11-12T02:19:58.107Z",
+   "source": "world"
+  },
+  "world:bing-send:/news/<x/y>": {
+   "id": "world:bing-send:/news/<x/y>",
+   "topic": "where our actions pay",
+   "claim": "bing-send on /news/<x/y>: ×0.51 (8 page-days)",
+   "n": 8,
+   "dir": -1,
+   "strength": 0.617,
+   "first": "2026-11-12T02:19:58.107Z",
+   "last": "2026-11-12T02:19:58.107Z",
+   "source": "world"
+  },
+  "world:held-out (not pushed)": {
+   "id": "world:held-out (not pushed)",
+   "topic": "what our actions do",
+   "claim": "held-out (not pushed): ×1.15 vs untouched pages (42 page-days) — measuring",
+   "n": 42,
+   "dir": 0,
+   "strength": 0.843,
+   "first": "2026-11-12T02:19:58.107Z",
+   "last": "2026-11-12T02:19:58.107Z",
+   "source": "world"
+  },
+  "curve": {
+   "id": "curve",
+   "topic": "the curve",
+   "claim": "reads 24.3%/day, AI clicks -1.3%/day, accounts -11.7%/day — gap 25.6%/day",
+   "n": 11,
+   "dir": -1,
+   "strength": 0.658,
+   "first": "2026-11-12T02:19:58.107Z",
+   "last": "2026-11-12T02:19:58.107Z",
+   "source": "world"
+  },
+  "release-lift": {
+   "id": "release-lift",
+   "topic": "demand",
+   "claim": "release days lift a release's pages ×2.74 (learned from residuals)",
+   "n": 1432,
+   "dir": 1,
+   "strength": 1,
+   "first": "2026-11-12T02:19:58.107Z",
+   "last": "2026-11-12T02:19:58.107Z",
+   "source": "world"
+  },
+  "prior:surge→bing": {
+   "id": "prior:surge→bing",
+   "topic": "what history says",
+   "claim": "surge→bing: expected reward 0.3 over 17 past cases",
+   "n": 17,
+   "dir": -1,
+   "strength": 0.717,
+   "first": "2026-11-12T02:19:58.107Z",
+   "last": "2026-11-12T02:19:58.107Z",
+   "source": "traffic-pretrain"
+  },
+  "prior:peopleclick→bing": {
+   "id": "prior:peopleclick→bing",
+   "topic": "what history says",
+   "claim": "peopleclick→bing: expected reward 0.583 over 166 past cases",
+   "n": 166,
+   "dir": 1,
+   "strength": 1,
+   "first": "2026-11-12T02:19:58.107Z",
+   "last": "2026-11-12T02:19:58.107Z",
+   "source": "traffic-pretrain"
+  },
+  "sign:people ask for it": {
+   "id": "sign:people ask for it",
+   "topic": "what predicts clicks",
+   "claim": "\"people ask for it\" → clicks ×2.55 vs any read page (48 moments)",
+   "n": 48,
+   "dir": 1,
+   "strength": 0.861,
+   "first": "2026-11-12T02:19:58.107Z",
+   "last": "2026-11-12T02:19:58.107Z",
+   "source": "traffic-pretrain"
+  },
+  "sign:AI surge": {
+   "id": "sign:AI surge",
+   "topic": "what predicts clicks",
+   "claim": "\"AI surge\" → clicks ×1.37 vs any read page (24 moments)",
+   "n": 24,
+   "dir": 1,
+   "strength": 0.764,
+   "first": "2026-11-12T02:19:58.107Z",
+   "last": "2026-11-12T02:19:58.107Z",
+   "source": "traffic-pretrain"
+  },
+  "sign:people click it": {
+   "id": "sign:people click it",
+   "topic": "what predicts clicks",
+   "claim": "\"people click it\" → clicks ×3.86 vs any read page (25 moments)",
+   "n": 25,
+   "dir": 1,
+   "strength": 0.77,
+   "first": "2026-11-12T02:19:58.107Z",
+   "last": "2026-11-12T02:19:58.107Z",
+   "source": "traffic-pretrain"
+  },
+  "sign:converts": {
+   "id": "sign:converts",
+   "topic": "what predicts clicks",
+   "claim": "\"converts\" → clicks ×3.1 vs any read page (36 moments)",
+   "n": 36,
+   "dir": 1,
+   "strength": 0.821,
+   "first": "2026-11-12T02:19:58.107Z",
+   "last": "2026-11-12T02:19:58.107Z",
+   "source": "traffic-pretrain"
+  },
+  "cost:cache bloat": {
+   "id": "cost:cache bloat",
+   "topic": "what fixes the servers",
+   "claim": "cache bloat → restart: helped",
+   "n": 1,
+   "dir": 1,
+   "strength": 0.4,
+   "first": "2026-11-12T02:19:58.107Z",
+   "last": "2026-11-12T02:19:58.107Z",
+   "source": "cost"
+  },
+  "google-coverage": {
+   "id": "google-coverage",
+   "topic": "Google",
+   "claim": "Google shows 113 of 2834 pages; 48/96 inspected indexed; top reason: URL is unknown to Google",
+   "n": 96,
+   "dir": -1,
+   "strength": 0.96,
+   "first": "2026-11-12T02:19:58.108Z",
+   "last": "2026-11-12T02:19:58.108Z",
+   "source": "google"
+  },
+  "ledger:cost:cost": {
+   "id": "ledger:cost:cost",
+   "topic": "which machines pay",
+   "claim": "cost · cost: 1 won, 0 lost (30 d)",
+   "n": 1,
+   "dir": 1,
+   "strength": 0.4,
+   "first": "2026-11-12T02:19:58.108Z",
+   "last": "2026-11-12T02:19:58.108Z",
+   "source": "ledgers"
+  },
+  "ledger:modes:ep": {
+   "id": "ledger:modes:ep",
+   "topic": "which machines pay",
+   "claim": "modes · ep: 0 won, 1 lost (30 d)",
+   "n": 1,
+   "dir": -1,
+   "strength": 0.4,
+   "first": "2026-11-12T02:19:58.108Z",
+   "last": "2026-11-12T02:19:58.108Z",
+   "source": "ledgers"
+  }
+ },
+ "at": "2026-11-12T02:19:58.108Z",
+ "count": 16,
+ "top": [
+  "release days lift a release's pages ×2.74 (learned from residuals)",
+  "peopleclick→bing: expected reward 0.583 over 166 past cases",
+  "Google shows 113 of 2834 pages; 48/96 inspected indexed; top reason: URL is unknown to Google",
+  "\"people ask for it\" → clicks ×2.55 vs any read page (48 moments)",
+  "held-out (not pushed): ×1.15 vs untouched pages (42 page-days) — measuring",
+  "bing-send: ×0.99 [0.73–1.39] vs untouched pages (40 page-days) — no clear effect yet",
+  "\"converts\" → clicks ×3.1 vs any read page (36 moments)",
+  "bing-send on /economic-calendar/<x>: ×1.21 (25 page-days)",
+  "\"people click it\" → clicks ×3.86 vs any read page (25 moments)",
+  "\"AI surge\" → clicks ×1.37 vs any read page (24 moments)",
+  "surge→bing: expected reward 0.3 over 17 past cases",
+  "reads 24.3%/day, AI clicks -1.3%/day, accounts -11.7%/day — gap 25.6%/day"
+ ]
+}

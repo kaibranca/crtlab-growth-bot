@@ -1,13 +1,13 @@
 {
- "at": "2026-11-12T02:02:12.887Z",
+ "at": "2026-11-12T02:18:24.183Z",
  "selfCheck": {
   "devices": [
    {
     "dev": "desktop",
-    "raw24": 273,
-    "beat24": 0.505,
+    "raw24": 282,
+    "beat24": 0.521,
     "beatNormal": 0.548,
-    "stay24": 0.026,
+    "stay24": 0.025,
     "stayNormal": 0.481
    },
    {
@@ -23,26 +23,26 @@
    {
     "dim": "source",
     "seg": "Direct",
-    "raw24": 284,
+    "raw24": 293,
     "rawNormal": 54.6,
     "stayed24": 11,
-    "stayShare": 0.039
+    "stayShare": 0.038
    },
    {
     "dim": "landing",
     "seg": "home",
-    "raw24": 272,
+    "raw24": 281,
     "rawNormal": 43.2,
     "stayed24": 8,
-    "stayShare": 0.029
+    "stayShare": 0.028
    },
    {
     "dim": "device",
     "seg": "desktop",
-    "raw24": 273,
+    "raw24": 282,
     "rawNormal": 58.8,
     "stayed24": 7,
-    "stayShare": 0.026
+    "stayShare": 0.025
    },
    {
     "dim": "country",
@@ -55,29 +55,37 @@
    {
     "dim": "country",
     "seg": "US",
-    "raw24": 61,
+    "raw24": 64,
     "rawNormal": 9.4,
     "stayed24": 0,
     "stayShare": 0
+   },
+   {
+    "dim": "country",
+    "seg": "GB",
+    "raw24": 24,
+    "rawNormal": 5.9,
+    "stayed24": 1,
+    "stayShare": 0.042
    }
   ],
   "flood": [
    "CN: 157 raw vs ~5.9, 0 stayed",
-   "US: 61 raw vs ~9.4, 0 stayed"
+   "US: 64 raw vs ~9.4, 0 stayed"
   ],
-  "verdict": "FLOOD: the raw surge is CN (157 vs ~5.9, 0 stayed), US (61 vs ~9.4, 0 stayed) — headless traffic, not people leaving"
+  "verdict": "FLOOD: the raw surge is CN (157 vs ~5.9, 0 stayed), US (64 vs ~9.4, 0 stayed) — headless traffic, not people leaving"
  },
  "wave": {
   "window": "3h",
   "visitors": {
    "now": 0,
-   "normal": 2.2,
+   "normal": 2.4,
    "ratio": 0,
-   "z": -1
+   "z": -1.1
   },
   "signups": {
    "now": 0,
-   "normal": 1.4,
+   "normal": 1.3,
    "ratio": 0,
    "z": -1
   },
@@ -87,13 +95,13 @@
   "now": 17,
   "normal": 37,
   "ratio": 0.46,
-  "z": -1.9
+  "z": -2
  },
  "rawVisitors": {
-  "now": 294,
+  "now": 303,
   "normal": 76.8,
-  "ratio": 3.83,
-  "z": 8.7
+  "ratio": 3.95,
+  "z": 9.2
  },
  "signups": {
   "now": 10,
@@ -127,7 +135,7 @@
    "now": 11,
    "normal": 22.9,
    "ratio": 0.48,
-   "z": -1.6,
+   "z": -1.7,
    "gap": -11.9
   },
   {
@@ -136,7 +144,7 @@
    "now": 8,
    "normal": 17.1,
    "ratio": 0.47,
-   "z": -1.5,
+   "z": -1.6,
    "gap": -9.1
   },
   {
@@ -172,7 +180,7 @@
    "now": 0,
    "normal": 2.6,
    "ratio": 0,
-   "z": -0.6,
+   "z": -0.7,
    "gap": -2.6
   },
   {
