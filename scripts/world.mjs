@@ -108,8 +108,9 @@ fc.sort((a, b) => b.tomorrow - a.tomorrow);
 // = the conversion bottleneck as one number.
 const fit = (ys) => { const xs = ys.map((_, i) => i), n = ys.length, ly = ys.map((y) => Math.log(y + 0.5)), mx = mean(xs), my = mean(ly);
   const b = xs.reduce((a, x, i) => a + (x - mx) * (ly[i] - my), 0) / Math.max(1e-9, xs.reduce((a, x) => a + (x - mx) ** 2, 0)), a0 = my - b * mx;
-  return { perDay: +((Math.exp(b) - 1) * 100).toFixed(1), doublingDays: b > 0.005 ? +(Math.log(2) / b).toFixed(1) : null, now: +(Math.exp(a0 + b * (n - 1)) - 0.5).toFixed(1),
-    in7: +(Math.exp(a0 + b * (n + 6)) - 0.5).toFixed(0), in30: +(Math.exp(a0 + b * (n + 29)) - 0.5).toFixed(0) }; };
+  // DAMPED projection (growth fades 10 %/day — 11 days of +24 %/day can't be compounded for 30; truth rule)
+  const now0 = Math.exp(a0 + b * (n - 1)) - 0.5, proj = (h) => { let v = Math.log(Math.max(0.5, now0 + 0.5)); for (let k = 1; k <= h; k++) v += b * 0.9 ** k; return Math.max(0, Math.exp(v) - 0.5); };
+  return { perDay: +((Math.exp(b) - 1) * 100).toFixed(1), doublingDays: b > 0.005 ? +(Math.log(2) / b).toFixed(1) : null, now: +now0.toFixed(1), in7: +proj(7).toFixed(0), in30: +proj(30).toFixed(0) }; };
 const cDay = (d) => { let c = 0; for (const [, m] of C) c += m.get(d) ?? 0; return c; };
 const aDay = (d) => { let a = 0; for (const [k, v] of Object.entries(J("data/ai/clicks.json", {}))) { const [dd, eng] = k.split("|"); if (dd === d && AIENG.test(eng)) a += v[1] ?? 0; } return a; };
 const span = full.slice(-14), curve = { days: span.length, reads: fit(span.map((d) => siteDay.get(d) ?? 0)), clicks: fit(span.map(cDay)), accounts: fit(span.map(aDay)) };
