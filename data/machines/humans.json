@@ -1,144 +1,144 @@
 {
- "at": "2026-11-12T12:18:26.958Z",
+ "at": "2026-11-12T13:02:20.361Z",
  "selfCheck": {
   "devices": [
    {
     "dev": "desktop",
-    "raw24": 497,
-    "beat24": 0.648,
-    "beatNormal": 0.546,
+    "raw24": 511,
+    "beat24": 0.652,
+    "beatNormal": 0.545,
     "stay24": 0.018,
     "stayNormal": 0.477
    },
    {
     "dev": "mobile",
-    "raw24": 35,
-    "beat24": 0.486,
-    "beatNormal": 0.338,
-    "stay24": 0.543,
-    "stayNormal": 0.466
+    "raw24": 32,
+    "beat24": 0.438,
+    "beatNormal": 0.347,
+    "stay24": 0.531,
+    "stayNormal": 0.47
    }
   ],
   "rawSurge": [
    {
-    "dim": "source",
-    "seg": "Direct",
-    "raw24": 518,
-    "rawNormal": 54.3,
-    "stayed24": 19,
-    "stayShare": 0.037
-   },
-   {
     "dim": "landing",
     "seg": "home",
-    "raw24": 507,
+    "raw24": 520,
     "rawNormal": 43.3,
     "stayed24": 16,
+    "stayShare": 0.031
+   },
+   {
+    "dim": "source",
+    "seg": "Direct",
+    "raw24": 528,
+    "rawNormal": 54.5,
+    "stayed24": 17,
     "stayShare": 0.032
    },
    {
     "dim": "device",
     "seg": "desktop",
-    "raw24": 497,
-    "rawNormal": 58.5,
+    "raw24": 511,
+    "rawNormal": 58.6,
     "stayed24": 9,
     "stayShare": 0.018
    },
    {
     "dim": "country",
     "seg": "CN",
-    "raw24": 162,
-    "rawNormal": 5.7,
+    "raw24": 161,
+    "rawNormal": 5.8,
     "stayed24": 0,
     "stayShare": 0
    },
    {
     "dim": "country",
     "seg": "US",
-    "raw24": 161,
-    "rawNormal": 9.5,
+    "raw24": 164,
+    "rawNormal": 9.6,
     "stayed24": 2,
     "stayShare": 0.012
    },
    {
     "dim": "country",
     "seg": "GB",
-    "raw24": 69,
+    "raw24": 74,
     "rawNormal": 5.9,
     "stayed24": 1,
     "stayShare": 0.014
    }
   ],
   "flood": [
-   "CN: 162 raw vs ~5.7, 0 stayed",
-   "US: 161 raw vs ~9.5, 2 stayed",
-   "GB: 69 raw vs ~5.9, 1 stayed",
-   "CA: 49 raw vs ~0.9, 1 stayed"
+   "CN: 161 raw vs ~5.8, 0 stayed",
+   "US: 164 raw vs ~9.6, 2 stayed",
+   "GB: 74 raw vs ~5.9, 1 stayed",
+   "CA: 51 raw vs ~0.9, 1 stayed"
   ],
-  "verdict": "FLOOD: the raw surge is CN (162 vs ~5.7, 0 stayed), US (161 vs ~9.5, 2 stayed), GB (69 vs ~5.9, 1 stayed), CA (49 vs ~0.9, 1 stayed) — headless traffic, not people leaving"
+  "verdict": "FLOOD: the raw surge is CN (161 vs ~5.8, 0 stayed), US (164 vs ~9.6, 2 stayed), GB (74 vs ~5.9, 1 stayed), CA (51 vs ~0.9, 1 stayed) — headless traffic, not people leaving"
  },
  "wave": {
   "window": "3h",
   "visitors": {
    "now": 3,
-   "normal": 5.1,
-   "ratio": 0.59,
+   "normal": 5.5,
+   "ratio": 0.55,
    "z": -0.6
   },
   "signups": {
-   "now": 3,
-   "normal": 2,
-   "ratio": 1.5,
-   "z": 0.4
+   "now": 5,
+   "normal": 2.1,
+   "ratio": 2.33,
+   "z": 1.1
   },
   "riding": [
    {
     "dim": "landing",
     "seg": "home",
     "now": 3,
-    "normal": 2.4,
-    "ratio": 1.27,
-    "z": 0.3,
-    "gain": 0.6
+    "normal": 2.2,
+    "ratio": 1.35,
+    "z": 0.4,
+    "gain": 0.8
    },
    {
     "dim": "source",
     "seg": "Direct",
     "now": 3,
-    "normal": 3.4,
-    "ratio": 0.89,
+    "normal": 3.2,
+    "ratio": 0.93,
     "z": -0.1,
-    "gain": -0.4
+    "gain": -0.2
    }
   ]
  },
  "visitors": {
-  "now": 28,
-  "normal": 36.6,
-  "ratio": 0.77,
-  "z": -1
+  "now": 26,
+  "normal": 36.7,
+  "ratio": 0.71,
+  "z": -1.2
  },
  "rawVisitors": {
-  "now": 532,
-  "normal": 76.2,
-  "ratio": 6.98,
+  "now": 543,
+  "normal": 76.4,
+  "ratio": 7.1,
   "z": 16.4
  },
  "signups": {
-  "now": 12,
+  "now": 15,
   "normal": 15.7,
-  "ratio": 0.76,
-  "z": -0.6
+  "ratio": 0.95,
+  "z": -0.1
  },
  "state": "normal",
  "why": [
   "device desktop: 9 vs ~27.9/day",
-  "landing chart: 2 vs ~5.6/day",
-  "source Direct: 19 vs ~22.5/day",
+  "source Direct: 17 vs ~22.6/day",
+  "landing chart: 1 vs ~5.7/day",
   "landing /backtest pages: 4 vs ~7.1/day"
  ],
  "gainers": [
-  "device mobile: 19 vs ~7.8/day",
+  "device mobile: 17 vs ~7.9/day",
   "country IN: 7 vs ~5.8/day",
   "country PK: 3 vs ~2.4/day"
  ],
@@ -153,22 +153,22 @@
    "gap": -18.9
   },
   {
-   "dim": "landing",
-   "seg": "chart",
-   "now": 2,
-   "normal": 5.6,
-   "ratio": 0.35,
-   "z": -1.5,
-   "gap": -3.6
-  },
-  {
    "dim": "source",
    "seg": "Direct",
-   "now": 19,
-   "normal": 22.5,
-   "ratio": 0.84,
-   "z": -0.5,
-   "gap": -3.5
+   "now": 17,
+   "normal": 22.6,
+   "ratio": 0.75,
+   "z": -0.8,
+   "gap": -5.6
+  },
+  {
+   "dim": "landing",
+   "seg": "chart",
+   "now": 1,
+   "normal": 5.7,
+   "ratio": 0.17,
+   "z": -1.9,
+   "gap": -4.7
   },
   {
    "dim": "landing",
@@ -185,8 +185,17 @@
    "now": 0,
    "normal": 2.9,
    "ratio": 0,
-   "z": -1.5,
+   "z": -1.7,
    "gap": -2.9
+  },
+  {
+   "dim": "landing",
+   "seg": "other pages",
+   "now": 1,
+   "normal": 3.4,
+   "ratio": 0.3,
+   "z": -1.7,
+   "gap": -2.4
   },
   {
    "dim": "source",
@@ -195,15 +204,6 @@
    "normal": 6.3,
    "ratio": 0.8,
    "z": -0.6,
-   "gap": -1.3
-  },
-  {
-   "dim": "landing",
-   "seg": "other pages",
-   "now": 2,
-   "normal": 3.3,
-   "ratio": 0.61,
-   "z": -0.9,
    "gap": -1.3
   },
   {
@@ -254,11 +254,11 @@
   {
    "dim": "device",
    "seg": "mobile",
-   "now": 19,
-   "normal": 7.8,
-   "ratio": 2.44,
-   "z": 3.8,
-   "gap": 11.2
+   "now": 17,
+   "normal": 7.9,
+   "ratio": 2.14,
+   "z": 2.7,
+   "gap": 9.1
   }
  ]
 }
