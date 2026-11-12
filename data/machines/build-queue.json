@@ -1,0 +1,220 @@
+{
+ "at": "2026-11-12T19:38:02.854Z",
+ "constraint": "conversion",
+ "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
+ "items": [
+  {
+   "kind": "learn",
+   "machine": "bing",
+   "name": "Bing sender",
+   "engine": "traffic",
+   "what": "Teach Bing sender to judge itself on its KPI (AI clicks / week)",
+   "why": "acts but never judges its outcome — it has a KPI it doesn't learn from",
+   "score": 6
+  },
+  {
+   "kind": "learn",
+   "machine": "curator",
+   "name": "llms.txt curator",
+   "engine": "traffic",
+   "what": "Teach llms.txt curator to judge itself on its KPI (AI clicks / week)",
+   "why": "acts but never judges its outcome — it has a KPI it doesn't learn from",
+   "score": 6
+  },
+  {
+   "kind": "learn",
+   "machine": "indexnow",
+   "name": "IndexNow",
+   "engine": "traffic",
+   "what": "Teach IndexNow to judge itself on its KPI (pages submitted / week)",
+   "why": "acts but never judges its outcome — it has a KPI it doesn't learn from",
+   "score": 6
+  },
+  {
+   "kind": "outcome",
+   "machine": "surge",
+   "name": "Surge detector",
+   "engine": "traffic",
+   "what": "Surge detector (IQ 97) learns, but its outcome falls — find what it's missing",
+   "why": "its outcome is falling (AI clicks / week -15%)",
+   "score": 4
+  },
+  {
+   "kind": "outcome",
+   "machine": "hooks",
+   "name": "Hook tests",
+   "engine": "traffic",
+   "what": "Hook tests (IQ 112) learns, but its outcome falls — find what it's missing",
+   "why": "its outcome is falling (AI accounts / week -30%)",
+   "score": 4
+  },
+  {
+   "kind": "fix",
+   "what": "AI accounts / week getting worse: 21 vs 30 last week (hooks)",
+   "why": "needs a build or a decision",
+   "engine": "fixer",
+   "score": 4
+  },
+  {
+   "kind": "fix",
+   "what": "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones",
+   "why": "needs a build or a decision",
+   "engine": "fixer",
+   "score": 4
+  },
+  {
+   "kind": "learn",
+   "machine": "trend",
+   "name": "4-week trend",
+   "engine": "main",
+   "what": "Teach 4-week trend to judge itself on its KPI (AI clicks / week)",
+   "why": "acts but never judges its outcome — it has a KPI it doesn't learn from",
+   "score": 3
+  },
+  {
+   "kind": "learn",
+   "machine": "yield",
+   "name": "Failure learning",
+   "engine": "main",
+   "what": "Teach Failure learning to judge itself on its KPI (AI clicks / week)",
+   "why": "acts but never judges its outcome — it has a KPI it doesn't learn from",
+   "score": 3
+  },
+  {
+   "kind": "learn",
+   "machine": "devices",
+   "name": "Device QA",
+   "engine": "money",
+   "what": "Teach Device QA to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 3
+  },
+  {
+   "kind": "learn",
+   "machine": "watchdog",
+   "name": "Watchdog",
+   "engine": "security",
+   "what": "Teach Watchdog to judge itself on its KPI (uptime 7 d %)",
+   "why": "acts but never judges its outcome — it has a KPI it doesn't learn from",
+   "score": 3
+  },
+  {
+   "kind": "learn",
+   "machine": "datapull",
+   "name": "Data pull",
+   "engine": "data",
+   "what": "Teach Data pull to judge itself on its KPI (trading days behind)",
+   "why": "acts but never judges its outcome — it has a KPI it doesn't learn from",
+   "score": 3
+  },
+  {
+   "kind": "learn",
+   "machine": "wall",
+   "name": "Wall + checkout",
+   "engine": "money",
+   "what": "Teach Wall + checkout to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 3
+  },
+  {
+   "kind": "learn",
+   "machine": "leak-page-backtest-market-land-account",
+   "name": "/backtest-<market> @ land ",
+   "engine": "money",
+   "what": "Teach /backtest-<market> @ land  to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 3
+  },
+  {
+   "kind": "learn",
+   "machine": "leak-source-direct-land-account",
+   "name": "direct @ land → account",
+   "engine": "money",
+   "what": "Teach direct @ land → account to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 3
+  },
+  {
+   "kind": "build",
+   "what": "Admin: Dependencies: 17 open advisories on crtlab-standalone (14 high, start with zod) — upgrades are a build + test session.",
+   "why": "security brain asks for it",
+   "engine": "security",
+   "score": 3
+  },
+  {
+   "kind": "build",
+   "what": "Admin: Chart pages: the slowest 10% of real loads take 13s — phones 2.48s vs desktop 13s (44% of loads on phones); the server answers in 0.32s and candles in 0.08s (HIT) — the time is on the visitor's side. NETWORK, not device: US loads 0.88s at p90, the slow 10% are far/slow connections — IN 16s ×69, PH 95s ×11, IR 39s ×16, PK 11s ×27. The lever is first-load weight (a lighter first chart bundle / fewer candles on slow links), a build session. A headless flood is on (US: 217 raw vs ~9.6, 2 stayed, GB: 86 raw vs ~6, 0 stayed, CA: 68 raw vs ~0.9, 1 stayed, CN: 77 raw vs ~11.9, 0 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: desktop/IN 21s ×49, desktop/US 1.83s ×166, mobile/PK 16s ×13, mobile/US 0.48s ×255.",
+   "why": "speed brain asks for it",
+   "engine": "speed",
+   "score": 3
+  },
+  {
+   "kind": "build",
+   "what": "Admin: BUILD 1 (Claude session). Bing shows CRTLAB for \"fundedtradermarkets trial\" with no page that fits → build the page the search wants (content brain's top gap) — a build session, no approval needed [impact 1.2]",
+   "why": "fixer brain asks for it",
+   "engine": "fixer",
+   "score": 3
+  },
+  {
+   "kind": "build",
+   "what": "Admin: BUILD 2 (Claude session). AI accounts / week getting worse: 21 vs 30 last week (hooks) → a build session reads the machine's evidence and changes what it does [impact 1]",
+   "why": "fixer brain asks for it",
+   "engine": "fixer",
+   "score": 3
+  },
+  {
+   "kind": "outcome",
+   "machine": "lift",
+   "name": "Release lift",
+   "engine": "main",
+   "what": "Release lift (IQ 95) learns, but its outcome falls — find what it's missing",
+   "why": "its outcome is falling (AI clicks / week -15%)",
+   "score": 2
+  },
+  {
+   "kind": "learn",
+   "machine": "truth",
+   "name": "Truth gate",
+   "engine": "traffic",
+   "what": "Teach Truth gate to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 2
+  },
+  {
+   "kind": "learn",
+   "machine": "seo",
+   "name": "Search console",
+   "engine": "traffic",
+   "what": "Teach Search console to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 2
+  },
+  {
+   "kind": "learn",
+   "machine": "calendar",
+   "name": "Economic calendar",
+   "engine": "traffic",
+   "what": "Teach Economic calendar to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 2
+  },
+  {
+   "kind": "learn",
+   "machine": "indicators",
+   "name": "Indicator pages",
+   "engine": "traffic",
+   "what": "Teach Indicator pages to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 2
+  },
+  {
+   "kind": "learn",
+   "machine": "gaps",
+   "name": "Search gaps",
+   "engine": "traffic",
+   "what": "Teach Search gaps to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 2
+  }
+ ]
+}

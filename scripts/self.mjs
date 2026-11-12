@@ -84,5 +84,26 @@ const dIQ = last && first ? +(last.iq - first.iq).toFixed(1) : null, dP = last &
 const whole = { iq: last?.iq ?? null, power: last?.power ?? null, dIQ, dPower: dP, iqPerUpgrade: dIQ != null && dP ? +(dIQ / dP).toFixed(3) : null, upgrades: UPG.summary ?? null,
   say: last ? `Machines IQ ${last.iq} (${dIQ >= 0 ? "+" : ""}${dIQ} since ${fd(then)}) on ${dP} upgrades — ${dIQ != null && dP ? (dIQ / dP).toFixed(2) : "–"} IQ per upgrade. ${UPG.summary?.judged ? `${UPG.summary.paid} of ${UPG.summary.judged} judged upgrades paid.` : `Upgrades get their first verdicts ${UPG.summary?.next ? fd(UPG.summary.next) : "after 7 days"}.`}` : "" };
 
+// ── BUILD QUEUE (the builder's input — a Claude session or the daily builder routine; BUILDER.md): what the machines say
+// would make them smarter, ranked. Score = engine weight (the executive's constraint first) × how cheap the gain is.
+const EX = J("data/machines/executive.json", {})?.constraint ?? "conversion";
+const W = { traffic: EX === "reach" ? 3 : 2, money: EX === "conversion" || EX === "signup" || EX === "pay" ? 3 : 2, retention: 2, content: 1.5, speed: 1, data: 1, security: 1, fixer: 1 };
+const engOf = (id) => Object.entries(engines).find(([e, x]) => e !== "main" && ((x.weakest ?? []).some((w) => w.id === id) || (x.strongest ?? []).some((w) => w.id === id)))?.[0]
+  ?? Object.entries(ENG).find(([e, f]) => f && (J(f, {})?.nodes ?? []).some((n) => n.id === id))?.[0] ?? "main";
+const queue = [];
+for (const [id, m] of Object.entries(machines)) {
+  if (m.iq > 72 && !/falling/.test(m.limit)) continue;
+  const e = engOf(id), cheap = m.kpi ? 3 : /evidence but/.test(m.limit) ? 2 : 1; // a KPI it doesn't learn from = the cheapest win
+  const falling = m.iq > 72;
+  queue.push({ kind: falling ? "outcome" : "learn", machine: id, name: m.name, engine: e,
+    what: falling ? `${m.name} (IQ ${m.iq}) learns, but its outcome falls — find what it's missing` : `Teach ${m.name} to judge itself on ${m.kpi ? `its KPI (${m.kpi.label})` : "an outcome it can measure"}`,
+    why: m.limit, score: +((W[e] ?? 1) * (falling ? 2 : cheap)).toFixed(1) });
+}
+for (const t of J("data/machines/fixer.json", {})?.tasks ?? []) queue.push({ kind: "fix", what: t.what, why: t.fix, engine: "fixer", score: 4 });
+const ADMIN = Object.keys(ENG).filter((e) => e !== "main" && e !== "traffic").flatMap((e) => (J(`data/brains/${e}/ecosystem.json`, {})?.briefing?.notes ?? []).filter((n) => /^BUILD|build/i.test(n)).slice(0, 2).map((n) => ({ kind: "build", what: n.replace(/^BUILD \d+ \([^)]*\)\.?\s*/, ""), why: `${e} brain asks for it`, engine: e, score: 3 })));
+queue.push(...ADMIN);
+queue.sort((a, b) => b.score - a.score);
+fs.writeFileSync("data/machines/build-queue.json", JSON.stringify({ at: new Date().toISOString(), constraint: EX, note: "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.", items: queue.slice(0, 25) }, null, 1));
+
 fs.writeFileSync(OUT, JSON.stringify({ at: new Date().toISOString(), note: "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.", whole, engines, machines }, null, 1));
 console.log(`self: ${Object.entries(engines).map(([e, x]) => `${e} ${x.iq}${x.curiosity > 1.0001 ? ` c×${x.curiosity}` : ""}`).join(" · ")}`);
