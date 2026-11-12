@@ -7,7 +7,7 @@
   "43095119609": true
  },
  "day": "2026-11-12",
- "at": "2026-11-12T10:20:12.112Z",
+ "at": "2026-11-12T11:06:19.320Z",
  "actions": [
   {
    "at": "2026-11-12T10:20:12.112Z",
@@ -46,6 +46,11 @@
   }
  ],
  "tasks": [
+  {
+   "what": "Daily data still behind after 3 retries today",
+   "evidence": "DAILY DATA BEHIND: site data through 2026-11-10, should be 2026-11-11 (live d20261112-1027)",
+   "fix": "read the newest daily-data log: gh run list -R kaibranca/crtlab-backtester -w daily-data.yml"
+  },
   {
    "what": "AI accounts / week getting worse: 11 vs 32 last week (hooks)",
    "evidence": "supervisor",
