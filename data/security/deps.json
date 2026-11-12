@@ -1,0 +1,107 @@
+{
+ "at": "2026-11-12T18:56:25.000Z",
+ "source": "npm advisory DB × site package-lock.json",
+ "packages": 646,
+ "open": 17,
+ "high": 14,
+ "critical": 0,
+ "direct": 1,
+ "top": [
+  {
+   "name": "zod",
+   "severity": "high",
+   "title": "Zod can exhaust memory while validating oversized constrained collections",
+   "vulnerable": "<4.6.6",
+   "url": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5",
+   "direct": true
+  },
+  {
+   "name": "brace-expansion",
+   "severity": "high",
+   "title": "brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash",
+   "vulnerable": "<1.1.17",
+   "url": "https://github.com/advisories/GHSA-mh99-v99m-4gvg",
+   "direct": false
+  },
+  {
+   "name": "brace-expansion",
+   "severity": "high",
+   "title": "brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash",
+   "vulnerable": ">=4.0.0 <5.0.8",
+   "url": "https://github.com/advisories/GHSA-mh99-v99m-4gvg",
+   "direct": false
+  },
+  {
+   "name": "brace-expansion",
+   "severity": "high",
+   "title": "brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitig",
+   "vulnerable": ">=4.0.0 <5.0.9",
+   "url": "https://github.com/advisories/GHSA-rgw5-rvv9-x895",
+   "direct": false
+  },
+  {
+   "name": "brace-expansion",
+   "severity": "high",
+   "title": "brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitig",
+   "vulnerable": "<1.1.18",
+   "url": "https://github.com/advisories/GHSA-rgw5-rvv9-x895",
+   "direct": false
+  },
+  {
+   "name": "brace-expansion",
+   "severity": "high",
+   "title": "brace-expansion: DoS via exponential-time expansion of consecutive non-expanding {} groups",
+   "vulnerable": "<1.1.16",
+   "url": "https://github.com/advisories/GHSA-3jxr-9vmj-r5cp",
+   "direct": false
+  },
+  {
+   "name": "brace-expansion",
+   "severity": "high",
+   "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhau",
+   "vulnerable": ">=4.0.0 <5.0.11",
+   "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+   "direct": false
+  },
+  {
+   "name": "brace-expansion",
+   "severity": "high",
+   "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustio",
+   "vulnerable": "<1.1.19",
+   "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+   "direct": false
+  },
+  {
+   "name": "brace-expansion",
+   "severity": "high",
+   "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustio",
+   "vulnerable": ">=4.0.0 <5.0.10",
+   "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+   "direct": false
+  },
+  {
+   "name": "brace-expansion",
+   "severity": "high",
+   "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhau",
+   "vulnerable": "<1.1.20",
+   "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+   "direct": false
+  },
+  {
+   "name": "browserslist",
+   "severity": "high",
+   "title": "Browserslist: Unbounded memory growth (no cache eviction) via distinct query results, lead",
+   "vulnerable": "<=4.28.6",
+   "url": "https://github.com/advisories/GHSA-c83g-rgw3-j3cx",
+   "direct": false
+  },
+  {
+   "name": "browserslist",
+   "severity": "high",
+   "title": "Browserslist: Uncaught crash / prototype write via untrusted browserslist-stats.json custo",
+   "vulnerable": "<=4.28.6",
+   "url": "https://github.com/advisories/GHSA-73wf-gq98-2v4g",
+   "direct": false
+  }
+ ]
+}
