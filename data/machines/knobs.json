@@ -14,7 +14,7 @@
      "blocksB": 0,
      "lift": null,
      "P": null,
-     "at": "2026-11-12T20:08:31.659Z",
+     "at": "2026-11-12T20:19:56.919Z",
      "model": "log KPI ~ trend + release + arm"
     }
    },
@@ -38,7 +38,7 @@
      "blocksB": 0,
      "lift": null,
      "P": null,
-     "at": "2026-11-12T20:08:31.659Z",
+     "at": "2026-11-12T20:19:56.919Z",
      "model": "log KPI ~ trend + release + arm"
     }
    },
@@ -63,7 +63,7 @@
      "blocksB": 0,
      "lift": null,
      "P": null,
-     "at": "2026-11-12T20:08:31.659Z",
+     "at": "2026-11-12T20:19:56.919Z",
      "model": "log KPI ~ trend + release + arm"
     }
    },
@@ -88,7 +88,7 @@
      "blocksB": 0,
      "lift": null,
      "P": null,
-     "at": "2026-11-12T20:08:31.659Z",
+     "at": "2026-11-12T20:19:56.919Z",
      "model": "log KPI ~ trend + release + arm"
     }
    },
@@ -97,15 +97,41 @@
    "owner": "sisters",
    "kpi": "reads",
    "what": "Bing priority boost for sister pages of a hot page"
+  },
+  "ai.qualityWeight": {
+   "champion": 0.5,
+   "dir": 1,
+   "challenge": {
+    "value": 1,
+    "dir": 1,
+    "since": "2026-11-12",
+    "id": "ai.qualityWeight:1:2026-11-12",
+    "kpi": "reads",
+    "tries": 0,
+    "read": {
+     "blocksA": 0,
+     "blocksB": 0,
+     "lift": null,
+     "P": null,
+     "at": "2026-11-12T20:19:56.919Z",
+     "model": "log KPI ~ trend + release + arm"
+    }
+   },
+   "history": [],
+   "settled": null,
+   "owner": "ai",
+   "kpi": "reads",
+   "what": "how much a page family's landing quality (visitors who really replay) weighs in its Bing value"
   }
  },
  "active": {
   "ai.exploreShare": 0.15,
   "ai.resendDays": 10,
   "ai.riseBoost": 3.2,
-  "ai.sisterBoost": 2.6
+  "ai.sisterBoost": 2.6,
+  "ai.qualityWeight": 0.5
  },
- "at": "2026-11-12T20:08:31.659Z",
+ "at": "2026-11-12T20:19:56.919Z",
  "note": "Self-tuning knobs: champion vs challenger in 2-day switchback blocks, judged on the knob's KPI (normalised by its own 7-day mean). Machines read active[knob].",
  "objective": {
   "kpi": "reads",

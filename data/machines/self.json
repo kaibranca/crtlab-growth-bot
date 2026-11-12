@@ -1,11 +1,11 @@
 {
- "at": "2026-11-12T20:01:14.583Z",
+ "at": "2026-11-12T20:20:00.826Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
-  "iq": 78.3,
-  "power": 250,
-  "dIQ": 4,
-  "dPower": 145,
+  "iq": 78.7,
+  "power": 261,
+  "dIQ": 4.4,
+  "dPower": 156,
   "iqPerUpgrade": 0.028,
   "upgrades": {
    "judged": 0,
@@ -16,27 +16,21 @@
    "unmeasured": 0,
    "next": "2026-11-19"
   },
-  "say": "Machines IQ 78.3 (+4 since 11 Nov) on 145 upgrades — 0.03 IQ per upgrade. Upgrades get their first verdicts 19 Nov.",
-  "experiments": "12 experiments live — next verdicts: Bing send yield 13 Nov · conversion bandit 14 Nov · executive focus: conversion 15 Nov · forecast self-calibration 16 Nov."
+  "say": "Machines IQ 78.7 (+4.4 since 11 Nov) on 156 upgrades — 0.03 IQ per upgrade. Upgrades get their first verdicts 19 Nov.",
+  "experiments": "13 experiments live — next verdicts: Bing send yield 13 Nov · conversion bandit 14 Nov · executive focus: conversion 15 Nov · forecast self-calibration 16 Nov."
  },
  "engines": {
   "main": {
-   "iq": 78.3,
+   "iq": 78.7,
    "iqWas": 74.3,
    "since": "2026-11-11",
    "level": "Novice",
    "members": 72,
-   "learners": 28,
+   "learners": 30,
    "brainVerdicts": 0,
    "curiosity": 1,
    "episode": null,
    "weakest": [
-    {
-     "id": "supervisor",
-     "name": "Supervisor",
-     "iq": 70,
-     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
-    },
     {
      "id": "ledger",
      "name": "Ledger",
@@ -46,6 +40,12 @@
     {
      "id": "trend",
      "name": "4-week trend",
+     "iq": 70,
+     "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+    },
+    {
+     "id": "yield",
+     "name": "Failure learning",
      "iq": 70,
      "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
     }
@@ -64,7 +64,7 @@
      "limit": "learning on every front — more data is the only limit"
     }
    ],
-   "say": "My IQ is 78.3 (Novice, +4 since 11 Nov) — 28 of 72 parts learn on their own; weakest: Supervisor, Ledger, 4-week trend (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 78.7 (Novice, +4.4 since 11 Nov) — 30 of 72 parts learn on their own; weakest: Ledger, 4-week trend, Failure learning (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "traffic": {
    "iq": 78.6,
@@ -370,23 +370,16 @@
    "say": "My IQ is 70.0 (Blank, +0 since 11 Nov) — 0 of 3 parts learn on their own; weakest: Capacity, Load alert, Link check (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "fixer": {
-   "iq": 91.3,
+   "iq": 92.8,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Capable",
    "members": 3,
-   "learners": 2,
+   "learners": 3,
    "brainVerdicts": 4,
    "curiosity": 1,
    "episode": null,
-   "weakest": [
-    {
-     "id": "supervisor",
-     "name": "Supervisor",
-     "iq": 70,
-     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
-    }
-   ],
+   "weakest": [],
    "strongest": [
     {
      "id": "fixer",
@@ -401,7 +394,7 @@
      "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
     }
    ],
-   "say": "My IQ is 91.3 (Capable, +15.6 since 11 Nov) — 2 of 3 parts learn on their own; weakest: Supervisor (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 92.8 (Capable, +17.1 since 11 Nov) — 3 of 3 parts learn on their own."
   }
  },
  "machines": {
@@ -449,19 +442,24 @@
   },
   "supervisor": {
    "name": "Supervisor",
-   "iq": 70,
+   "iq": 76,
    "iqWas": 70,
-   "level": "Blank",
+   "level": "Novice",
    "state": "ok",
    "kpi": null,
-   "made": null,
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 25,
+    "f": 0
+   },
    "upgrades": {
     "paid": 0,
     "hurt": 0,
     "flat": 0,
     "waiting": 2
    },
-   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+   "limit": "collects evidence but hasn't reached a verdict yet"
   },
   "mistakes": {
    "name": "Mistakes watch",
@@ -734,7 +732,7 @@
    "made": {
     "v": 2,
     "k": 0,
-    "e": 795,
+    "e": 798,
     "f": 0
    },
    "upgrades": {
@@ -874,7 +872,7 @@
    "state": "ok",
    "kpi": {
     "label": "pages submitted / week",
-    "now": 2923,
+    "now": 2924,
     "before": 349,
     "change": 7.38
    },
@@ -1255,7 +1253,7 @@
    "state": "ok",
    "kpi": {
     "label": "uptime 7 d %",
-    "now": 99.62,
+    "now": 99.63,
     "before": null,
     "change": null
    },
@@ -1292,7 +1290,7 @@
    "state": "ok",
    "kpi": {
     "label": "attacks blocked / week",
-    "now": 5201,
+    "now": 5273,
     "before": 0,
     "change": null
    },
@@ -1613,19 +1611,24 @@
   },
   "outcomes": {
    "name": "Outcome machine",
-   "iq": 70,
+   "iq": 94,
    "iqWas": 70,
-   "level": "Blank",
+   "level": "Capable",
    "state": "ok",
    "kpi": null,
-   "made": null,
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 211,
+    "f": 0
+   },
    "upgrades": {
     "paid": 0,
     "hurt": 0,
     "flat": 0,
     "waiting": 2
    },
-   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+   "limit": "collects evidence but hasn't reached a verdict yet"
   },
   "analyst": {
    "name": "analyst",

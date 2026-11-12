@@ -59,5 +59,20 @@
   "what": "share of Bing sends spent exploring pages the machine knows least about",
   "script": "ai-machine",
   "seen": "2026-11-12T19:48:05.820Z"
+ },
+ "ai.qualityWeight": {
+  "start": 0.5,
+  "ladder": [
+   0,
+   0.25,
+   0.5,
+   1,
+   1.5
+  ],
+  "kpi": "auto",
+  "owner": "ai",
+  "what": "how much a page family's landing quality (visitors who really replay) weighs in its Bing value",
+  "script": "ai-machine",
+  "seen": "2026-11-12T20:18:01.880Z"
  }
 }
