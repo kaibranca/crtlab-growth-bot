@@ -73,7 +73,8 @@ async function sentinel(env, d) {
   let total = 0;
   for (const ua of ["ChatGPT-User", "Claude-User", "Perplexity-User"]) {
     const q = `{viewer{zones(filter:{zoneTag:"${env.CF_ZONE_ID}"}){httpRequestsAdaptiveGroups(limit:60,filter:{datetime_geq:"${since}",datetime_lt:"${until}",userAgent_like:"%${ua}%"},orderBy:[count_DESC]){count dimensions{clientRequestPath}}}}}`;
-    const j = await fetch("https://api.cloudflare.com/client/v4/graphql", { method: "POST", headers: { Authorization: `Bearer ${env.CF_API_TOKEN}`, "content-type": "application/json" }, body: JSON.stringify({ query: q }) }).then((r) => r.json()).catch(() => null);
+    const j = await fetch("https://api.cloudflare.com/client/v4/graphql", { method: "POST", headers: { Authorization: `Bearer ${env.CF_API_TOKEN}`, "content-type": "application/json" }, body: JSON.stringify({ query: q }) }).then((r) => r.json()).catch((e) => ({ errors: [String(e)] }));
+    if (j?.errors?.length) { console.log(`${d.toISOString()} sentinel: Cloudflare API error (${ua}) — ${JSON.stringify(j.errors).slice(0, 200)}`); return; } // never read an error as "0 fetches"
     for (const r of j?.data?.viewer?.zones?.[0]?.httpRequestsAdaptiveGroups ?? []) { const p = r.dimensions.clientRequestPath.split("?")[0]; if (/^\/(api|_next)|\.(png|jpg|svg|ico|xml|txt)$/.test(p)) continue; pages[p] = (pages[p] ?? 0) + r.count; total += r.count; }
   }
   // rolling baseline (EWMA per 15-min window, total + per page), kept in the worker's edge cache for 3 days
