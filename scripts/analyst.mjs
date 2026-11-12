@@ -41,6 +41,8 @@ const digest = {
   // measured push lift (the truth about whether pushing works), every hook test incl. the homepage switchback
   lockIn: (() => { const l = J("data/machines/lockin.json", {}); return { on: !!l.on, kind: l.kind ?? null, why: l.why ?? null, bars: l.bars ?? null, lastWaves: readL("data/machines/waves.jsonl").slice(-4).map((w) => ({ kind: w.kind, hours: w.hours, verdict: w.verdict, ratio: w.ratio })) }; })(),
   pulse3h: hum.wave && { visitors: hum.wave.visitors, signups: hum.wave.signups, riding: hum.wave.riding },
+  // LONG-TERM MEMORY (memory.mjs): the ecosystem's consolidated facts — the analyst's memory across days
+  knowledge: (() => { const k = J("data/machines/knowledge.json", null); return k ? { facts: k.count, strongest: k.top, contradicted: Object.values(k.facts ?? {}).filter((f) => f.contradicted).map((f) => `${f.claim} (was: ${f.was})`).slice(0, 5) } : null; })(),
   world: (() => { const w = J("data/world/credit.json", null); return w ? { fitError: w.fitError, releaseLift: w.releaseLift, trendTomorrow: w.siteTrendTomorrow, credit: w.credit } : null; })(),
   google: (() => { const g = J("data/google/plan.json", null); return g ? { totals: g.totals, reasons: g.reasons?.slice(0, 3), nonBrand: (g.topQueries ?? []).filter((x) => !/crt ?lab/i.test(x.q)).slice(0, 8), rank: (g.rank ?? []).slice(0, 5) } : null; })(),
   holdout: (() => { const h = J("data/ai/holdout.json", null); return h?.last ? { days: h.last.days, pushLift: h.last.pushLift, provisional: h.last.provisional, heldPages: h.last.heldPages } : null; })(),

@@ -72,7 +72,7 @@ jobs:
         env: { RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", GH_TOKEN: "${{ github.token }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}", SPIKE: "${{ inputs.spike }}" }
       - name: The other brains — money, data, security, content, retention, speed (they read each other + the engines)
         continue-on-error: true
-        run: node scripts/brains.mjs
+        run: node scripts/brains.mjs; node scripts/memory.mjs
         env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}", CF_API_TOKEN: "${{ secrets.CF_API_TOKEN }}", CF_ACCOUNT_ID: "${{ secrets.CF_ACCOUNT_ID }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}" }
       - run: node scripts/summary.mjs
       - name: Save
