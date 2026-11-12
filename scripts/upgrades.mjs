@@ -76,12 +76,17 @@ for (const o of S.open) {
   if (NOW - Date.parse(o.day + "T23:59:59Z") < 7 * DAY) { keep.push(o); continue; }
   const b = near(dayAdd(o.day, -1), -1)?.[kid], a = near(dayAdd(o.day, 7), 1)?.[kid];
   if (b == null || a == null) { if (NOW - Date.parse(o.day) < 14 * DAY) { o.note = "waiting for KPI snapshots"; keep.push(o); } else S.judged.push({ ...o, label, verdict: "unjudgeable", why: "no KPI snapshot around it" }); continue; }
-  const lower = !!cur[kid]?.lowerBetter, ch = b ? (a - b) / Math.abs(b) : a > 0 ? 1 : 0, good = lower ? -ch : ch;
+  // ABNORMAL change (11-12): the site grows fast, so raw before/after would call almost every upgrade "paid". Subtract the
+  // median change of every machine's KPI over the same two days (the "market") — only what moved beyond everything is credited.
+  const S0 = near(dayAdd(o.day, -1), -1) ?? {}, S1 = near(dayAdd(o.day, 7), 1) ?? {};
+  const mkt = Object.keys(S0).filter((x) => x !== kid && S0[x] && S1[x] != null && !cur[x]?.activity).map((x) => (S1[x] - S0[x]) / Math.abs(S0[x])).sort((x, y) => x - y);
+  const med = mkt.length >= 5 ? mkt[Math.floor(mkt.length / 2)] : 0;
+  const lower = !!cur[kid]?.lowerBetter, raw = b ? (a - b) / Math.abs(b) : a > 0 ? 1 : 0, ch = raw - med, good = lower ? -ch : ch;
   const verdict = good >= 0.1 ? "paid" : good <= -0.1 ? "hurt" : "flat";
-  const j = { ...o, label, before: b, after: a, change: +ch.toFixed(3), verdict, at: new Date().toISOString() };
+  const j = { ...o, label, before: b, after: a, change: +ch.toFixed(3), raw: +raw.toFixed(3), market: +med.toFixed(3), verdict, at: new Date().toISOString() };
   S.judged.push(j);
   fs.appendFileSync("data/machines/ledger.jsonl", JSON.stringify({ at: j.at, key: `upg|${o.machine}|${o.day}`, machine: o.machine, kind: verdict === "paid" ? "win" : verdict === "hurt" ? "loss" : "lesson",
-    what: `upgrade ${o.day} (${o.commits.length} commit${o.commits.length > 1 ? "s" : ""}: ${o.commits[0].msg.slice(0, 60)}) → ${label} ${b} → ${a} (${ch >= 0 ? "+" : ""}${Math.round(ch * 100)}%): ${verdict}` }) + "\n");
+    what: `upgrade ${o.day} (${o.commits.length} commit${o.commits.length > 1 ? "s" : ""}: ${o.commits[0].msg.slice(0, 60)}) → ${label} ${b} → ${a} (${raw >= 0 ? "+" : ""}${Math.round(raw * 100)}%, ${ch >= 0 ? "+" : ""}${Math.round(ch * 100)}% beyond the market's ${Math.round(med * 100)}%): ${verdict}` }) + "\n");
 }
 S.open = keep;
 S.judged = S.judged.slice(-300);
