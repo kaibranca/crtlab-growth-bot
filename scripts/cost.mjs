@@ -130,6 +130,7 @@ if (heapNote && /→ cap|back to 768/.test(heapNote)) actions.push(heapNote); //
   const sid = (n) => svcs.find((s) => s.name === n)?.id;
   const upsert = (svc, k, v) => gql(`mutation { variableUpsert(input: { projectId: "${PROJECT}", environmentId: "${ENV}", serviceId: "${sid(svc)}", name: "${k}", value: "${v}", skipDeploys: true }) }`);
   const del = (svc, k) => gql(`mutation { variableDelete(input: { projectId: "${PROJECT}", environmentId: "${ENV}", serviceId: "${sid(svc)}", name: "${k}" }) }`);
+  const setLimit = (svc, gb) => gql(`mutation { serviceInstanceLimitsUpdate(input: { environmentId: "${ENV}", serviceId: "${sid(svc)}", memoryGB: ${gb} }) }`);
   const memNow = process.env.OPS_KEY ? await fetch("https://crtlab.pro/api/ops/mem", { headers: { "x-ops-key": process.env.OPS_KEY } }).then((r) => (r.ok ? r.json() : null)).catch(() => null) : null;
   for (const x of L) {
     if (x.verdict) continue;
@@ -141,7 +142,7 @@ if (heapNote && /→ cap|back to 768/.test(heapNote)) actions.push(heapNote); //
     const crashed = x.svc === "web" && memNow && dep && memNow.uptimeH + 0.25 < (NOW - Date.parse(dep.createdAt)) / H;
     const revert = async (why) => {
       try {
-        if (x.prev == null) await del(x.svc, x.name); else await upsert(x.svc, x.name, x.prev);
+        if (x.kind === "limit") await setLimit(x.svc, x.prev); else if (x.prev == null) await del(x.svc, x.name); else await upsert(x.svc, x.name, x.prev);
         x.verdict = "reverted"; x.why = why; actions.push(`lever ${x.id} REVERTED — ${why}`);
         append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|lever|${x.id}`, machine: "cost", kind: "loss", what: `${x.name}=${x.value} on ${x.svc}: ${why} → reverted (applies next deploy)` });
       } catch (e) { actions.push(`lever ${x.id} revert failed: ${String(e).slice(0, 60)}`); }
@@ -156,6 +157,30 @@ if (heapNote && /→ cap|back to 768/.test(heapNote)) actions.push(heapNote); //
       append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|lever|${x.id}`, machine: "cost", kind: "win", what: `${x.name}=${x.value} on ${x.svc}: ${x.beforeGB} → ${x.afterGB} GB (${(ch * 100).toFixed(0)}%) ≈ $${((x.beforeGB - x.afterGB) * MEM_GB_MONTH).toFixed(2)}/mo saved` });
     } else if (ch >= 0.05) await revert(`memory ${x.beforeGB} → ${x.afterGB} GB (+${(ch * 100).toFixed(0)}%)`);
     else if (sinceLive > 72) { x.verdict = "no effect"; actions.push(`lever ${x.id}: no measurable effect after 3 days (kept)`); }
+  }
+}
+// MEMORY CAP LEVER (11-12): Railway bills the page cache too (web: 1.0 GB billed for ~0.74 GB process RSS). A container memory
+// cap makes Linux drop cache before it ever touches the process. Proposed only when the web levers before it are live ≥ 24 h
+// with no crash, sized 1.5× the highest real RSS of the last 24 h (≥ 0.6 GB), quiet hours, never in a lock-in; a crash-restart
+// while it is live = OOM → the cap comes off at once (the lever loop above reverts it).
+{
+  const L = state.levers ?? [], web = L.filter((x) => x.svc === "web" && x.kind !== "limit");
+  const ready = web.length && web.every((x) => x.verdict ? x.verdict !== "reverted" : x.liveAt && NOW - Date.parse(x.liveAt) > DAY);
+  const capOn = L.some((x) => x.kind === "limit" && x.svc === "web" && (!x.verdict || x.verdict === "helped" || x.verdict === "no effect"));
+  const rss = (HC.samples ?? []).filter((x) => NOW - Date.parse(x.at) < DAY && x.cap <= 600).map((x) => x.rss ?? 0);
+  const webRow = rows.find((r) => r.svc === "web");
+  if (ready && !capOn && !LOCKED && hr >= 3 && hr < 5 && rss.length >= 12 && webRow) {
+    const gb = Math.max(0.6, Math.ceil((Math.max(...rss) * 1.5) / 100) / 10);
+    if (webRow.memGB > gb * 0.9) {
+      try {
+        const sid = svcs.find((x) => x.name === "web").id;
+        await gql(`mutation { serviceInstanceLimitsUpdate(input: { environmentId: "${ENV}", serviceId: "${sid}", memoryGB: ${gb} }) }`);
+        const at = new Date().toISOString();
+        L.push({ id: `web-cap-${gb}-${iso(NOW)}`, svc: "web", kind: "limit", name: "memory cap", value: `${gb} GB`, prev: 8, setAt: at, liveAt: at, beforeGB: +(series.web.avg(3 * DAY) ?? webRow.memGB).toFixed(3), why: `peak RSS ${Math.max(...rss)} MB → cap ${gb} GB` });
+        actions.push(`web memory capped at ${gb} GB (peak real use ${Math.max(...rss)} MB) — page cache stops being billed`);
+        append("data/machines/ledger.jsonl", { at, key: `cost|cap|${iso(NOW)}`, machine: "cost", kind: "lesson", what: `web billed ${webRow.memGB} GB for ≤ ${Math.max(...rss)} MB real → memory cap ${gb} GB` });
+      } catch (e) { actions.push("web cap failed: " + String(e).slice(0, 80)); }
+    }
   }
 }
 // LEARN: judge fixes 24 h later
