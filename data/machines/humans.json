@@ -1,48 +1,48 @@
 {
- "at": "2026-11-12T03:18:27.268Z",
+ "at": "2026-11-12T04:05:15.884Z",
  "selfCheck": {
   "devices": [
    {
     "dev": "desktop",
-    "raw24": 293,
-    "beat24": 0.543,
-    "beatNormal": 0.547,
-    "stay24": 0.024,
-    "stayNormal": 0.479
+    "raw24": 322,
+    "beat24": 0.568,
+    "beatNormal": 0.546,
+    "stay24": 0.022,
+    "stayNormal": 0.478
    },
    {
     "dev": "mobile",
-    "raw24": 22,
-    "beat24": 0.455,
-    "beatNormal": 0.34,
-    "stay24": 0.545,
-    "stayNormal": 0.462
+    "raw24": 23,
+    "beat24": 0.435,
+    "beatNormal": 0.342,
+    "stay24": 0.522,
+    "stayNormal": 0.464
    }
   ],
   "rawSurge": [
    {
-    "dim": "landing",
-    "seg": "home",
-    "raw24": 294,
-    "rawNormal": 43.3,
-    "stayed24": 9,
-    "stayShare": 0.031
-   },
-   {
     "dim": "source",
     "seg": "Direct",
-    "raw24": 305,
+    "raw24": 335,
     "rawNormal": 54.7,
     "stayed24": 13,
-    "stayShare": 0.043
+    "stayShare": 0.039
+   },
+   {
+    "dim": "landing",
+    "seg": "home",
+    "raw24": 322,
+    "rawNormal": 43.3,
+    "stayed24": 9,
+    "stayShare": 0.028
    },
    {
     "dim": "device",
     "seg": "desktop",
-    "raw24": 293,
+    "raw24": 322,
     "rawNormal": 58.9,
     "stayed24": 7,
-    "stayShare": 0.024
+    "stayShare": 0.022
    },
    {
     "dim": "country",
@@ -55,53 +55,55 @@
    {
     "dim": "country",
     "seg": "US",
-    "raw24": 70,
-    "rawNormal": 9.5,
+    "raw24": 82,
+    "rawNormal": 9.4,
     "stayed24": 0,
     "stayShare": 0
    },
    {
     "dim": "country",
     "seg": "GB",
-    "raw24": 30,
+    "raw24": 37,
     "rawNormal": 5.9,
     "stayed24": 1,
-    "stayShare": 0.033
+    "stayShare": 0.027
    }
   ],
   "flood": [
    "CN: 156 raw vs ~5.9, 0 stayed",
-   "US: 70 raw vs ~9.5, 0 stayed"
+   "US: 82 raw vs ~9.4, 0 stayed",
+   "GB: 37 raw vs ~5.9, 1 stayed",
+   "CA: 17 raw vs ~0.9, 0 stayed"
   ],
-  "verdict": "FLOOD: the raw surge is CN (156 vs ~5.9, 0 stayed), US (70 vs ~9.5, 0 stayed) — headless traffic, not people leaving"
+  "verdict": "FLOOD: the raw surge is CN (156 vs ~5.9, 0 stayed), US (82 vs ~9.4, 0 stayed), GB (37 vs ~5.9, 1 stayed), CA (17 vs ~0.9, 0 stayed) — headless traffic, not people leaving"
  },
  "wave": {
   "window": "3h",
   "visitors": {
    "now": 1,
-   "normal": 3.4,
-   "ratio": 0.3,
-   "z": -0.8
+   "normal": 4,
+   "ratio": 0.25,
+   "z": -1
   },
   "signups": {
    "now": 0,
-   "normal": 1.4,
+   "normal": 1.6,
    "ratio": 0,
-   "z": -0.8
+   "z": -1
   },
   "riding": []
  },
  "visitors": {
   "now": 19,
   "normal": 36.9,
-  "ratio": 0.51,
-  "z": -2.2
+  "ratio": 0.52,
+  "z": -2.1
  },
  "rawVisitors": {
-  "now": 315,
-  "normal": 76.9,
-  "ratio": 4.1,
-  "z": 9.9
+  "now": 345,
+  "normal": 76.8,
+  "ratio": 4.49,
+  "z": 10.5
  },
  "signups": {
   "now": 10,
@@ -111,8 +113,8 @@
  },
  "state": "dip",
  "why": [
-  "device desktop: 7 vs ~28.2/day",
-  "source Direct: 13 vs ~22.9/day",
+  "device desktop: 7 vs ~28.1/day",
+  "source Direct: 13 vs ~22.8/day",
   "landing home: 9 vs ~17.1/day",
   "source AI answers: 2 vs ~6.3/day"
  ],
@@ -124,19 +126,19 @@
    "dim": "device",
    "seg": "desktop",
    "now": 7,
-   "normal": 28.2,
+   "normal": 28.1,
    "ratio": 0.25,
-   "z": -2.4,
-   "gap": -21.2
+   "z": -2.3,
+   "gap": -21.1
   },
   {
    "dim": "source",
    "seg": "Direct",
    "now": 13,
-   "normal": 22.9,
+   "normal": 22.8,
    "ratio": 0.57,
-   "z": -1.7,
-   "gap": -9.9
+   "z": -1.6,
+   "gap": -9.8
   },
   {
    "dim": "landing",
@@ -144,7 +146,7 @@
    "now": 9,
    "normal": 17.1,
    "ratio": 0.53,
-   "z": -1.4,
+   "z": -1.3,
    "gap": -8.1
   },
   {
@@ -153,7 +155,7 @@
    "now": 2,
    "normal": 6.3,
    "ratio": 0.32,
-   "z": -1.9,
+   "z": -1.7,
    "gap": -4.3
   },
   {
@@ -162,7 +164,7 @@
    "now": 3,
    "normal": 7.2,
    "ratio": 0.42,
-   "z": -1.2,
+   "z": -1.1,
    "gap": -4.2
   },
   {
@@ -171,17 +173,8 @@
    "now": 2,
    "normal": 5.9,
    "ratio": 0.34,
-   "z": -2.1,
+   "z": -1.9,
    "gap": -3.9
-  },
-  {
-   "dim": "country",
-   "seg": "US",
-   "now": 0,
-   "normal": 2.6,
-   "ratio": 0,
-   "z": -0.7,
-   "gap": -2.6
   },
   {
    "dim": "country",
@@ -189,7 +182,16 @@
    "now": 0,
    "normal": 2.5,
    "ratio": 0,
-   "z": -1.1,
+   "z": -1.2,
+   "gap": -2.5
+  },
+  {
+   "dim": "country",
+   "seg": "US",
+   "now": 0,
+   "normal": 2.5,
+   "ratio": 0,
+   "z": -0.7,
    "gap": -2.5
   },
   {
@@ -198,7 +200,7 @@
    "now": 1,
    "normal": 2.8,
    "ratio": 0.36,
-   "z": -0.8,
+   "z": -0.9,
    "gap": -1.8
   },
   {
@@ -225,7 +227,7 @@
    "now": 3,
    "normal": 3.8,
    "ratio": 0.79,
-   "z": -0.4,
+   "z": -0.3,
    "gap": -0.8
   },
   {
@@ -234,7 +236,7 @@
    "now": 12,
    "normal": 7.9,
    "ratio": 1.53,
-   "z": 1.2,
+   "z": 1.4,
    "gap": 4.1
   }
  ]
