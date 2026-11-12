@@ -277,6 +277,30 @@ const trends = Object.entries(famT).map(([f, [now, before]]) => ({ f, now, befor
 const DN = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const weekPeaks = Object.entries(lift).map(([f, L]) => ({ f, peak: DN[L.indexOf(Math.max(...L))], lift: Math.max(...L) })).filter((x) => x.lift > 1.15).sort((a, b) => b.lift - a.lift).slice(0, 10);
 
+// ── HOLDOUT (11-12 — "how strong are the machines", measured, not believed): a fixed 5% of pages (hash of salt + path)
+// never get a priority Bing send or a brain boost. IndexNow still tells Bing about every change, so held pages stay
+// indexed — the holdout prices exactly what the smart push adds on top. Lift = (pushed post/pre) ÷ (held post/pre) on
+// people-fetches and AI clicks, per family then pooled, so a family's season can't fake it. data/ai/holdout.json.
+const HO_F = "data/ai/holdout.json", HO = fs.existsSync(HO_F) ? JSON.parse(fs.readFileSync(HO_F, "utf8")) : { salt: "hold-v1", pct: 5, from: new Date().toISOString() };
+const fnv = (str) => { let h = 0x811c9dc5; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h % 100; };
+const HELD = (p) => p !== "/" && fnv(HO.salt + p) < HO.pct;
+{ const t0 = Date.parse(HO.from), pre0 = t0 - 14 * DAY, postD = Math.max(0.5, (NOW - t0) / DAY), preD = Math.max(0.5, Math.min(14, (t0 - Math.max(pre0, crawl.length ? Date.parse(crawl[0].from ?? crawl[0].to) : t0)) / DAY));
+  const F = {}; const cell = (p) => { const f = family(p) ?? "other"; const g = (F[f] ??= { held: { pre: 0, post: 0, c: 0, n: new Set() }, push: { pre: 0, post: 0, c: 0, n: new Set() } }); const o = g[HELD(p) ? "held" : "push"]; o.n.add(p); return o; };
+  for (const win of crawl) { const t = Date.parse(win.to); if (t < pre0) continue;
+    for (const [bot, v] of Object.entries(win.bots)) if (LIVE.test(bot)) for (const [p0, n] of v.top) { const p = p0.split("?")[0].replace(/\/$/, "") || "/"; if (p === "/" || !lastmod.has(p)) continue; const o = cell(p); t >= t0 ? (o.post += n) : (o.pre += n); } }
+  for (const [k, [vis]] of Object.entries(clicks)) { const [d, eng, p0] = k.split("|"); const p = p0.replace(/\/$/, "") || "/"; if (!AIENG.test(eng) || p === "/" || !lastmod.has(p) || Date.parse(d + "T12:00:00Z") < t0) continue; cell(p).c += vis; }
+  let wSum = 0, wLift = 0; const rows = [];
+  for (const [f, g] of Object.entries(F)) { if (g.held.pre < 5 || g.push.pre < 5) continue; // a family needs both sides measured before
+    const r = (o) => ((o.post + 1) / postD) / ((o.pre + 1) / preD), lift = r(g.push) / r(g.held), w = Math.sqrt(g.held.pre + g.held.post);
+    wSum += w; wLift += w * Math.log(lift); rows.push({ family: f, lift: +lift.toFixed(2), pushedPages: g.push.n.size, heldPages: g.held.n.size, heldPre: g.held.pre, heldPost: g.held.post }); }
+  const held = [...lastmod.keys()].filter(HELD).length, pool = (k) => Object.values(F).reduce((a, g) => a + g[k].c, 0);
+  HO.last = { at: new Date().toISOString(), days: +postD.toFixed(1), heldPages: held, pages: lastmod.size, pushLift: wSum && postD >= 7 ? +Math.exp(wLift / wSum).toFixed(2) : null, provisional: wSum ? +Math.exp(wLift / wSum).toFixed(2) : null,
+    clicksPushedPerPage: +(pool("push") / Math.max(1, lastmod.size - held)).toFixed(4), clicksHeldPerPage: +(pool("held") / Math.max(1, held)).toFixed(4),
+    families: rows.sort((a, b) => b.heldPre + b.heldPost - (a.heldPre + a.heldPost)).slice(0, 12),
+    read: postD < 7 ? `measuring (day ${Math.floor(postD)} of 7 — the push needs a week to show)` : !wSum ? "not enough reads on held pages yet" : null };
+  fs.writeFileSync(HO_F, JSON.stringify(HO, null, 1));
+  console.log(`holdout: ${held}/${lastmod.size} pages held · day ${postD.toFixed(1)} · push lift ${HO.last.pushLift ?? "—"} (people-fetches, pushed ÷ held, family-matched)`); }
+
 // ── 3. submit to Bing, most valuable first ────────────────────────────────────────────────────────────────────────────
 const SUB = "data/ai/submitted.json";
 const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
@@ -285,7 +309,7 @@ const queue = [...lastmod.entries()].map(([p, lm]) => {
   const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY, evDue = ev && NOW - last > 2 * DAY;
   const old = bingOld(p) && NOW - last > DAY, hotP = surgePage.has(p) && NOW - last > 6 * 3.6e6, riseP = risePage.has(p) && NOW - last > 2 * DAY, recP = recovery.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
   return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * weekMul(x.fam) * trendMul(x.fam), conf: x.conf, fam: x.fam, why: hotP ? "SURGE" : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
-}).filter((q) => q.why && !SKIP.test(q.p));
+}).filter((q) => q.why && !SKIP.test(q.p) && !HELD(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
 const urgent = (q) => (q.why === "SURGE" || q.why === "RADAR won" ? 3 : q.why === "RISING" || q.why.startsWith("SISTER") ? 2 : q.why === "RECOVERY" ? 1 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);

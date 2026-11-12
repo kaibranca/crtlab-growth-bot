@@ -197,7 +197,11 @@ brain.authority = { engine: ENGINE_AUTH, managers: AUTH, scores: groupScore };
 const boost = (p, owner) => +clamp(1.5 * intensity * ENGINE_AUTH * (AUTH[OWNER_GROUP[owner]] ?? 1) + 0.25 * Math.max(0, nSigns(p ?? "") - 1), 1.2, 2.2).toFixed(2);
 const REALP = (() => { const x = J(`${OUT}/pages.json`); return x?.pages?.length > 500 ? new Set(x.pages) : null; })(); // sitemap, from the demand miner
 const isReal = (p) => !REALP || REALP.has(p) || [...REALP].some((q) => q.startsWith(p.endsWith("/") ? p : p + "/")); // a family prefix counts if real pages sit under it
+// HOLDOUT (ai-machine.mjs): the 5% of pages no push machine touches — the brain never builds on one (it would spoil the measure)
+const HO = J("data/ai/holdout.json", null), fnv = (str) => { let h = 0x811c9dc5; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h % 100; };
+const HELD = (p) => !!HO && p !== "/" && fnv(HO.salt + p) < HO.pct;
 const build = (o) => { if (built >= 4 || alive().length >= 14) return false;
+  if (o.path !== false && HELD(o.target)) return false;
   if (o.path !== false && !isReal(o.target)) { say(o.owner, `refused a branch on ${o.target}: not a real page (sitemap)`, "bad"); return false; } const id = `${o.kind}-${o.target}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 52);
   if (blocked(id) || !(fire(o.neuron) || nSigns(o.target) >= 3)) return false;
   B.branches.push({ id, born: iso(NOW), state: "alive", boost: o.path === false ? null : boost(o.target, o.owner), signs: [...(signs.get(o.target) ?? signs.get(famKey(o.target)) ?? [])], ...o }); built++;
