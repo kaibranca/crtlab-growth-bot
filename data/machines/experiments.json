@@ -1,0 +1,76 @@
+{
+ "at": "2026-11-12T19:50:05.955Z",
+ "say": "10 experiments live — next verdicts: Bing send yield 13 Nov · conversion bandit 14 Nov · executive focus: conversion 15 Nov · forecast self-calibration 16 Nov.",
+ "experiments": [
+  {
+   "name": "Bing send yield (hit = live read in 3 d)",
+   "owner": "yield",
+   "status": "waiting",
+   "next": "2026-11-13",
+   "read": null
+  },
+  {
+   "name": "conversion bandit (4 families × 5 wordings)",
+   "owner": "bandit",
+   "status": "running",
+   "next": "2026-11-14",
+   "read": null
+  },
+  {
+   "name": "executive focus: conversion",
+   "owner": "executive",
+   "status": "running",
+   "next": "2026-11-15",
+   "read": "click rate at start 0.00848"
+  },
+  {
+   "name": "forecast self-calibration (trend α)",
+   "owner": "world",
+   "status": "grading",
+   "next": "2026-11-16",
+   "read": "0 forecasts graded"
+  },
+  {
+   "name": "hook home-yesterday-charts-2026-11-12",
+   "owner": "hooks",
+   "status": "running",
+   "next": "2026-11-17",
+   "read": "0/31 vs 1/34 (P 0.186)"
+  },
+  {
+   "name": "comeback email (63 sent / 17 held)",
+   "owner": "retention",
+   "status": "paused (email budget)",
+   "next": "2026-11-19",
+   "read": null
+  },
+  {
+   "name": "upgrade judge (35 waiting)",
+   "owner": "upgrades",
+   "status": "running",
+   "next": "2026-11-19",
+   "read": null
+  },
+  {
+   "name": "tuner ai.exploreShare 0.15 vs 0.2",
+   "owner": "ai",
+   "status": "running",
+   "next": "2026-12-02",
+   "read": "0 blocks"
+  },
+  {
+   "name": "tuner ai.resendDays 7 vs 10",
+   "owner": "bing",
+   "status": "running",
+   "next": "2026-12-02",
+   "read": "0 blocks"
+  },
+  {
+   "name": "holdout 5% of pages never pushed",
+   "owner": "holdout",
+   "status": "running",
+   "next": null,
+   "read": "provisional ×0.44"
+  }
+ ]
+}

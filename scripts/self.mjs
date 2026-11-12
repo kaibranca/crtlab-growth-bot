@@ -114,5 +114,23 @@ for (const q of queue) { const r = payRate[q.engine]; q.buildPays = r ? +((1 + r
 queue.sort((a, b) => b.score - a.score);
 fs.writeFileSync("data/machines/build-queue.json", JSON.stringify({ at: new Date().toISOString(), constraint: EX, buildPays: payRate, note: "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.", items: queue.slice(0, 25) }, null, 1));
 
+// ── EXPERIMENTS: every live test in the ecosystem, its read so far and when its next verdict lands (one place to look) ──
+const ex = [], add = (name, owner, status, next, read) => ex.push({ name, owner, status, next: next ?? null, read: read ?? null });
+const plusD = (t, d) => iso2(Date.parse(t) + d * DAY), iso2 = (t) => new Date(t).toISOString().slice(0, 10);
+for (const [id, k] of Object.entries(J("data/machines/knobs.json", {})?.knobs ?? {})) if (k.challenge) add(`tuner ${id} ${k.champion} vs ${k.challenge.value}`, k.owner, "running", plusD(k.challenge.since + "T12:00:00Z", 20), k.challenge.read?.lift ? `×${k.challenge.read.lift} (P ${k.challenge.read.P ?? "—"})` : `${(k.challenge.read?.blocksA ?? 0) + (k.challenge.read?.blocksB ?? 0)} blocks`);
+for (const e of (J("data/ai/hooks.json", {})?.experiments ?? []).filter((x) => x.status === "running")) add(`hook ${e.id}`, "hooks", "running", plusD(e.started, e.last?.grain === "2h" ? 5 : 7), e.last ? `${e.last.B?.clicks ?? 0}/${e.last.B?.fetches ?? 0} vs ${e.last.A?.clicks ?? 0}/${e.last.A?.fetches ?? 0} (P ${e.last.pBbeatsA})` : null);
+{ const B = J("data/ai/bandit.json", {}); if (B.families) add(`conversion bandit (${Object.keys(B.families).length} families × 5 wordings)`, "bandit", "running", "2026-11-14", null); }
+{ const H = J("data/ai/holdout.json", {}); if (H.last) add(`holdout ${H.pct}% of pages never pushed`, "holdout", "running", null, H.last.pushLift != null ? `push lift ×${H.last.pushLift}` : `provisional ×${H.last.provisional ?? "—"}`); }
+{ const C = J("data/retention/comeback.json", {}); if (C.read) add(`comeback email (${C.read.sent} sent / ${C.read.held} held)`, "retention", C.on === false ? `paused (${C.pausedBy ?? "brain"})` : "running", "2026-11-19", C.read.pWin != null ? `P(sent wins) ${C.read.pWin}` : null); }
+{ const X = J("data/machines/executive.json", {}).history?.at(-1); if (X && !X.ended) add(`executive focus: ${X.constraint}`, "executive", "running", plusD(X.since, 3), `click rate at start ${X.rate0}`); }
+if (UPG.summary) add(`upgrade judge (${UPG.summary.waiting} waiting)`, "upgrades", "running", UPG.summary.next, UPG.summary.judged ? `${UPG.summary.paid}/${UPG.summary.judged} paid` : null);
+{ const SK = fs.existsSync("data/world/skill.jsonl") ? fs.readFileSync("data/world/skill.jsonl", "utf8").split("\n").filter(Boolean).length : 0; add("forecast self-calibration (trend α)", "world", SK >= 3 ? "learning" : "grading", SK >= 3 ? null : plusD(new Date().toISOString(), 3 - SK + 1), `${SK} forecasts graded`); }
+{ const Y = J("data/ai/plan.json", {})?.learned?.sendYield; add("Bing send yield (hit = live read in 3 d)", "yield", Y?.judged ? "learning" : "waiting", Y?.judged ? null : "2026-11-13", Y?.judged ? `${Y.judged} judged, ${Math.round(Y.overall * 100)}% hit` : null); }
+ex.sort((a, b) => (a.next ?? "9") .localeCompare(b.next ?? "9"));
+const soon = ex.filter((x) => x.next).slice(0, 4).map((x) => `${x.name.split(" (")[0]} ${fd(x.next)}`);
+const exSay = `${ex.length} experiments live — next verdicts: ${soon.join(" · ")}.`;
+fs.writeFileSync("data/machines/experiments.json", JSON.stringify({ at: new Date().toISOString(), say: exSay, experiments: ex }, null, 1));
+whole.experiments = exSay;
+
 fs.writeFileSync(OUT, JSON.stringify({ at: new Date().toISOString(), note: "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.", whole, engines, machines }, null, 1));
 console.log(`self: ${Object.entries(engines).map(([e, x]) => `${e} ${x.iq}${x.curiosity > 1.0001 ? ` c×${x.curiosity}` : ""}`).join(" · ")}`);

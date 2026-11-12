@@ -1,12 +1,12 @@
 {
- "at": "2026-11-12T19:39:22.724Z",
+ "at": "2026-11-12T19:50:05.956Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
-  "iq": 78.1,
-  "power": 228,
-  "dIQ": 3.8,
-  "dPower": 123,
-  "iqPerUpgrade": 0.031,
+  "iq": 78.2,
+  "power": 239,
+  "dIQ": 3.9,
+  "dPower": 134,
+  "iqPerUpgrade": 0.029,
   "upgrades": {
    "judged": 0,
    "paid": 0,
@@ -16,16 +16,17 @@
    "unmeasured": 0,
    "next": "2026-11-19"
   },
-  "say": "Machines IQ 78.1 (+3.8 since 11 Nov) on 123 upgrades — 0.03 IQ per upgrade. Upgrades get their first verdicts 19 Nov."
+  "say": "Machines IQ 78.2 (+3.9 since 11 Nov) on 134 upgrades — 0.03 IQ per upgrade. Upgrades get their first verdicts 19 Nov.",
+  "experiments": "10 experiments live — next verdicts: Bing send yield 13 Nov · conversion bandit 14 Nov · executive focus: conversion 15 Nov · forecast self-calibration 16 Nov."
  },
  "engines": {
   "main": {
-   "iq": 78.1,
+   "iq": 78.2,
    "iqWas": 74.3,
    "since": "2026-11-11",
    "level": "Novice",
    "members": 72,
-   "learners": 27,
+   "learners": 28,
    "brainVerdicts": 0,
    "curiosity": 1,
    "episode": null,
@@ -63,15 +64,15 @@
      "limit": "learning on every front — more data is the only limit"
     }
    ],
-   "say": "My IQ is 78.1 (Novice, +3.8 since 11 Nov) — 27 of 72 parts learn on their own; weakest: Supervisor, Ledger, 4-week trend (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 78.2 (Novice, +3.9 since 11 Nov) — 28 of 72 parts learn on their own; weakest: Supervisor, Ledger, 4-week trend (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "traffic": {
-   "iq": 78.3,
+   "iq": 78.5,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Novice",
    "members": 32,
-   "learners": 17,
+   "learners": 18,
    "brainVerdicts": 0,
    "curiosity": 1,
    "episode": null,
@@ -89,8 +90,8 @@
      "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
     },
     {
-     "id": "bing",
-     "name": "Bing sender",
+     "id": "indexnow",
+     "name": "IndexNow",
      "iq": 70,
      "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
     }
@@ -109,7 +110,7 @@
      "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 78.3 (Novice, +2.5 since 11 Nov) — 17 of 32 parts learn on their own; weakest: llms.txt curator, Truth gate, Bing sender (acts but never judges its outcome — it has a KPI it doesn't learn from)."
+   "say": "My IQ is 78.5 (Novice, +2.7 since 11 Nov) — 18 of 32 parts learn on their own; weakest: llms.txt curator, Truth gate, IndexNow (acts but never judges its outcome — it has a KPI it doesn't learn from)."
   },
   "money": {
    "iq": 76.1,
@@ -746,9 +747,9 @@
   },
   "bing": {
    "name": "Bing sender",
-   "iq": 70,
+   "iq": 78,
    "iqWas": 70,
-   "level": "Blank",
+   "level": "Novice",
    "state": "ok",
    "kpi": {
     "label": "AI clicks / week",
@@ -756,14 +757,19 @@
     "before": 41,
     "change": -0.15
    },
-   "made": null,
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 40,
+    "f": 0
+   },
    "upgrades": {
     "paid": 0,
     "hurt": 0,
     "flat": 0,
     "waiting": 0
    },
-   "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+   "limit": "collects evidence but hasn't reached a verdict yet"
   },
   "curator": {
    "name": "llms.txt curator",

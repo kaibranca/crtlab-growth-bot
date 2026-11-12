@@ -521,7 +521,7 @@ const conclusion = mode === "surge" ? `Big day, Kai. AI is reading us ${xN.toFix
   : `All steady, Kai. ${nodes.filter((n) => n.state === "ok").length} of ${nodes.length} machines running and learning.${watch.length ? ` ${watch.length === 1 ? "One thing to look at." : `${watch.length} things to look at.`}` : " Nothing needs you."}`;
 const prevEco = J("data/machines/ecosystem.json"), bKey = [mode, ...good.slice(0, 3), ...watch.slice(0, 2)].join("|").replace(/\d+/g, "#");
 // SELF (scripts/self.mjs): the Core reads itself — its own IQ, level, weakest parts, curiosity — and says it first
-const SELFJ = J("data/machines/self.json", null), SELFL = (e) => [SELFJ?.engines?.[e]?.say, e === "main" ? SELFJ?.whole?.say : null].filter(Boolean);
+const SELFJ = J("data/machines/self.json", null), SELFL = (e) => [SELFJ?.engines?.[e]?.say, e === "main" ? SELFJ?.whole?.say : null, e === "main" ? SELFJ?.whole?.experiments : null].filter(Boolean);
 const briefing = { key: bKey, changed: prevEco?.briefing?.key === bKey ? prevEco.briefing.changed : new Date().toISOString(), headline: modeOut.why, good: good.slice(0, 10), watch: watch.slice(0, 6), notes: NW.notes.slice(0, 8), next: [...SELFL("main"), ...next].slice(0, 7), conclusion };
 
 // ── 6. WIDGETS: the live numbers the page shows as tiles (all from files the machines already wrote)
