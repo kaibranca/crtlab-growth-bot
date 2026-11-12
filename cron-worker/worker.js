@@ -86,6 +86,7 @@ async function sentinel(env, d) {
   const a = spike ? 0.05 : 0.15; base.total = base.total * (1 - a) + total * a; base.n++;
   for (const p of new Set([...Object.keys(base.pages), ...Object.keys(pages)])) { const v = (base.pages[p] ?? 0) * (1 - a) + (pages[p] ?? 0) * a; if (v < 0.05) delete base.pages[p]; else base.pages[p] = +v.toFixed(3); }
   try { await caches.default.put(BK, new Response(JSON.stringify(base), { headers: { "Cache-Control": "max-age=259200" } })); } catch {}
+  if (d.getUTCMinutes() === 2 || base.n <= 2) console.log(`${d.toISOString()} sentinel ok: ${total} people-fetches in 15 min vs ~${base.total.toFixed(1)} baseline (${base.n} windows learned, ${Object.keys(base.pages).length} pages tracked)`); // hourly heartbeat
   if (!spike) return;
   const CK = new Request("https://sentinel.crtlab.internal/cooldown");
   try { if (await caches.default.match(CK)) { console.log(`${d.toISOString()} sentinel: spike (${total} vs ~${base.total.toFixed(1)}) — cooling down`); return; } } catch {}
