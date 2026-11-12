@@ -1,161 +1,161 @@
 {
- "updated": "2026-11-12T00:04:22.593Z",
+ "updated": "2026-11-12T00:19:48.417Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
   "up30d": 100,
   "last": {
-   "at": "2026-11-12T00:02:14.408Z",
+   "at": "2026-11-12T00:18:03.312Z",
    "ok": true,
    "results": [
     {
      "name": "home",
      "path": "/",
      "status": 200,
-     "ms": 354,
+     "ms": 313,
      "ok": true
     },
     {
      "name": "backtest page",
      "path": "/backtest",
      "status": 200,
-     "ms": 318,
+     "ms": 267,
      "ok": true
     },
     {
      "name": "pricing",
      "path": "/pricing",
      "status": 200,
-     "ms": 232,
+     "ms": 191,
      "ok": true
     },
     {
      "name": "chart app",
      "path": "/backtester",
      "status": 200,
-     "ms": 166,
+     "ms": 155,
      "ok": true
     },
     {
      "name": "statistics",
      "path": "/statistics/nas100",
      "status": 200,
-     "ms": 217,
+     "ms": 147,
      "ok": true
     },
     {
      "name": "calculator",
      "path": "/tools/position-size-calculator",
      "status": 200,
-     "ms": 336,
+     "ms": 209,
      "ok": true
     },
     {
      "name": "candles API",
      "path": "/api/candles?pair=nas100&tf=1hour&limit=50&v=q8",
      "status": 200,
-     "ms": 281,
+     "ms": 179,
      "ok": true
     },
     {
      "name": "llms.txt",
      "path": "/llms.txt",
      "status": 200,
-     "ms": 190,
+     "ms": 152,
      "ok": true
     },
     {
      "name": "robots.txt",
      "path": "/robots.txt",
      "status": 200,
-     "ms": 216,
+     "ms": 150,
      "ok": true
     },
     {
      "name": "sitemap",
      "path": "/sitemap.xml",
      "status": 200,
-     "ms": 192,
+     "ms": 141,
      "ok": true
     },
     {
      "name": "AI: GPTBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 178,
+     "ms": 134,
      "ok": true
     },
     {
      "name": "AI: OAI-SearchBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 176,
+     "ms": 130,
      "ok": true
     },
     {
      "name": "AI: ChatGPT-User",
      "path": "/backtest",
      "status": 200,
-     "ms": 193,
+     "ms": 156,
      "ok": true
     },
     {
      "name": "AI: ClaudeBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 202,
+     "ms": 128,
      "ok": true
     },
     {
      "name": "AI: PerplexityBot",
      "path": "/backtest",
      "status": 200,
-     "ms": 195,
+     "ms": 128,
      "ok": true
     },
     {
      "name": "AI: Googlebot",
      "path": "/backtest",
      "status": 200,
-     "ms": 184,
+     "ms": 151,
      "ok": true
     },
     {
      "name": "AI: bingbot",
      "path": "/backtest",
      "status": 200,
-     "ms": 198,
+     "ms": 635,
      "ok": true
     },
     {
      "name": "AI: Applebot",
      "path": "/backtest",
      "status": 200,
-     "ms": 176,
+     "ms": 138,
      "ok": true
     }
    ]
   },
   "incidents": [],
   "speed": {
-   "home": 354,
-   "backtest page": 318,
-   "pricing": 232,
-   "chart app": 166,
-   "statistics": 217,
-   "calculator": 336,
-   "candles API": 281,
-   "llms.txt": 190,
-   "robots.txt": 216,
-   "sitemap": 192,
-   "AI: GPTBot": 178,
-   "AI: OAI-SearchBot": 176,
-   "AI: ChatGPT-User": 193,
-   "AI: ClaudeBot": 202,
-   "AI: PerplexityBot": 195,
-   "AI: Googlebot": 184,
-   "AI: bingbot": 198,
-   "AI: Applebot": 176
+   "home": 313,
+   "backtest page": 267,
+   "pricing": 191,
+   "chart app": 155,
+   "statistics": 147,
+   "calculator": 209,
+   "candles API": 179,
+   "llms.txt": 152,
+   "robots.txt": 150,
+   "sitemap": 141,
+   "AI: GPTBot": 134,
+   "AI: OAI-SearchBot": 130,
+   "AI: ChatGPT-User": 156,
+   "AI: ClaudeBot": 128,
+   "AI: PerplexityBot": 128,
+   "AI: Googlebot": 151,
+   "AI: bingbot": 635,
+   "AI: Applebot": 138
   }
  },
  "aicrawl": {
@@ -342,14 +342,14 @@
     "Claude-User": 10
    },
    "2026-11-12": {
-    "GPTBot": 1,
-    "OAI-SearchBot": 189,
-    "ChatGPT-User": 4,
-    "ClaudeBot": 1,
-    "PerplexityBot": 2,
-    "Googlebot": 2,
-    "Bingbot": 8,
-    "Applebot": 1,
+    "GPTBot": 2,
+    "OAI-SearchBot": 236,
+    "ChatGPT-User": 8,
+    "ClaudeBot": 2,
+    "PerplexityBot": 3,
+    "Googlebot": 3,
+    "Bingbot": 15,
+    "Applebot": 2,
     "Amazonbot": 30,
     "YandexBot": 1
    }
@@ -357,35 +357,35 @@
   "topPages7d": [
    [
     "/",
-    31769
+    31775
    ],
    [
     "/backtest",
-    4068
+    4079
    ],
    [
     "/economic-calendar",
-    2330
+    2332
    ],
    [
     "/features",
-    1536
+    1538
    ],
    [
     "/news",
-    1355
+    1356
    ],
    [
     "/pricing",
-    1308
+    1309
    ],
    [
     "/learn",
-    1135
+    1137
    ],
    [
     "/help",
-    1083
+    1085
    ],
    [
     "/tools",
@@ -393,43 +393,43 @@
    ],
    [
     "/faq",
-    709
+    710
    ],
    [
     "/prop-firm-challenge-simulator",
-    705
+    706
    ],
    [
     "/answers",
-    688
+    689
    ],
    [
     "/tools/futures-tick-value-calculator",
-    644
+    645
    ],
    [
     "/tools/best-time-to-trade",
-    615
+    616
    ],
    [
     "/tools/position-size-calculator",
-    543
+    544
    ],
    [
     "/daily-market-data",
-    505
+    506
    ],
    [
     "/tools/risk-reward-calculator",
-    396
+    397
    ],
    [
     "/tools/margin-calculator",
-    375
+    376
    ],
    [
     "/backtest-gold",
-    370
+    371
    ],
    [
     "/recap",
@@ -438,6 +438,36 @@
   ]
  },
  "activity": [
+  {
+   "at": "2026-11-12T00:18:14.459Z",
+   "job": "indexnow",
+   "ok": true,
+   "text": "submitted 1 changed pages · HTTP 200"
+  },
+  {
+   "at": "2026-11-12T00:18:03.312Z",
+   "job": "watchdog",
+   "ok": true,
+   "text": "18/18 checks pass · avg 195 ms"
+  },
+  {
+   "at": "2026-11-12T00:17:59.757Z",
+   "job": "shield",
+   "ok": true,
+   "text": "Cloudflare blocked 1 attack request"
+  },
+  {
+   "at": "2026-11-12T00:17:58.485Z",
+   "job": "ai-machine",
+   "ok": true,
+   "text": "learned from 549 AI-read pages · read→click 2.1% · click→account 49% · 18 pages sent to Bing"
+  },
+  {
+   "at": "2026-11-12T00:17:45.128Z",
+   "job": "ai-crawl",
+   "ok": true,
+   "text": "63 crawler visits · OAI-SearchBot 47 · Bingbot 7 · ChatGPT-User 4 · GPTBot 1"
+  },
   {
    "at": "2026-11-12T00:02:14.408Z",
    "job": "watchdog",
@@ -887,36 +917,6 @@
    "job": "indexnow",
    "ok": true,
    "text": "submitted 4 changed pages · HTTP 200"
-  },
-  {
-   "at": "2026-11-11T16:00:56.351Z",
-   "job": "watchdog",
-   "ok": true,
-   "text": "18/18 checks pass · avg 181 ms"
-  },
-  {
-   "at": "2026-11-11T16:00:53.054Z",
-   "job": "shield",
-   "ok": true,
-   "text": "Cloudflare blocked 20 attack requests"
-  },
-  {
-   "at": "2026-11-11T16:00:51.317Z",
-   "job": "ai-machine",
-   "ok": true,
-   "text": "learned from 536 AI-read pages · read→click 2.2% · click→account 49% · 0 pages sent to Bing"
-  },
-  {
-   "at": "2026-11-11T16:00:38.274Z",
-   "job": "ai-crawl",
-   "ok": true,
-   "text": "633 crawler visits · OAI-SearchBot 441 · Amazonbot 156 · Bingbot 18 · ChatGPT-User 9"
-  },
-  {
-   "at": "2026-11-11T15:18:20.984Z",
-   "job": "indexnow",
-   "ok": true,
-   "text": "submitted 5 changed pages · HTTP 200"
   }
  ],
  "seo": {
@@ -1130,7 +1130,7 @@
   "broken": []
  },
  "ai": {
-  "at": "2026-11-12T00:02:06.931Z",
+  "at": "2026-11-12T00:17:58.485Z",
   "learned": {
    "weekly": {
     "daysSeen": [
@@ -1176,7 +1176,7 @@
      {
       "f": "/economic-calendar/<event>",
       "peak": "Tue",
-      "lift": 1.39
+      "lift": 1.38
      },
      {
       "f": "/backtest-<market>",
@@ -1191,7 +1191,7 @@
      {
       "f": "/backtest",
       "peak": "Tue",
-      "lift": 1.19
+      "lift": 1.18
      }
     ]
    },
@@ -1201,7 +1201,7 @@
     "byFamily": {}
    },
    "hookLessons": {},
-   "readCoverage": 0.82,
+   "readCoverage": 0.81,
    "bingChecked": 20,
    "bingOldCopies": 7,
    "famLagH": {
@@ -1218,8 +1218,8 @@
      "n": 1
     }
    },
-   "eventLift": 4.64,
-   "eventPages": 291,
+   "eventLift": 4.73,
+   "eventPages": 293,
    "releasesNext3d": 53,
    "pagesKnown": 2846,
    "pagesRead": 549,
@@ -1504,7 +1504,7 @@
    {
     "p": "/",
     "family": "/",
-    "reads7d": 503,
+    "reads7d": 504,
     "clicks7d": 2,
     "ctr": 0.0079,
     "missedAccounts": 3.46
@@ -1539,14 +1539,14 @@
     "reads7d": 28,
     "clicks7d": 0,
     "ctr": 0.0014,
-    "missedAccounts": 0.22
+    "missedAccounts": 0.21
    },
    {
     "p": "/economic-calendar/us-ppi-mom",
     "family": "/economic-calendar/<event>",
     "reads7d": 23,
     "clicks7d": 0,
-    "ctr": 0.0012,
+    "ctr": 0.0011,
     "missedAccounts": 0.21
    }
   ],
@@ -1555,99 +1555,99 @@
     "family": "/backtest",
     "pages": 1,
     "inSitemap": 1,
-    "reads": 220.65,
+    "reads": 221.55,
     "clicks": 8.19,
-    "accounts": 48.14,
-    "readsPerPage": 220.65,
-    "ctr": 0.0347,
+    "accounts": 48.11,
+    "readsPerPage": 221.55,
+    "ctr": 0.0345,
     "acc": 0.5363,
-    "value": 4.1013
+    "value": 4.1012
    },
    {
     "family": "/",
     "pages": 1,
     "inSitemap": 1,
-    "reads": 518.52,
+    "reads": 519.26,
     "clicks": 4.07,
-    "accounts": 7.92,
-    "readsPerPage": 518.52,
+    "accounts": 7.91,
+    "readsPerPage": 519.26,
     "ctr": 0.0088,
     "acc": 0.5057,
-    "value": 2.3061
+    "value": 2.3046
    },
    {
     "family": "/tools/<stats>",
     "pages": 6,
     "inSitemap": 6,
-    "reads": 107.11,
+    "reads": 107.05,
     "clicks": 2.24,
     "accounts": 3.15,
-    "readsPerPage": 17.85,
-    "ctr": 0.021,
+    "readsPerPage": 17.84,
+    "ctr": 0.0209,
     "acc": 0.4327,
-    "value": 0.1619
+    "value": 0.1617
    },
    {
     "family": "/tradingview-bar-replay-alternative",
     "pages": 1,
     "inSitemap": 1,
-    "reads": 4.74,
+    "reads": 4.73,
     "clicks": 1.33,
     "accounts": 0.57,
-    "readsPerPage": 4.74,
+    "readsPerPage": 4.73,
     "ctr": 0.0484,
-    "acc": 0.4221,
-    "value": 0.0968
+    "acc": 0.4222,
+    "value": 0.0967
    },
    {
     "family": "/<strategy>-backtester",
     "pages": 29,
     "inSitemap": 27,
-    "reads": 27.88,
-    "clicks": 11.59,
+    "reads": 27.86,
+    "clicks": 11.58,
     "accounts": 9.17,
     "readsPerPage": 0.96,
-    "ctr": 0.1831,
+    "ctr": 0.183,
     "acc": 0.5135,
-    "value": 0.0904
+    "value": 0.0903
    },
    {
     "family": "/news",
     "pages": 1,
     "inSitemap": 1,
-    "reads": 5.09,
+    "reads": 5.08,
     "clicks": 0.88,
     "accounts": 0,
-    "readsPerPage": 5.09,
+    "readsPerPage": 5.08,
     "ctr": 0.0382,
     "acc": 0.43,
-    "value": 0.0836
+    "value": 0.0834
    }
   ],
   "winners": [
    {
     "p": "/backtest",
     "family": "/backtest",
-    "accounts": 48.14,
+    "accounts": 48.11,
     "clicks": 8.19,
-    "reads": 220.65,
-    "ctr": 0.0369
+    "reads": 221.55,
+    "ctr": 0.0367
    },
    {
     "p": "/",
     "family": "/",
-    "accounts": 7.92,
+    "accounts": 7.91,
     "clicks": 4.07,
-    "reads": 518.52,
+    "reads": 519.26,
     "ctr": 0.0079
    },
    {
     "p": "/footprint-chart-backtesting",
     "family": "/<strategy>-backtester",
     "accounts": 4.8,
-    "clicks": 7.21,
+    "clicks": 7.2,
     "reads": 0.8,
-    "ctr": 0.4567
+    "ctr": 0.4565
    },
    {
     "p": "/xauusd",
@@ -1655,46 +1655,46 @@
     "accounts": 2.25,
     "clicks": 1.41,
     "reads": 1.97,
-    "ctr": 0.1268
+    "ctr": 0.1267
    },
    {
     "p": "/tools/crt-statistics",
     "family": "/tools/<stats>",
     "accounts": 2.05,
     "clicks": 2.24,
-    "reads": 20.75,
+    "reads": 20.74,
     "ctr": 0.0605
    },
    {
     "p": "/backtest-stocks",
     "family": "/backtest-<market>",
-    "accounts": 1.26,
-    "clicks": 1.26,
+    "accounts": 1.25,
+    "clicks": 1.25,
     "reads": 5.46,
     "ctr": 0.0747
    }
   ],
   "submitted": {
    "status": "HTTP 200",
-   "count": 16,
+   "count": 18,
    "top": [
-    "/tools/position-size-calculator (SURGE)",
-    "/economic-calendar/us-core-ppi-mom (SURGE)",
-    "/economic-calendar/us-ppi-mom (SURGE)",
-    "/economic-calendar/us-initial-jobless-claims (SURGE)",
-    "/crt-strategy-backtester (RISING)",
-    "/backtest-nas100 (RISING)",
-    "/statistics/ger40 (RISING)",
-    "/news/cpi/bitcoin (SISTER of /news/cpi/gold)",
-    "/statistics/xauusd (RISING)",
-    "/pricing (RISING)",
-    "/daily-market-data (RISING)",
-    "/faq (RISING)",
-    "/features (RISING)",
-    "/economic-calendar/uk-rightmove-house-price-index-mom (release 2026-11-15)",
-    "/week-ahead (changed · explore)"
+    "/news/ppi/bitcoin (SISTER of /news/ppi/gold)",
+    "/news/ppi/nasdaq (SISTER of /news/ppi/gold)",
+    "/news/ppi/sp500 (SISTER of /news/ppi/gold)",
+    "/news/ppi/ethereum (SISTER of /news/ppi/gold)",
+    "/news/claims/gold (SISTER of /news/cpi/gold)",
+    "/news/ppi/us30 (SISTER of /news/ppi/gold)",
+    "/news/ppi/eurusd (SISTER of /news/ppi/gold)",
+    "/news/ppi/gbpusd (SISTER of /news/ppi/gold)",
+    "/news/ppi/usdjpy (SISTER of /news/ppi/gold)",
+    "/news/ppi/audusd (SISTER of /news/ppi/gold)",
+    "/news/ppi/silver (SISTER of /news/ppi/gold)",
+    "/news/ppi/oil (SISTER of /news/ppi/gold)",
+    "/news/nfp/gold (SISTER of /news/cpi/gold)",
+    "/news/pce/gold (SISTER of /news/cpi/gold)",
+    "/news/retail-sales/gold (SISTER of /news/cpi/gold)"
    ],
-   "queueLeft": 2695
+   "queueLeft": 2697
   },
   "verdicts": [
    {
@@ -2164,20 +2164,20 @@
      "z": 13.4
     },
     {
-     "kind": "page",
-     "key": "/economic-calendar/us-ppi-mom",
-     "family": "/economic-calendar/<event>",
-     "last24h": 13,
-     "normal": 1,
-     "z": 12
-    },
-    {
      "kind": "family",
      "key": "/economic-calendar/<event>",
      "family": "/economic-calendar/<event>",
-     "last24h": 93,
-     "normal": 29,
-     "z": 11.9
+     "last24h": 91,
+     "normal": 29.3,
+     "z": 11.4
+    },
+    {
+     "kind": "page",
+     "key": "/economic-calendar/us-ppi-mom",
+     "family": "/economic-calendar/<event>",
+     "last24h": 12,
+     "normal": 1.1,
+     "z": 10.4
     },
     {
      "kind": "page",
@@ -2192,7 +2192,7 @@
     {
      "p": "/",
      "family": "/",
-     "reads7d": 503,
+     "reads7d": 504,
      "clicks7d": 2,
      "ctr": 0.0079,
      "missedAccounts": 3.46
@@ -2227,7 +2227,7 @@
      "reads7d": 28,
      "clicks7d": 0,
      "ctr": 0.0014,
-     "missedAccounts": 0.22
+     "missedAccounts": 0.21
     }
    ],
    "expand": [
@@ -2235,61 +2235,61 @@
      "family": "/backtest",
      "pages": 1,
      "inSitemap": 1,
-     "reads": 220.65,
+     "reads": 221.55,
      "clicks": 8.19,
-     "accounts": 48.14,
-     "readsPerPage": 220.65,
-     "ctr": 0.0347,
+     "accounts": 48.11,
+     "readsPerPage": 221.55,
+     "ctr": 0.0345,
      "acc": 0.5363,
-     "value": 4.1013
+     "value": 4.1012
     },
     {
      "family": "/",
      "pages": 1,
      "inSitemap": 1,
-     "reads": 518.52,
+     "reads": 519.26,
      "clicks": 4.07,
-     "accounts": 7.92,
-     "readsPerPage": 518.52,
+     "accounts": 7.91,
+     "readsPerPage": 519.26,
      "ctr": 0.0088,
      "acc": 0.5057,
-     "value": 2.3061
+     "value": 2.3046
     },
     {
      "family": "/tools/<stats>",
      "pages": 6,
      "inSitemap": 6,
-     "reads": 107.11,
+     "reads": 107.05,
      "clicks": 2.24,
      "accounts": 3.15,
-     "readsPerPage": 17.85,
-     "ctr": 0.021,
+     "readsPerPage": 17.84,
+     "ctr": 0.0209,
      "acc": 0.4327,
-     "value": 0.1619
+     "value": 0.1617
     },
     {
      "family": "/tradingview-bar-replay-alternative",
      "pages": 1,
      "inSitemap": 1,
-     "reads": 4.74,
+     "reads": 4.73,
      "clicks": 1.33,
      "accounts": 0.57,
-     "readsPerPage": 4.74,
+     "readsPerPage": 4.73,
      "ctr": 0.0484,
-     "acc": 0.4221,
-     "value": 0.0968
+     "acc": 0.4222,
+     "value": 0.0967
     },
     {
      "family": "/<strategy>-backtester",
      "pages": 29,
      "inSitemap": 27,
-     "reads": 27.88,
-     "clicks": 11.59,
+     "reads": 27.86,
+     "clicks": 11.58,
      "accounts": 9.17,
      "readsPerPage": 0.96,
-     "ctr": 0.1831,
+     "ctr": 0.183,
      "acc": 0.5135,
-     "value": 0.0904
+     "value": 0.0903
     }
    ],
    "experiments": [
@@ -2297,13 +2297,13 @@
      "id": "cal-replay-last-1",
      "status": "running",
      "days": 1.9,
-     "p": 0.212
+     "p": 0.225
     },
     {
      "id": "rel-replay-last-1",
      "status": "running",
      "days": 1.9,
-     "p": 0.651
+     "p": 0.67
     }
    ],
    "weekly": [
@@ -2333,7 +2333,7 @@
      "lift": 1.43
     }
    ],
-   "eventLift": 4.64,
+   "eventLift": 4.73,
    "ctr": 0.021,
    "acc": 0.4933
   },
@@ -2494,7 +2494,7 @@
    ]
   },
   "supervisor": {
-   "at": "2026-11-12T00:04:18.231Z",
+   "at": "2026-11-12T00:19:45.571Z",
    "ok": 54,
    "total": 54,
    "status": [
@@ -2536,7 +2536,7 @@
      "id": "truth",
      "name": "Truth gate",
      "state": "ok",
-     "lastRunH": 3,
+     "lastRunH": 3.3,
      "everyH": 6,
      "kpi": {
       "label": "contradictions",
@@ -2548,7 +2548,7 @@
      "id": "factory",
      "name": "Reaction factory",
      "state": "ok",
-     "lastRunH": 15.9,
+     "lastRunH": 16.2,
      "everyH": 24,
      "kpi": {
       "label": "reaction pages",
@@ -2559,7 +2559,7 @@
      "id": "behaviour",
      "name": "Behaviour machine",
      "state": "ok",
-     "lastRunH": 17.4,
+     "lastRunH": 17.6,
      "everyH": 24,
      "kpi": null
     },
@@ -2567,7 +2567,7 @@
      "id": "radar",
      "name": "AI radar",
      "state": "ok",
-     "lastRunH": 17.4,
+     "lastRunH": 17.6,
      "everyH": 24,
      "kpi": {
       "label": "share of AI answers",
@@ -2578,7 +2578,7 @@
      "id": "devices",
      "name": "Device QA",
      "state": "ok",
-     "lastRunH": 17.3,
+     "lastRunH": 17.5,
      "everyH": 24,
      "kpi": null
     },
@@ -2586,7 +2586,7 @@
      "id": "mentions",
      "name": "Mentions machine",
      "state": "ok",
-     "lastRunH": 17.4,
+     "lastRunH": 17.6,
      "everyH": 24,
      "kpi": {
       "label": "word-of-mouth visitors / week",
@@ -2597,7 +2597,7 @@
      "id": "health",
      "name": "Health + watchdog",
      "state": "ok",
-     "lastRunH": 1.5,
+     "lastRunH": 1.7,
      "everyH": 1,
      "kpi": null
     },
@@ -2613,7 +2613,7 @@
      "id": "indexnow",
      "name": "IndexNow",
      "state": "ok",
-     "lastRunH": 1,
+     "lastRunH": 0,
      "everyH": 24,
      "kpi": null
     },
@@ -2670,9 +2670,9 @@
      "everyH": 1,
      "kpi": {
       "label": "AI clicks / week",
-      "now": 39,
-      "before": 38,
-      "change": 0.03
+      "now": 35,
+      "before": 40,
+      "change": -0.13
      },
      "from": "core"
     },
@@ -2684,9 +2684,9 @@
      "everyH": 1,
      "kpi": {
       "label": "AI clicks / week",
-      "now": 39,
-      "before": 38,
-      "change": 0.03
+      "now": 35,
+      "before": 40,
+      "change": -0.13
      },
      "from": "core"
     },
@@ -2698,9 +2698,9 @@
      "everyH": 1,
      "kpi": {
       "label": "AI clicks / week",
-      "now": 39,
-      "before": 38,
-      "change": 0.03
+      "now": 35,
+      "before": 40,
+      "change": -0.13
      },
      "from": "core"
     },
@@ -2712,9 +2712,9 @@
      "everyH": 1,
      "kpi": {
       "label": "AI clicks / week",
-      "now": 39,
-      "before": 38,
-      "change": 0.03
+      "now": 35,
+      "before": 40,
+      "change": -0.13
      },
      "from": "core"
     },
@@ -2726,9 +2726,9 @@
      "everyH": 1,
      "kpi": {
       "label": "AI clicks / week",
-      "now": 39,
-      "before": 38,
-      "change": 0.03
+      "now": 35,
+      "before": 40,
+      "change": -0.13
      },
      "from": "core"
     },
@@ -2740,9 +2740,9 @@
      "everyH": 1,
      "kpi": {
       "label": "AI clicks / week",
-      "now": 39,
-      "before": 38,
-      "change": 0.03
+      "now": 35,
+      "before": 40,
+      "change": -0.13
      },
      "from": "core"
     },
@@ -2754,9 +2754,9 @@
      "everyH": 1,
      "kpi": {
       "label": "AI clicks / week",
-      "now": 39,
-      "before": 38,
-      "change": 0.03
+      "now": 35,
+      "before": 40,
+      "change": -0.13
      },
      "from": "core"
     },
@@ -2768,9 +2768,9 @@
      "everyH": 1,
      "kpi": {
       "label": "AI accounts / week",
-      "now": 14,
-      "before": 31,
-      "change": -0.55
+      "now": 11,
+      "before": 32,
+      "change": -0.66
      },
      "from": "core"
     },
@@ -2782,9 +2782,9 @@
      "everyH": 1,
      "kpi": {
       "label": "AI clicks / week",
-      "now": 39,
-      "before": 38,
-      "change": 0.03
+      "now": 35,
+      "before": 40,
+      "change": -0.13
      },
      "from": "core"
     },
@@ -2796,9 +2796,9 @@
      "everyH": 1,
      "kpi": {
       "label": "AI clicks / week",
-      "now": 39,
-      "before": 38,
-      "change": 0.03
+      "now": 35,
+      "before": 40,
+      "change": -0.13
      },
      "from": "core"
     },
@@ -2806,7 +2806,7 @@
      "id": "traffic-brain",
      "name": "Traffic brain ↗",
      "state": "ok",
-     "lastRunH": 0.3,
+     "lastRunH": 0.7,
      "everyH": 1,
      "kpi": null,
      "from": "core"
@@ -2815,7 +2815,7 @@
      "id": "brains",
      "name": "Brains (money · data · security · content · retention · speed)",
      "state": "ok",
-     "lastRunH": 0.3,
+     "lastRunH": 0.7,
      "everyH": 1,
      "kpi": null,
      "from": "core"
@@ -2824,7 +2824,7 @@
      "id": "seo",
      "name": "Search console",
      "state": "ok",
-     "lastRunH": 57.7,
+     "lastRunH": 58.5,
      "everyH": 168,
      "kpi": null,
      "from": "core"
@@ -2833,7 +2833,7 @@
      "id": "news",
      "name": "News engine",
      "state": "ok",
-     "lastRunH": 15.2,
+     "lastRunH": 15.9,
      "everyH": 24,
      "kpi": null,
      "from": "core"
@@ -2842,7 +2842,7 @@
      "id": "recaps",
      "name": "Daily recaps",
      "state": "ok",
-     "lastRunH": 15.2,
+     "lastRunH": 15.9,
      "everyH": 24,
      "kpi": null,
      "from": "core"
@@ -2851,7 +2851,7 @@
      "id": "linkcheck",
      "name": "Link check",
      "state": "ok",
-     "lastRunH": 57.7,
+     "lastRunH": 58.4,
      "everyH": 168,
      "kpi": null,
      "from": "core"
@@ -2860,7 +2860,7 @@
      "id": "social",
      "name": "Reels",
      "state": "ok",
-     "lastRunH": 14.6,
+     "lastRunH": 15.4,
      "everyH": 24,
      "kpi": null,
      "from": "core"
@@ -2892,7 +2892,7 @@
      "id": "security",
      "name": "Login + key watch",
      "state": "ok",
-     "lastRunH": 0.7,
+     "lastRunH": 1.5,
      "everyH": 24,
      "kpi": null,
      "from": "core"
@@ -2901,7 +2901,7 @@
      "id": "datapull",
      "name": "Data pull",
      "state": "ok",
-     "lastRunH": 0.7,
+     "lastRunH": 1.5,
      "everyH": 24,
      "kpi": {
       "label": "trading days behind",
@@ -2916,7 +2916,7 @@
      "id": "backup",
      "name": "Nightly backup",
      "state": "ok",
-     "lastRunH": 0.7,
+     "lastRunH": 1.5,
      "everyH": 24,
      "kpi": null,
      "from": "core"
@@ -2925,7 +2925,7 @@
      "id": "calendar",
      "name": "Economic calendar",
      "state": "ok",
-     "lastRunH": 1.3,
+     "lastRunH": 0,
      "everyH": 24,
      "kpi": null,
      "from": "core"
@@ -2934,7 +2934,7 @@
      "id": "indicators",
      "name": "Indicator pages",
      "state": "ok",
-     "lastRunH": 1.3,
+     "lastRunH": 0,
      "everyH": 24,
      "kpi": null,
      "from": "core"
@@ -2943,7 +2943,7 @@
      "id": "livenews",
      "name": "Same-day news",
      "state": "ok",
-     "lastRunH": 1.3,
+     "lastRunH": 0,
      "everyH": 1,
      "kpi": null,
      "from": "core"
@@ -2952,7 +2952,7 @@
      "id": "gaps",
      "name": "Search gaps",
      "state": "ok",
-     "lastRunH": 57.7,
+     "lastRunH": 58.5,
      "everyH": 168,
      "kpi": null,
      "from": "core"
@@ -2961,7 +2961,7 @@
      "id": "bingseo",
      "name": "Bing webmaster",
      "state": "ok",
-     "lastRunH": 57.7,
+     "lastRunH": 58.5,
      "everyH": 168,
      "kpi": null,
      "from": "core"
@@ -2991,7 +2991,7 @@
      "id": "wall",
      "name": "Wall + checkout",
      "state": "ok",
-     "lastRunH": 16.6,
+     "lastRunH": 17.4,
      "everyH": 24,
      "kpi": null,
      "from": "core"
@@ -3000,7 +3000,7 @@
      "id": "restore",
      "name": "Restore test",
      "state": "ok",
-     "lastRunH": 83.3,
+     "lastRunH": 84.1,
      "everyH": 168,
      "kpi": null,
      "from": "core"
@@ -3054,7 +3054,7 @@
      "id": "leak",
      "name": "Conversion leak",
      "state": "ok",
-     "lastRunH": 16.6,
+     "lastRunH": 17.4,
      "everyH": 24,
      "kpi": {
       "label": "guests → account %",
@@ -3077,7 +3077,7 @@
      "id": "analyst",
      "name": "analyst",
      "state": "ok",
-     "lastRunH": 3.3,
+     "lastRunH": 4.1,
      "everyH": 24,
      "kpi": null,
      "from": "core"
@@ -3093,8 +3093,8 @@
     {
      "move": "climbing",
      "what": "/news/cpi/gold",
-     "why": "300 reads in 3 days vs ~18.4",
-     "z": 65.7
+     "why": "300 reads in 3 days vs ~18.3",
+     "z": 65.8
     },
     {
      "move": "climbing",
@@ -3124,25 +3124,25 @@
      "move": "climbing",
      "what": "/answers/does-the-opening-range-breakout-work-on-gold",
      "why": "53 reads in 3 days vs ~3.4",
-     "z": 27
+     "z": 27.1
     },
     {
      "move": "climbing",
      "what": "/economic-calendar/us-core-inflation-rate-mom",
-     "why": "35 reads in 3 days vs ~2.2",
-     "z": 21.8
+     "why": "34 reads in 3 days vs ~2.6",
+     "z": 19.4
     },
     {
      "move": "climbing",
      "what": "/economic-calendar/united-states",
      "why": "22 reads in 3 days vs ~1.5",
-     "z": 16.7
+     "z": 16.8
     },
     {
-     "move": "climbing",
-     "what": "/economic-calendar/us-inflation-rate-yoy",
-     "why": "18 reads in 3 days vs ~1.5",
-     "z": 13.5
+     "move": "surge",
+     "what": "/economic-calendar/us-core-ppi-mom",
+     "why": "10 AI reads in 24 h vs ~0.5/day",
+     "z": 13.4
     }
    ],
    "ledger": [
@@ -3373,11 +3373,6 @@
  },
  "indexnow": [
   {
-   "at": "2026-11-11T08:04:40.174Z",
-   "submitted": 45,
-   "status": "HTTP 200"
-  },
-  {
    "at": "2026-11-11T08:18:21.267Z",
    "submitted": 8,
    "status": "HTTP 200"
@@ -3521,6 +3516,11 @@
    "at": "2026-11-11T23:01:10.914Z",
    "submitted": 4,
    "status": "HTTP 200"
+  },
+  {
+   "at": "2026-11-12T00:18:14.459Z",
+   "submitted": 1,
+   "status": "HTTP 200"
   }
  ],
  "reels": {
@@ -3591,9 +3591,9 @@
   ]
  },
  "shield": {
-  "at": "2026-11-12T00:02:10.354Z",
+  "at": "2026-11-12T00:17:59.757Z",
   "lastHour": {
-   "crawlersChallenged": 205,
+   "crawlersChallenged": 215,
    "blocked": 1,
    "ips": 1,
    "banned": 0,
@@ -3601,7 +3601,7 @@
    "listSize": 21,
    "mode": "medium"
   },
-  "blocked24h": 2310,
+  "blocked24h": 2311,
   "banned7d": 21
  }
 }
