@@ -36,6 +36,12 @@ const digest = {
   // the other brains + the traffic brain's per-page people→click (11-11): the analyst sees the whole system
   brains: (J("data/brains/index.json", { brains: [] }).brains ?? []).map((b) => ({ brain: b.name, mode: b.mode, outcome: `${b.outcome?.label}: ${b.outcome?.v}`, openBranches: b.open })),
   peopleClick: (() => { const t = J("data/traffic/ecosystem.json", {}).live; return t ? { siteRatePct: t.rate, fetches7: t.fetches7, clicks7: t.clicks7, best: (t.best ?? []).slice(0, 3).map((x) => ({ p: x.p, fetches: x.fetches, clicks: x.clicks })), neverClicked: (t.never ?? []).slice(0, 3).map((x) => ({ p: x.p, fetches: x.fetches })) } : null; })(),
+  // 11-12 overclock signals: the system-wide wave mode, the last waves and their verdicts, the 3 h pulse, the holdout's
+  // measured push lift (the truth about whether pushing works), every hook test incl. the homepage switchback
+  lockIn: (() => { const l = J("data/machines/lockin.json", {}); return { on: !!l.on, kind: l.kind ?? null, why: l.why ?? null, bars: l.bars ?? null, lastWaves: readL("data/machines/waves.jsonl").slice(-4).map((w) => ({ kind: w.kind, hours: w.hours, verdict: w.verdict, ratio: w.ratio })) }; })(),
+  pulse3h: hum.wave && { visitors: hum.wave.visitors, signups: hum.wave.signups, riding: hum.wave.riding },
+  holdout: (() => { const h = J("data/ai/holdout.json", null); return h?.last ? { days: h.last.days, pushLift: h.last.pushLift, provisional: h.last.provisional, heldPages: h.last.heldPages } : null; })(),
+  hookFile: (J("data/ai/hooks.json", { experiments: [] }).experiments ?? []).map((e) => ({ id: e.id, family: e.family, template: e.template, mode: e.mode ?? "pages", grain: e.grain ?? null, status: e.status, last: e.last && { units: e.last.units ?? e.last.days, pBbeatsA: e.last.pBbeatsA, A: e.last.A, B: e.last.B } })),
   needsKai: (J("data/brains/fixer/ecosystem.json", {}).briefing?.watch ?? []).filter((w) => /^Admin: \d/.test(w)).slice(0, 5).map((w) => w.replace(/^Admin: /, "").slice(0, 140)),
 };
 const DIG = JSON.stringify(digest);

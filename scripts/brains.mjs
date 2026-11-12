@@ -306,7 +306,8 @@ for (const S of BRAINS) try {
   for (const a of S.admin(sens)) watch.push(`Admin: ${a}`);
   for (const m of modes) next.push(`${m.label}: ${m.why}`);
   // what the OTHER brains are saying (they all talk through data/brains/index.json + the traffic engine)
-  const heard = [...peers.filter((p) => p.id !== S.id && p.mode && p.mode !== "Normal").map((p) => `${p.name}: ${p.mode}`), ...(trafficEco.modes?.[0] && trafficEco.modes[0].id !== "hunt" ? [`Traffic brain: ${trafficEco.modes[0].label}`] : [])];
+  const LK = J("data/machines/lockin.json", {}); // the system-wide wave mode — every brain hears it first
+  const heard = [...(LK.on ? [`LOCK-IN ${LK.kind} wave: ${String(LK.why).slice(0, 90)}`] : []), ...peers.filter((p) => p.id !== S.id && p.mode && p.mode !== "Normal").map((p) => `${p.name}: ${p.mode}`), ...(trafficEco.modes?.[0] && trafficEco.modes[0].id !== "hunt" ? [`Traffic brain: ${trafficEco.modes[0].label}`] : [])];
   if (heard.length) good.unshift(`Other brains: ${heard.join(" · ")}`);
   const mainFeed = (main.feed ?? []).filter((f) => ids.has(f.m) && f.m !== "core").slice(0, 30);
   const eco = { at: iso(NOW), engine: S.id, color: S.color, modes: modes.length ? modes : [lead], sensors: sens, authority,
