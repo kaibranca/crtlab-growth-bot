@@ -193,11 +193,15 @@ if (!brain.pretrain || NOW - Date.parse(brain.pretrain.at) > DAY) {
 
 // ── JUDGE every branch that is due (fractal: the same judge for every kind) ─────────────────────────────────────────
 const pagePos = { ...(tplan.pagePos ?? {}), ...(tplan.pagePos7 ?? {}) }; // last-7-day position wins where Bing has it
+// AGAINST THE TIDE (11-12): site reads grew ~24 %/day lately, so "reads since birth ≥ 1.2 × base" called the tide a win.
+// tide = the whole site's live reads/day since the branch was born ÷ the 7 days before it; a read-based branch must beat it.
+const siteReads = (from, to, re = LIVE) => { let n = 0; for (const w of crawl) { const t = Date.parse(w.to); if (t < from || t >= to) continue; for (const [b, v] of Object.entries(w.bots ?? {})) if (re.test(b)) for (const [, k] of v.top ?? []) n += k; } return n; };
+const tide = (b, re = LIVE) => { const t0 = Date.parse(b.born), d = Math.max(1, (NOW - t0) / DAY), pre = siteReads(t0 - 7 * DAY, t0, re) / 7, post = siteReads(t0, NOW, re) / d; return pre > 0 && post > 0 ? Math.max(0.5, Math.min(4, post / pre)) : 1; };
 const KIND = {
   rank: { days: 7, judge: (b) => { const p = pagePos[b.target]; if (p == null) return null; return { v: p, win: p <= b.base - 1.5 || p <= 3.5 }; } },
-  channel: { days: 5, judge: (b) => { const re = ASSIST[b.chan] ?? LIVE, d = (NOW - Date.parse(b.born)) / DAY, v = readsOf(b.target, Date.parse(b.born), NOW, re) / Math.max(1, d); return { v: r1(v), win: v >= Math.max(1, b.base) * 1.2 }; } },
-  event: { days: 3, judge: (b) => { const v = readsOf(b.target, Date.parse(b.born), NOW) / 3; return { v: r1(v), win: v >= Math.max(1, b.base) * 1.3 }; } },
-  surge: { days: 4, judge: (b) => { const d = (NOW - Date.parse(b.born)) / DAY, v = readsOf(b.target, Date.parse(b.born), NOW) / Math.max(1, d); return { v: r1(v), win: v >= Math.max(1, b.base) * 1.2 }; } },
+  channel: { days: 5, judge: (b) => { const re = ASSIST[b.chan] ?? LIVE, d = (NOW - Date.parse(b.born)) / DAY, v = readsOf(b.target, Date.parse(b.born), NOW, re) / Math.max(1, d); return { v: r1(v), tide: r1(tide(b, re)), win: v >= Math.max(1, b.base) * 1.2 * tide(b, re) }; } },
+  event: { days: 3, judge: (b) => { const v = readsOf(b.target, Date.parse(b.born), NOW) / 3; return { v: r1(v), tide: r1(tide(b)), win: v >= Math.max(1, b.base) * 1.3 * tide(b) }; } },
+  surge: { days: 4, judge: (b) => { const d = (NOW - Date.parse(b.born)) / DAY, v = readsOf(b.target, Date.parse(b.born), NOW) / Math.max(1, d); return { v: r1(v), tide: r1(tide(b)), win: v >= Math.max(1, b.base) * 1.2 * tide(b) }; } },
   stall: { days: 7, judge: (b) => { let c = 0; for (const [k, v] of Object.entries(clicks)) { const [d, , p] = k.split("|"); if (p === b.target && Date.parse(d + "T23:59:59Z") >= Date.parse(b.born)) c += v[0] ?? 0; } return { v: c, win: c > 0 }; } },
   gap: { days: 14, judge: (b) => { const d = (tplan.demand ?? []).find((x) => x.q === b.target); return { v: d?.page ? 1 : 0, win: !!d?.page && d.impr >= b.base } } },
   source: { days: 7, judge: (b) => { const s = (men.sources ?? []).find((x) => x.host === b.target); return { v: s?.v7 ?? 0, win: (s?.v7 ?? 0) >= Math.max(2, b.base * 0.8) }; } },
