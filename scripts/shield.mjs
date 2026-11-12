@@ -91,9 +91,11 @@ if ((humanBans.length || changed) && process.env.RESEND_API_KEY && process.env.A
 {
   const FR = (st.floodRule ??= { id: "24a2d4af18f843f1a86340aeb2f581a4", since: "2026-11-12T14:30:00Z", hours: [] });
   if (FR.state !== "disabled") try {
-    const q2 = `{viewer{zones(filter:{zoneTag:"${Z}"}){issued:firewallEventsAdaptiveGroups(limit:5,filter:{datetime_gt:"${since}",ruleId:"${FR.id}",action:"managed_challenge"}){count} solved:firewallEventsAdaptiveGroups(limit:5,filter:{datetime_gt:"${since}",ruleId:"${FR.id}",action_in:["managed_challenge_non_interactive_solved","managed_challenge_interactive_solved","challenge_solved","managed_challenge_bypassed"]}){count}}}}`;
+    // free plan: no grouped firewall dataset — the raw event list (the same one the bans read) counted per action
+    const q2 = `{viewer{zones(filter:{zoneTag:"${Z}"}){firewallEventsAdaptive(limit:10000,filter:{datetime_gt:"${since}",ruleId:"${FR.id}"}){action}}}}`;
     const r2 = await (await fetch(API + "/graphql", { method: "POST", headers: H, body: JSON.stringify({ query: q2 }) })).json();
-    const zz = r2.data?.viewer?.zones?.[0] ?? {}, issued = (zz.issued ?? []).reduce((t, x) => t + x.count, 0), solved = (zz.solved ?? []).reduce((t, x) => t + x.count, 0);
+    if (r2.errors) throw new Error("graphql " + JSON.stringify(r2.errors).slice(0, 120));
+    const evs = r2.data?.viewer?.zones?.[0]?.firewallEventsAdaptive ?? [], issued = evs.filter((e) => e.action === "managed_challenge").length, solved = evs.filter((e) => /solved|bypassed/.test(e.action)).length;
     const HUm = (() => { try { return JSON.parse(fs.readFileSync("data/machines/humans.json", "utf8")); } catch { return {}; } })();
     const home = (HUm.selfCheck?.rawSurge ?? []).find((x) => x.dim === "landing" && x.seg === "home");
     FR.hours = [...FR.hours, { at: new Date().toISOString(), issued, solved, homeRaw24: home?.raw24 ?? null, homeNormal: home?.rawNormal ?? null }].slice(-24 * 14);
