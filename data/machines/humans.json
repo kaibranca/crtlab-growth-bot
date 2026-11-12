@@ -1,13 +1,13 @@
 {
- "at": "2026-11-12T06:04:18.366Z",
+ "at": "2026-11-12T06:18:28.943Z",
  "selfCheck": {
   "devices": [
    {
     "dev": "desktop",
-    "raw24": 370,
-    "beat24": 0.603,
+    "raw24": 376,
+    "beat24": 0.609,
     "beatNormal": 0.545,
-    "stay24": 0.022,
+    "stay24": 0.021,
     "stayNormal": 0.476
    },
    {
@@ -23,7 +23,7 @@
    {
     "dim": "source",
     "seg": "Direct",
-    "raw24": 384,
+    "raw24": 390,
     "rawNormal": 54.5,
     "stayed24": 14,
     "stayShare": 0.036
@@ -31,7 +31,7 @@
    {
     "dim": "landing",
     "seg": "home",
-    "raw24": 370,
+    "raw24": 376,
     "rawNormal": 43.1,
     "stayed24": 10,
     "stayShare": 0.027
@@ -39,10 +39,10 @@
    {
     "dim": "device",
     "seg": "desktop",
-    "raw24": 370,
+    "raw24": 376,
     "rawNormal": 58.6,
     "stayed24": 8,
-    "stayShare": 0.022
+    "stayShare": 0.021
    },
    {
     "dim": "country",
@@ -55,7 +55,7 @@
    {
     "dim": "country",
     "seg": "US",
-    "raw24": 104,
+    "raw24": 108,
     "rawNormal": 9.4,
     "stayed24": 0,
     "stayShare": 0
@@ -71,25 +71,25 @@
   ],
   "flood": [
    "CN: 157 raw vs ~6, 0 stayed",
-   "US: 104 raw vs ~9.4, 0 stayed",
+   "US: 108 raw vs ~9.4, 0 stayed",
    "GB: 48 raw vs ~5.9, 1 stayed",
    "CA: 25 raw vs ~0.9, 0 stayed"
   ],
-  "verdict": "FLOOD: the raw surge is CN (157 vs ~6, 0 stayed), US (104 vs ~9.4, 0 stayed), GB (48 vs ~5.9, 1 stayed), CA (25 vs ~0.9, 0 stayed) — headless traffic, not people leaving"
+  "verdict": "FLOOD: the raw surge is CN (157 vs ~6, 0 stayed), US (108 vs ~9.4, 0 stayed), GB (48 vs ~5.9, 1 stayed), CA (25 vs ~0.9, 0 stayed) — headless traffic, not people leaving"
  },
  "wave": {
   "window": "3h",
   "visitors": {
    "now": 2,
-   "normal": 3.6,
-   "ratio": 0.55,
-   "z": -0.8
+   "normal": 3,
+   "ratio": 0.67,
+   "z": -0.5
   },
   "signups": {
    "now": 0,
-   "normal": 1.5,
+   "normal": 1.4,
    "ratio": 0,
-   "z": -1.3
+   "z": -1.4
   },
   "riding": []
  },
@@ -100,16 +100,16 @@
   "z": -1.7
  },
  "rawVisitors": {
-  "now": 398,
+  "now": 404,
   "normal": 76.4,
-  "ratio": 5.21,
-  "z": 11.7
+  "ratio": 5.29,
+  "z": 11.5
  },
  "signups": {
   "now": 10,
   "normal": 15.7,
   "ratio": 0.64,
-  "z": -0.9
+  "z": -0.8
  },
  "state": "dip",
  "why": [
@@ -201,7 +201,7 @@
    "now": 1,
    "normal": 2.8,
    "ratio": 0.36,
-   "z": -1,
+   "z": -1.1,
    "gap": -1.8
   },
   {

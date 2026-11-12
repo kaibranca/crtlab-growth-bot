@@ -2,10 +2,10 @@
  "heap": {
   "cap": 512,
   "stopped": false,
-  "samples": 29,
+  "samples": 30,
   "note": "heap peak 295 MB → cap 512 MB is right"
  },
- "at": "2026-11-12T06:04:16.213Z",
+ "at": "2026-11-12T06:18:26.388Z",
  "status": "over budget",
  "budget": 10,
  "weekPace": 22.2,
@@ -16,21 +16,21 @@
   "web": 11,
   "ops": 3
  },
- "dayCost": 0.7,
+ "dayCost": 0.71,
  "avgDayCost": 0.74,
- "monthPace": 21,
+ "monthPace": 21.3,
  "services": [
   {
    "svc": "web",
    "memGB": 0.96,
    "normalGB": 0.73,
-   "dayCost": 0.46,
+   "dayCost": 0.47,
    "avgDayCost": 0.42,
-   "monthPace": 13.92
+   "monthPace": 13.96
   },
   {
    "svc": "Postgres",
-   "memGB": 0.45,
+   "memGB": 0.44,
    "normalGB": 0.38,
    "dayCost": 0.14,
    "avgDayCost": 0.12,
