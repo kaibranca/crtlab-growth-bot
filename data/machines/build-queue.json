@@ -1,5 +1,5 @@
 {
- "at": "2026-11-12T19:53:54.041Z",
+ "at": "2026-11-12T19:54:29.643Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -47,15 +47,7 @@
   {
    "kind": "fix",
    "what": "AI accounts / week getting worse: 21 vs 30 last week (hooks)",
-   "why": "needs a build or a decision",
-   "engine": "fixer",
-   "score": 4,
-   "buildPays": 0.5
-  },
-  {
-   "kind": "fix",
-   "what": "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones",
-   "why": "needs a build or a decision",
+   "why": "a build session reads the machine's evidence and changes what it does",
    "engine": "fixer",
    "score": 4,
    "buildPays": 0.5
@@ -240,6 +232,16 @@
    "what": "Teach Bing webmaster to judge itself on an outcome it can measure",
    "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
    "score": 2,
+   "buildPays": 0.5
+  },
+  {
+   "kind": "learn",
+   "machine": "factory",
+   "name": "Reaction factory",
+   "engine": "content",
+   "what": "Teach Reaction factory to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 1.5,
    "buildPays": 0.5
   }
  ]

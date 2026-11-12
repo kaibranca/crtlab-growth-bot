@@ -12,6 +12,7 @@
 //           again (win) or not (loss) → ledger, so the self-model learns whether its own curiosity pays.
 // Light by design: it reads files the machines already wrote; no database, no network.
 import fs from "node:fs";
+import { classifyNeed } from "./needs.mjs";
 
 const NOW = Date.now(), DAY = 864e5, OUT = "data/machines/self.json";
 const J = (f, d = null) => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return d; } };
@@ -102,7 +103,8 @@ for (const [id, m] of Object.entries(machines)) {
 // IQ DROP WATCH: real learning doesn't vanish — a machine down ≥ 5 IQ on yesterday lost an input (file gone, read failing)
 { const yd = days.filter((d) => d < today).at(-1);
   if (yd) for (const [id, m] of Object.entries(machines)) { const was = HIST[yd]?.[id] ?? 70; if (was - m.iq >= 5) queue.push({ kind: "fix", machine: id, name: m.name, engine: engOf(id), what: `${m.name} lost ${was - m.iq} IQ since ${fd(yd)} (${was} → ${m.iq})`, why: "learning doesn't vanish — an input it learns from broke (file missing, read failing, reset state)", score: 5 }); } }
-for (const t of J("data/machines/fixer.json", {})?.tasks ?? []) queue.push({ kind: "fix", what: t.what, why: t.fix, engine: "fixer", score: 4 });
+// only what a builder can do: Kai's items (accounts, wording, outreach) and FYI notes never enter the queue
+for (const t of J("data/machines/fixer.json", {})?.tasks ?? []) { const c = classifyNeed(t.what); if (c.who !== "build" || c.done) continue; queue.push({ kind: "fix", what: t.what, why: c.steps ?? t.fix, engine: "fixer", score: 4 }); }
 const ADMIN = Object.keys(ENG).filter((e) => e !== "main" && e !== "traffic").flatMap((e) => (J(`data/brains/${e}/ecosystem.json`, {})?.briefing?.notes ?? []).filter((n) => /^BUILD|build/i.test(n)).slice(0, 2).map((n) => ({ kind: "build", what: n.replace(/^BUILD \d+ \([^)]*\)\.?\s*/, ""), why: `${e} brain asks for it`, engine: e, score: 3 })));
 queue.push(...ADMIN);
 // THE BUILDER LEARNS HOW TO UPGRADE: every judged upgrade (upgrades.json) is evidence about where building pays. Per engine,
