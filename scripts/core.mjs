@@ -168,16 +168,20 @@ if (mode !== old.mode) {
 // answers. While on: Bing all-in on the wave's pages, the traffic brain pushes harder, the cost machine keeps its hands
 // off, deploy windows hold, the shield needs 3× the flood to challenge anyone, Kai gets one email. Every wave is
 // remembered (waves.jsonl) and judged on sign-ups during it vs normal; each trigger's bar learns from its own record.
-{ const LF = "data/machines/lockin.json", L0 = J(LF, { on: false, bars: {} }), bars = { people: 2, signups: 2.5, ai: 2, ...(L0.bars ?? {}) };
+{ const LF = "data/machines/lockin.json", L0 = J(LF, { on: false, bars: {} }), bars = { people: 2, signups: 2.5, ai: 2, spike: 1, ...(L0.bars ?? {}) };
   const W = HU?.wave, fresh = W && NOW - Date.parse(HU.at) < 2 * H, trig = [];
   if (fresh && W.visitors.now >= 6 && (W.visitors.ratio ?? 0) >= bars.people && W.visitors.z >= 3) trig.push({ kind: "people", why: `${W.visitors.now} real visitors in 3 h vs ~${W.visitors.normal} (×${W.visitors.ratio})${W.riding?.[0] ? ` — riding ${W.riding[0].dim} ${W.riding[0].seg} (${W.riding[0].now} vs ~${W.riding[0].normal})` : ""}` });
   if (fresh && W.signups.now >= 3 && (W.signups.ratio ?? 0) >= bars.signups) trig.push({ kind: "signups", why: `${W.signups.now} sign-ups in 3 h vs ~${W.signups.normal} (×${W.signups.ratio})` });
   // AI: a RATIO to normal, not z alone — reads grew ×20 in a month, so z vs the 14-day mean stays high on ordinary days
+  // SENTINEL (cron worker, every 5 min at the edge): a 15-minute people-fetch spike arrives as SPIKE — locks in within minutes,
+  // aimed at the spiking pages (the 24 h numbers would take hours to move)
+  let SP = null; try { SP = process.env.SPIKE ? JSON.parse(process.env.SPIKE) : null; } catch { SP = null; }
+  if (SP?.pages?.length) trig.unshift({ kind: "spike", why: `edge sentinel: ${String(SP.why ?? "people-fetch spike").slice(0, 160)}`, pages: SP.pages.slice(0, 8) });
   if (r24 >= mu * bars.ai && z >= 4 && !peopleDip) trig.push({ kind: "ai", why: `people asking AI about CRTLAB pages: ${r24} in 24 h vs ~${Math.round(mu)} (×${(r24 / mu).toFixed(1)})` });
   const signNow = HU?.signups?.now ?? 0, minH = 6;
   let L = { ...L0, bars };
   if (trig.length && !L0.on) { L = { on: true, since: new Date().toISOString(), kind: trig[0].kind, triggers: trig.map((t) => t.kind), why: trig.map((t) => t.why).join(" · "), bars,
-      startSignups24: signNow, normalSignups24: HU?.signups?.normal ?? null, peak: W?.visitors?.ratio ?? null, targets: [...new Set([...(ai.surges ?? []).filter((x) => x.kind === "page").map((x) => x.key), ...(old.targets ?? [])])].slice(0, 12), emailed: false };
+      startSignups24: signNow, normalSignups24: HU?.signups?.normal ?? null, peak: W?.visitors?.ratio ?? null, targets: [...new Set([...(trig.find((t) => t.pages)?.pages ?? []), ...(ai.surges ?? []).filter((x) => x.kind === "page").map((x) => x.key), ...(old.targets ?? [])])].slice(0, 12), emailed: false };
     append("data/machines/ledger.jsonl", { at: L.since, key: `lockin|${L.since}`, machine: "core", kind: "lesson", what: `LOCK-IN on (${L.kind}): ${L.why}` }); }
   else if (L0.on) { L.peak = Math.max(L0.peak ?? 0, W?.visitors?.ratio ?? 0); L.why = trig.length ? trig.map((t) => t.why).join(" · ") : L0.why; L.quiet = trig.length ? 0 : (L0.quiet ?? 0) + 1;
     // ends after 6 h minimum and 2 quiet hours; judged on sign-ups in the 24 h since it began vs the normal day

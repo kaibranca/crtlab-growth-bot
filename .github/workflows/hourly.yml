@@ -2,6 +2,8 @@ name: hourly
 on:
   # was schedule 17 * * * *: now started by the Cloudflare cron worker (cron-worker/worker.js). GitHub's own schedule drops runs and doubled them (11-09).
   workflow_dispatch:
+    inputs:
+      spike: { description: "SENTINEL (cron worker): a people-fetch spike seen at the edge — JSON {why, pages}", required: false, default: "" }
 concurrency: { group: data, cancel-in-progress: false }
 permissions: { contents: write, actions: write }
 jobs:
@@ -67,7 +69,7 @@ jobs:
       - name: Supervisor + engine core (every machine watched, mistakes, mode surge/dip, the /machine web)
         continue-on-error: true
         run: node scripts/supervisor.mjs; node scripts/fixer.mjs; node scripts/world.mjs; node scripts/core.mjs; node scripts/traffic-core.mjs
-        env: { RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", GH_TOKEN: "${{ github.token }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}" }
+        env: { RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", GH_TOKEN: "${{ github.token }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}", SPIKE: "${{ inputs.spike }}" }
       - name: The other brains — money, data, security, content, retention, speed (they read each other + the engines)
         continue-on-error: true
         run: node scripts/brains.mjs

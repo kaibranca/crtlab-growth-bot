@@ -61,10 +61,48 @@ async function guard(env, d) {
   try { if (r.ok || r.status === 204) await caches.default.put(key, new Response("1", { headers: { "Cache-Control": "max-age=43200" } })); } catch {}
 }
 
+// THE SENTINEL (11-12 — reaction speed: every engine was triggered hourly, so a wave was seen up to an hour late). Every 5
+// minutes, Cloudflare's own edge counts of people asking AI assistants (ChatGPT-User / Claude-User / Perplexity-User) for
+// CRTLAB pages over the last 15 minutes, per page, against a rolling baseline the worker keeps in its own cache. A spike
+// (total ≥ 3× its baseline and ≥ 15, or one page ≥ 4× and ≥ 6) starts hourly.yml AT ONCE with the spike attached → the
+// engine locks in on those pages within minutes. 45-min cooldown. Free: no GitHub run on a normal day, no site load.
+// Secrets: CF_API_TOKEN (Analytics: read) + CF_ZONE_ID. Without them it does nothing.
+async function sentinel(env, d) {
+  if (!env.CF_API_TOKEN || !env.CF_ZONE_ID) return;
+  const since = new Date(d.getTime() - 15 * 60e3).toISOString(), until = d.toISOString(), pages = {};
+  let total = 0;
+  for (const ua of ["ChatGPT-User", "Claude-User", "Perplexity-User"]) {
+    const q = `{viewer{zones(filter:{zoneTag:"${env.CF_ZONE_ID}"}){httpRequestsAdaptiveGroups(limit:60,filter:{datetime_geq:"${since}",datetime_lt:"${until}",userAgent_like:"%${ua}%"},orderBy:[count_DESC]){count dimensions{clientRequestPath}}}}}`;
+    const j = await fetch("https://api.cloudflare.com/client/v4/graphql", { method: "POST", headers: { Authorization: `Bearer ${env.CF_API_TOKEN}`, "content-type": "application/json" }, body: JSON.stringify({ query: q }) }).then((r) => r.json()).catch(() => null);
+    for (const r of j?.data?.viewer?.zones?.[0]?.httpRequestsAdaptiveGroups ?? []) { const p = r.dimensions.clientRequestPath.split("?")[0]; if (/^\/(api|_next)|\.(png|jpg|svg|ico|xml|txt)$/.test(p)) continue; pages[p] = (pages[p] ?? 0) + r.count; total += r.count; }
+  }
+  // rolling baseline (EWMA per 15-min window, total + per page), kept in the worker's edge cache for 3 days
+  const BK = new Request("https://sentinel.crtlab.internal/baseline");
+  let base = null; try { base = await (await caches.default.match(BK))?.json(); } catch {}
+  base ??= { total: total || 5, pages: {}, n: 0 };
+  const hot = Object.entries(pages).filter(([p, n]) => n >= 6 && n >= 4 * Math.max(1, base.pages[p] ?? 0.5)).sort((a, b) => b[1] - a[1]);
+  const spike = base.n >= 12 && ((total >= 15 && total >= 3 * base.total) || hot.length);
+  // learn the baseline AFTER judging (a spike moves it slowly, so a long wave stays visible)
+  const a = spike ? 0.05 : 0.15; base.total = base.total * (1 - a) + total * a; base.n++;
+  for (const p of new Set([...Object.keys(base.pages), ...Object.keys(pages)])) { const v = (base.pages[p] ?? 0) * (1 - a) + (pages[p] ?? 0) * a; if (v < 0.05) delete base.pages[p]; else base.pages[p] = +v.toFixed(3); }
+  try { await caches.default.put(BK, new Response(JSON.stringify(base), { headers: { "Cache-Control": "max-age=259200" } })); } catch {}
+  if (!spike) return;
+  const CK = new Request("https://sentinel.crtlab.internal/cooldown");
+  try { if (await caches.default.match(CK)) { console.log(`${d.toISOString()} sentinel: spike (${total} vs ~${base.total.toFixed(1)}) — cooling down`); return; } } catch {}
+  const top = (hot.length ? hot : Object.entries(pages).sort((x, y) => y[1] - x[1])).slice(0, 8).map(([p]) => p);
+  const why = `${total} people-fetches in 15 min vs ~${base.total.toFixed(1)} normal${hot.length ? ` · hot: ${hot.slice(0, 3).map(([p, n]) => `${p} ${n}`).join(", ")}` : ""}`;
+  const r = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/hourly.yml/dispatches`, { method: "POST",
+    headers: { Authorization: `Bearer ${env.GH_TOKEN}`, Accept: "application/vnd.github+json", "User-Agent": "crtlab-cron", "X-GitHub-Api-Version": "2022-11-28" },
+    body: JSON.stringify({ ref: "main", inputs: { spike: JSON.stringify({ why, pages: top }).slice(0, 900) } }) });
+  console.log(`${d.toISOString()} sentinel: SPIKE ${why} → hourly ${r.status}`);
+  try { await caches.default.put(CK, new Response("1", { headers: { "Cache-Control": "max-age=2700" } })); } catch {}
+}
+
 export default {
   async scheduled(event, env, ctx) {
     const d = new Date(event.scheduledTime), m = d.getUTCMinutes(), h = d.getUTCHours(), w = d.getUTCDay();
     if (m === 7 && h % 3 === 0) ctx.waitUntil(guard(env, d));
+    if (m % 5 === 2) ctx.waitUntil(sentinel(env, d).catch((e) => console.log("sentinel error " + String(e).slice(0, 80))));
     const due = JOBS.filter(([, mm, hh, ww]) => hit(mm, m) && hit(hh, h) && hit(ww, w));
     for (const [wf, , , , repo = REPO, inputs] of due) {
       const r = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/${wf}/dispatches`, {
