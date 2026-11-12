@@ -285,7 +285,29 @@
   "abae17adc83188276275bbe337801bc4d30b7ee6": 1,
   "9aeb76ba664d90908836a1c8459f469e993a6b1e": 1,
   "822ac94da0d8e26b498aac8a4eaac441f40a8610": 1,
-  "2e2c5cd1e32fb8359fc939de47e7fd49bc4666c7": 1
+  "2e2c5cd1e32fb8359fc939de47e7fd49bc4666c7": 1,
+  "1c14fa353f2557bc312d36a5b0210557eef99139": 1,
+  "8d117ea2a365cc7b5e8e44b923b0aa9a99aaa526": 1,
+  "14a8b233ed7d9d8ed1d43b40058903e9e6583ce5": 1,
+  "d4f961493f8e83b0159b2aa2d3b7c2aefdefd39e": 1,
+  "788eade95d2af48728083b8bd6c12e4eca949a62": 1,
+  "3dc2b232d61e815958abb314907dd404f169f2b7": 1,
+  "95d45bb550bfb46811c2c5281307b94f735d04f6": 1,
+  "512f1b91da1666f06f585c3acc90ca7c3e0ef5ee": 1,
+  "5a1ff36de46cd629af49d793ed024bdf85f23c07": 1,
+  "73765962d0e8efe49c225e1824fd680e2243e119": 1,
+  "13bb036361e450c4b7a30f88ac367265590564be": 1,
+  "291c35a9ec8b3ffa2a5999bb2ad1393d06dd0879": 1,
+  "73830628274fcb5abc28395ef5f2be677069c321": 1,
+  "d9a09729ea1b8f0a2804275683e2ad95efaa6f22": 1,
+  "946a2c8289f2409489e88c88524b53d586396b90": 1,
+  "2ae5db3a50f2c1b5f671d393987ebdbec0fa60c5": 1,
+  "23d32c36da878a815657886a8e84c3669b5fa292": 1,
+  "ec7f676fa7aaeaaaacfc48943feb87307215d482": 1,
+  "8e934e5b2192fb64d2d757fd2683d400541f58c1": 1,
+  "df67daa8a7a4a85fc9ef1323f0d07a8735bd5086": 1,
+  "56f845baa8bc34b8bc8f415bc0bda16ab84fa561": 1,
+  "281e87c24c34e63731a3b3976c98a41fad2ea008": 1
  },
  "open": [
   {
@@ -355,6 +377,34 @@
     {
      "sha": "a0760264",
      "msg": "UPGRADE JUDGE: every upgrade we ship to a machine (non-run commit touching its script) is judged by that machine's own o"
+    },
+    {
+     "sha": "14a8b233",
+     "msg": "Earned rank counts IQ: +1 per 15 IQ above 70 (≤ +3) on top of wins − losses — machines that proved they learn (world, AI"
+    },
+    {
+     "sha": "3dc2b232",
+     "msg": "POWER = our upgrades + SELF-MADE upgrades (tuner promotions, curiosity episodes that paid) — the machines start building"
+    },
+    {
+     "sha": "512f1b91",
+     "msg": "Knobs register themselves: lib.mjs knob(id, default, meta) = today's tuned value + registry entry (data/machines/knob-re"
+    },
+    {
+     "sha": "5a1ff36d",
+     "msg": "Tuner knob 2: Bing re-send interval (7 d hard-coded → ladder 3–14, judged on reads), owner Bing sender"
+    },
+    {
+     "sha": "73765962",
+     "msg": "core: each node carries its self-read (level + what limits it) and the knobs the tuner climbs for it — the /machine pane"
+    },
+    {
+     "sha": "ec7f676f",
+     "msg": "SELF-MODEL (Kai: 'act alive, like a brain — every part reads all the analytics on itself, its own IQ'): scripts/self.mjs"
+    },
+    {
+     "sha": "8e934e5b",
+     "msg": "90-day standard (Kai): IQ/POWER keeps 90 days of 3-h points; AI reads chart 90 days"
     }
    ]
   },
@@ -433,6 +483,14 @@
     {
      "sha": "502335e4",
      "msg": "Traffic brain rewards aimed at people (reads .3 · clicks .5 · accounts .2); stall branches see paused/homepage tests; sp"
+    },
+    {
+     "sha": "ec7f676f",
+     "msg": "SELF-MODEL (Kai: 'act alive, like a brain — every part reads all the analytics on itself, its own IQ'): scripts/self.mjs"
+    },
+    {
+     "sha": "281e87c2",
+     "msg": "EMAIL BUDGET (Kai: Resend at 80% of free limit): comeback launched at 16/h (63 today). Retention brain reads email_log: "
     }
    ]
   },
@@ -475,6 +533,10 @@
     {
      "sha": "502335e4",
      "msg": "Traffic brain rewards aimed at people (reads .3 · clicks .5 · accounts .2); stall branches see paused/homepage tests; sp"
+    },
+    {
+     "sha": "ec7f676f",
+     "msg": "SELF-MODEL (Kai: 'act alive, like a brain — every part reads all the analytics on itself, its own IQ'): scripts/self.mjs"
     }
    ]
   },
@@ -545,6 +607,26 @@
     {
      "sha": "89f5e1fb",
      "msg": "Yield machine could never learn (0 judged since built): it judged submitted.json = each page's LAST send, and every page"
+    },
+    {
+     "sha": "95d45bb5",
+     "msg": "AI machine: 3 more constants self-tune via knob() — normal-day urgent cap (0.6), rising boost (2.5), sister boost (2); o"
+    },
+    {
+     "sha": "512f1b91",
+     "msg": "Knobs register themselves: lib.mjs knob(id, default, meta) = today's tuned value + registry entry (data/machines/knob-re"
+    },
+    {
+     "sha": "5a1ff36d",
+     "msg": "Tuner knob 2: Bing re-send interval (7 d hard-coded → ladder 3–14, judged on reads), owner Bing sender"
+    },
+    {
+     "sha": "13bb0363",
+     "msg": "THE TUNER (Kai: 'always running, upgrading the machines on its own, no Claude'): self-tuning knobs — champion vs challen"
+    },
+    {
+     "sha": "ec7f676f",
+     "msg": "SELF-MODEL (Kai: 'act alive, like a brain — every part reads all the analytics on itself, its own IQ'): scripts/self.mjs"
     }
    ]
   },
@@ -599,6 +681,10 @@
     {
      "sha": "feb49c0a",
      "msg": "LOCK-IN: one system-wide wave mode every engine obeys (Kai: \"a spike or a wave is our golden ticket\")"
+    },
+    {
+     "sha": "56f845ba",
+     "msg": "MAIL GUARD: every bot mail (14 scripts, via fetch wrap in lib.mjs) under one day budget — ≤ 15/UTC day (critical subject"
     }
    ]
   },
@@ -631,6 +717,10 @@
     {
      "sha": "4d46d1d0",
      "msg": "CONVERSION BANDIT: the machines get hands on the pages ChatGPT reads most — ReplayHook wording per page × day across new"
+    },
+    {
+     "sha": "ec7f676f",
+     "msg": "SELF-MODEL (Kai: 'act alive, like a brain — every part reads all the analytics on itself, its own IQ'): scripts/self.mjs"
     }
    ]
   },
@@ -673,6 +763,10 @@
     {
      "sha": "db1d2e6d",
      "msg": "supervisor: DATA BEHIND compares against the site's holiday-aware due day"
+    },
+    {
+     "sha": "df67daa8",
+     "msg": "Supervisor learns each machine's real rhythm (data/machines/rhythm.json): gaps between output stamps → learned median ca"
     }
    ]
   },
@@ -701,6 +795,10 @@
     {
      "sha": "41f1dd84",
      "msg": "IMMUNE SYSTEM: deploy judge — every site deploy logged and judged 24 h later on real people's per-device stay share (flo"
+    },
+    {
+     "sha": "8d117ea2",
+     "msg": "Deploy judge checks SPEED + WEIGHT (Kai: front end light, no backend strain): every deploy, load log 24 h after vs befor"
     }
    ]
   },
@@ -785,6 +883,14 @@
     {
      "sha": "c5722444",
      "msg": "WORLD MODEL: a predictive brain for the whole ecosystem — every page forecast every day, every action credited every day"
+    },
+    {
+     "sha": "d4f96149",
+     "msg": "World model SELF-CALIBRATES: every forecast archived (forecasts.jsonl) and graded the day after vs a naive 'same as last"
+    },
+    {
+     "sha": "291c35a9",
+     "msg": "World model judges every acting machine: + indexnow-send (first read ×0.87 [0.75–1.02], 101 page-days — no help yet); IQ"
     }
    ]
   },
@@ -1225,6 +1331,16 @@
      "msg": "Engine core (hourly): registry + self-registration + discovery, modes (surge/dip/critical/security/capacity/money), boun"
     }
    ]
+  },
+  {
+   "machine": "restore",
+   "day": "2026-11-12",
+   "commits": [
+    {
+     "sha": "56f845ba",
+     "msg": "MAIL GUARD: every bot mail (14 scripts, via fetch wrap in lib.mjs) under one day budget — ≤ 15/UTC day (critical subject"
+    }
+   ]
   }
  ],
  "judged": [],
@@ -1233,9 +1349,9 @@
   "paid": 0,
   "hurt": 0,
   "flat": 0,
-  "waiting": 35,
+  "waiting": 36,
   "unmeasured": 0,
   "next": "2026-11-19"
  },
- "at": "2026-11-12T19:20:07.545Z"
+ "at": "2026-11-12T19:50:40.075Z"
 }

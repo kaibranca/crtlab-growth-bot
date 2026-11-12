@@ -1,5 +1,5 @@
 {
- "at": "2026-11-12T19:19:58.744Z",
+ "at": "2026-11-12T19:50:31.461Z",
  "ok": 65,
  "total": 65,
  "hurting": [
@@ -18,6 +18,7 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
+   "learnedH": null,
    "kpi": {
     "label": "AI clicks / week",
     "now": 35,
@@ -31,6 +32,7 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
+   "learnedH": null,
    "kpi": {
     "label": "AI accounts / week",
     "now": 21,
@@ -44,14 +46,16 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
+   "learnedH": null,
    "kpi": null
   },
   {
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 4.3,
+   "lastRunH": 4.8,
    "everyH": 6,
+   "learnedH": null,
    "kpi": {
     "label": "contradictions",
     "now": 0,
@@ -62,8 +66,9 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 11.2,
+   "lastRunH": 11.7,
    "everyH": 24,
+   "learnedH": null,
    "kpi": {
     "label": "reaction pages",
     "now": 129
@@ -73,16 +78,18 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 12.6,
+   "lastRunH": 13.1,
    "everyH": 24,
+   "learnedH": null,
    "kpi": null
   },
   {
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 12.6,
+   "lastRunH": 13.1,
    "everyH": 24,
+   "learnedH": null,
    "kpi": {
     "label": "share of AI answers",
     "now": 0.009
@@ -92,16 +99,18 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 3,
+   "lastRunH": 3.5,
    "everyH": 24,
+   "learnedH": null,
    "kpi": null
   },
   {
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 12.6,
+   "lastRunH": 13.1,
    "everyH": 24,
+   "learnedH": null,
    "kpi": {
     "label": "word-of-mouth visitors / week",
     "now": 0
@@ -111,8 +120,9 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 0.6,
+   "lastRunH": 1.1,
    "everyH": 1,
+   "learnedH": null,
    "kpi": null
   },
   {
@@ -121,14 +131,16 @@
    "state": "ok",
    "lastRunH": 0,
    "everyH": 1,
+   "learnedH": null,
    "kpi": null
   },
   {
    "id": "indexnow",
    "name": "IndexNow",
    "state": "ok",
-   "lastRunH": 0,
+   "lastRunH": 0.5,
    "everyH": 24,
+   "learnedH": null,
    "kpi": null
   },
   {
@@ -198,13 +210,13 @@
    "id": "surge",
    "name": "Surge detector",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "AI clicks / week",
     "now": 35,
-    "before": 40,
-    "change": -0.13
+    "before": 41,
+    "change": -0.15
    },
    "from": "core"
   },
@@ -212,13 +224,13 @@
    "id": "rising",
    "name": "Early traction",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "AI clicks / week",
     "now": 35,
-    "before": 40,
-    "change": -0.13
+    "before": 41,
+    "change": -0.15
    },
    "from": "core"
   },
@@ -226,13 +238,13 @@
    "id": "sisters",
    "name": "Sister spread",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "AI clicks / week",
     "now": 35,
-    "before": 40,
-    "change": -0.13
+    "before": 41,
+    "change": -0.15
    },
    "from": "core"
   },
@@ -240,13 +252,13 @@
    "id": "lift",
    "name": "Release lift",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "AI clicks / week",
     "now": 35,
-    "before": 40,
-    "change": -0.13
+    "before": 41,
+    "change": -0.15
    },
    "from": "core"
   },
@@ -254,13 +266,13 @@
    "id": "weekly",
    "name": "Weekly cycle",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "AI clicks / week",
     "now": 35,
-    "before": 40,
-    "change": -0.13
+    "before": 41,
+    "change": -0.15
    },
    "from": "core"
   },
@@ -268,13 +280,13 @@
    "id": "trend",
    "name": "4-week trend",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "AI clicks / week",
     "now": 35,
-    "before": 40,
-    "change": -0.13
+    "before": 41,
+    "change": -0.15
    },
    "from": "core"
   },
@@ -282,13 +294,13 @@
    "id": "yield",
    "name": "Failure learning",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "AI clicks / week",
     "now": 35,
-    "before": 40,
-    "change": -0.13
+    "before": 41,
+    "change": -0.15
    },
    "from": "core"
   },
@@ -296,13 +308,13 @@
    "id": "hooks",
    "name": "Hook tests",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "AI accounts / week",
-    "now": 12,
-    "before": 32,
-    "change": -0.63
+    "now": 21,
+    "before": 30,
+    "change": -0.3
    },
    "from": "core"
   },
@@ -310,13 +322,13 @@
    "id": "bing",
    "name": "Bing sender",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "AI clicks / week",
     "now": 35,
-    "before": 40,
-    "change": -0.13
+    "before": 41,
+    "change": -0.15
    },
    "from": "core"
   },
@@ -324,13 +336,13 @@
    "id": "curator",
    "name": "llms.txt curator",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "AI clicks / week",
     "now": 35,
-    "before": 40,
-    "change": -0.13
+    "before": 41,
+    "change": -0.15
    },
    "from": "core"
   },
@@ -368,7 +380,7 @@
    "id": "seo",
    "name": "Search console",
    "state": "ok",
-   "lastRunH": 76.7,
+   "lastRunH": 77.7,
    "everyH": 168,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -398,7 +410,7 @@
    "id": "executive",
    "name": "Executive",
    "state": "ok",
-   "lastRunH": 16,
+   "lastRunH": 17,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -413,7 +425,7 @@
    "id": "memory",
    "name": "Long-term memory",
    "state": "ok",
-   "lastRunH": 16,
+   "lastRunH": 17,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -428,7 +440,7 @@
    "id": "bandit",
    "name": "Conversion bandit",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -443,7 +455,7 @@
    "id": "holdout",
    "name": "Holdout",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -488,7 +500,7 @@
    "id": "deployjudge",
    "name": "Deploy judge",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -503,7 +515,7 @@
    "id": "google",
    "name": "Google machine",
    "state": "ok",
-   "lastRunH": 11.6,
+   "lastRunH": 12.6,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -518,7 +530,7 @@
    "id": "recommend",
    "name": "Recommendation engine",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -533,7 +545,7 @@
    "id": "news",
    "name": "News engine",
    "state": "ok",
-   "lastRunH": 10.3,
+   "lastRunH": 11.3,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -548,7 +560,7 @@
    "id": "recaps",
    "name": "Daily recaps",
    "state": "ok",
-   "lastRunH": 10.3,
+   "lastRunH": 11.3,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -563,7 +575,7 @@
    "id": "linkcheck",
    "name": "Link check",
    "state": "ok",
-   "lastRunH": 76.7,
+   "lastRunH": 77.7,
    "everyH": 168,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -578,7 +590,7 @@
    "id": "social",
    "name": "Reels",
    "state": "ok",
-   "lastRunH": 9.7,
+   "lastRunH": 10.6,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -607,7 +619,7 @@
    "id": "load",
    "name": "Load alert",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": null,
    "from": "core"
@@ -616,7 +628,7 @@
    "id": "security",
    "name": "Login + key watch",
    "state": "ok",
-   "lastRunH": 2.7,
+   "lastRunH": 0.6,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -631,7 +643,7 @@
    "id": "datapull",
    "name": "Data pull",
    "state": "ok",
-   "lastRunH": 2.7,
+   "lastRunH": 0.6,
    "everyH": 24,
    "kpi": {
     "label": "trading days behind",
@@ -646,7 +658,7 @@
    "id": "backup",
    "name": "Nightly backup",
    "state": "ok",
-   "lastRunH": 2.7,
+   "lastRunH": 0.6,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -676,7 +688,7 @@
    "id": "indicators",
    "name": "Indicator pages",
    "state": "ok",
-   "lastRunH": 1,
+   "lastRunH": 2,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -706,7 +718,7 @@
    "id": "gaps",
    "name": "Search gaps",
    "state": "ok",
-   "lastRunH": 76.7,
+   "lastRunH": 77.7,
    "everyH": 168,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -721,7 +733,7 @@
    "id": "bingseo",
    "name": "Bing webmaster",
    "state": "ok",
-   "lastRunH": 76.7,
+   "lastRunH": 77.7,
    "everyH": 168,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -736,7 +748,7 @@
    "id": "capacity",
    "name": "Capacity",
    "state": "ok",
-   "lastRunH": 0.1,
+   "lastRunH": 0,
    "everyH": 1,
    "kpi": {
     "label": "peak requests in flight (7 d)",
@@ -757,7 +769,7 @@
    "id": "wall",
    "name": "Wall + checkout",
    "state": "ok",
-   "lastRunH": 11.7,
+   "lastRunH": 12.7,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -772,7 +784,7 @@
    "id": "restore",
    "name": "Restore test",
    "state": "ok",
-   "lastRunH": 102.4,
+   "lastRunH": 103.3,
    "everyH": 168,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -823,7 +835,7 @@
    "kpi": {
     "label": "real visitors / week",
     "now": 252,
-    "before": 260,
+    "before": 259,
     "change": -0.03
    },
    "from": "core"
@@ -832,13 +844,13 @@
    "id": "leak",
    "name": "Conversion leak",
    "state": "ok",
-   "lastRunH": 11.7,
+   "lastRunH": 12.7,
    "everyH": 24,
    "kpi": {
     "label": "guests → account %",
     "now": 48.81,
-    "before": 44.62,
-    "change": 0.09
+    "before": 44.4,
+    "change": 0.1
    },
    "from": "core"
   },
@@ -855,7 +867,7 @@
    "id": "analyst",
    "name": "analyst",
    "state": "ok",
-   "lastRunH": 22.3,
+   "lastRunH": 23.3,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -864,7 +876,7 @@
    "id": "traffic",
    "name": "traffic",
    "state": "ok",
-   "lastRunH": 11.6,
+   "lastRunH": 12.6,
    "everyH": 24,
    "kpi": null,
    "from": "core"

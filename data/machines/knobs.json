@@ -14,7 +14,7 @@
      "blocksB": 0,
      "lift": null,
      "P": null,
-     "at": "2026-11-12T19:44:01.343Z"
+     "at": "2026-11-12T19:50:40.111Z"
     }
    },
    "history": [],
@@ -37,7 +37,7 @@
      "blocksB": 0,
      "lift": null,
      "P": null,
-     "at": "2026-11-12T19:44:01.343Z"
+     "at": "2026-11-12T19:50:40.111Z"
     }
    },
    "history": [],
@@ -45,13 +45,63 @@
    "owner": "bing",
    "kpi": "reads",
    "what": "days before an unchanged page is re-sent to Bing (where the limited quota goes)"
+  },
+  "ai.riseBoost": {
+   "champion": 2.5,
+   "dir": 1,
+   "challenge": {
+    "value": 3.2,
+    "dir": 1,
+    "since": "2026-11-12",
+    "id": "ai.riseBoost:3.2:2026-11-12",
+    "kpi": "reads",
+    "tries": 0,
+    "read": {
+     "blocksA": 0,
+     "blocksB": 0,
+     "lift": null,
+     "P": null,
+     "at": "2026-11-12T19:50:40.111Z"
+    }
+   },
+   "history": [],
+   "settled": null,
+   "owner": "rising",
+   "kpi": "reads",
+   "what": "Bing priority boost for early-traction (rising) pages"
+  },
+  "ai.sisterBoost": {
+   "champion": 2,
+   "dir": 1,
+   "challenge": {
+    "value": 2.6,
+    "dir": 1,
+    "since": "2026-11-12",
+    "id": "ai.sisterBoost:2.6:2026-11-12",
+    "kpi": "reads",
+    "tries": 0,
+    "read": {
+     "blocksA": 0,
+     "blocksB": 0,
+     "lift": null,
+     "P": null,
+     "at": "2026-11-12T19:50:40.111Z"
+    }
+   },
+   "history": [],
+   "settled": null,
+   "owner": "sisters",
+   "kpi": "reads",
+   "what": "Bing priority boost for sister pages of a hot page"
   }
  },
  "active": {
   "ai.exploreShare": 0.15,
-  "ai.resendDays": 10
+  "ai.resendDays": 10,
+  "ai.riseBoost": 3.2,
+  "ai.sisterBoost": 2.6
  },
- "at": "2026-11-12T19:44:01.343Z",
+ "at": "2026-11-12T19:50:40.111Z",
  "note": "Self-tuning knobs: champion vs challenger in 2-day switchback blocks, judged on the knob's KPI (normalised by its own 7-day mean). Machines read active[knob].",
  "objective": {
   "kpi": "reads",

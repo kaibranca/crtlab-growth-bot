@@ -1,0 +1,63 @@
+{
+ "ai.riseBoost": {
+  "start": 2.5,
+  "ladder": [
+   1.5,
+   2,
+   2.5,
+   3.2,
+   4
+  ],
+  "kpi": "auto",
+  "owner": "rising",
+  "what": "Bing priority boost for early-traction (rising) pages",
+  "script": "ai-machine",
+  "seen": "2026-11-12T19:48:05.578Z"
+ },
+ "ai.sisterBoost": {
+  "start": 2,
+  "ladder": [
+   1.25,
+   1.5,
+   2,
+   2.6,
+   3.4
+  ],
+  "kpi": "auto",
+  "owner": "sisters",
+  "what": "Bing priority boost for sister pages of a hot page",
+  "script": "ai-machine",
+  "seen": "2026-11-12T19:48:05.578Z"
+ },
+ "ai.resendDays": {
+  "start": 7,
+  "ladder": [
+   3,
+   5,
+   7,
+   10,
+   14
+  ],
+  "kpi": "auto",
+  "owner": "bing",
+  "what": "days before an unchanged page is re-sent to Bing (where the limited quota goes)",
+  "script": "ai-machine",
+  "seen": "2026-11-12T19:48:05.602Z"
+ },
+ "ai.exploreShare": {
+  "start": 0.15,
+  "ladder": [
+   0.08,
+   0.12,
+   0.15,
+   0.2,
+   0.27,
+   0.35
+  ],
+  "kpi": "auto",
+  "owner": "ai",
+  "what": "share of Bing sends spent exploring pages the machine knows least about",
+  "script": "ai-machine",
+  "seen": "2026-11-12T19:48:05.820Z"
+ }
+}
