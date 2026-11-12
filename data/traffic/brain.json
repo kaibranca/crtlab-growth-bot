@@ -3,13 +3,14 @@
   "event→prepush": {
    "v": 0.7,
    "n": 0,
-   "used": "2026-11-11T21:22:54.664Z",
+   "used": "2026-11-12T02:03:55.850Z",
    "prior": "release days ×4.85"
   },
   "surge→bing": {
-   "v": 0.5,
+   "v": 0.383,
    "n": 0,
-   "used": "2026-11-11T21:22:54.664Z"
+   "used": "2026-11-12T02:03:55.850Z",
+   "prior": "history 17 cases → 0.3"
   },
   "readnoclick→hook": {
    "v": 0.5,
@@ -22,9 +23,16 @@
    "used": "2026-11-11T22:03:41.527Z"
   },
   "peopleclick→bing": {
+   "v": 0.577,
+   "n": 0,
+   "used": "2026-11-12T00:04:18.437Z",
+   "prior": "history 166 cases → 0.583"
+  },
+  "peoplenoclick→hook": {
    "v": 0.5,
    "n": 0,
-   "used": "2026-11-12T00:04:18.437Z"
+   "used": "2026-11-12T02:03:55.850Z",
+   "prior": "history 0 cases → —"
   }
  },
  "modes": {
@@ -35,6 +43,12 @@
    "losses": 0
   },
   "dip": {
+   "intensity": 0.9,
+   "episodes": 1,
+   "wins": 0,
+   "losses": 1
+  },
+  "event": {
    "intensity": 1,
    "episodes": 0,
    "wins": 0,
@@ -49,8 +63,8 @@
   }
  },
  "episode": {
-  "mode": "dip",
-  "since": "2026-11-11T22:03:41.527Z",
+  "mode": "event",
+  "since": "2026-11-12T02:03:55.850Z",
   "startVisitors": 17
  },
  "born": "2026-11-11T21:22:54.664Z",
@@ -67,8 +81,70 @@
   },
   "scores": {
    "ai": 0,
-   "brain": 0
+   "brain": -1
   }
  },
- "sharedSeen": {}
+ "sharedSeen": {},
+ "signW": {
+  "people ask for it": {
+   "n": 48,
+   "lift": 2.55
+  },
+  "AI surge": {
+   "n": 24,
+   "lift": 1.37
+  },
+  "people click it": {
+   "n": 25,
+   "lift": 3.86
+  },
+  "converts": {
+   "n": 36,
+   "lift": 3.1
+  }
+ },
+ "pretrain": {
+  "at": "2026-11-12T02:03:55.850Z",
+  "cells6h": 43,
+  "out": {
+   "surge→bing": {
+    "samples": 17,
+    "mean": 0.3,
+    "prior": 0.383
+   },
+   "peopleclick→bing": {
+    "samples": 166,
+    "mean": 0.583,
+    "prior": 0.577
+   },
+   "peoplenoclick→hook": {
+    "samples": 0,
+    "mean": null,
+    "prior": 0.5
+   }
+  },
+  "signW": {
+   "people ask for it": {
+    "n": 48,
+    "lift": 2.55
+   },
+   "AI surge": {
+    "n": 24,
+    "lift": 1.37
+   },
+   "people click it": {
+    "n": 25,
+    "lift": 3.86
+   },
+   "converts": {
+    "n": 36,
+    "lift": 3.1
+   }
+  },
+  "baseRate": 0.1237,
+  "moments": 194
+ },
+ "worldSeen": {
+  "2026-11-12": 1
+ }
 }

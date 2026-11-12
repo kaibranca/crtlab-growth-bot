@@ -1,0 +1,79 @@
+{
+ "at": "2026-11-12T02:03:55.738Z",
+ "curve": {
+  "days": 11,
+  "reads": {
+   "perDay": 24.3,
+   "doublingDays": 3.2,
+   "now": 577.6,
+   "in7": 1603,
+   "in30": 3760
+  },
+  "clicks": {
+   "perDay": -1.3,
+   "doublingDays": null,
+   "now": 4.9,
+   "in7": 5,
+   "in30": 4
+  },
+  "accounts": {
+   "perDay": -11.7,
+   "doublingDays": null,
+   "now": 1.2,
+   "in7": 0,
+   "in30": 0
+  },
+  "gap": 25.6
+ },
+ "days": 11,
+ "pageDays": 1432,
+ "fitError": 0.909,
+ "siteTrendTomorrow": 1.62,
+ "releaseLift": 2.74,
+ "credit": {
+  "bing-send": {
+   "units": 40,
+   "days": 1,
+   "lift": 0.99,
+   "ci": [
+    0.73,
+    1.39
+   ],
+   "clicksPerFetchDiff": 0.0009,
+   "verdict": "no clear effect yet",
+   "byFamily": {
+    "/economic-calendar/<x>": {
+     "units": 25,
+     "lift": 1.21,
+     "weight": 1.097
+    },
+    "/news/<x/y>": {
+     "units": 8,
+     "lift": 0.51,
+     "weight": 0.896
+    }
+   }
+  },
+  "brain-boost": {
+   "units": 0,
+   "lift": null,
+   "note": "not enough treated page-days yet",
+   "byFamily": {}
+  },
+  "sister-spread": {
+   "units": 0,
+   "lift": null,
+   "note": "not enough treated page-days yet"
+  },
+  "lock-in": {
+   "units": 0,
+   "lift": null,
+   "note": "not enough treated page-days yet"
+  },
+  "held-out (not pushed)": {
+   "units": 42,
+   "lift": 1.15
+  }
+ },
+ "verdicts": 0
+}
