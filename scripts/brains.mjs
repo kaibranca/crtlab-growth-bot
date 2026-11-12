@@ -243,8 +243,9 @@ function needQueue() {
     [/names CRTLAB in/i, "recommend", "earned mentions on the sources ChatGPT trusts for buyer questions (listed in the line) — your call within the no-Reddit/paid/creator rule; the recommendation engine judges the naming rate"],
     [/Google shows only/i, "google", "earn links to /news + /economic-calendar (a mention from a site Google trusts beats 1,000 pages) — the google machine reports coverage daily"],
     [/no page|Bing shows/i, "gap", "approve a page for the search (content brain's top gap)"]];
-  const out = new Map();
+  const out = new Map(), DONE = J("data/machines/kai-done.json", {}).done ?? {}; // owner-confirmed done kinds never come back (11-12)
   for (const r of raw) { const k = KNOWN.find(([re]) => re.test(r.text)); const kind = k?.[1] ?? "other", key = kind === "other" ? r.text.slice(0, 50) : kind;
+    if (DONE[kind]) continue;
     if (!out.has(key)) out.set(key, { kind, what: r.text.split(" — ")[0].slice(0, 140), steps: k?.[2] ?? "needs a look in a build session", from: new Set([r.from]) }); else out.get(key).from.add(r.from); }
   // RANKED BY MEASURED IMPACT (11-12 — the brains' learning steered nothing): score = brains raising it × the strongest
   // raiser's authority × the kind's impact weight. Weights start from what the item touches (money / every engine's sensor
