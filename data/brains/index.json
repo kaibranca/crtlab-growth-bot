@@ -1,12 +1,12 @@
 {
- "at": "2026-11-12T00:19:45.890Z",
+ "at": "2026-11-12T01:02:41.447Z",
  "brains": [
   {
    "id": "money",
    "name": "Money brain",
    "color": "#22ab94",
-   "mode": "Money alert",
-   "level": "critical",
+   "mode": "Checkout leak",
+   "level": "warn",
    "outcome": {
     "label": "new paying customers / 7 d",
     "v": 2,
@@ -24,7 +24,7 @@
    "level": "warn",
    "outcome": {
     "label": "Railway $ / month pace",
-    "v": 21,
+    "v": 20,
     "higher": false
    },
    "authority": 1,
@@ -39,7 +39,7 @@
    "level": "info",
    "outcome": {
     "label": "attacks blocked / 24 h",
-    "v": 2311,
+    "v": 2167,
     "higher": false
    },
    "authority": 1,
@@ -54,7 +54,7 @@
    "level": "info",
    "outcome": {
     "label": "AI clicks on factory pages (decayed)",
-    "v": 8.22,
+    "v": 8.21,
     "higher": true
    },
    "authority": 1,
@@ -84,7 +84,7 @@
    "level": "warn",
    "outcome": {
     "label": "chart pages: slowest 10% load (s)",
-    "v": 6.17,
+    "v": 6.16,
     "higher": false
    },
    "authority": 1,
@@ -99,11 +99,11 @@
    "level": "warn",
    "outcome": {
     "label": "things that need you",
-    "v": 8,
+    "v": 9,
     "higher": false
    },
    "authority": 1,
-   "open": 7,
+   "open": 8,
    "escalated": 0
   }
  ]
