@@ -47,6 +47,8 @@ export function measure(R) {
   // evidence: the rows their models rest on
   at("traffic-brain").evidence += neurons.reduce((t, n) => t + (n.n ?? 0), 0);
   at("world").evidence += (+R("data/world/credit.json")?.pageDays || 0) + n0(R("data/world/sends.jsonl"));
+  { const SKL = arr(R("data/world/skill.jsonl")); at("world").evidence += SKL.length * 10; // graded forecasts — predicting is intelligence
+    if (SKL.length >= 7) at("world").judged += 1 + SKL.filter((r) => r.skill > 0).length; } // each day it beat "same as last week" = a verdict won
   at("surge").evidence += n0(R("data/ai/surges.jsonl"));
   at("sisters").evidence += n0(R("data/machines/sisters.jsonl"));
   at("radar").evidence += n0(R("data/radar/answers.jsonl"));

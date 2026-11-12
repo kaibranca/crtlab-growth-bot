@@ -119,8 +119,22 @@ for (const a of ["bing-send", "brain-boost"]) { const byF = {};
 // ── 4. TOMORROW: forecast per page (trend = the site's last 3 days vs its 7-day pace; release tomorrow × the learned lift) ──
 const last = full.at(-1), trend = clamp(((siteDay.get(last) ?? 0) + (siteDay.get(back(last, 1)) ?? 0) + (siteDay.get(back(last, 2)) ?? 0)) / 3 / Math.max(1, siteAvg7(back(last, -1))), 0.5, 2);
 const up = J("data/events/upcoming.json", { events: [] }).events ?? [], tom = iso(NOW + DAY), relTom = new Set(up.filter((e) => e.fam && iso(e.t) === tom).map((e) => e.fam));
+// SELF-CALIBRATION (11-12): every forecast is archived and GRADED the day after against what really happened — vs a naive
+// "same as last week" baseline and for each trend strength α (tomorrow = base × trend^α × release). The α that predicted
+// best over the last 14 graded days is used from then on: the forecaster learns how much to trust the site's short trend.
+// skill = 1 − error ÷ naive error (> 0 = it beats "same as last week"); data/world/skill.jsonl is its report card.
+const ALPHAS = [0, 0.25, 0.5, 0.75, 1], FA = `${OUT}/forecasts.jsonl`, SK = `${OUT}/skill.jsonl`;
+const graded = new Set(lines(SK).map((r) => r.for)), arch = lines(FA);
+for (const f of arch) { if (f.for >= today || graded.has(f.for) || !siteDay.has(f.for)) continue;
+  const er = (pred) => mean(f.pages.map(([p, b, r]) => Math.abs(Math.log(((F.get(p)?.get(f.for) ?? 0) + 0.5) / (pred(b, r) + 0.5)))));
+  const byAlpha = Object.fromEntries(ALPHAS.map((al) => [al, +er((b, r) => b * f.trend ** al * (r ? f.rel : 1)).toFixed(4)]));
+  const err = er((b, r) => b * f.trend ** (f.alpha ?? 1) * (r ? f.rel : 1)), naive = er((b) => b);
+  fs.appendFileSync(SK, JSON.stringify({ for: f.for, n: f.pages.length, err: +err.toFixed(4), naive: +naive.toFixed(4), skill: +(1 - err / Math.max(1e-6, naive)).toFixed(3), alphaUsed: f.alpha ?? 1, byAlpha }) + "\n"); }
+const sk14 = lines(SK).slice(-14);
+const ALPHA = sk14.length >= 3 ? +ALPHAS.reduce((best, al) => (mean(sk14.map((r) => r.byAlpha[al])) < mean(sk14.map((r) => r.byAlpha[best])) ? al : best), 1) : 1;
+const skillNow = sk14.length ? +mean(sk14.map((r) => r.skill)).toFixed(3) : null;
 const fc = []; for (const [p, m] of F) { let s7 = 0; for (let k = 0; k < 7; k++) s7 += m.get(back(today, k)) ?? 0; const base = (s7 + 3 * famOf(family(p), today)) / 10; if (base < 0.3) continue;
-  const rel = relTom.has(relFam(p) ?? "~") ? relLift : 1; fc.push({ p, base: +base.toFixed(2), tomorrow: +(base * trend * rel).toFixed(2), why: rel > 1 ? `release tomorrow ×${relLift}` : null }); }
+  const rel = relTom.has(relFam(p) ?? "~") ? relLift : 1; fc.push({ p, base: +base.toFixed(2), tomorrow: +(base * trend ** ALPHA * rel).toFixed(2), rel: rel > 1, why: rel > 1 ? `release tomorrow ×${relLift}` : null }); }
 fc.sort((a, b) => b.tomorrow - a.tomorrow);
 
 // ── THE CURVE (Kai: "project the curve"): log-linear fit over the finished days, site-wide — people-fetches, AI clicks,
@@ -138,10 +152,12 @@ curve.gap = +(curve.reads.perDay - curve.clicks.perDay).toFixed(1); // % per day
 
 // ── OUT ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 const fitErr = rows.length ? +Math.sqrt(mean(rows.map((r) => r.lr * r.lr))).toFixed(3) : null; // how good the forecast is (lower = sharper)
-const C0 = { at: new Date().toISOString(), curve, days: full.length, pageDays: rows.length, fitError: fitErr, siteTrendTomorrow: +trend.toFixed(2), releaseLift: relLift, credit,
+const C0 = { at: new Date().toISOString(), curve, days: full.length, pageDays: rows.length, fitError: fitErr, trendAlpha: ALPHA, skill: skillNow, graded: sk14.length, siteTrendTomorrow: +trend.toFixed(2), releaseLift: relLift, credit,
   verdicts: Object.values(credit).filter((c) => c.verdict && c.verdict !== "no clear effect yet").length };
 fs.writeFileSync(`${OUT}/credit.json`, JSON.stringify(C0, null, 1));
 fs.writeFileSync(`${OUT}/forecast.json`, JSON.stringify({ at: C0.at, for: tom, trend: C0.siteTrendTomorrow, pages: fc.slice(0, 300), jumps: fc.filter((x) => x.why).slice(0, 40) }));
+{ const keep = lines(FA).filter((f) => f.for !== tom).slice(-29); keep.push({ for: tom, trend: +trend.toFixed(3), rel: relLift, alpha: ALPHA, pages: fc.slice(0, 300).map((x) => [x.p, x.base, x.rel ? 1 : 0]) });
+  fs.writeFileSync(FA, keep.map((x) => JSON.stringify(x)).join("\n") + "\n"); }
 fs.appendFileSync(`${OUT}/residuals.jsonl`, JSON.stringify({ day: today, fitError: fitErr, credit: Object.fromEntries(Object.entries(credit).map(([k, v]) => [k, v.lift])) }) + "\n");
 console.log(`world curve (${curve.days} d): reads ${curve.reads.perDay}%/day → ${curve.reads.in30} in 30 d · clicks ${curve.clicks.perDay}%/day → ${curve.clicks.in30} · accounts ${curve.accounts.perDay}%/day · gap ${curve.gap}%/day`);
 console.log(`world: ${rows.length} page-days over ${full.length} days · forecast error ${fitErr} · release lift ×${relLift} · tomorrow ×${C0.siteTrendTomorrow} · credit: ${Object.entries(credit).map(([k, v]) => `${k} ${v.lift ?? "—"}${v.ci ? ` [${v.ci.join("–")}] ${v.verdict}` : ""} (${v.units})`).join(" · ")}`);
