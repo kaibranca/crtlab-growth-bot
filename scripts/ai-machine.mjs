@@ -186,7 +186,10 @@ for (const [p, n] of ev24) famNow.set(family(p), (famNow.get(family(p)) ?? 0) + 
 for (const [p, n] of evBase) famBase.set(family(p), (famBase.get(family(p)) ?? 0) + n);
 for (const [f, n] of famNow) { const { mu, x } = zOf(n, famBase.get(f) ?? 0); if (x >= 3 && n >= 2.5 * mu && n >= 12) surges.push({ kind: "family", key: f, family: f, last24h: n, normal: mu, z: +x.toFixed(1) }); }
 surges.sort((a, b) => b.z - a.z);
-const surgePage = new Set(surges.filter((x) => x.kind === "page").map((x) => x.key)), surgeFam = new Set(surges.map((x) => x.family));
+// TRUE SURGES (world.mjs, hourly): when the world model's view is fresh, a page is "SURGE" only if it beats a forecast that
+// includes the site's own growth — the old 14-day-average test called almost every page a surge while the site grew ×20
+const WSG = (() => { try { const w = JSON.parse(fs.readFileSync("data/world/surges.json", "utf8")); return NOW - Date.parse(w.at) < 3 * 3.6e6 ? new Set(w.pages.map((x) => x.p)) : null; } catch { return null; } })();
+const surgePage = WSG ?? new Set(surges.filter((x) => x.kind === "page").map((x) => x.key)), surgeFam = new Set(surges.map((x) => x.family));
 // EARLY TRACTION (11-11, Kai: "compound what grows quick"): a surge needs one big day; a page can also be CLIMBING — its
 // last 3 days against its own 11 days before (Poisson, mu floored at 0.3/day so brand-new factory pages qualify once read).
 // RISING = z ≥ 2.5, ≥ 2× its rate, ≥ 6 events. Rising pages get ×2.5 and are re-sent every 2 days while they climb.

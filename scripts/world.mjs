@@ -19,7 +19,6 @@ const lines = (p) => { try { return fs.readFileSync(p, "utf8").split("\n").filte
 const iso = (t) => new Date(t).toISOString().slice(0, 10), clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 fs.mkdirSync(OUT, { recursive: true });
 const prev = J(`${OUT}/credit.json`, {});
-if (prev.at && NOW - Date.parse(prev.at) < 20 * 3600e3 && !process.env.FORCE) { console.log(`world: model ran ${((NOW - Date.parse(prev.at)) / 3600e3).toFixed(1)} h ago — once a day`); process.exit(0); }
 
 const PEOPLE = /^(ChatGPT-User|Claude-User|Perplexity-User)$/, AIENG = /^(chatgpt|perplexity|copilot|gemini|claude)$/;
 const norm = (p0) => (p0.split("?")[0].replace(/\/$/, "") || "/");
@@ -33,7 +32,23 @@ const add = (M, p, d, n) => { const m = M.get(p) ?? M.set(p, new Map()).get(p); 
 for (const w of months.flatMap((m) => lines(`data/aicrawl/${m}.jsonl`))) { const d = iso(Date.parse(w.to) - 1); for (const [b, v] of Object.entries(w.bots ?? {})) if (PEOPLE.test(b)) for (const [p0, n] of v.top ?? []) { const p = norm(p0); if (skip(p)) continue; add(F, p, d, n); siteDay.set(d, (siteDay.get(d) ?? 0) + n); } }
 for (const [k, v] of Object.entries(J("data/ai/clicks.json", {}))) { const [d, eng, p0] = k.split("|"); if (AIENG.test(eng)) add(C, norm(p0 || "/"), d, v[0] ?? 0); }
 const days = [...siteDay.keys()].sort(), today = iso(NOW), full = days.filter((d) => d < today); // only finished days are judged
+
+// ── HOURLY: TRUE SURGES (11-12) — every other surge detector compared a page to its own 14-day average while the whole site
+// grew +24 %/day, so nearly everything "surged" (history: surge→bing paid 0.38). A true surge beats a forecast that already
+// includes the site's own growth: last 24 h vs (the page's 7-day pace, shrunk to family) × (site last 24 h ÷ site 7-day pace).
+{ const r24 = new Map(); let site24 = 0;
+  for (const w of months.flatMap((m) => lines(`data/aicrawl/${m}.jsonl`))) { if (NOW - Date.parse(w.to) > DAY) continue; for (const [b, v] of Object.entries(w.bots ?? {})) if (PEOPLE.test(b)) for (const [p0, n] of v.top ?? []) { const p = norm(p0); if (skip(p)) continue; r24.set(p, (r24.get(p) ?? 0) + n); site24 += n; } }
+  const fullD = days.filter((d) => d < today).slice(-7), sitePace = fullD.reduce((a, d) => a + (siteDay.get(d) ?? 0), 0) / Math.max(1, fullD.length), trend24 = site24 / Math.max(1, sitePace);
+  const famPace = new Map(); for (const [p, m] of F) { const f = family(p); const o = famPace.get(f) ?? { s: 0, n: 0 }; o.n++; for (const d of fullD) o.s += m.get(d) ?? 0; famPace.set(f, o); }
+  const out = [];
+  for (const [p, act] of r24) { let s7 = 0; for (const d of fullD) s7 += F.get(p)?.get(d) ?? 0; const fp = famPace.get(family(p)), fd = fp ? fp.s / fp.n / Math.max(1, fullD.length) : 0;
+    const base = (s7 + 3 * fd) / (Math.max(1, fullD.length) + 3), exp = base * trend24, z = (act - exp) / Math.sqrt(exp + 1);
+    if (act >= 6 && act >= 2.5 * Math.max(0.5, exp) && z >= 3) out.push({ p, last24h: act, expected: +exp.toFixed(1), x: +(act / Math.max(0.5, exp)).toFixed(1), z: +z.toFixed(1) }); }
+  out.sort((a, b) => b.z - a.z);
+  fs.writeFileSync(`${OUT}/surges.json`, JSON.stringify({ at: new Date().toISOString(), siteTrend24: +trend24.toFixed(2), pages: out.slice(0, 30) }, null, 1));
+  console.log(`world surges: ${out.length} true surges (site trend ×${trend24.toFixed(2)} in 24 h)${out.length ? " — " + out.slice(0, 4).map((x) => `${x.p} ${x.last24h} vs ~${x.expected}`).join(", ") : ""}`); }
 if (full.length < 9) { console.log(`world: ${full.length} finished days of reads — needs 9`); process.exit(0); }
+if (prev.at && NOW - Date.parse(prev.at) < 20 * 3600e3 && !process.env.FORCE) { console.log(`world: model ran ${((NOW - Date.parse(prev.at)) / 3600e3).toFixed(1)} h ago — once a day`); process.exit(0); }
 
 // ── ACTIONS (treatments) per page-day ─────────────────────────────────────────────────────────────────────────────────
 const sends = lines(`${OUT}/sends.jsonl`), branches = J("data/traffic/branches.json", { branches: [] }).branches ?? [], sisters = lines("data/machines/sisters.jsonl");

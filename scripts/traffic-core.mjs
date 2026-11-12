@@ -284,7 +284,8 @@ for (const e of soon.slice(0, 3)) { const fam = e.fam.startsWith("/") ? e.fam : 
 // lock-in: the wave's pages get branches before anything else
 for (const p of (LOCK.on ? LOCK.targets ?? [] : []).slice(0, 3)) build({ kind: "surge", owner: "convergence", target: p, neuron: "lockin→bing", base: r1(readsOf(p, NOW - 8 * DAY, NOW - DAY) / 7), why: `LOCK-IN ${LOCK.kind} wave: ${String(LOCK.why).slice(0, 80)}` });
 // surges the AI machine saw
-for (const s of (ai.surges ?? []).filter((x) => x.kind === "page").slice(0, 2)) build({ kind: "surge", owner: "surges", target: s.key, neuron: "surge→bing", base: r1(s.normal), why: `${s.last24h} reads in 24 h vs ~${r1(s.normal)}` });
+const WS = J("data/world/surges.json", null), wsFresh = WS && NOW - Date.parse(WS.at) < 3 * H;
+for (const s of wsFresh ? WS.pages.slice(0, 2).map((x) => ({ key: x.p, normal: x.expected, last24h: x.last24h, true: true })) : (ai.surges ?? []).filter((x) => x.kind === "page").slice(0, 2)) build({ kind: "surge", owner: "surges", target: s.key, neuron: "surge→bing", base: r1(s.normal), why: `${s.last24h} reads in 24 h vs ~${r1(s.normal)}${s.true ? " forecast (site growth included)" : ""}` });
 // rank: page-1-bottom pages with the most missed clicks
 for (const r of (tplan.rank ?? []).slice(0, 3)) build({ kind: "rank", owner: "rank", target: r.page, neuron: "page1bottom→rank", base: r.pos, why: `Bing #${r.pos}, ${r.missed} clicks missed / 28 d (${(r.queries ?? []).slice(0, 2).join(", ")})` });
 // stall: read a lot, never clicked → the hook machine's priority list (no Bing boost — more reads won't fix it)
