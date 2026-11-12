@@ -47,6 +47,17 @@ if (process.env.ANALYTICS_DB_URL) {
     // shrunk to the site rate with 20 sign-ups so a 2-person source can't read as 0 % or 100 %
     const quality = Object.fromEntries(q.rows.map((r) => [r.src, { signups: r.n, engaged: r.engaged, rate: +((r.engaged + base * 20) / (r.n + 20)).toFixed(3), rawRate: r.n ? +(r.engaged / r.n).toFixed(3) : null, avgMin: +(r.avgsecs / 60).toFixed(1), value: base ? +(((r.engaged + base * 20) / (r.n + 20)) / base).toFixed(2) : 1 }]));
     fs.writeFileSync("data/machines/quality.json", JSON.stringify({ at: new Date().toISOString(), window: "sign-ups 7–21 days old · engaged = ≥ 10 min replay in their first 7 days", siteRate: +base.toFixed(3), sources: quality }, null, 1));
+    // LANDING QUALITY (11-12): of the real visitors each landing page brought (guests 7–35 days old, so each had a week),
+    // how many made an account and how many really replayed (≥ 10 min in their first 7 days). The AI machine weights a
+    // family's Bing value by it — pages whose visitors become real users get pushed, not just pages that get read.
+    try { const lq = await db.query(`with g as (select coalesce(nullif(split_part(landing_path, '?', 1), ''), '/') lp, converted_user_id u, created_at from guest_presence
+          where created_at between now() - interval '35 days' and now() - interval '7 days' and country is distinct from 'SG' and (last_active - created_at > interval '30 seconds' or converted_at is not null)),
+        e as (select g.lp, g.u, coalesce((select sum(seconds) from user_events ev where ev.user_id = g.u and ev.type in ('replay', 'backtest') and ev.created_at < g.created_at + interval '7 days'), 0) secs from g)
+        select lp, count(*)::int guests, count(u)::int accounts, count(*) filter (where secs >= 600)::int engaged from e group by 1 order by 2 desc limit 400`);
+      const T = lq.rows.reduce((t, r) => ({ g: t.g + r.guests, e: t.e + r.engaged, a: t.a + r.accounts }), { g: 0, e: 0, a: 0 });
+      fs.writeFileSync("data/machines/landing.json", JSON.stringify({ at: new Date().toISOString(), window: "real guests 7–35 days old · engaged = ≥ 10 min replay in their first 7 days", site: { guests: T.g, accounts: T.a, engaged: T.e, rate: T.g ? +(T.e / T.g).toFixed(4) : null },
+        pages: Object.fromEntries(lq.rows.map((r) => [r.lp.replace(/\/$/, "") || "/", { guests: r.guests, accounts: r.accounts, engaged: r.engaged }])) }));
+    } catch (e) { console.log("outcomes: landing quality skipped (" + String(e.message).slice(0, 60) + ")"); }
     out["quality-ai"] = k("ChatGPT sign-ups who really replay %", quality.chatgpt ? quality.chatgpt.rawRate * 100 : null, null);
   } catch (e) { console.log("outcomes: db", String(e).slice(0, 80)); } finally { await db.end().catch(() => {}); }
 }

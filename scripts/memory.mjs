@@ -64,6 +64,9 @@ for (const [id, k] of Object.entries(J("data/machines/knobs.json", {})?.knobs ??
 { const B = J("data/behaviour/plan.json", {}); for (const [dev, g] of Object.entries(B.golden ?? {})) { const t = (g.top ?? [])[0]; if (t && t.conf >= 0.8) fact(`golden:${dev}`, "what brings people back", `${dev}: people who use "${t.k}" come back ×${t.backLift} and sign up ×${t.signLift} (${t.people} people)`, t.people, 1, "behaviour"); } }
 { const D = lines("data/machines/deploys.jsonl").filter((r) => r.speed).slice(-10); if (D.length >= 2) { const sl = D.filter((r) => /^SLOWER/.test(r.speed.verdict)).length; fact("deploy-speed", "how deploys land", `${D.length} recent deploys judged on speed + memory: ${sl} made the site slower or heavier`, D.length, sl ? -1 : 1, "deployjudge"); } }
 
+{ const LQ = J("data/machines/landing.json", null); if (LQ?.site?.rate) for (const [p, x] of Object.entries(LQ.pages ?? {})) if (x.guests >= 50) { const r = x.engaged / x.guests;
+  fact(`landing:${p}`, "which pages bring real users", `${p}: ${Math.round(r * 100)}% of its visitors really replay in week one (site ${Math.round(LQ.site.rate * 100)}%, ${x.guests} visitors)`, x.guests, r > LQ.site.rate * 1.2 ? 1 : r < LQ.site.rate * 0.8 ? -1 : 0, "outcomes"); } }
+
 // DECAY + BIN: facts not re-confirmed fade (half-life 30 d); below 0.05 they're forgotten
 let binned = 0;
 for (const [id, f] of Object.entries(KB.facts)) { if (seen.has(id)) continue; const idle = (NOW - Date.parse(f.last)) / DAY; f.strength = +(f.strength * Math.pow(0.5, 1 / 30)).toFixed(3); if (f.strength < 0.05 || idle > 180) { delete KB.facts[id]; binned++; } }

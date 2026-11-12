@@ -21,7 +21,7 @@ const reader = (sha) => (p) => parse(sha ? sh(`git show ${sha}:${p}`) : (fs.exis
 
 // WHO LEARNED IT: ledger "machine" names and fact ids → the /machine node that did the learning
 const LED = { convergence: "traffic-brain", converter: "traffic-brain", neurons: "traffic-brain", rank: "traffic-brain", surges: "surge", supervisor: "mistakes", modes: "mode", events: "lift", demand: "lift" };
-const FACT = [[/^yield:/, "yield"], [/^forecast-skill/, "world"], [/^golden:/, "behaviour"], [/^deploy-speed/, "load"], [/^quality:/, "outcomes"], [/^(world|curve)/, "world"], [/^release-lift/, "lift"], [/^(prior|sign):/, "traffic-brain"], [/^cost/, "cost"], [/^google/, "google"]];
+const FACT = [[/^yield:/, "yield"], [/^forecast-skill/, "world"], [/^golden:/, "behaviour"], [/^deploy-speed/, "load"], [/^(quality|landing):/, "outcomes"], [/^(world|curve)/, "world"], [/^release-lift/, "lift"], [/^(prior|sign):/, "traffic-brain"], [/^cost/, "cost"], [/^google/, "google"]];
 const n0 = (x) => (Array.isArray(x) ? x.length : 0);
 
 export function measure(R) {
@@ -81,6 +81,7 @@ export function measure(R) {
     for (const [a, id] of Object.entries(OWN)) { const c = WC[a]; if (!c?.units) continue; at(id).evidence += c.units; if (c.verdict === "WORKS" || c.verdict === "HURTS") at(id).judged += 1 + Object.values(c.byFamily ?? {}).filter((f) => f.verdict === "WORKS" || f.verdict === "HURTS").length; } }
   // self-tuning knobs: blocks judged so far are evidence for the knob's owner (verdicts reach it through the ledger)
   { for (const [id, k] of Object.entries(R("data/machines/knobs.json")?.knobs ?? {})) { const o = k.owner; if (o) at(o).evidence += ((k.challenge?.read?.blocksA ?? 0) + (k.challenge?.read?.blocksB ?? 0)) * 5 + (k.history?.length ?? 0) * 20; } }
+  { const LQ = R("data/machines/landing.json"); if (LQ?.site?.guests) at("outcomes").evidence += Math.round(LQ.site.guests / 10); }
   // fixed: its own repairs that worked
   at("fixer").fixed += arr(R("data/machines/fixer.json")?.actions).filter((a) => a.ok).length;
   // every machine counts in the average, also the ones that learned nothing (lead summaries are not machines)

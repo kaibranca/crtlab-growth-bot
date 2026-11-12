@@ -247,6 +247,13 @@ const RISE_B = KNOB("ai.riseBoost", 2.5, { ladder: [1.5, 2, 2.5, 3.2, 4], owner:
   SIS_B = KNOB("ai.sisterBoost", 2, { ladder: [1.25, 1.5, 2, 2.6, 3.4], owner: "sisters", what: "Bing priority boost for sister pages of a hot page" });
 const boost0 = (p) => (surgePage.has(p) ? (MP.surgeBoost ?? 4) : risePage.has(p) ? RISE_B : sisterOf.has(p) ? SIS_B : surgeFam.has(family(p)) ? 1.5 : 1);
 const boost = (p) => boost0(p) * focusMul(p);
+// LANDING QUALITY (outcomes.mjs → data/machines/landing.json): a family whose visitors become real replayers is worth more
+// than one that is only read. mul = (family engaged-rate ÷ site rate)^w, shrunk with 20 guests of the site rate, in [0.5, 2];
+// w is a self-tuning knob — the tuner decides how much to trust it (0 = ignore).
+const LQ = (() => { try { return JSON.parse(fs.readFileSync("data/machines/landing.json", "utf8")); } catch { return null; } })();
+const QW = KNOB("ai.qualityWeight", 0.5, { ladder: [0, 0.25, 0.5, 1, 1.5], owner: "ai", what: "how much a page family's landing quality (visitors who really replay) weighs in its Bing value" });
+const lqFam = {}; if (LQ?.site?.rate) for (const [p, x] of Object.entries(LQ.pages ?? {})) { const f = family(p), o = (lqFam[f] ??= { g: 0, e: 0 }); o.g += x.guests; o.e += x.engaged; }
+const qualityMul = (f) => { const o = lqFam[f], s0 = LQ?.site?.rate; if (!o || !s0 || !QW) return 1; const r = (o.e + 20 * s0) / (o.g + 20); return Math.max(0.5, Math.min(2, (r / s0) ** QW)); };
 // AI RADAR (11-10, scripts/ai-radar.mjs): pages that should win an AI answer but don't (absent ×2), are being cited (×1.5,
 // keep fresh) or just WON a question (×3, go all in). Multipliers are learned by the radar from its own verdicts.
 const radar = (() => { try { return JSON.parse(fs.readFileSync("data/radar/boost.json", "utf8")).pages || {}; } catch { return {}; } })();
@@ -337,7 +344,7 @@ const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > RESEND_D * DAY, evDue = ev && NOW - last > 2 * DAY;
   const rcmP = RECT.has(p) && NOW - last > 3 * DAY, fcP = FCJ.has(p) && NOW - last > 2 * DAY, old = bingOld(p) && NOW - last > DAY, lockP = LOCK.on && (LOCK.targets ?? []).includes(p) && lockPays(p) && NOW - last > 3 * 3.6e6, hotP = (surgePage.has(p) && NOW - last > 6 * 3.6e6) || lockP, riseP = risePage.has(p) && NOW - last > 2 * DAY, recP = recovery.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
-  return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * weekMul(x.fam) * trendMul(x.fam) * wFam(p), conf: x.conf, fam: x.fam, why: lockP ? "LOCK-IN" : hotP ? "SURGE" : rcmP ? `RECOMMEND ${RECT.get(p)}` : fcP ? `FORECAST ${FCJ.get(p)}` : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+  return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * qualityMul(x.fam) * weekMul(x.fam) * trendMul(x.fam) * wFam(p), conf: x.conf, fam: x.fam, why: lockP ? "LOCK-IN" : hotP ? "SURGE" : rcmP ? `RECOMMEND ${RECT.get(p)}` : fcP ? `FORECAST ${FCJ.get(p)}` : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).filter((q) => q.why && !SKIP.test(q.p) && !HELD(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
