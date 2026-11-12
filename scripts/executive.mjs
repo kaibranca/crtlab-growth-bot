@@ -46,6 +46,10 @@ const k = E.strength;
 E.knobs = constraint === "conversion" ? { banditExplore: +(0.15 + 0.1 * k).toFixed(3), reachIntensity: +(1 - 0.15 * k).toFixed(3), urgentCapAdd: 0, sisterAdd: 0, fixerSiteBoost: 1 }
   : constraint === "reach" ? { banditExplore: 0.15, reachIntensity: +(1 + 0.15 * k).toFixed(3), urgentCapAdd: +(0.15 * k).toFixed(3), sisterAdd: 1, fixerSiteBoost: 1 }
   : { banditExplore: 0.15, reachIntensity: 1, urgentCapAdd: 0, sisterAdd: 0, fixerSiteBoost: +(1 + 0.5 * k).toFixed(2) };
+// RECOMMENDATION STAGE (recommend.mjs): how often ChatGPT names CRTLAB in buyer answers — upstream of every stage above;
+// machines push the pages, the earned mentions on its trusted sources are Kai's (reported, never a knob)
+const RC = J("data/radar/recommend.json", null);
+E.recommendation = RC ? { namedRate: RC.namedRate, citedRate: RC.citedRate, asked: RC.asked, trusted: (RC.trustedTop ?? []).slice(0, 5).map((x) => x.d) } : null;
 Object.assign(E, { at: new Date().toISOString(), constraint, why, rates: Object.fromEntries(Object.entries(rate).map(([a, v]) => [a, v == null ? null : +(+v).toFixed(5)])), gaps: Object.fromEntries(Object.entries(gaps).map(([a, v]) => [a, +v.toFixed(1)])) });
 fs.writeFileSync(OUT, JSON.stringify(E, null, 1));
 console.log(`executive: constraint = ${constraint} (${why}) · knobs ${JSON.stringify(E.knobs)} · strength ×${E.strength}`);

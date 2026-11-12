@@ -218,6 +218,8 @@ const MODE = (() => { try { return JSON.parse(fs.readFileSync("data/machines/mod
 const WCF = (() => { try { return JSON.parse(fs.readFileSync("data/world/credit.json", "utf8")).credit?.["bing-send"]?.byFamily ?? {}; } catch { return {}; } })();
 const wFam = (p) => { const s0 = p.split("/").filter(Boolean); const f = !s0.length ? "/" : s0.length === 1 ? (/-challenge-simulator$/.test(s0[0]) ? "/<firm>-sim" : /^backtest-/.test(s0[0]) ? "/backtest-<x>" : "/<page>") : `/${s0[0]}/<${s0.length > 2 ? "x/y" : "x"}>`; return Math.max(0.7, Math.min(1.5, WCF[f]?.weight ?? 1)); };
 // WORLD MODEL (world.mjs): pages forecast to jump tomorrow (a release × the learned lift) go to Bing before the demand comes
+// RECOMMENDATION ENGINE (recommend.mjs): pages that should win buyer questions ChatGPT answers without CRTLAB → Bing first
+const RECT = new Map(((() => { try { return JSON.parse(fs.readFileSync("data/radar/recommend.json", "utf8")).targets ?? []; } catch { return []; } })()).map((x) => [x.page, x.cluster]));
 const FCJ = new Map(((() => { try { return JSON.parse(fs.readFileSync("data/world/forecast.json", "utf8")).jumps ?? []; } catch { return []; } })()).map((x) => [x.p, x.why]));
 const LOCK = (() => { try { return JSON.parse(fs.readFileSync("data/machines/lockin.json", "utf8")); } catch { return { on: false }; } })(); // core.mjs lock-in
 const EXK = (() => { try { return JSON.parse(fs.readFileSync("data/machines/executive.json", "utf8")).knobs ?? {}; } catch { return {}; } })(); // the executive's knobs
@@ -317,12 +319,12 @@ const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
 const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY, evDue = ev && NOW - last > 2 * DAY;
-  const fcP = FCJ.has(p) && NOW - last > 2 * DAY, old = bingOld(p) && NOW - last > DAY, lockP = LOCK.on && (LOCK.targets ?? []).includes(p) && NOW - last > 3 * 3.6e6, hotP = (surgePage.has(p) && NOW - last > 6 * 3.6e6) || lockP, riseP = risePage.has(p) && NOW - last > 2 * DAY, recP = recovery.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
-  return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * weekMul(x.fam) * trendMul(x.fam) * wFam(p), conf: x.conf, fam: x.fam, why: lockP ? "LOCK-IN" : hotP ? "SURGE" : fcP ? `FORECAST ${FCJ.get(p)}` : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+  const rcmP = RECT.has(p) && NOW - last > 3 * DAY, fcP = FCJ.has(p) && NOW - last > 2 * DAY, old = bingOld(p) && NOW - last > DAY, lockP = LOCK.on && (LOCK.targets ?? []).includes(p) && NOW - last > 3 * 3.6e6, hotP = (surgePage.has(p) && NOW - last > 6 * 3.6e6) || lockP, riseP = risePage.has(p) && NOW - last > 2 * DAY, recP = recovery.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
+  return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * weekMul(x.fam) * trendMul(x.fam) * wFam(p), conf: x.conf, fam: x.fam, why: lockP ? "LOCK-IN" : hotP ? "SURGE" : rcmP ? `RECOMMEND ${RECT.get(p)}` : fcP ? `FORECAST ${FCJ.get(p)}` : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).filter((q) => q.why && !SKIP.test(q.p) && !HELD(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
-const urgent = (q) => (q.why === "LOCK-IN" ? 4 : q.why.startsWith("FORECAST") ? 2 : q.why === "SURGE" || q.why === "RADAR won" ? 3 : q.why === "RISING" || q.why.startsWith("SISTER") ? 2 : q.why === "RECOVERY" ? 1 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
+const urgent = (q) => (q.why === "LOCK-IN" ? 4 : q.why.startsWith("FORECAST") || q.why.startsWith("RECOMMEND") ? 2 : q.why === "SURGE" || q.why === "RADAR won" ? 3 : q.why === "RISING" || q.why.startsWith("SISTER") ? 2 : q.why === "RECOVERY" ? 1 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
 const rank = (a, b) => urgent(b) - urgent(a) || b.value - a.value;
 const exploit = [...queue].sort(rank);
 const seenFam = new Set(), explore = [];

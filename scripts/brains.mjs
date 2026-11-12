@@ -164,6 +164,7 @@ const BRAINS = [
     measureOf: (b) => ((tplan.demand ?? []).find((d) => d.q === b.target)?.page ? 1 : 0),
     modes: (s) => [s.gaps >= 5 && { id: "gaps", label: "Gaps", level: "info", why: `${s.gaps} searches Bing shows us for with no page (top: "${s.topGap}")` }].filter(Boolean),
     admin: (s) => [s.topGap ? `Bing shows CRTLAB for "${s.topGap}" with no page that fits — a page for it is the content brain's top request.` : null,
+      (() => { const RC = J("data/radar/recommend.json", null); return RC?.asked >= 10 && (RC.namedRate ?? 0) < 0.1 ? `ChatGPT names CRTLAB in ${((RC.namedRate ?? 0) * 100).toFixed(0)}% of ${RC.asked} buyer answers — it trusts ${(RC.trustedTop ?? []).slice(0, 5).map((x) => x.d).join(", ")}. A mention there changes the answer (earned mentions — your call; the machine already pushes our pages for those questions).` : null; })(),
       s.googleShown != null && s.googleOf && s.googleShown / s.googleOf < 0.2 ? `Google shows only ${s.googleShown} of ${s.googleOf} pages (${s.googleTopReason ?? "reason pending"}); its clicks are almost all brand searches. Links are in place — Google isn't spending crawls on us (authority). Earned links to the hubs (/news, /economic-calendar) are the lever; the google machine tracks the curve daily.` : null].filter(Boolean) },
   { id: "retention", name: "Retention brain", color: "#5b8cff",
     managers: [
@@ -239,6 +240,7 @@ function needQueue() {
     [/INSTRUMENT|heartbeat/i, "sensor", "say \"fix the heartbeat\" — a build session on /api/stats + the newest deploy (every engine reads a wrong people number until then)"],
     [/Railway pace|deploys/i, "budget", "fewer direct deploys (use the windows); heap tuner after 24 h of samples"],
     [/came back|week 2|first session/i, "retention", "decide a first-session change (golden actions from the behaviour machine)"],
+    [/names CRTLAB in/i, "recommend", "earned mentions on the sources ChatGPT trusts for buyer questions (listed in the line) — your call within the no-Reddit/paid/creator rule; the recommendation engine judges the naming rate"],
     [/Google shows only/i, "google", "earn links to /news + /economic-calendar (a mention from a site Google trusts beats 1,000 pages) — the google machine reports coverage daily"],
     [/no page|Bing shows/i, "gap", "approve a page for the search (content brain's top gap)"]];
   const out = new Map();
@@ -248,7 +250,7 @@ function needQueue() {
   // raiser's authority × the kind's impact weight. Weights start from what the item touches (money / every engine's sensor
   // first, hygiene last) and LEARN: when an item leaves the queue (fixed), its owning brain's outcome is judged 7 days later
   // — paid → that kind weighs more next time, didn't → less (data/brains/fixer/queue.json → impact).
-  const IMP0 = { regression: 4, checkout: 3, sensor: 3, "retention-email": 2.5, flood: 2, speed: 1.5, google: 1.5, gap: 1.2, budget: 1, stripe: 1, "deps-token": 0.8, deps: 0.8, tokens: 0.8, retention: 1.5, other: 1 };
+  const IMP0 = { regression: 4, checkout: 3, sensor: 3, recommend: 2.5, "retention-email": 2.5, flood: 2, speed: 1.5, google: 1.5, gap: 1.2, budget: 1, stripe: 1, "deps-token": 0.8, deps: 0.8, tokens: 0.8, retention: 1.5, other: 1 };
   const FM = J("data/brains/fixer/queue.json", {}), IMP = { ...IMP0, ...(FM.impact ?? {}) };
   { const EXg = J("data/machines/executive.json", {}); const b = EXg.knobs?.fixerSiteBoost ?? 1; if (EXg.constraint === "pay") IMP.checkout = (IMP.checkout ?? 3) * b; if (EXg.constraint === "signup") { IMP.speed = (IMP.speed ?? 1.5) * b; IMP.regression = (IMP.regression ?? 4) * b; } }
   const auth = Object.fromEntries((J("data/brains/index.json", { brains: [] }).brains ?? []).map((b) => [b.id, b.authority ?? 1]));
