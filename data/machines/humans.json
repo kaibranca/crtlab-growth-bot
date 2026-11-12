@@ -1,53 +1,53 @@
 {
- "at": "2026-11-12T21:18:27.281Z",
+ "at": "2026-11-12T21:23:28.104Z",
  "selfCheck": {
   "devices": [
    {
     "dev": "desktop",
     "raw24": 496,
-    "beat24": 0.716,
-    "beatNormal": 0.51,
+    "beat24": 0.714,
+    "beatNormal": 0.509,
     "stay24": 0.03,
-    "stayNormal": 0.405
+    "stayNormal": 0.403
    },
    {
     "dev": "mobile",
-    "raw24": 24,
-    "beat24": 0.417,
-    "beatNormal": 0.338,
-    "stay24": 0.417,
-    "stayNormal": 0.475
+    "raw24": 22,
+    "beat24": 0.455,
+    "beatNormal": 0.335,
+    "stay24": 0.455,
+    "stayNormal": 0.471
    }
   ],
   "rawSurge": [
    {
-    "dim": "landing",
-    "seg": "home",
-    "raw24": 494,
-    "rawNormal": 53.4,
+    "dim": "source",
+    "seg": "Direct",
+    "raw24": 502,
+    "rawNormal": 64.9,
     "stayed24": 15,
     "stayShare": 0.03
    },
    {
-    "dim": "source",
-    "seg": "Direct",
-    "raw24": 504,
-    "rawNormal": 64.4,
+    "dim": "landing",
+    "seg": "home",
+    "raw24": 490,
+    "rawNormal": 53.9,
     "stayed24": 15,
-    "stayShare": 0.03
+    "stayShare": 0.031
    },
    {
     "dim": "device",
     "seg": "desktop",
     "raw24": 496,
-    "rawNormal": 68.3,
+    "rawNormal": 68.6,
     "stayed24": 15,
     "stayShare": 0.03
    },
    {
     "dim": "country",
     "seg": "US",
-    "raw24": 226,
+    "raw24": 229,
     "rawNormal": 9.6,
     "stayed24": 2,
     "stayShare": 0.009
@@ -55,7 +55,7 @@
    {
     "dim": "country",
     "seg": "GB",
-    "raw24": 88,
+    "raw24": 89,
     "rawNormal": 6,
     "stayed24": 0,
     "stayShare": 0
@@ -70,11 +70,11 @@
    }
   ],
   "flood": [
-   "US: 226 raw vs ~9.6, 2 stayed",
-   "GB: 88 raw vs ~6, 0 stayed",
+   "US: 229 raw vs ~9.6, 2 stayed",
+   "GB: 89 raw vs ~6, 0 stayed",
    "CA: 69 raw vs ~0.9, 1 stayed"
   ],
-  "verdict": "FLOOD: the raw surge is US (226 vs ~9.6, 2 stayed), GB (88 vs ~6, 0 stayed), CA (69 vs ~0.9, 1 stayed) — headless traffic, not people leaving"
+  "verdict": "FLOOD: the raw surge is US (229 vs ~9.6, 2 stayed), GB (89 vs ~6, 0 stayed), CA (69 vs ~0.9, 1 stayed) — headless traffic, not people leaving"
  },
  "wave": {
   "window": "3h",
@@ -88,7 +88,7 @@
    "now": 0,
    "normal": 2.1,
    "ratio": 0,
-   "z": -1.4
+   "z": -1.5
   },
   "riding": []
  },
@@ -99,10 +99,10 @@
   "z": -1
  },
  "rawVisitors": {
-  "now": 520,
-  "normal": 86.4,
-  "ratio": 6.02,
-  "z": 11.7
+  "now": 518,
+  "normal": 86.8,
+  "ratio": 5.97,
+  "z": 11.2
  },
  "signups": {
   "now": 13,
