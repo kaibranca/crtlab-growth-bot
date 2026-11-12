@@ -152,7 +152,9 @@ for (const b of B.branches) {
   if (NOW - Date.parse(b.judged ?? b.born) < K.days * DAY) continue;
   let res = null; try { res = K.judge(b); } catch { res = null; } b.judged = iso(NOW); if (!res) continue;
   b.now = res.v; const earned = b.path === false ? { c: 0, a: 0 } : clicksOn(b.target, Date.parse(b.born)); b.clicks = earned.c; b.accounts = earned.a;
-  reward(b.neuron, b.path === false ? (res.win ? 1 : 0) : (res.win ? 0.6 : 0) + (earned.c > 0 ? 0.4 : 0));
+  // AIMED AT PEOPLE (11-12): the score log showed AI reads ×20 in four weeks while clicks/accounts fell — reads were paying
+  // the neurons. Now: own number 0.3 · real clicks 0.5 · an account 0.2, so the brain learns to fire what brings sign-ups.
+  reward(b.neuron, b.path === false ? (res.win ? 1 : 0) : (res.win ? 0.3 : 0) + (earned.c > 0 ? 0.5 : 0) + (earned.a > 0 ? 0.2 : 0));
   if (res.win) { b.wins = (b.wins ?? 0) + 1; if (b.wins >= 3 || b.kind === "event" || b.kind === "gap") { b.state = "retired"; b.verdict = "graduated"; b.retired = iso(NOW); } else b.verdict = "paying";
     learn(b.owner, "win", `${b.kind} branch ${b.target}: ${b.base} → ${res.v}${b.clicks ? `, ${b.clicks} clicks` : ""} — paid`, `tb|${b.id}|${iso(NOW).slice(0, 13)}`); say(b.owner, `${b.kind} branch on ${b.target} paid (${b.base} → ${res.v})`, "win"); }
   else { b.state = "retired"; b.verdict = "did not pay"; b.retired = iso(NOW);
@@ -211,9 +213,10 @@ for (const s of (ai.surges ?? []).filter((x) => x.kind === "page").slice(0, 2)) 
 // rank: page-1-bottom pages with the most missed clicks
 for (const r of (tplan.rank ?? []).slice(0, 3)) build({ kind: "rank", owner: "rank", target: r.page, neuron: "page1bottom→rank", base: r.pos, why: `Bing #${r.pos}, ${r.missed} clicks missed / 28 d (${(r.queries ?? []).slice(0, 2).join(", ")})` });
 // stall: read a lot, never clicked → the hook machine's priority list (no Bing boost — more reads won't fix it)
-const testOf = (fam) => (ai.experiments ?? []).find((e) => e.family === fam && e.status === "running");
+const HK = J("data/ai/hooks.json", { experiments: [] }).experiments; // the hook file itself (ai plan only reports running tests)
+const testOf = (fam) => HK.find((e) => e.family === fam && (e.status === "running" || e.status === "paused"));
 const uncovered = [...new Set((ai.convert ?? []).filter((x) => x.reads7d >= 20 && !x.clicks7d && !testOf(x.family)).map((x) => x.family))];
-const famOfP = (p) => (ai.convert ?? []).find((x) => x.p === p)?.family ?? (ai.families ?? []).find((f) => p.startsWith(f.family.split("<")[0]) && f.family !== "/")?.family ?? null;
+const famOfP = (p) => p === "/" ? "/" : (ai.convert ?? []).find((x) => x.p === p)?.family ?? (ai.families ?? []).find((f) => p.startsWith(f.family.split("<")[0]) && f.family !== "/")?.family ?? null;
 for (const x of liveLose.slice(0, 1)) { const fam = famOfP(x.p), t = fam ? testOf(fam) : null;
   build({ kind: "stall", owner: "converter", target: x.p, neuron: "peoplenoclick→hook", base: 0, path: false, test: t?.id ?? null, why: `${x.fetches} people got it through ChatGPT in 7 d, 0 clicked${t ? ` — hook test ${t.template} running on ${fam}` : ` — no hook test covers it`}` }); }
 if (modes.some((m) => m.id === "stall") || rnd() < 0.3) for (const c of (ai.convert ?? []).filter((x) => x.reads7d >= 20 && !x.clicks7d).slice(0, 1)) { const t = testOf(c.family);

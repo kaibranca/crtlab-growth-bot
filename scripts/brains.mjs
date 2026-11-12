@@ -50,6 +50,19 @@ if (process.env.CF_API_TOKEN && process.env.CF_ACCOUNT_ID) try {
   const j = await fetch("https://api.cloudflare.com/client/v4/graphql", { method: "POST", headers: { Authorization: `Bearer ${process.env.CF_API_TOKEN}`, "Content-Type": "application/json" }, body: JSON.stringify({ query: q }), signal: AbortSignal.timeout(20000) }).then((r) => r.json());
   rum = (j.data?.viewer?.accounts?.[0]?.rumPerformanceEventsAdaptiveGroups ?? []).map((x) => ({ p: x.dimensions.requestPath, n: x.count, p50: r1(x.quantiles.pageLoadTimeP50 / 1e6), p90: r1(x.quantiles.pageLoadTimeP90 / 1e6) }));
 } catch (e) { console.log("brains: speed skipped (" + String(e.message).slice(0, 60) + ")"); }
+// speed, BY DEVICE (11-12): the same 24 h of real loads split mobile / desktop / tablet — tells "slow phones" from "slow server"
+let rumDev = null;
+if (process.env.CF_API_TOKEN && process.env.CF_ACCOUNT_ID) try {
+  const q = `{ viewer { accounts(filter:{accountTag:"${process.env.CF_ACCOUNT_ID}"}) { rumPerformanceEventsAdaptiveGroups(limit: 20, filter:{siteTag:"029faa8748554349b362fc3789b58acc", datetime_geq:"${iso(NOW - DAY)}"}, orderBy:[count_DESC]) { count quantiles { pageLoadTimeP50 pageLoadTimeP90 } dimensions { deviceType } } } } }`;
+  const j = await fetch("https://api.cloudflare.com/client/v4/graphql", { method: "POST", headers: { Authorization: `Bearer ${process.env.CF_API_TOKEN}`, "Content-Type": "application/json" }, body: JSON.stringify({ query: q }), signal: AbortSignal.timeout(20000) }).then((r) => r.json());
+  rumDev = (j.data?.viewer?.accounts?.[0]?.rumPerformanceEventsAdaptiveGroups ?? []).map((x) => ({ d: x.dimensions.deviceType, n: x.count, p50: r1(x.quantiles.pageLoadTimeP50 / 1e6), p90: r1(x.quantiles.pageLoadTimeP90 / 1e6) }));
+  if (j.errors?.length) console.log("brains: speed by device — " + JSON.stringify(j.errors).slice(0, 120));
+} catch (e) { console.log("brains: speed by device skipped (" + String(e.message).slice(0, 60) + ")"); }
+// speed, OWN PROBE (11-12): every hour, one chart page + one guest candle window from the runner — server time and whether
+// Cloudflare serves the candles. Splits the slow 10% into "server/edge" vs "the visitor's device and the chart bundle".
+const probe = {};
+try { const t0 = Date.now(); const r = await fetch("https://crtlab.pro/xauusd", { headers: { "user-agent": "crtlab-growth-bot (speed probe)" }, signal: AbortSignal.timeout(15000) }); await r.arrayBuffer(); probe.pageS = r1((Date.now() - t0) / 1000);
+  const t1 = Date.now(), c = await fetch("https://crtlab.pro/api/candles?pair=nas100&tf=5min&limit=3000", { headers: { "user-agent": "crtlab-growth-bot (speed probe)" }, signal: AbortSignal.timeout(15000) }); await c.arrayBuffer(); probe.candlesS = r1((Date.now() - t1) / 1000); probe.candlesCache = c.headers.get("cf-cache-status"); } catch (e) { probe.error = String(e.message).slice(0, 60); }
 const isChart = (p) => /^\/(xauusd|nas100|btcusd|us30|sp500|eurusd|gbpusd|usdjpy|ethusd|solusd|xagusd|usoil|ger40|[a-z]{3,6}usd)$/.test(p);
 // dependency alerts, MEASURED every run (was a number typed in once — Kai's truth rule): open Dependabot alerts by severity
 let deps = null;
@@ -159,13 +172,21 @@ const BRAINS = [
     sensors: () => { const ch = (rum ?? []).filter((x) => isChart(x.p) && x.n >= 5), pg2 = (rum ?? []).filter((x) => !isChart(x.p) && x.n >= 5);
       const w = (xs) => (xs.length ? r1(xs.reduce((a, x) => a + x.p90 * x.n, 0) / xs.reduce((a, x) => a + x.n, 0)) : null);
       const worst = [...ch].sort((a, b) => b.p90 - a.p90)[0];
-      return { chartP90: w(ch), pageP90: w(pg2), worstChart: worst ? `${worst.p} ${worst.p90}s` : null, loads24: (rum ?? []).reduce((a, x) => a + x.n, 0) || null }; },
+      const dv = (k) => (rumDev ?? []).find((x) => x.d === k);
+      return { chartP90: w(ch), pageP90: w(pg2), worstChart: worst ? `${worst.p} ${worst.p90}s` : null, loads24: (rum ?? []).reduce((a, x) => a + x.n, 0) || null,
+        mobileP90: dv("mobile")?.p90 ?? null, desktopP90: dv("desktop")?.p90 ?? null, mobileShare: rumDev?.length ? r1((dv("mobile")?.n ?? 0) / rumDev.reduce((a, x) => a + x.n, 0) * 100) : null,
+        serverPageS: probe.pageS ?? null, candlesS: probe.candlesS ?? null, candlesCache: probe.candlesCache ?? null }; },
     outcome: (s) => ({ label: "chart pages: slowest 10% load (s)", v: s.chartP90 ?? 0, higher: false }),
     signals: () => (rum ?? []).filter((x) => x.n >= 8 && x.p90 > 5).sort((a, b) => b.p90 * b.n - a.p90 * a.n).slice(0, 3).map((x) => { const pushed = (trafficBranches ?? []).some((t) => t.state === "alive" && t.target === x.p);
       return { key: "slow-page", target: x.p, v: x.p90, higher: false, days: 7, why: `slowest 10% load ${x.p90}s (${x.n} loads)${pushed ? " — and the traffic brain is pushing it" : ""}` }; }),
     measureOf: (b) => (rum ?? []).find((x) => x.p === b.target)?.p90 ?? null,
     modes: (s) => [s.chartP90 != null && s.chartP90 > 6 && { id: "slow", label: "Slow charts", level: "warn", why: `slowest 10% of chart loads take ${s.chartP90}s (worst ${s.worstChart})` }].filter(Boolean),
-    admin: (s) => [s.chartP90 > 4 ? `Chart pages: the slowest 10% of real loads take ${s.chartP90}s (worst ${s.worstChart}). Candles come from the origin per request — the fix is engineering (edge-cache immutable candle windows per tier), not a machine.` : null].filter(Boolean) },
+    // the fix text follows the MEASUREMENT (truth rule) — 11-11 it blamed the candles; 11-12 they measured 0.46 s and edge-cached
+    admin: (s) => { if (!(s.chartP90 > 4)) return [];
+      const serverOk = s.serverPageS != null && s.serverPageS < 1.5 && s.candlesS != null && s.candlesS < 1.5;
+      const dev = s.mobileP90 != null && s.desktopP90 != null ? ` — phones ${s.mobileP90}s vs desktop ${s.desktopP90}s (${s.mobileShare}% of loads on phones)` : "";
+      return [serverOk ? `Chart pages: the slowest 10% of real loads take ${s.chartP90}s${dev}, while the server answers in ${s.serverPageS}s and candles in ${s.candlesS}s (${s.candlesCache}). The time is the visitor's device running the chart bundle (~300 KB gzipped) — the fix is splitting that bundle (a build session), not the server.`
+        : `Chart pages: the slowest 10% of real loads take ${s.chartP90}s${dev}; the server probe took ${s.serverPageS ?? "?"}s, candles ${s.candlesS ?? "?"}s (${s.candlesCache ?? "?"}) — server/edge side is slow, check web memory + the data service.`]; } },
   { id: "fixer", name: "Fixer brain", color: "#e2b93b",
     managers: [
       { id: "auto", label: "Auto-fix", machines: ["fixer", "supervisor"], does: "data retries, transient re-runs, restarting stopped machines — each fix verified the next hour" },
