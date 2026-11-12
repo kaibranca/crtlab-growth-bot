@@ -99,6 +99,9 @@ for (const [id, m] of Object.entries(machines)) {
     what: falling ? `${m.name} (IQ ${m.iq}) learns, but its outcome falls — find what it's missing` : `Teach ${m.name} to judge itself on ${m.kpi ? `its KPI (${m.kpi.label})` : "an outcome it can measure"}`,
     why: m.limit, score: +((W[e] ?? 1) * (falling ? 2 : cheap)).toFixed(1) });
 }
+// IQ DROP WATCH: real learning doesn't vanish — a machine down ≥ 5 IQ on yesterday lost an input (file gone, read failing)
+{ const yd = days.filter((d) => d < today).at(-1);
+  if (yd) for (const [id, m] of Object.entries(machines)) { const was = HIST[yd]?.[id] ?? 70; if (was - m.iq >= 5) queue.push({ kind: "fix", machine: id, name: m.name, engine: engOf(id), what: `${m.name} lost ${was - m.iq} IQ since ${fd(yd)} (${was} → ${m.iq})`, why: "learning doesn't vanish — an input it learns from broke (file missing, read failing, reset state)", score: 5 }); } }
 for (const t of J("data/machines/fixer.json", {})?.tasks ?? []) queue.push({ kind: "fix", what: t.what, why: t.fix, engine: "fixer", score: 4 });
 const ADMIN = Object.keys(ENG).filter((e) => e !== "main" && e !== "traffic").flatMap((e) => (J(`data/brains/${e}/ecosystem.json`, {})?.briefing?.notes ?? []).filter((n) => /^BUILD|build/i.test(n)).slice(0, 2).map((n) => ({ kind: "build", what: n.replace(/^BUILD \d+ \([^)]*\)\.?\s*/, ""), why: `${e} brain asks for it`, engine: e, score: 3 })));
 queue.push(...ADMIN);
