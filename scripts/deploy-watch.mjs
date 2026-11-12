@@ -4,7 +4,10 @@ import fs from "node:fs";
 import { SITE } from "./lib.mjs";
 const F = "data/mobile/build.txt";
 const html = await fetch(SITE + "/").then((r) => r.text()).catch(() => "");
-const id = (html.match(/\/_next\/static\/([A-Za-z0-9_-]{6,})\/_(buildManifest|ssgManifest)/) || html.match(/"buildId":"([^"]+)"/) || [])[1] || (html.match(/\/_next\/static\/chunks\/(app\/layout-[a-f0-9]+)\.js/) || [])[1];
+// 11-12: the new Next build's HTML carries no build id → the identity of a deploy is the `live` branch commit (what Railway
+// deploys). Falls back to the old HTML sniffing.
+let liveSha = null; try { const g = await fetch("https://api.github.com/repos/kaibranca/crtlab-standalone/commits/live", { headers: { Authorization: `Bearer ${process.env.GH_WATCH_TOKEN || process.env.GH_TOKEN}`, Accept: "application/vnd.github+json" } }).then((r) => r.json()); liveSha = g.sha?.slice(0, 12) ?? null; } catch {}
+const id = liveSha || (html.match(/\/_next\/static\/([A-Za-z0-9_-]{6,})\/_(buildManifest|ssgManifest)/) || html.match(/"buildId":"([^"]+)"/) || [])[1] || (html.match(/\/_next\/static\/chunks\/(app\/layout-[a-f0-9]+)\.js/) || [])[1];
 fs.mkdirSync("data/mobile", { recursive: true });
 const prev = fs.existsSync(F) ? fs.readFileSync(F, "utf8").trim() : "";
 // DEPLOY JUDGE (11-12 — the immune system): every deploy is logged; ~24 h later it is judged on what real people did after

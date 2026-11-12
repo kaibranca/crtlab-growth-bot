@@ -73,7 +73,8 @@ const kvPut = async (env, k, v, ttl) => { try { if (env.SENTINEL) await env.SENT
 // engine locks in on those pages within minutes. 45-min cooldown. Free: no GitHub run on a normal day, no site load.
 // Secrets: CF_API_TOKEN (Analytics: read) + CF_ZONE_ID. Without them it does nothing.
 async function sentinel(env, d) {
-  if (!env.CF_API_TOKEN || !env.CF_ZONE_ID) return;
+  if (d.getUTCMinutes() < 5) console.log(`${d.toISOString()} sentinel: run (kv ${env.SENTINEL ? "on" : "off"})`);
+  if (!env.CF_API_TOKEN || !env.CF_ZONE_ID) { console.log(`${d.toISOString()} sentinel: off — missing ${!env.CF_API_TOKEN ? "CF_API_TOKEN " : ""}${!env.CF_ZONE_ID ? "CF_ZONE_ID" : ""} (wrangler secret put)`); return; }
   const since = new Date(d.getTime() - 15 * 60e3).toISOString(), until = d.toISOString(), pages = {};
   let total = 0;
   for (const ua of ["ChatGPT-User", "Claude-User", "Perplexity-User"]) {
