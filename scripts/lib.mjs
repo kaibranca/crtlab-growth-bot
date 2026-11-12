@@ -38,3 +38,17 @@ export function rewrite(q, cur, prev = {}) {
   if (cur.desc && !has(cur.desc)) next.description = cut(`${titleCase(q)}: ${cur.desc}`, 155);
   return next.title || next.description ? next : null;
 }
+
+// KNOBS (11-12): a machine's constant, self-tuning. `knob(id, default, { ladder, kpi, owner, what })` returns today's value
+// from the tuner (data/machines/knobs.json → active) and REGISTERS the knob (data/machines/knob-registry.json) the first time a
+// machine runs with it — the tuner (scripts/tuner.mjs) then experiments on it forever. Any new constant written this way
+// joins the loop by itself.
+export function knob(id, def, meta = {}) {
+  try {
+    const R = "data/machines/knob-registry.json", reg = fs.existsSync(R) ? JSON.parse(fs.readFileSync(R, "utf8")) : {};
+    const me = (process.argv[1] ?? "").split("/").pop().replace(/\.mjs$/, "");
+    const entry = { start: def, ladder: meta.ladder ?? null, kpi: meta.kpi ?? "auto", owner: meta.owner ?? me, what: meta.what ?? id, script: me };
+    if (JSON.stringify(reg[id] ? { ...reg[id], seen: undefined } : null) !== JSON.stringify({ ...entry, seen: undefined })) { reg[id] = { ...entry, seen: new Date().toISOString() }; fs.mkdirSync("data/machines", { recursive: true }); fs.writeFileSync(R, JSON.stringify(reg, null, 1)); }
+  } catch { /* the knob still works with its default */ }
+  try { const v = JSON.parse(fs.readFileSync("data/machines/knobs.json", "utf8")).active?.[id]; return typeof v === typeof def ? v : def; } catch { return def; }
+}

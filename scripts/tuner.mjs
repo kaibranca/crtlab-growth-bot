@@ -23,14 +23,27 @@ const fnv = (s) => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h 
 const score = new Map(lines("data/ai/score.jsonl").map((r) => [r.day, r]));
 const KPI = {
   reads: (d) => score.get(d)?.reads ?? null, // people asking AI about our pages (ChatGPT-User etc.) — the reach the AI machine buys with Bing sends
+  ctr: (d) => { const r = score.get(d); return r && r.reads ? (r.clicks ?? 0) / r.reads : null; }, // AI clicks per read — the conversion constraint
 };
+// THE OBJECTIVE UPGRADES ITSELF: "auto" judges on reads while clicks are too few to see (< 25 a day over 14 days), then on
+// click-through — the real constraint — once traffic can carry it. The tuner gets a sharper goal as the data grows.
+const last14 = [...score.values()].slice(-14), clicksDay = last14.reduce((a, r) => a + (r.clicks ?? 0), 0) / Math.max(1, last14.length);
+const AUTO_KPI = clicksDay >= 25 ? "ctr" : "reads";
 // THE KNOBS (owner = the machine whose IQ the verdicts feed). Values are the ladder the tuner climbs.
-const KNOBS = [
+const BUILTIN = [
   { id: "ai.exploreShare", owner: "ai", ladder: [0.08, 0.12, 0.15, 0.2, 0.27, 0.35], start: 0.15, kpi: "reads", what: "share of Bing sends spent exploring pages the machine knows least about" },
   { id: "ai.resendDays", owner: "bing", ladder: [3, 5, 7, 10, 14], start: 7, kpi: "reads", what: "days before an unchanged page is re-sent to Bing (where the limited quota goes)" },
   // (sisterTop / surgeCap are NOT here: the core's mode episodes already tune them — one tuner per knob, never two)
 ];
 
+// + every knob a machine REGISTERED by using lib.mjs knob() — new constants join the loop by themselves
+const ladderFor = (d) => { const xs = [0.5, 0.75, 1, 1.33, 2].map((m) => d * m); return Number.isInteger(d) ? [...new Set(xs.map((x) => Math.max(1, Math.round(x))))] : xs.map((x) => +x.toPrecision(3)); };
+const REG = J("data/machines/knob-registry.json", {}) ?? {};
+const KNOBS = [...BUILTIN];
+for (const [id, r] of Object.entries(REG)) { if (typeof r.start !== "number") continue; const b = KNOBS.find((k) => k.id === id);
+  const K = { id, owner: r.owner, ladder: r.ladder ?? ladderFor(r.start), start: r.start, kpi: r.kpi ?? "auto", what: r.what ?? id };
+  if (b) Object.assign(b, { ...K, ladder: r.ladder ?? b.ladder }); else KNOBS.push(K); }
+for (const K of KNOBS) if (K.kpi === "auto") K.kpi = AUTO_KPI;
 const S = J(OUT, { knobs: {} }); S.knobs ??= {};
 const days = [...score.keys()].sort(), today = iso(NOW), blockOf = (d) => Math.floor(Date.parse(d + "T12:00:00Z") / (2 * DAY));
 const norm = (d) => { const i = days.indexOf(d); if (i < 7) return null; const prev = days.slice(i - 7, i).map((x) => KPI_FN(x)).filter((v) => v != null);
@@ -41,11 +54,13 @@ const active = {};
 
 for (const K of KNOBS) {
   const k = (S.knobs[K.id] ??= { champion: K.start, dir: 1, challenge: null, history: [], settled: null });
+  k.owner = K.owner; k.kpi = K.kpi; k.what = K.what;
+  if (k.challenge && k.challenge.kpi && k.challenge.kpi !== K.kpi) k.challenge = null; // the objective upgraded: restart the test on it
   const L = K.ladder, ci = L.indexOf(k.champion) >= 0 ? L.indexOf(k.champion) : L.indexOf(K.start);
   // open a challenge if none is running (and not settled within 30 days)
   if (!k.challenge && !(k.settled && NOW - Date.parse(k.settled) < 30 * DAY)) {
     let ni = ci + k.dir; if (ni < 0 || ni >= L.length) { k.dir = -k.dir; ni = ci + k.dir; }
-    if (ni >= 0 && ni < L.length) { k.challenge = { value: L[ni], dir: k.dir, since: today, id: `${K.id}:${L[ni]}:${today}`, tries: (k.triesInRow ?? 0) }; k.settled = null; }
+    if (ni >= 0 && ni < L.length) { k.challenge = { value: L[ni], dir: k.dir, since: today, id: `${K.id}:${L[ni]}:${today}`, kpi: K.kpi, tries: (k.triesInRow ?? 0) }; k.settled = null; }
   }
   const ch = k.challenge;
   const arm = (d) => (ch && d >= ch.since ? (fnv(ch.id + "|" + blockOf(d)) % 2 ? "B" : "A") : "A"); // B = challenger
@@ -72,7 +87,7 @@ for (const K of KNOBS) {
   k.challenge = null;
   active[K.id] = k.champion; // the next challenge opens next run
 }
-S.active = active; S.at = new Date().toISOString();
+S.active = active; S.at = new Date().toISOString(); S.objective = { kpi: AUTO_KPI, clicksPerDay: +clicksDay.toFixed(1), switchAt: 25 };
 S.note = "Self-tuning knobs: champion vs challenger in 2-day switchback blocks, judged on the knob's KPI (normalised by its own 7-day mean). Machines read active[knob].";
 fs.writeFileSync(OUT, JSON.stringify(S, null, 1));
 console.log(`tuner: ${KNOBS.map((K) => { const k = S.knobs[K.id]; return `${K.id}=${active[K.id]} (champion ${k.champion}${k.challenge ? ` vs ${k.challenge.value}, ${k.challenge.read?.blocksA ?? 0}+${k.challenge.read?.blocksB ?? 0} blocks` : ""})`; }).join(" · ")}`);

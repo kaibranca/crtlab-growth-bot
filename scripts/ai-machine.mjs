@@ -20,12 +20,12 @@
 //              same pages' prior rate: kept or flagged. That is how it learns what WORKS, not just what is read.
 // Studies and new page types are never auto-published (Kai's rule): the plan proposes, Kai approves.
 import fs from "node:fs";
-import { SITE, readLines, append, month } from "./lib.mjs";
+import { SITE, readLines, append, month, knob } from "./lib.mjs";
 
 const DAY = 86400000, HALF = 14, NOW = Date.now();
 const iso = (t) => new Date(t).toISOString().slice(0, 10);
 // SELF-TUNING KNOBS (scripts/tuner.mjs): today's value of a constant the tuner is experimenting on
-const KNOB = (id, d) => { try { const v = JSON.parse(fs.readFileSync("data/machines/knobs.json", "utf8")).active?.[id]; return typeof v === "number" ? v : d; } catch { return d; } };
+const KNOB = (id, d, meta) => knob(id, d, meta); // lib.mjs: reads the tuner's value + registers the knob
 const w = (dayIso) => Math.pow(0.5, (NOW - Date.parse(dayIso + "T12:00:00Z")) / DAY / HALF); // recency weight
 const LIVE = /^(ChatGPT-User|Claude-User|Perplexity-User)$/, INDEXER = /^(OAI-SearchBot|PerplexityBot|Claude-SearchBot|Bingbot)$/;
 const SKIP = /^\/(api|_next|admin|account|auth|login|signup|unsubscribe|app)(\/|$)|\.(png|jpg|svg|ico|webp|xml|js|css)$|opengraph-image|twitter-image/;
@@ -329,7 +329,7 @@ const HELD = (p) => p !== "/" && fnv(HO.salt + p) < HO.pct;
   console.log(`holdout: ${held}/${lastmod.size} pages held · day ${postD.toFixed(1)} · push lift ${HO.last.pushLift ?? "—"} (people-fetches, pushed ÷ held, family-matched)`); }
 
 // ── 3. submit to Bing, most valuable first ────────────────────────────────────────────────────────────────────────────
-const SUB = "data/ai/submitted.json", RESEND_D = KNOB("ai.resendDays", 7); // tuner: days before an unchanged page is re-sent
+const SUB = "data/ai/submitted.json", RESEND_D = KNOB("ai.resendDays", 7, { ladder: [3, 5, 7, 10, 14], owner: "bing", what: "days before an unchanged page is re-sent to Bing (where the limited quota goes)" }); // tuner: days before an unchanged page is re-sent
 const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
 const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
@@ -346,7 +346,7 @@ const seenFam = new Set(), explore = [];
 for (const q of [...queue].sort((a, b) => a.conf - b.conf || (Math.sin(a.p.length * 7 + NOW / DAY) - Math.sin(b.p.length * 7 + NOW / DAY)))) if (!seenFam.has(q.fam)) { seenFam.add(q.fam); explore.push({ ...q, why: q.why + " · explore" }); }
 // CURIOSITY (scripts/self.mjs): when the traffic engine's IQ stalls it explores harder — 15 % × curiosity (≤ ×1.6 → 24 %)
 const CUR = (() => { try { return Math.max(1, Math.min(1.6, JSON.parse(fs.readFileSync("data/machines/self.json", "utf8")).engines?.traffic?.curiosity ?? 1)); } catch { return 1; } })();
-const pick = (n) => { const nX = Math.round(n * KNOB("ai.exploreShare", 0.15) * CUR), out = [], used = new Set();
+const pick = (n) => { const nX = Math.round(n * KNOB("ai.exploreShare", 0.15, { ladder: [0.08, 0.12, 0.15, 0.2, 0.27, 0.35], owner: "ai", what: "share of Bing sends spent exploring pages the machine knows least about" }) * CUR), out = [], used = new Set();
   for (const q of exploit) { if (out.length >= n - nX) break; out.push(q); used.add(q.p); }
   for (const q of explore) { if (out.length >= n) break; if (!used.has(q.p)) { out.push(q); used.add(q.p); } }
   for (const q of exploit) { if (out.length >= n) break; if (!used.has(q.p)) { out.push(q); used.add(q.p); } }

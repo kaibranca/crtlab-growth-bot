@@ -14,11 +14,14 @@
      "blocksB": 0,
      "lift": null,
      "P": null,
-     "at": "2026-11-12T19:43:15.617Z"
+     "at": "2026-11-12T19:44:01.343Z"
     }
    },
    "history": [],
-   "settled": null
+   "settled": null,
+   "owner": "ai",
+   "kpi": "reads",
+   "what": "share of Bing sends spent exploring pages the machine knows least about"
   },
   "ai.resendDays": {
    "champion": 7,
@@ -34,17 +37,25 @@
      "blocksB": 0,
      "lift": null,
      "P": null,
-     "at": "2026-11-12T19:43:15.617Z"
+     "at": "2026-11-12T19:44:01.343Z"
     }
    },
    "history": [],
-   "settled": null
+   "settled": null,
+   "owner": "bing",
+   "kpi": "reads",
+   "what": "days before an unchanged page is re-sent to Bing (where the limited quota goes)"
   }
  },
  "active": {
   "ai.exploreShare": 0.15,
   "ai.resendDays": 10
  },
- "at": "2026-11-12T19:43:15.617Z",
- "note": "Self-tuning knobs: champion vs challenger in 2-day switchback blocks, judged on the knob's KPI (normalised by its own 7-day mean). Machines read active[knob]."
+ "at": "2026-11-12T19:44:01.343Z",
+ "note": "Self-tuning knobs: champion vs challenger in 2-day switchback blocks, judged on the knob's KPI (normalised by its own 7-day mean). Machines read active[knob].",
+ "objective": {
+  "kpi": "reads",
+  "clicksPerDay": 5.7,
+  "switchAt": 25
+ }
 }
