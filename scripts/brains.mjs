@@ -112,7 +112,7 @@ const BRAINS = [
       { id: "safety", label: "Backups", machines: ["backup", "restore"], does: "nightly backup + restore test" },
       { id: "budget", label: "Railway budget", machines: ["cost", "capacity", "load"], does: "cost pace, memory, capacity" },
     ],
-    sensors: () => ({ dataFresh: check("market data fresh")?.ok ?? null, dataNote: check("market data fresh")?.note ?? null, pullFails7: lastData, pullFails24: lastData24,
+    sensors: () => ({ sensor: J("data/machines/humans.json", {}).selfCheck?.verdict ?? null, dataFresh: check("market data fresh")?.ok ?? null, dataNote: check("market data fresh")?.note ?? null, pullFails7: lastData, pullFails24: lastData24,
       backupOk: check("nightly backup")?.ok ?? null, monthPace: r1(cost.monthPace), budget: cost.budget ?? 10, deploys24: cost.deploys ?? null }),
     outcome: (s) => ({ label: "Railway $ / month pace", v: s.monthPace ?? 0, higher: false }),
     signals: (s) => [s.monthPace > s.budget && { key: "budget", target: "Railway pace", v: s.monthPace, higher: false, days: 3, why: `$${s.monthPace}/month vs $${s.budget}` },
@@ -120,12 +120,13 @@ const BRAINS = [
       ...(cost.incidents ?? []).slice(0, 2).map((i) => ({ key: "cost-incident", target: `${i.svc} ${i.kind}`, v: i.memGB ?? i.n ?? 1, higher: false, days: 2, why: i.why }))].filter(Boolean),
     measureOf: (b, s) => b.key === "budget" ? s.monthPace : b.key === "pull" ? s.pullFails24 : (cost.incidents ?? []).some((i) => `${i.svc} ${i.kind}` === b.target) ? (cost.incidents.find((i) => `${i.svc} ${i.kind}` === b.target).memGB ?? 1) : 0,
     modes: (s) => [
+      s.sensor && /^INSTRUMENT/.test(s.sensor) && { id: "sensor-broken", label: "Sensor broken", level: "critical", why: s.sensor },
       s.dataFresh === false && { id: "data-late", label: "Data late", level: "critical", why: `market data not fresh (${s.dataNote})` },
       s.backupOk === false && { id: "backup", label: "Backup failing", level: "critical", why: "nightly backup check failing" },
       s.monthPace > s.budget * 1.5 && { id: "over-budget", label: "Over budget", level: "warn", why: `Railway pace $${s.monthPace}/month vs $${s.budget} target` },
       s.pullFails24 >= 2 && { id: "pull-flaky", label: "Pull flaky", level: "warn", why: `daily-data failed ${s.pullFails24}× in the last 24 h` },
     ].filter(Boolean),
-    admin: (s) => [s.monthPace > s.budget * 1.5 ? `Railway pace $${s.monthPace}/mo vs $${s.budget}: fewer direct deploys (use the 07:15/13:00/19:00 windows), then check web memory once the heap tuner has 24 h of samples.` : null].filter(Boolean) },
+    admin: (s) => [s.sensor && /^INSTRUMENT/.test(s.sensor) ? `${s.sensor}. Check the newest site deploy: /api/stats heartbeat (beatGuest) on that device — every engine is reading a wrong people number until it's fixed.` : null, s.monthPace > s.budget * 1.5 ? `Railway pace $${s.monthPace}/mo vs $${s.budget}: fewer direct deploys (use the 07:15/13:00/19:00 windows), then check web memory once the heap tuner has 24 h of samples.` : null].filter(Boolean) },
   { id: "security", name: "Security brain", color: "#f7525f",
     managers: [
       { id: "edge", label: "Edge", machines: ["shield"], does: "Cloudflare: bans, scanner rules, cloud-crawler challenge" },
@@ -225,6 +226,7 @@ function needQueue() {
     [/Dependabot/i, "deps", "say \"fix dependabot\" — upgrades need a build + test session"],
     [/pack|card|checkout/i, "checkout", "decide the checkout fix (wallets/PayPal first, fewer fields) — a build session"],
     [/Chart pages|slowest 10%/i, "speed", "say \"chart speed\" — edge-cache immutable candle windows (a build session)"],
+    [/INSTRUMENT|heartbeat/i, "sensor", "say \"fix the heartbeat\" — a build session on /api/stats + the newest deploy (every engine reads a wrong people number until then)"],
     [/Railway pace|deploys/i, "budget", "fewer direct deploys (use the windows); heap tuner after 24 h of samples"],
     [/came back|week 2|first session/i, "retention", "decide a first-session change (golden actions from the behaviour machine)"],
     [/no page|Bing shows/i, "gap", "approve a page for the search (content brain's top gap)"]];

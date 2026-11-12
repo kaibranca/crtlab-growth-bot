@@ -26,7 +26,8 @@ try {
       -- REAL visitors only (11-11): stayed 30 s+ or made an account. One-hit bot bursts (102 "direct desktop homepage
       -- visitors" on 11-05, 19 of them real) inflated the baseline and put the engine in Recovery for bots that left.
       count(*) filter (where last_active - created_at > interval '30 seconds' or converted_at is not null)::int n,
-      count(*)::int raw, count(*) filter (where converted_at is not null)::int acc
+      count(*)::int raw, count(*) filter (where converted_at is not null)::int acc,
+      count(*) filter (where last_active > created_at + interval '2 seconds')::int beat
     from guest_presence where created_at > now() - interval '15 days' and country is distinct from 'SG'
     group by 1, 2, 3, 4, 5`);
   const su = await db.query(`select floor(extract(epoch from (now() - created_at)) / 86400)::int d, count(*)::int n from users where created_at > now() - interval '15 days' group by 1`);
@@ -62,13 +63,24 @@ try {
   const wsArr = new Array(15).fill(0); for (const r of wsu.rows) if (r.d >= 0 && r.d < 15) wsArr[r.d] += r.n;
   const wSegs = []; for (const [dim, key] of [["source", "src"], ["landing", "lp"]]) for (const v of [...new Set(wv.rows.map((r) => r[key]))]) { const x = stat(wDay((r) => r[key] === v)); if (x.now >= 3) wSegs.push({ dim, seg: v, ...x, gain: +(x.now - x.normal).toFixed(1) }); }
   const wave = { window: "3h", visitors: stat(wDay(() => true)), signups: stat(wsArr), riding: wSegs.sort((a, b) => b.gain - a.gain).slice(0, 3) };
+  // SELF-CHECK (11-12 — "am I measuring right?"): every engine trusts "real visitors" (stayed 30 s+). Per device, today vs
+  // the 14 days before: the share of guests whose heartbeat fired at all (beat/raw) and the share who stayed (real/raw).
+  // Heartbeat share collapsing = the INSTRUMENT broke (a deploy, a script error) — not people leaving; flagged as such.
+  const dv = {}; for (const r of rows) { if (r.d < 0 || r.d > 14) continue; const o = ((dv[r.dev] ??= Array.from({ length: 15 }, () => ({ raw: 0, beat: 0, n: 0 }))))[r.d]; o.raw += r.raw; o.beat += r.beat ?? 0; o.n += r.n; }
+  const check = Object.entries(dv).map(([dev, a]) => { const b = a.slice(1).reduce((x, y) => ({ raw: x.raw + y.raw, beat: x.beat + y.beat, n: x.n + y.n }), { raw: 0, beat: 0, n: 0 });
+    const sh = (o, k) => (o.raw ? +(o[k] / o.raw).toFixed(3) : null); return { dev, raw24: a[0].raw, beat24: sh(a[0], "beat"), beatNormal: sh(b, "beat"), stay24: sh(a[0], "n"), stayNormal: sh(b, "n") }; })
+    .filter((x) => x.raw24 >= 10);
+  const broken = check.filter((x) => x.beatNormal >= 0.2 && x.beat24 != null && x.beat24 < x.beatNormal * 0.4);
+  const leaving = check.filter((x) => !broken.includes(x) && x.stayNormal >= 0.05 && x.stay24 != null && x.stay24 < x.stayNormal * 0.5);
+  const selfCheck = { devices: check, verdict: broken.length ? `INSTRUMENT: heartbeat share collapsed on ${broken.map((x) => `${x.dev} (${x.beat24} vs ${x.beatNormal})`).join(", ")} — "real visitors" is under-counted, not a real dip`
+    : leaving.length ? `PEOPLE LEAVING: heartbeats fine, but the share who stay 30 s fell on ${leaving.map((x) => `${x.dev} (${x.stay24} vs ${x.stayNormal})`).join(", ")}` : "measuring right" };
   const out = {
-    at: new Date().toISOString(), wave, visitors, rawVisitors: stat(rawDay), signups, state: drop ? "dip" : rise ? "up" : "normal",
+    at: new Date().toISOString(), selfCheck, wave, visitors, rawVisitors: stat(rawDay), signups, state: broken.length ? "instrument" : drop ? "dip" : rise ? "up" : "normal",
     why: top.map((w) => `${w.dim} ${w.seg}: ${w.now} vs ~${w.normal}/day`),
     gainers: why.filter((w) => w.gap > 0).sort((a, b) => b.gap - a.gap).slice(0, 3).map((w) => `${w.dim} ${w.seg}: ${w.now} vs ~${w.normal}/day`),
     segments: why.slice(0, 40),
   };
   fs.mkdirSync("data/machines", { recursive: true });
   fs.writeFileSync(OUT, JSON.stringify(out, null, 1));
-  console.log(`humans: ${visitors.now} real visitors in 24 h (raw ${out.rawVisitors.now} vs ~${out.rawVisitors.normal}) vs ~${visitors.normal} (×${visitors.ratio}) · sign-ups ${signups.now} vs ~${signups.normal} · ${out.state}${top.length ? " · down most: " + out.why.join("; ") : ""} · 3 h: ${wave.visitors.now} vs ~${wave.visitors.normal} (×${wave.visitors.ratio})`);
+  console.log(`humans: ${visitors.now} real visitors in 24 h (raw ${out.rawVisitors.now} vs ~${out.rawVisitors.normal}) vs ~${visitors.normal} (×${visitors.ratio}) · sign-ups ${signups.now} vs ~${signups.normal} · ${out.state}${top.length ? " · down most: " + out.why.join("; ") : ""} · 3 h: ${wave.visitors.now} vs ~${wave.visitors.normal} (×${wave.visitors.ratio}) · self-check: ${selfCheck.verdict}`);
 } finally { await db.end(); }
