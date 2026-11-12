@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12T21:24:57.463Z",
+ "updated": "2026-11-12T21:41:58.909Z",
  "watchdog": {
   "up24h": 97.96,
   "up7d": 99.63,
@@ -454,6 +454,18 @@
  },
  "activity": [
   {
+   "at": "2026-11-12T21:41:47.072Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
+  },
+  {
+   "at": "2026-11-12T21:31:21.651Z",
+   "job": "reels",
+   "ok": true,
+   "text": "posted \"NY OPEN OR TRAP?\" (XAUUSD) to Instagram"
+  },
+  {
    "at": "2026-11-12T21:23:09.310Z",
    "job": "watchdog",
    "ok": true,
@@ -596,12 +608,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "332 crawler visits · Amazonbot 294 · Bingbot 17 · ChatGPT-User 9 · PerplexityBot 4"
-  },
-  {
-   "at": "2026-11-12T18:41:48.072Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
   },
   {
    "at": "2026-11-12T18:18:27.317Z",
@@ -926,12 +932,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "388 crawler visits · Amazonbot 197 · OAI-SearchBot 146 · Bingbot 19 · ChatGPT-User 11"
-  },
-  {
-   "at": "2026-11-12T11:31:12.324Z",
-   "job": "reels",
-   "ok": true,
-   "text": "posted \"EURUSD PDL 63 PIPS\" (EURUSD) to Facebook"
   }
  ],
  "seo": {
@@ -1041,7 +1041,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-12T18:41:48.072Z",
+  "at": "2026-11-12T21:41:47.072Z",
   "alerts": [],
   "checks": [
    {
@@ -1067,7 +1067,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "16h old · 33.4 MB"
+    "note": "19h old · 33.4 MB"
    },
    {
     "name": "market data fresh",
@@ -1077,7 +1077,7 @@
    {
     "name": "AI radar",
     "ok": true,
-    "note": "12h ago · asked 4/4"
+    "note": "15h ago · asked 4/4"
    }
   ],
   "db": {
@@ -1089,7 +1089,7 @@
     ],
     [
      "ui_events",
-     63
+     64
     ],
     [
      "meter_identities",
@@ -1117,22 +1117,22 @@
    "home": {
     "kb": 2609,
     "scripts": 24,
-    "ttfbMs": 217
+    "ttfbMs": 255
    },
    "backtest": {
     "kb": 1449,
     "scripts": 13,
-    "ttfbMs": 287
+    "ttfbMs": 562
    },
    "chart app": {
     "kb": 2609,
     "scripts": 24,
-    "ttfbMs": 430
+    "ttfbMs": 616
    },
    "statistics": {
     "kb": 1213,
     "scripts": 14,
-    "ttfbMs": 198
+    "ttfbMs": 210
    }
   },
   "heavier": []
@@ -3789,21 +3789,23 @@
  "reels": {
   "live": true,
   "posted7d": {
-   "ig": 9,
+   "ig": 10,
    "fb": 10
   },
   "views7d": 2479,
   "site7d": 0,
   "signups7d": 0,
-  "next": [
-   {
-    "plat": "ig",
-    "at": "2026-11-12T21:26:00.000Z",
-    "title": "NY OPEN OR TRAP?",
-    "mk": "XAUUSD"
-   }
-  ],
+  "next": [],
   "last": [
+   {
+    "at": "2026-11-12T21:31:21.651Z",
+    "plat": "ig",
+    "title": "NY OPEN OR TRAP?",
+    "mk": "XAUUSD",
+    "views": null,
+    "site": null,
+    "link": "https://www.instagram.com/reel/DfqBsYQjcyd/"
+   },
    {
     "at": "2026-11-12T21:11:14.426Z",
     "plat": "fb",
@@ -3848,15 +3850,6 @@
     "views": null,
     "site": null,
     "link": "https://www.instagram.com/reel/Dfnhea3keLn/"
-   },
-   {
-    "at": "2026-11-11T11:31:10.996Z",
-    "plat": "fb",
-    "title": "AUDUSD CPI",
-    "mk": "AUDUSD",
-    "views": null,
-    "site": null,
-    "link": "https://www.facebook.com/reel/2001887631079834/"
    }
   ]
  },
