@@ -8,7 +8,7 @@
   "43209752996": true
  },
  "day": "2026-11-12",
- "at": "2026-11-12T13:04:10.480Z",
+ "at": "2026-11-12T13:20:18.896Z",
  "actions": [
   {
    "at": "2026-11-12T12:03:51.703Z",
@@ -69,6 +69,11 @@
   },
   {
    "what": "Holdout is waiting (last run never h ago, normal every 1 h)",
+   "evidence": "supervisor",
+   "fix": "needs a build or a decision"
+  },
+  {
+   "what": "Same-day news is late (last run 3 h ago, normal every 1 h)",
    "evidence": "supervisor",
    "fix": "needs a build or a decision"
   },
