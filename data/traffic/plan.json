@@ -1,7 +1,7 @@
 {
- "at": "2026-11-12T06:37:21.095Z",
+ "at": "2026-11-12T06:43:05.880Z",
  "score": {
-  "at": "2026-11-12T06:37:21.095Z",
+  "at": "2026-11-12T06:43:05.880Z",
   "queries": 24,
   "impr": 186,
   "clicks": 5,
@@ -28,15 +28,6 @@
    "pos": 9
   },
   {
-   "page": "/backtest",
-   "missed": 0.7,
-   "impr": 7,
-   "queries": [
-    "free backtesting (#9)"
-   ],
-   "pos": 5
-  },
-  {
    "page": "/tools/nas100-lot-size-calculator",
    "missed": 0.7,
    "impr": 7,
@@ -44,6 +35,15 @@
     "nas100 lot size calculator (#7)"
    ],
    "pos": 8
+  },
+  {
+   "page": "/backtest",
+   "missed": 0.7,
+   "impr": 7,
+   "queries": [
+    "free backtesting (#9)"
+   ],
+   "pos": 5
   }
  ],
  "gaps": [
@@ -58,16 +58,6 @@
    "missed": 3.2
   },
   {
-   "q": "us500 s&p 500 trade setup today entry sl tp",
-   "impr": 5,
-   "clicks": 0,
-   "pos": 3,
-   "page": null,
-   "fit": 0.2,
-   "band": "top",
-   "missed": 0.5
-  },
-  {
    "q": "pro trading lab",
    "impr": 5,
    "clicks": 0,
@@ -75,6 +65,16 @@
    "page": null,
    "fit": 0.33,
    "band": "page1-bottom",
+   "missed": 0.5
+  },
+  {
+   "q": "us500 s&p 500 trade setup today entry sl tp",
+   "impr": 5,
+   "clicks": 0,
+   "pos": 3,
+   "page": null,
+   "fit": 0.2,
+   "band": "top",
    "missed": 0.5
   },
   {
@@ -130,16 +130,6 @@
    "missed": 3.2
   },
   {
-   "q": "free backtesting",
-   "impr": 7,
-   "clicks": 0,
-   "pos": 9,
-   "page": "/backtest",
-   "fit": 1,
-   "band": "page1-bottom",
-   "missed": 0.7
-  },
-  {
    "q": "nas100 lot size calculator",
    "impr": 7,
    "clicks": 0,
@@ -150,14 +140,14 @@
    "missed": 0.7
   },
   {
-   "q": "us500 s&p 500 trade setup today entry sl tp",
-   "impr": 5,
+   "q": "free backtesting",
+   "impr": 7,
    "clicks": 0,
-   "pos": 3,
-   "page": null,
-   "fit": 0.2,
-   "band": "top",
-   "missed": 0.5
+   "pos": 9,
+   "page": "/backtest",
+   "fit": 1,
+   "band": "page1-bottom",
+   "missed": 0.7
   },
   {
    "q": "pro trading lab",
@@ -167,6 +157,16 @@
    "page": null,
    "fit": 0.33,
    "band": "page1-bottom",
+   "missed": 0.5
+  },
+  {
+   "q": "us500 s&p 500 trade setup today entry sl tp",
+   "impr": 5,
+   "clicks": 0,
+   "pos": 3,
+   "page": null,
+   "fit": 0.2,
+   "band": "top",
    "missed": 0.5
   },
   {
@@ -190,22 +190,22 @@
    "missed": 0
   },
   {
+   "q": "sizeposition",
+   "impr": 3,
+   "clicks": 0,
+   "pos": 5,
+   "page": null,
+   "fit": 0,
+   "band": "page1-bottom",
+   "missed": 0.3
+  },
+  {
    "q": "gold lot size calculator",
    "impr": 3,
    "clicks": 0,
    "pos": 7,
    "page": "/tools/xauusd-lot-size-calculator",
    "fit": 1.01,
-   "band": "page1-bottom",
-   "missed": 0.3
-  },
-  {
-   "q": "position lot size calculator",
-   "impr": 3,
-   "clicks": 0,
-   "pos": 9,
-   "page": "/tools/position-size-calculator",
-   "fit": 0.79,
    "band": "page1-bottom",
    "missed": 0.3
   },
@@ -220,12 +220,12 @@
    "missed": 0.3
   },
   {
-   "q": "sizeposition",
+   "q": "position lot size calculator",
    "impr": 3,
    "clicks": 0,
-   "pos": 5,
-   "page": null,
-   "fit": 0,
+   "pos": 9,
+   "page": "/tools/position-size-calculator",
+   "fit": 0.79,
    "band": "page1-bottom",
    "missed": 0.3
   },
@@ -250,6 +250,26 @@
    "missed": 0
   },
   {
+   "q": "lot size calculator xauusd",
+   "impr": 2,
+   "clicks": 0,
+   "pos": 6,
+   "page": "/tools/xauusd-lot-size-calculator",
+   "fit": 1.05,
+   "band": "page1-bottom",
+   "missed": 0.2
+  },
+  {
+   "q": "position size calculator | lot size calculator | myfxbook",
+   "impr": 2,
+   "clicks": 0,
+   "pos": 8,
+   "page": "/tools/position-size-calculator",
+   "fit": 0.67,
+   "band": "page1-bottom",
+   "missed": 0.2
+  },
+  {
    "q": "gbpusd lot size calculator",
    "impr": 2,
    "clicks": 0,
@@ -270,23 +290,13 @@
    "missed": 0.2
   },
   {
-   "q": "wie gross 1 lot grösse nas100 bitget cfd",
+   "q": "xauusd replay backtesting free",
    "impr": 2,
    "clicks": 0,
-   "pos": 6,
-   "page": null,
-   "fit": 0.35,
-   "band": "page1-bottom",
-   "missed": 0.2
-  },
-  {
-   "q": "xauusd backtest free",
-   "impr": 2,
-   "clicks": 0,
-   "pos": 2,
+   "pos": 4,
    "page": "/backtest-gold",
-   "fit": 1.04,
-   "band": "top",
+   "fit": 0.67,
+   "band": "page1-bottom",
    "missed": 0.2
   },
   {
@@ -310,32 +320,22 @@
    "missed": 0.2
   },
   {
-   "q": "xauusd replay backtesting free",
+   "q": "xauusd backtest free",
    "impr": 2,
    "clicks": 0,
-   "pos": 4,
+   "pos": 2,
    "page": "/backtest-gold",
-   "fit": 0.67,
-   "band": "page1-bottom",
+   "fit": 1.04,
+   "band": "top",
    "missed": 0.2
   },
   {
-   "q": "lot size calculator xauusd",
+   "q": "wie gross 1 lot grösse nas100 bitget cfd",
    "impr": 2,
    "clicks": 0,
    "pos": 6,
-   "page": "/tools/xauusd-lot-size-calculator",
-   "fit": 1.05,
-   "band": "page1-bottom",
-   "missed": 0.2
-  },
-  {
-   "q": "position size calculator | lot size calculator | myfxbook",
-   "impr": 2,
-   "clicks": 0,
-   "pos": 8,
-   "page": "/tools/position-size-calculator",
-   "fit": 0.67,
+   "page": null,
+   "fit": 0.35,
    "band": "page1-bottom",
    "missed": 0.2
   }
@@ -349,13 +349,13 @@
   "/funded-trader-markets-challenge-simulator": 4,
   "/backtest": 5,
   "/tools/xauusd-lot-size-calculator": 7,
-  "/backtesting-software": 8,
   "/hub": 3,
+  "/backtesting-software": 8,
   "/backtest-sp500": 4,
   "/tools/btcusd-position-size-calculator": 5,
   "/trading-simulator": 8,
-  "/metatrader-strategy-tester-alternative": 3,
-  "/tools/usdjpy-lot-size-calculator": 6
+  "/tools/usdjpy-lot-size-calculator": 6,
+  "/metatrader-strategy-tester-alternative": 3
  },
  "pagePos7": {
   "/": 5,
@@ -367,16 +367,30 @@
   "/funded-trader-markets-challenge-simulator": 4,
   "/backtest": 5,
   "/tools/xauusd-lot-size-calculator": 7,
-  "/backtesting-software": 8,
   "/hub": 3,
+  "/backtesting-software": 8,
   "/tools/btcusd-position-size-calculator": 5,
   "/trading-simulator": 8,
-  "/metatrader-strategy-tester-alternative": 3,
   "/tools/usdjpy-lot-size-calculator": 6,
+  "/metatrader-strategy-tester-alternative": 3,
+  "/backtest-nas100": 4,
   "/tools/gbpusd-lot-size-calculator": 6,
-  "/pipstone-capital-challenge-simulator": 9,
-  "/backtest-nas100": 4
+  "/pipstone-capital-challenge-simulator": 9
  },
  "ghosts": [],
- "prev": null
+ "prev": {
+  "at": "2026-11-12T06:37:21.095Z",
+  "queries": 24,
+  "impr": 186,
+  "clicks": 5,
+  "missed": 11.6,
+  "page1Bottom": 18,
+  "page2": 0,
+  "gaps": 5,
+  "ghosts": 0,
+  "recovered": 0,
+  "rankAlive": 0,
+  "solved": 0,
+  "stuck": 0
+ }
 }
