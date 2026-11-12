@@ -1,7 +1,7 @@
 // HOURLY: does the money path work for a real visitor, and can every AI crawler read the site?
 // Writes data/watchdog/<month>.jsonl; exits 1 on any failure so GitHub emails the owner.
 import { SITE, get, append, month, now } from "./lib.mjs";
-const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15";
+const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15 crtlab-watchdog"; // 11-12: tagged — the CF flood rule challenges cookieless no-referer homepage hits; this tag is exempt
 const BOT = (n) => `Mozilla/5.0 (compatible; ${n}; +https://example.com/bot)`;
 const checks = [
   ["home", "/", UA, (r) => r.body.includes("CRTLAB")],
