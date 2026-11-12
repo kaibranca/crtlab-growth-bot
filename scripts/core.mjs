@@ -182,7 +182,9 @@ if (mode !== old.mode) {
 { const LF = "data/machines/lockin.json", L0 = J(LF, { on: false, bars: {} }), bars = { people: 2, signups: 2.5, ai: 2, spike: 1, ...(L0.bars ?? {}) };
   const W = HU?.wave, fresh = W && NOW - Date.parse(HU.at) < 2 * H, trig = [];
   if (fresh && W.visitors.now >= 6 && (W.visitors.ratio ?? 0) >= bars.people && W.visitors.z >= 3) trig.push({ kind: "people", why: `${W.visitors.now} real visitors in 3 h vs ~${W.visitors.normal} (×${W.visitors.ratio})${W.riding?.[0] ? ` — riding ${W.riding[0].dim} ${W.riding[0].seg} (${W.riding[0].now} vs ~${W.riding[0].normal})` : ""}` });
-  if (fresh && W.signups.now >= 3 && (W.signups.ratio ?? 0) >= bars.signups) trig.push({ kind: "signups", why: `${W.signups.now} sign-ups in 3 h vs ~${W.signups.normal} (×${W.signups.ratio})` });
+  // 11-12: the sign-up trigger had no strength test (people/AI need z ≥ 3–4) — 7 vs ~2.1 at z 1.8 (ordinary day-to-day
+  // noise) held lock-in on for 7 h while real visitors were BELOW normal. Now it needs z ≥ 2.5 like a real wave.
+  if (fresh && W.signups.now >= 3 && (W.signups.ratio ?? 0) >= bars.signups && (W.signups.z ?? 0) >= 2.5) trig.push({ kind: "signups", why: `${W.signups.now} sign-ups in 3 h vs ~${W.signups.normal} (×${W.signups.ratio})` });
   // AI: a RATIO to normal, not z alone — reads grew ×20 in a month, so z vs the 14-day mean stays high on ordinary days
   // SENTINEL (cron worker, every 5 min at the edge): a 15-minute people-fetch spike arrives as SPIKE — locks in within minutes,
   // aimed at the spiking pages (the 24 h numbers would take hours to move)

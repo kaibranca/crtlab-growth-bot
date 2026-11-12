@@ -222,6 +222,12 @@ const wFam = (p) => { const s0 = p.split("/").filter(Boolean); const f = !s0.len
 const RECT = new Map(((() => { try { return JSON.parse(fs.readFileSync("data/radar/recommend.json", "utf8")).targets ?? []; } catch { return []; } })()).map((x) => [x.page, x.cluster]));
 const FCJ = new Map(((() => { try { return JSON.parse(fs.readFileSync("data/world/forecast.json", "utf8")).jumps ?? []; } catch { return []; } })()).map((x) => [x.p, x.why]));
 const LOCK = (() => { try { return JSON.parse(fs.readFileSync("data/machines/lockin.json", "utf8")); } catch { return { on: false }; } })(); // core.mjs lock-in
+// 11-12: lock-in pushes a page only where pushing has PAID — the world model credits Bing sends per family (11-12: calendar
+// ×1.21 yes; news x/y ×0.51 no; held-out pages ×1.15 vs pushed ×0.99 overall). A family measured below ×0.95 on ≥ 5 units
+// is never "all-in"-pushed; unmeasured families still get pushed (that is how they get measured).
+const LOCK_CREDIT = (() => { try { return JSON.parse(fs.readFileSync("data/world/credit.json", "utf8")).credit?.["bing-send"]?.byFamily ?? {}; } catch { return {}; } })();
+const famRe = (k) => new RegExp("^" + k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/<([^>]+)>/g, (_, inner) => inner.split("/").map(() => "[^/]+").join("/")) + "$");
+const lockPays = (p) => { const f = Object.entries(LOCK_CREDIT).find(([k]) => famRe(k).test(p)); return !f || (f[1].units ?? 0) < 5 || (f[1].lift ?? 1) >= 0.95; };
 const EXK = (() => { try { return JSON.parse(fs.readFileSync("data/machines/executive.json", "utf8")).knobs ?? {}; } catch { return {}; } })(); // the executive's knobs
 const MP = MODE.params ?? {}, SIS_TOP = (MODE.mode === "surge" ? (MP.sisterTop ?? 5) : 3) + (LOCK.on ? 2 : 0) + (EXK.sisterAdd ?? 0), URG_CAP = LOCK.on ? 1 : Math.min(1, (MODE.mode === "surge" ? (MP.surgeCap ?? 0.8) : 0.6) + (EXK.urgentCapAdd ?? 0));
 const recovery = new Set(MODE.mode === "dip" ? (MODE.targets ?? []) : []);
@@ -319,7 +325,7 @@ const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
 const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY, evDue = ev && NOW - last > 2 * DAY;
-  const rcmP = RECT.has(p) && NOW - last > 3 * DAY, fcP = FCJ.has(p) && NOW - last > 2 * DAY, old = bingOld(p) && NOW - last > DAY, lockP = LOCK.on && (LOCK.targets ?? []).includes(p) && NOW - last > 3 * 3.6e6, hotP = (surgePage.has(p) && NOW - last > 6 * 3.6e6) || lockP, riseP = risePage.has(p) && NOW - last > 2 * DAY, recP = recovery.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
+  const rcmP = RECT.has(p) && NOW - last > 3 * DAY, fcP = FCJ.has(p) && NOW - last > 2 * DAY, old = bingOld(p) && NOW - last > DAY, lockP = LOCK.on && (LOCK.targets ?? []).includes(p) && lockPays(p) && NOW - last > 3 * 3.6e6, hotP = (surgePage.has(p) && NOW - last > 6 * 3.6e6) || lockP, riseP = risePage.has(p) && NOW - last > 2 * DAY, recP = recovery.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
   return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * weekMul(x.fam) * trendMul(x.fam) * wFam(p), conf: x.conf, fam: x.fam, why: lockP ? "LOCK-IN" : hotP ? "SURGE" : rcmP ? `RECOMMEND ${RECT.get(p)}` : fcP ? `FORECAST ${FCJ.get(p)}` : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).filter((q) => q.why && !SKIP.test(q.p) && !HELD(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
