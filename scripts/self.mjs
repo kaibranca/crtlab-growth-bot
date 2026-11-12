@@ -132,5 +132,11 @@ const exSay = `${ex.length} experiments live — next verdicts: ${soon.join(" ·
 fs.writeFileSync("data/machines/experiments.json", JSON.stringify({ at: new Date().toISOString(), say: exSay, experiments: ex }, null, 1));
 whole.experiments = exSay;
 
+// PACE: IQ's own growth per day over the points we have (≥ 2 days), damped 10 %/day like the world model's curve — where
+// it heads in 30 days if nothing changes. Honest: shown only once 2 days of history exist.
+{ const P = IQ.points ?? []; if (P.length >= 8) { const t0 = Date.parse(P[0].t + ":00:00Z"), xs = P.map((p) => (Date.parse(p.t + ":00:00Z") - t0) / DAY), ys = P.map((p) => p.iq);
+    const mx = xs.reduce((a, b) => a + b, 0) / xs.length, my = ys.reduce((a, b) => a + b, 0) / ys.length, b = xs.reduce((a, x, i) => a + (x - mx) * (ys[i] - my), 0) / Math.max(1e-9, xs.reduce((a, x) => a + (x - mx) ** 2, 0));
+    if (xs.at(-1) >= 2) { let v = ys.at(-1); for (let k = 1; k <= 30; k++) v += b * 0.9 ** k; whole.pace = { perDay: +b.toFixed(2), in30: +v.toFixed(1) }; whole.say += ` IQ is climbing ${b >= 0 ? "+" : ""}${b.toFixed(1)}/day — on pace for ~${v.toFixed(0)} in 30 days.`; } } }
+
 fs.writeFileSync(OUT, JSON.stringify({ at: new Date().toISOString(), note: "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.", whole, engines, machines }, null, 1));
 console.log(`self: ${Object.entries(engines).map(([e, x]) => `${e} ${x.iq}${x.curiosity > 1.0001 ? ` c×${x.curiosity}` : ""}`).join(" · ")}`);
