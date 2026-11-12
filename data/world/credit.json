@@ -1,5 +1,5 @@
 {
- "at": "2026-11-12T02:03:55.738Z",
+ "at": "2026-11-12T22:35:38.591Z",
  "curve": {
   "days": 11,
   "reads": {
@@ -10,47 +10,72 @@
    "in30": 3760
   },
   "clicks": {
-   "perDay": -1.3,
+   "perDay": -1.7,
    "doublingDays": null,
    "now": 4.9,
-   "in7": 5,
+   "in7": 4,
    "in30": 4
   },
   "accounts": {
-   "perDay": -11.7,
+   "perDay": -9.6,
    "doublingDays": null,
-   "now": 1.2,
-   "in7": 0,
-   "in30": 0
+   "now": 2,
+   "in7": 1,
+   "in30": 1
   },
-  "gap": 25.6
+  "gap": 26
  },
  "days": 11,
- "pageDays": 1432,
- "fitError": 0.909,
+ "pageDays": 1449,
+ "fitError": 0.907,
+ "trendAlpha": 1,
+ "skill": null,
+ "graded": 0,
  "siteTrendTomorrow": 1.62,
- "releaseLift": 2.74,
+ "releaseLift": 2.71,
  "credit": {
-  "bing-send": {
-   "units": 40,
-   "days": 1,
-   "lift": 0.99,
+  "llms-listed": {
+   "units": 28,
+   "days": 2,
+   "lift": 1.17,
    "ci": [
-    0.73,
-    1.39
+    0.87,
+    1.59
+   ],
+   "clicksPerFetchDiff": 0.0604,
+   "verdict": "no clear effect yet"
+  },
+  "indexnow-send": {
+   "units": 101,
+   "days": 4,
+   "lift": 0.87,
+   "ci": [
+    0.74,
+    1.02
+   ],
+   "clicksPerFetchDiff": 0.0077,
+   "verdict": "no clear effect yet"
+  },
+  "bing-send": {
+   "units": 41,
+   "days": 1,
+   "lift": 0.89,
+   "ci": [
+    0.66,
+    1.21
    ],
    "clicksPerFetchDiff": 0.0009,
    "verdict": "no clear effect yet",
    "byFamily": {
     "/economic-calendar/<x>": {
      "units": 25,
-     "lift": 1.21,
-     "weight": 1.097
+     "lift": 1,
+     "weight": 1
     },
     "/news/<x/y>": {
      "units": 8,
-     "lift": 0.51,
-     "weight": 0.896
+     "lift": 0.54,
+     "weight": 0.903
     }
    }
   },
@@ -71,8 +96,8 @@
    "note": "not enough treated page-days yet"
   },
   "held-out (not pushed)": {
-   "units": 42,
-   "lift": 1.15
+   "units": 41,
+   "lift": 1.16
   }
  },
  "verdicts": 0

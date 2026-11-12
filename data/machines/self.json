@@ -1,12 +1,12 @@
 {
- "at": "2026-11-12T21:24:52.430Z",
+ "at": "2026-11-12T22:35:44.513Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
-  "iq": 78.8,
+  "iq": 79.2,
   "power": 261,
-  "dIQ": 4.5,
+  "dIQ": 4.9,
   "dPower": 156,
-  "iqPerUpgrade": 0.029,
+  "iqPerUpgrade": 0.031,
   "upgrades": {
    "judged": 0,
    "paid": 0,
@@ -16,17 +16,17 @@
    "unmeasured": 0,
    "next": "2026-11-19"
   },
-  "say": "Machines IQ 78.8 (+4.5 since 11 Nov) on 156 upgrades — 0.03 IQ per upgrade. Upgrades get their first verdicts 19 Nov.",
+  "say": "Machines IQ 79.2 (+4.9 since 11 Nov) on 156 upgrades — 0.03 IQ per upgrade. Upgrades get their first verdicts 19 Nov.",
   "experiments": "13 experiments live — next verdicts: Bing send yield 13 Nov · conversion bandit 14 Nov · executive focus: conversion 15 Nov · forecast self-calibration 16 Nov."
  },
  "engines": {
   "main": {
-   "iq": 78.8,
+   "iq": 79.2,
    "iqWas": 74.3,
    "since": "2026-11-11",
    "level": "Novice",
    "members": 72,
-   "learners": 30,
+   "learners": 32,
    "brainVerdicts": 0,
    "curiosity": 1,
    "episode": null,
@@ -64,25 +64,19 @@
      "limit": "learning on every front — more data is the only limit"
     }
    ],
-   "say": "My IQ is 78.8 (Novice, +4.5 since 11 Nov) — 30 of 72 parts learn on their own; weakest: Ledger, 4-week trend, Failure learning (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 79.2 (Novice, +4.9 since 11 Nov) — 32 of 72 parts learn on their own; weakest: Ledger, 4-week trend, Failure learning (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "traffic": {
-   "iq": 78.6,
+   "iq": 79.3,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Novice",
    "members": 32,
-   "learners": 18,
+   "learners": 20,
    "brainVerdicts": 0,
    "curiosity": 1,
    "episode": null,
    "weakest": [
-    {
-     "id": "curator",
-     "name": "llms.txt curator",
-     "iq": 70,
-     "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
-    },
     {
      "id": "truth",
      "name": "Truth gate",
@@ -90,17 +84,23 @@
      "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
     },
     {
-     "id": "indexnow",
-     "name": "IndexNow",
+     "id": "seo",
+     "name": "Search console",
      "iq": 70,
-     "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+    },
+    {
+     "id": "bingseo",
+     "name": "Bing webmaster",
+     "iq": 70,
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
     }
    ],
    "strongest": [
     {
      "id": "hooks",
      "name": "Hook tests",
-     "iq": 112,
+     "iq": 113,
      "limit": "its outcome is falling (AI accounts / week -30%)"
     },
     {
@@ -110,7 +110,7 @@
      "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 78.6 (Novice, +2.8 since 11 Nov) — 18 of 32 parts learn on their own; weakest: llms.txt curator, Truth gate, IndexNow (acts but never judges its outcome — it has a KPI it doesn't learn from)."
+   "say": "My IQ is 79.3 (Novice, +3.5 since 11 Nov) — 20 of 32 parts learn on their own; weakest: Truth gate, Search console, Bing webmaster (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "money": {
    "iq": 76.1,
@@ -370,7 +370,7 @@
    "say": "My IQ is 70.0 (Blank, +0 since 11 Nov) — 0 of 3 parts learn on their own; weakest: Capacity, Load alert, Link check (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "fixer": {
-   "iq": 94.3,
+   "iq": 95.1,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Capable",
@@ -394,7 +394,7 @@
      "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
     }
    ],
-   "say": "My IQ is 94.3 (Capable, +18.6 since 11 Nov) — 3 of 3 parts learn on their own."
+   "say": "My IQ is 95.1 (Capable, +19.3 since 11 Nov) — 3 of 3 parts learn on their own."
   }
  },
  "machines": {
@@ -442,15 +442,15 @@
   },
   "supervisor": {
    "name": "Supervisor",
-   "iq": 82,
+   "iq": 85,
    "iqWas": 70,
-   "level": "Novice",
+   "level": "Capable",
    "state": "ok",
    "kpi": null,
    "made": {
     "v": 0,
     "k": 0,
-    "e": 65,
+    "e": 90,
     "f": 0
    },
    "upgrades": {
@@ -507,8 +507,8 @@
    "kpi": {
     "label": "AI-referred real visitors / week",
     "now": 45,
-    "before": 45,
-    "change": 0
+    "before": 46,
+    "change": -0.02
    },
    "made": {
     "v": 0,
@@ -719,7 +719,7 @@
   },
   "hooks": {
    "name": "Hook tests",
-   "iq": 112,
+   "iq": 113,
    "iqWas": 110,
    "level": "Strong",
    "state": "ok",
@@ -732,7 +732,7 @@
    "made": {
     "v": 2,
     "k": 0,
-    "e": 798,
+    "e": 803,
     "f": 0
    },
    "upgrades": {
@@ -745,7 +745,7 @@
   },
   "bing": {
    "name": "Bing sender",
-   "iq": 78,
+   "iq": 79,
    "iqWas": 70,
    "level": "Novice",
    "state": "ok",
@@ -758,7 +758,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 40,
+    "e": 41,
     "f": 0
    },
    "upgrades": {
@@ -771,9 +771,9 @@
   },
   "curator": {
    "name": "llms.txt curator",
-   "iq": 70,
+   "iq": 76,
    "iqWas": 70,
-   "level": "Blank",
+   "level": "Novice",
    "state": "ok",
    "kpi": {
     "label": "AI clicks / week",
@@ -781,14 +781,19 @@
     "before": 41,
     "change": -0.15
    },
-   "made": null,
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 28,
+    "f": 0
+   },
    "upgrades": {
     "paid": 0,
     "hurt": 0,
     "flat": 0,
     "waiting": 0
    },
-   "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+   "limit": "collects evidence but hasn't reached a verdict yet"
   },
   "truth": {
    "name": "Truth gate",
@@ -866,9 +871,9 @@
   },
   "indexnow": {
    "name": "IndexNow",
-   "iq": 70,
+   "iq": 86,
    "iqWas": 70,
-   "level": "Blank",
+   "level": "Capable",
    "state": "ok",
    "kpi": {
     "label": "pages submitted / week",
@@ -876,14 +881,19 @@
     "before": 349,
     "change": 7.38
    },
-   "made": null,
+   "made": {
+    "v": 0,
+    "k": 0,
+    "e": 101,
+    "f": 0
+   },
    "upgrades": {
     "paid": 0,
     "hurt": 0,
     "flat": 0,
     "waiting": 1
    },
-   "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+   "limit": "collects evidence but hasn't reached a verdict yet"
   },
   "seo": {
    "name": "Search console",
@@ -911,7 +921,7 @@
    "made": {
     "v": 0,
     "k": 3.72,
-    "e": 1693,
+    "e": 1710,
     "f": 0
    },
    "upgrades": {
@@ -1290,7 +1300,7 @@
    "state": "ok",
    "kpi": {
     "label": "attacks blocked / week",
-    "now": 5277,
+    "now": 5281,
     "before": 0,
     "change": null
    },
@@ -1565,9 +1575,9 @@
    "state": "ok",
    "kpi": {
     "label": "real visitors / week",
-    "now": 253,
-    "before": 258,
-    "change": -0.02
+    "now": 254,
+    "before": 261,
+    "change": -0.03
    },
    "made": {
     "v": 0,
@@ -1591,9 +1601,9 @@
    "state": "ok",
    "kpi": {
     "label": "guests → account %",
-    "now": 49.01,
-    "before": 44.19,
-    "change": 0.11
+    "now": 48.82,
+    "before": 44.44,
+    "change": 0.1
    },
    "made": {
     "v": 0,
