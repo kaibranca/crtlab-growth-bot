@@ -4,11 +4,17 @@
  },
  "done": {
   "43095456248": true,
-  "43095119609": true
+  "43095119609": true,
+  "43209752996": true
  },
  "day": "2026-11-12",
- "at": "2026-11-12T11:20:23.914Z",
+ "at": "2026-11-12T12:03:53.121Z",
  "actions": [
+  {
+   "at": "2026-11-12T12:03:51.703Z",
+   "what": "data behind — a daily-data run is fresh, waiting for it",
+   "ok": true
+  },
   {
    "at": "2026-11-12T11:20:23.914Z",
    "what": "checked: data-retry on daily-data did not work",
@@ -52,9 +58,10 @@
  ],
  "tasks": [
   {
-   "what": "Daily data still behind after 3 retries today",
-   "evidence": "DAILY DATA BEHIND: site data through 2026-11-10, should be 2026-11-11 (live d20261112-1027)",
-   "fix": "read the newest daily-data log: gh run list -R kaibranca/crtlab-backtester -w daily-data.yml"
+   "what": "daily-data failed",
+   "evidence": "nflx      LEFT AS SHIPPED — gates failed: nflx",
+   "fix": "a real error: a re-run would repeat it — fix the cause (see the log line)",
+   "url": "https://github.com/kaibranca/crtlab-backtester/actions/runs/43209752996"
   },
   {
    "what": "AI accounts / week getting worse: 11 vs 32 last week (hooks)",
