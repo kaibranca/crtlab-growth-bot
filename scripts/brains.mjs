@@ -212,13 +212,13 @@ const BRAINS = [
       { id: "auto", label: "Auto-fix", machines: ["fixer", "supervisor"], does: "data retries, transient re-runs, restarting stopped machines — each fix verified the next hour" },
       { id: "queue", label: "Needs you", machines: ["mistakes"], does: "what no machine can do, with the exact steps — one queue for every engine" },
     ],
-    sensors: () => { const q = needQueue(); try { learnQueue(q); } catch (e) { console.log("fixer: queue learning skipped " + String(e.message).slice(0, 60)); } const fx = J("data/machines/fixer.json", {}); return { humanOpen: q.length, autoActions24: (fx.actions ?? []).filter((a) => NOW - Date.parse(a.at) < DAY).length,
-      playbooks: Object.entries(fx.w ?? {}).map(([k, w]) => `${k} ${w.v}`).join(", ") || null, top: q[0]?.what ?? null }; },
+    sensors: () => { const q = needQueue(); try { learnQueue(q); } catch (e) { console.log("fixer: queue learning skipped " + String(e.message).slice(0, 60)); } const fx = J("data/machines/fixer.json", {}); const qk = q.filter((x) => x.who === "kai"); return { humanOpen: qk.length, buildOpen: q.filter((x) => x.who === "build").length, autoActions24: (fx.actions ?? []).filter((a) => NOW - Date.parse(a.at) < DAY).length,
+      playbooks: Object.entries(fx.w ?? {}).map(([k, w]) => `${k} ${w.v}`).join(", ") || null, top: qk[0]?.what ?? null, topBuild: q.find((x) => x.who === "build")?.what ?? null }; },
     outcome: (s) => ({ label: "things that need you", v: s.humanOpen ?? 0, higher: false }),
     signals: () => needQueue().slice(0, 6).map((x) => ({ key: x.kind, target: x.what.slice(0, 60), v: 1, higher: false, days: 3, why: x.steps })),
     measureOf: (b) => (needQueue().some((x) => x.what.slice(0, 60) === b.target) ? 1 : 0),
-    modes: (s) => [s.humanOpen >= 6 && { id: "backlog", label: "Backlog", level: "warn", why: `${s.humanOpen} things need you — top: ${s.top}` }].filter(Boolean),
-    admin: () => needQueue().slice(0, 5).map((x, i) => `${i + 1}. ${x.what} → ${x.steps} [impact ${x.score}]`) },
+    modes: (s) => [s.humanOpen >= 3 && { id: "backlog", label: "Backlog", level: "warn", why: `${s.humanOpen} things need you — top: ${s.top}` }].filter(Boolean),
+    admin: () => { const q = needQueue(); return [...q.filter((x) => x.who === "kai").map((x, i) => `YOU ${i + 1}. ${x.what} → ${x.steps}`), ...q.filter((x) => x.who === "build").slice(0, 3).map((x, i) => `BUILD ${i + 1} (Claude session). ${x.what} → ${x.steps} [impact ${x.score}]`)]; } },
 ];
 
 // THE NEED-YOU QUEUE (Fixer brain): every engine's "needs you" in one list, the same thing said twice merged, each with
@@ -242,11 +242,16 @@ function needQueue() {
     [/came back|week 2|first session/i, "retention", "decide a first-session change (golden actions from the behaviour machine)"],
     [/names CRTLAB in/i, "recommend", "earned mentions on the sources ChatGPT trusts for buyer questions (listed in the line) — your call within the no-Reddit/paid/creator rule; the recommendation engine judges the naming rate"],
     [/Google shows only/i, "google", "earn links to /news + /economic-calendar (a mention from a site Google trusts beats 1,000 pages) — the google machine reports coverage daily"],
-    [/no page|Bing shows/i, "gap", "approve a page for the search (content brain's top gap)"]];
+    [/no page|Bing shows/i, "gap", "build the page the search wants (content brain's top gap) — a build session, no approval needed"],
+    [/word of mouth|outside sources/i, "mouth", "nothing to do today — the mentions machine flags the first outside links"],
+    [/getting worse|hurting/i, "kpi", "a build session reads the machine's evidence and changes what it does"]];
+  // WHO (11-12, Kai: "the need-you list is wrong half the time and a lot of it is useless"): only things that need Kai's own
+  // accounts or his call are "kai"; build work is for a Claude session; the rest is FYI and never counted as "needs you".
+  const WHO = { "deps-token": "kai", tokens: "kai", stripe: "kai", recommend: "kai", regression: "kai", mouth: "fyi", google: "fyi", budget: "fyi" };
   const out = new Map(), DONE = J("data/machines/kai-done.json", {}).done ?? {}; // owner-confirmed done kinds never come back (11-12)
   for (const r of raw) { const k = KNOWN.find(([re]) => re.test(r.text)); const kind = k?.[1] ?? "other", key = kind === "other" ? r.text.slice(0, 50) : kind;
     if (DONE[kind]) continue;
-    if (!out.has(key)) out.set(key, { kind, what: r.text.split(" — ")[0].slice(0, 140), steps: k?.[2] ?? "needs a look in a build session", from: new Set([r.from]) }); else out.get(key).from.add(r.from); }
+    if (!out.has(key)) out.set(key, { kind, who: WHO[kind] ?? "build", what: r.text.split(" — ")[0].slice(0, 140), steps: k?.[2] ?? "needs a look in a build session", from: new Set([r.from]) }); else out.get(key).from.add(r.from); }
   // RANKED BY MEASURED IMPACT (11-12 — the brains' learning steered nothing): score = brains raising it × the strongest
   // raiser's authority × the kind's impact weight. Weights start from what the item touches (money / every engine's sensor
   // first, hygiene last) and LEARN: when an item leaves the queue (fixed), its owning brain's outcome is judged 7 days later
