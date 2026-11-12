@@ -448,12 +448,14 @@ if (mode === "dip") next.push(`Recovery: the ${P.recoveryN} best pages go back t
   const led = [...wk("data/machines/ledger.jsonl"), ...wk("data/traffic/ledger.jsonl")], wins = led.filter((l) => l.kind === "win").length, losses = led.filter((l) => l.kind === "loss").length;
   const tw = Object.values(J("data/traffic/brain.json", {}).w ?? {}), bw = (J("data/brains/index.json", { brains: [] }).brains ?? []).map((b) => Object.values(J(`data/brains/${b.id}/brain.json`, {}).w ?? {})).flat();
   const hooks = (J("data/ai/hooks.json", { experiments: [] }).experiments ?? []), ho = J("data/ai/holdout.json", null), waves = readLines("data/machines/waves.jsonl").filter((w) => NOW - Date.parse(w.at) < 30 * DAY);
-  const P = { day: iso(NOW).slice(0, 10), verdicts7: wins + losses, wins7: wins, losses7: losses, neurons: tw.length + bw.length, experienced: [...tw, ...bw].filter((w) => w.n > 0).length,
+  const WC = J("data/world/credit.json", null), wv = WC ? Object.values(WC.credit ?? {}).filter((c) => c.verdict && c.verdict !== "no clear effect yet").length : 0;
+  const P = { day: iso(NOW).slice(0, 10), worldVerdicts: wv, worldFit: WC?.fitError ?? null, bingCredit: WC?.credit?.["bing-send"]?.lift ?? null, verdicts7: wins + losses, wins7: wins, losses7: losses, neurons: tw.length + bw.length, experienced: [...tw, ...bw].filter((w) => w.n > 0).length,
     fromHistory: tw.filter((w) => /^history/.test(w.prior ?? "")).length, testsRunning: hooks.filter((e) => e.status === "running").length, testsWaiting: hooks.filter((e) => e.status === "paused").length,
     holdoutDays: ho?.last?.days ?? null, pushLift: ho?.last?.pushLift ?? null, waves30: waves.length, wavesPaid: waves.filter((w) => w.verdict === "paid").length };
   const PF = "data/machines/pulse.jsonl", rowsP = readLines(PF); if (rowsP.at(-1)?.day === P.day) rowsP[rowsP.length - 1] = P; else rowsP.push(P);
   fs.writeFileSync(PF, rowsP.slice(-365).map((x) => JSON.stringify(x)).join("\n") + "\n");
   const prevP = rowsP.at(-8);
+  next.push(`World model: ${WC ? `${WC.pageDays} page-days, forecast error ${WC.fitError}, ${Object.entries(WC.credit ?? {}).filter(([, c]) => c.lift != null).map(([k, c]) => `${k} ×${c.lift}${c.ci ? ` [${c.ci.join("–")}]` : ""}`).join(", ")}` : "warming up"}`);
   next.push(`Learning pulse: ${P.verdicts7} verdicts this week (${wins} won, ${losses} lost)${prevP ? ` vs ${prevP.verdicts7} a week before` : ""} · ${P.experienced}/${P.neurons} neurons with real experience, ${P.fromHistory} pre-trained from history · ${P.testsRunning} tests running${P.testsWaiting ? ` (+${P.testsWaiting} waiting)` : ""}${P.pushLift != null ? ` · push lift ×${P.pushLift} (holdout)` : P.holdoutDays != null ? ` · holdout day ${Math.floor(P.holdoutDays)} of 7` : ""}${P.waves30 ? ` · ${P.waves30} waves in 30 d, ${P.wavesPaid} paid` : ""}`); }
 { const an = J("data/analyst/plan.json"); if (an?.headline && NOW - Date.parse(an.at) < 30 * 3600e3) next.unshift(`AI analyst: ${an.headline}`); }
 // THE TRAFFIC BRAIN talks back (two engines, one picture): its mode + what it is pushing lead the main briefing

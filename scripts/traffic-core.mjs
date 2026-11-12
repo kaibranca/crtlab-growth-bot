@@ -170,6 +170,18 @@ if (!brain.pretrain || NOW - Date.parse(brain.pretrain.at) > DAY) {
   learn("neurons", "lesson", `pre-training from saved history: ${Object.entries(out).map(([k, o]) => `${k} ${o.mean ?? "—"} over ${o.samples}`).join(", ")}`, `pretrain|${iso(NOW).slice(0, 10)}`);
 }
 
+// ── DAILY CREDIT FROM THE WORLD MODEL (world.mjs): every action type gets a measured lift each day (treated pages vs
+// untouched pages of the same family and day, against their own forecast). A clear verdict moves the neurons that use that
+// action — once per model day, at half rate: the brain learns every morning instead of every 2–4 weeks.
+{ const WC = J("data/world/credit.json", null), seenW = (brain.worldSeen ??= {});
+  const USE = { "bing-send": ["surge→bing", "peopleclick→bing", "convergence→bing", "lockin→bing"], "brain-boost": ["surge→bing", "peopleclick→bing", "convergence→bing", "page1bottom→rank"] };
+  if (WC?.at && !seenW[WC.at.slice(0, 10)]) { seenW[WC.at.slice(0, 10)] = 1;
+    for (const [a, ns] of Object.entries(USE)) { const c = WC.credit?.[a]; if (!c?.verdict || c.verdict === "no clear effect yet") continue; const tgt = c.verdict === "WORKS" ? 1 : 0;
+      for (const k of ns) { const w = W(k); w.v = +clamp(w.v + (RATE / 2) * (tgt - w.v), 0.05, 0.95).toFixed(3); w.n++; w.used = iso(NOW); }
+      say("neurons", `world model: ${a} ${c.verdict} (×${c.lift}, ${c.ci?.join("–")}) → ${ns.join(", ")} learn`, c.verdict === "WORKS" ? "win" : "bad");
+      learn("neurons", c.verdict === "WORKS" ? "win" : "loss", `world model credit: ${a} ×${c.lift} [${c.ci?.join("–")}] over ${c.units} page-days — ${c.verdict}`, `world|${a}|${WC.at.slice(0, 10)}`); }
+    for (const k of Object.keys(seenW)) if (Object.keys(seenW).length > 120) delete seenW[k]; } }
+
 // ── SHARED LEARNING (engines teach each other): the main engine's focus-branch verdicts (core + AI analyst picks) are the
 // same action as this brain's surge/convergence branches (pages Bing-first) → each new verdict moves "surge→bing" at half
 // strength. Every verdict anywhere teaches the brain that does the same kind of thing.
