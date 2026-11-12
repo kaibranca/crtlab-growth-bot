@@ -132,6 +132,6 @@ if (process.argv.includes("--backfill")) {
 const { per, ...nowS } = score(measure(reader(null)), hi);
 const now = { t: cur, ...nowS, power: upTo(ups, nowIso) ?? [...rows.values()].at(-1)?.power ?? null };
 rows.set(cur, now);
-const points = [...rows.values()].sort((a, b) => a.t.localeCompare(b.t)).slice(-240); // 30 days of 3-hour points
+const points = [...rows.values()].sort((a, b) => a.t.localeCompare(b.t)).slice(-720); // 90 days of 3-hour points
 fs.writeFileSync(OUT, JSON.stringify({ at: nowIso, hi, per, note: "IQ = mean of every machine's IQ from what it learned by itself (70 = nothing yet; 1 verdict ≈ 80, 10 ≈ 105, 100 ≈ 137). POWER = upgrades we built into them (non-run commits, cumulative).", points }, null, 1));
 console.log(`iq ${now.iq} power ${now.power} · ${JSON.stringify(now.parts)} · ${points.length} points`);

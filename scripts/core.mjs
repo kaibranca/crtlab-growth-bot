@@ -565,6 +565,6 @@ const eco = { at: new Date().toISOString(), scout, widgets, modes, briefing, rul
   totals: { machines: nodes.length, ok: nodes.filter((n) => n.state === "ok").length, late: nodes.filter((n) => n.state === "late").length, stopped: nodes.filter((n) => n.state === "stopped").length, actions24: Object.values(act).reduce((a, b) => a + b, 0) },
   allIn: sup?.allIn ?? [], fix: sup?.fix ?? [], mistakes: sup?.mistakes ?? [], ledger: (sup?.ledger ?? []).slice(0, 15), episodes: readLines("data/machines/modes.jsonl").slice(-8).reverse(),
   spawned: spawned.branches.slice(-12),
-  score: readLines("data/ai/score.jsonl").slice(-30).map((s) => ({ day: s.day, reads: s.reads, clicks: s.clicks, accounts: s.accounts })), iq: iqOut() };
+  score: readLines("data/ai/score.jsonl").slice(-90).map((s) => ({ day: s.day, reads: s.reads, clicks: s.clicks, accounts: s.accounts })), iq: iqOut() };
 fs.writeFileSync("data/machines/ecosystem.json", JSON.stringify(eco));
 console.log(`core: ${eco.totals.ok}/${eco.totals.machines} ok · mode ${mode} (${why}) · ${eco.totals.actions24} actions in 24 h`);
