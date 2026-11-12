@@ -5,10 +5,11 @@
  "done": {
   "43095456248": true,
   "43095119609": true,
-  "43209752996": true
+  "43209752996": true,
+  "43235675503": true
  },
  "day": "2026-11-12",
- "at": "2026-11-12T14:20:43.355Z",
+ "at": "2026-11-12T15:05:43.082Z",
  "actions": [
   {
    "at": "2026-11-12T12:03:51.703Z",
@@ -58,12 +59,13 @@
  ],
  "tasks": [
   {
-   "what": "AI accounts / week getting worse: 11 vs 32 last week (hooks)",
-   "evidence": "supervisor",
-   "fix": "needs a build or a decision"
+   "what": "hourly failed",
+   "evidence": "##[error]Process completed with exit code 1.",
+   "fix": "a real error: a re-run would repeat it — fix the cause (see the log line)",
+   "url": "https://github.com/kaibranca/crtlab-growth-bot/actions/runs/43235675503"
   },
   {
-   "what": "Holdout is waiting (last run never h ago, normal every 1 h)",
+   "what": "AI accounts / week getting worse: 11 vs 32 last week (hooks)",
    "evidence": "supervisor",
    "fix": "needs a build or a decision"
   },

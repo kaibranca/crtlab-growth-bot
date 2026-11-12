@@ -1,48 +1,84 @@
 {
- "heap": {
-  "cap": 512,
-  "stopped": false,
-  "samples": 47,
-  "note": "heap peak 313 MB → cap 512 MB is right"
- },
- "at": "2026-11-12T14:18:29.007Z",
- "status": "over budget",
- "budget": 10,
- "weekPace": 23.1,
- "overBy": 13.1,
- "deploys": {
-  "Postgres": 0,
-  "data": 2,
-  "web": 10,
-  "ops": 2
- },
- "dayCost": 0.71,
- "avgDayCost": 0.77,
- "monthPace": 21.3,
- "services": [
+ "creep": [
   {
-   "svc": "web",
-   "memGB": 0.98,
-   "normalGB": 0.75,
-   "dayCost": 0.47,
-   "avgDayCost": 0.43,
-   "monthPace": 13.99
-  },
-  {
-   "svc": "Postgres",
-   "memGB": 0.46,
-   "normalGB": 0.38,
-   "dayCost": 0.15,
-   "avgDayCost": 0.13,
-   "monthPace": 4.39
+   "svc": "data",
+   "commit": "e3db6289",
+   "msg": "Merge branch 'zero-gap'",
+   "dMB": 1167,
+   "perMonth": 11.67
   },
   {
    "svc": "data",
-   "memGB": 0.73,
+   "commit": "0689e5fe",
+   "msg": "Daily data releases at 07:00:00 UTC: job sets activateAt when ready before 06:59 and waits",
+   "dMB": 106,
+   "perMonth": 1.06
+  }
+ ],
+ "levers": [
+  {
+   "id": "web-malloc-arena-2",
+   "svc": "web",
+   "set": "MALLOC_ARENA_MAX=2",
+   "live": false,
+   "beforeGB": 1.093,
+   "afterGB": null,
+   "verdict": "waiting for a deploy"
+  },
+  {
+   "id": "web-heap-512",
+   "svc": "web",
+   "set": "WEB_NODE_OPTIONS=--max-old-space-size=512",
+   "live": false,
+   "beforeGB": 1.109,
+   "afterGB": null,
+   "verdict": "waiting for a deploy"
+  }
+ ],
+ "heap": {
+  "cap": 512,
+  "stopped": false,
+  "samples": 48,
+  "note": "heap peak 313 MB → cap 512 MB is right"
+ },
+ "at": "2026-11-12T15:03:37.413Z",
+ "status": "over budget",
+ "budget": 10,
+ "weekPace": 23.7,
+ "overBy": 13.7,
+ "deploys": {
+  "Postgres": 0,
+  "data": 3,
+  "web": 7,
+  "ops": 0
+ },
+ "dayCost": 0.73,
+ "avgDayCost": 0.79,
+ "monthPace": 21.9,
+ "services": [
+  {
+   "svc": "web",
+   "memGB": 0.95,
+   "normalGB": 0.75,
+   "dayCost": 0.48,
+   "avgDayCost": 0.44,
+   "monthPace": 14.46
+  },
+  {
+   "svc": "Postgres",
+   "memGB": 0.44,
+   "normalGB": 0.38,
+   "dayCost": 0.15,
+   "avgDayCost": 0.14,
+   "monthPace": 4.56
+  },
+  {
+   "svc": "data",
+   "memGB": 0.35,
    "normalGB": 0.2,
-   "dayCost": 0.09,
+   "dayCost": 0.1,
    "avgDayCost": 0.21,
-   "monthPace": 2.78
+   "monthPace": 2.85
   },
   {
    "svc": "ops",
@@ -55,21 +91,10 @@
  ],
  "incidents": [
   {
-   "svc": "data",
-   "memGB": 0.73,
-   "normalGB": 0.2,
-   "dayCost": 0.09,
-   "avgDayCost": 0.21,
-   "monthPace": 2.78,
-   "kind": "cache bloat",
-   "rssGB": 0.198,
-   "why": "Railway counts 0.73 GB but the server itself uses 0.20 GB — file cache from the data swap"
-  },
-  {
    "svc": "web",
    "kind": "too many deploys",
-   "n": 10,
-   "why": "10 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
+   "n": 7,
+   "why": "7 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
   }
  ],
  "actions": [
