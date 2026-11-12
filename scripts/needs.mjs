@@ -35,6 +35,6 @@ export function classifyNeed(text) {
 // split any watch list: [needs-you lines (Kai, not done), notes (everything else)]; optional / not-an-alarm lines are notes
 export function splitNeeds(lines) {
   const watch = [], notes = [];
-  for (const l of lines ?? []) { const c = classifyNeed(l); (c.who === "kai" && !c.done && !/Optional|not an alarm/i.test(l) ? watch : notes).push(l); }
+  for (const l of [...new Set(lines ?? [])]) { const c = classifyNeed(l); (c.who === "kai" && !c.done && !/Optional|not an alarm/i.test(l) ? watch : notes).push(l); }
   return { watch, notes: [...new Set(notes)] };
 }

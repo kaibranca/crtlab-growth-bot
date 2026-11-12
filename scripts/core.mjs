@@ -548,6 +548,8 @@ for (const f of (ai.expand ?? []).filter((x) => x.pages >= 3).slice(0, 2)) scout
 if ((men?.sources?.length ?? 0) < 5) scout.push({ what: "Word-of-mouth engine", why: "no outside site sends people yet", kind: "new" });
 if (!(widgets.aiAccounts7 >= widgets.aiAccountsPrev)) scout.push({ what: "AI landing machine", why: `AI accounts ${widgets.aiAccounts7} vs ${widgets.aiAccountsPrev} last week while reads are up — the first screen leaks`, kind: "new" });
 { const lk = J("data/leak/plan.json"); for (const l of (lk?.leaks ?? []).slice(0, 2)) scout.unshift({ what: `Fix the leak: ${l.segment.replace(/^\w+:/, "")} at ${l.stage}`, why: `${l.lost} people lost in 14 days (${Math.round(l.rate * 100)}% vs ${Math.round(l.best * 100)}% best) — ${l.fix}`, kind: "leak" }); }
+{ const per = J("data/machines/iq.json")?.per; if (per) { const dumb = nodes.filter((n) => !n.id.startsWith("lead-") && !per[n.id] && NOW - Date.parse(n.born ?? new Date().toISOString()) > 7 * DAY);
+  if (dumb.length) scout.push({ what: `Teach ${dumb.length} machines to learn`, why: `IQ 70 after a week — they act but learn nothing from what happens: ${dumb.slice(0, 6).map((n) => n.name).join(", ")}${dumb.length > 6 ? "…" : ""}`, kind: "learn" }); } }
 scout.push({ what: "Cost machine (Railway)", why: "budget watch + backend optimiser — Kai asked 11-11", kind: "new" });
 
 // MACHINES IQ + POWER (scripts/iq.mjs): IQ = learned by themselves; POWER = upgrades we built in. 7-day change for the tiles.
@@ -555,6 +557,7 @@ function iqOut() {
   const d = J("data/machines/iq.json"), P = d?.points ?? [];
   if (!P.length) return null;
   const last = P.at(-1), wk = new Date(NOW - 7 * DAY).toISOString().slice(0, 13), ago = [...P].reverse().find((p) => p.t <= wk) ?? P[0];
+  for (const n of nodes) if (!n.id.startsWith("lead-")) n.iq = d.per?.[n.id] ?? 70; // per machine (70 = learned nothing yet)
   return { iq: last.iq, iqWas: ago.iq, power: last.power, powerWas: ago.power, since: ago.t, parts: last.parts, points: P.map((p) => [p.t, p.iq, p.power]) };
 }
 const eco = { at: new Date().toISOString(), scout, widgets, modes, briefing, rules: CORE_RULES, capacity: cap, mode: modeOut, nodes, edges, feed: feed.slice(0, 160),

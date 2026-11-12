@@ -6,8 +6,8 @@
 //                    hook tests ended, cost fixes + levers with a verdict, deploys judged, neurons with evidence)
 //          evidence= data their models rest on (world page-days, neuron samples, bandit judged views)
 //          fixed   = their own repairs that worked (fixer actions ok)
-//          IQ = 70 + 15·log2(1 + E / machines), E = 10·knows + 10·judged + evidence/5 + 5·fixed.
-//          A new machine that has learned nothing pulls the average DOWN until it learns — that is the point.
+//          each credited to the machine that learned it; IQ per machine, MACHINES IQ = mean over every machine.
+//          A machine that has learned nothing scores 70 and pulls the average DOWN until it learns — that is the point.
 //  POWER — upgrades WE build into them: human (non-bot) commits to the machine code, cumulative.
 // Writes data/machines/iq.json { at, points:[{t, iq, power, parts}] } (3-hour points; the current one rewritten each hour).
 // `node scripts/iq.mjs --backfill` (local, full git history) rebuilds 3-hour points since 11-11 (engine birth) from git.
@@ -19,38 +19,78 @@ const sh = (c) => { try { return execSync(c, { encoding: "utf8", stdio: ["ignore
 const parse = (t, p) => { if (t == null) return null; try { return p.endsWith(".jsonl") ? t.split("\n").filter(Boolean).map((l) => JSON.parse(l)) : JSON.parse(t); } catch { return null; } };
 const reader = (sha) => (p) => parse(sha ? sh(`git show ${sha}:${p}`) : (fs.existsSync(p) ? fs.readFileSync(p, "utf8") : null), p);
 
+// WHO LEARNED IT: ledger "machine" names and fact ids → the /machine node that did the learning
+const LED = { convergence: "traffic-brain", converter: "traffic-brain", neurons: "traffic-brain", rank: "traffic-brain", surges: "surge", supervisor: "mistakes", modes: "mode", events: "lift", demand: "lift" };
+const FACT = [[/^(world|curve)/, "world"], [/^release-lift/, "lift"], [/^(prior|sign):/, "traffic-brain"], [/^cost/, "cost"], [/^google/, "google"]];
+const n0 = (x) => (Array.isArray(x) ? x.length : 0);
+
 export function measure(R) {
   const arr = (x) => (Array.isArray(x) ? x : []);
-  const facts = Object.values(R("data/machines/knowledge.json")?.facts ?? {});
-  const knows = facts.reduce((t, f) => t + (+f.strength || 0), 0);
-  const led = [...arr(R("data/machines/ledger.jsonl")), ...arr(R("data/traffic/ledger.jsonl"))];
-  const ledJ = led.filter((l) => ["win", "loss", "lesson", "mistake"].includes(l.kind)).length;
-  const br = [...arr(R("data/machines/spawned.json")?.branches), ...arr(R("data/traffic/branches.json")?.branches)];
-  const brJ = br.filter((b) => b.state && b.state !== "alive").length;
-  const hooksJ = arr(R("data/ai/hooks.json")?.experiments).filter((e) => e.ended || (e.status && !/run|live|on/.test(e.status))).length;
+  const M = {}; // id → { judged (cumulative), knows, evidence, fixed }
+  const at = (id) => (M[id] ??= { judged: 0, knows: 0, evidence: 0, fixed: 0 });
+  // knows: long-term facts × strength, credited to the machine whose data taught it (else the memory machine)
+  const facts = Object.entries(R("data/machines/knowledge.json")?.facts ?? {});
+  for (const [id, f] of facts) at(FACT.find(([re]) => re.test(id))?.[1] ?? "memory").knows += +f.strength || 0;
+  // judged: verdicts they reached on their own
+  for (const l of [...arr(R("data/machines/ledger.jsonl")), ...arr(R("data/traffic/ledger.jsonl"))]) if (["win", "loss", "lesson", "mistake"].includes(l.kind)) at(LED[l.machine] ?? l.machine).judged++;
+  for (const b of arr(R("data/machines/spawned.json")?.branches)) if (b.state && b.state !== "alive") at("core").judged++;
+  for (const b of arr(R("data/traffic/branches.json")?.branches)) if (b.state && b.state !== "alive") at("traffic-brain").judged++;
+  const hooks = arr(R("data/ai/hooks.json")?.experiments);
+  at("hooks").judged += hooks.filter((e) => e.ended || (e.status && !/run|live|on/.test(e.status))).length;
+  at("hooks").evidence += hooks.reduce((t, e) => t + (e.last?.A?.reads ?? e.last?.A?.fetches ?? 0) + (e.last?.B?.reads ?? e.last?.B?.fetches ?? 0), 0);
   const cost = R("data/cost/state.json") ?? {};
-  const costJ = arr(cost.fixes).filter((f) => f.verdict).length + arr(cost.levers).filter((l) => l.verdict || l.judged).length;
-  const depJ = arr(R("data/machines/deploys.jsonl")).filter((d) => d.verdict || d.judged).length + arr(R("data/cost/deploys.jsonl")).filter((d) => d.verdict || d.judged).length;
+  at("cost").judged += arr(cost.fixes).filter((f) => f.verdict).length + arr(cost.levers).filter((l) => l.verdict && l.verdict !== "judging").length;
+  at("deployjudge").judged += arr(R("data/machines/deploys.jsonl")).filter((d) => d.verdict || d.judged).length;
+  at("cost").judged += arr(R("data/cost/deploys.jsonl")).filter((d) => d.verdict || d.judged).length;
   const neurons = Object.values(R("data/traffic/brain.json")?.w ?? {});
-  const nJ = neurons.filter((n) => (n.n ?? 0) > 0).length, nN = neurons.reduce((t, n) => t + (n.n ?? 0), 0);
-  const cumJ = { ledJ, brJ, hooksJ, costJ, depJ };
-  const fams = Object.values(R("data/ai/bandit.json")?.families ?? {});
-  const banditN = fams.reduce((t, f) => t + (+f.judged || +f.views || +f.n || 0), 0);
-  const evidence = (+R("data/world/credit.json")?.pageDays || 0) + nN + Math.min(5000, banditN) / 10;
-  const fixed = arr(R("data/machines/fixer.json")?.actions).filter((a) => a.ok).length;
+  at("traffic-brain").judged += neurons.filter((n) => (n.n ?? 0) > 0).length; // live: a neuron can lose its sample
+  // evidence: the rows their models rest on
+  at("traffic-brain").evidence += neurons.reduce((t, n) => t + (n.n ?? 0), 0);
+  at("world").evidence += (+R("data/world/credit.json")?.pageDays || 0) + n0(R("data/world/sends.jsonl"));
+  at("surge").evidence += n0(R("data/ai/surges.jsonl"));
+  at("sisters").evidence += n0(R("data/machines/sisters.jsonl"));
+  at("radar").evidence += n0(R("data/radar/answers.jsonl"));
+  at("recommend").evidence += +R("data/radar/recommend.json")?.asked || 0;
+  at("mentions").evidence += n0(R("data/mentions/mentions.jsonl"));
+  at("google").evidence += n0(R("data/google/days.jsonl"));
+  at("leak").evidence += n0(R("data/leak/score.jsonl"));
+  at("holdout").evidence += +R("data/ai/holdout.json")?.last?.heldPages || 0;
+  for (const f of Object.values(R("data/ai/bandit.json")?.families ?? {})) for (const a of Object.values(f.stats?.arms ?? {})) at("bandit").evidence += (a.views ?? 0) / 10 + (a.fetches ?? 0);
+  // the AI referral machine's own learned model (data/ai/plan.json): page-family values, weekday peaks, release lift,
+  // Bing yield, crawl lag — each credited to the machine named for it on /machine
+  const P = R("data/ai/plan.json") ?? {}, L = P.learned ?? {};
+  at("ai").evidence += n0(P.families) * 10;
+  at("ai").judged += arr(P.verdicts).filter((v) => v.verdict && !/measuring|waiting/i.test(v.verdict)).length;
+  at("weekly").evidence += (L.weekly?.daysSeen ?? []).reduce((t, v) => t + v, 0) * n0(L.weekly?.peaks);
+  at("lift").evidence += Object.keys(P.releaseLift?.byRelease ?? {}).length * 5;
+  at("yield").judged += +L.sendYield?.judged || 0;
+  at("rising").evidence += n0(P.rising) * 5;
+  at("eyes").evidence += (+L.bingChecked || 0) + Object.values(L.famLagH ?? {}).reduce((t, f) => t + (f.n ?? 0), 0) * 5;
+  // fixed: its own repairs that worked
+  at("fixer").fixed += arr(R("data/machines/fixer.json")?.actions).filter((a) => a.ok).length;
+  // every machine counts in the average, also the ones that learned nothing (lead summaries are not machines)
   const eco = R("data/machines/ecosystem.json");
-  const machines = Math.max(1, eco?.totals?.machines ?? eco?.nodes?.length ?? 1);
-  return { cumJ, nJ, knows, facts: facts.length, evidence, fixed, machines };
+  const ids = (eco?.nodes ?? []).map((n) => n.id).filter((id) => !id.startsWith("lead-"));
+  return { M, ids, facts: facts.length };
 }
-// RATCHET: pruned logs (old branches dropped, ledger trimmed) are not forgetting — cumulative judgements never count
-// down. Facts and evidence CAN fall (a fact decays, a model loses its sample) and that is shown as it is.
+// PER MACHINE: IQ_i = 70 + 10·log2(1 + E_i/10), E_i = 10·knows + 10·judged + evidence/5 + 5·fixed
+//   70 = learned nothing · one verdict ≈ 80 · ten ≈ 105 · a hundred ≈ 137. MACHINES IQ = the mean over every machine.
+// RATCHET: pruned logs are not forgetting — a machine's cumulative verdicts never count down (hi[id]). Facts, evidence
+// and neurons CAN fall (a fact decays, a model loses its sample) and that is shown as it is.
 function score(m, hi) {
-  for (const [k, v] of Object.entries(m.cumJ)) hi[k] = Math.max(hi[k] ?? 0, v);
-  hi.fixed = Math.max(hi.fixed ?? 0, m.fixed);
-  const judged = Object.keys(m.cumJ).reduce((t, k) => t + hi[k], 0) + m.nJ, fixed = hi.fixed;
-  const E = 10 * m.knows + 10 * judged + m.evidence / 5 + 5 * fixed;
-  const iq = Math.round((70 + 15 * Math.log2(1 + E / m.machines)) * 10) / 10;
-  return { iq, parts: { knows: +m.knows.toFixed(1), facts: m.facts, judged, evidence: Math.round(m.evidence), fixed, machines: m.machines } };
+  const per = {};
+  const ids = m.ids, lost = Object.keys(m.M).filter((id) => !ids.includes(id) && Object.values(m.M[id]).some(Boolean));
+  if (lost.length && !score.warned) { score.warned = 1; console.log(`iq: learning credited to unknown machines (map them): ${lost.join(", ")}`); }
+  if (!m.ids.length) return { iq: 70, per, parts: { knows: 0, facts: 0, judged: 0, evidence: 0, fixed: 0, machines: 0, learners: 0 } };
+  let k = 0, j = 0, ev = 0, fx = 0, learners = 0, sum = 0;
+  for (const id of ids) {
+    const x = m.M[id] ?? { judged: 0, knows: 0, evidence: 0, fixed: 0 };
+    const judged = (hi[id] = Math.max(hi[id] ?? 0, x.judged)), fixed = (hi["fix:" + id] = Math.max(hi["fix:" + id] ?? 0, x.fixed));
+    const E = 10 * x.knows + 10 * judged + x.evidence / 5 + 5 * fixed, q = 70 + 10 * Math.log2(1 + E / 10);
+    sum += q; if (E > 0) { learners++; per[id] = Math.round(q); }
+    k += x.knows; j += judged; ev += x.evidence; fx += fixed;
+  }
+  return { iq: Math.round((sum / ids.length) * 10) / 10, per, parts: { knows: +k.toFixed(1), facts: m.facts, judged: j, evidence: Math.round(ev), fixed: fx, machines: ids.length, learners } };
 }
 
 // POWER: cumulative upgrades WE committed to the machines. My upgrades are pushed under the bot's name too, so the
@@ -86,10 +126,11 @@ if (process.argv.includes("--backfill")) {
   const last = new Map(); // slot → last commit in it
   for (const l of (sh(`TZ=UTC git log --reverse --format='%H|%cI'`) ?? "").split("\n").filter(Boolean)) { const [h, d] = l.split("|"); last.set(slot(d), [h, new Date(d).toISOString()]); }
   hi = {};
-  for (const [t, [h, d]] of last) if (t < cur && t >= "2026-11-11") rows.set(t, { t, ...score(measure(reader(h)), hi), power: upTo(ups, d) });
+  for (const [t, [h, d]] of last) if (t < cur && t >= "2026-11-11") { const { per, ...r } = score(measure(reader(h)), hi); rows.set(t, { t, ...r, power: upTo(ups, d) }); }
 }
-const now = { t: cur, ...score(measure(reader(null)), hi), power: upTo(ups, nowIso) ?? [...rows.values()].at(-1)?.power ?? null };
+const { per, ...nowS } = score(measure(reader(null)), hi);
+const now = { t: cur, ...nowS, power: upTo(ups, nowIso) ?? [...rows.values()].at(-1)?.power ?? null };
 rows.set(cur, now);
 const points = [...rows.values()].sort((a, b) => a.t.localeCompare(b.t)).slice(-240); // 30 days of 3-hour points
-fs.writeFileSync(OUT, JSON.stringify({ at: nowIso, hi, note: "IQ = what the machines learned by themselves, per machine (70 = nothing yet; each doubling of learning per machine = +15). POWER = upgrades we built into them (non-run commits, cumulative).", points }, null, 1));
+fs.writeFileSync(OUT, JSON.stringify({ at: nowIso, hi, per, note: "IQ = mean of every machine's IQ from what it learned by itself (70 = nothing yet; 1 verdict ≈ 80, 10 ≈ 105, 100 ≈ 137). POWER = upgrades we built into them (non-run commits, cumulative).", points }, null, 1));
 console.log(`iq ${now.iq} power ${now.power} · ${JSON.stringify(now.parts)} · ${points.length} points`);
