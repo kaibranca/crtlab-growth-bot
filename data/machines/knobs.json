@@ -14,7 +14,27 @@
      "blocksB": 0,
      "lift": null,
      "P": null,
-     "at": "2026-11-12T19:42:24.836Z"
+     "at": "2026-11-12T19:43:15.617Z"
+    }
+   },
+   "history": [],
+   "settled": null
+  },
+  "ai.resendDays": {
+   "champion": 7,
+   "dir": 1,
+   "challenge": {
+    "value": 10,
+    "dir": 1,
+    "since": "2026-11-12",
+    "id": "ai.resendDays:10:2026-11-12",
+    "tries": 0,
+    "read": {
+     "blocksA": 0,
+     "blocksB": 0,
+     "lift": null,
+     "P": null,
+     "at": "2026-11-12T19:43:15.617Z"
     }
    },
    "history": [],
@@ -22,8 +42,9 @@
   }
  },
  "active": {
-  "ai.exploreShare": 0.15
+  "ai.exploreShare": 0.15,
+  "ai.resendDays": 10
  },
- "at": "2026-11-12T19:42:24.836Z",
+ "at": "2026-11-12T19:43:15.617Z",
  "note": "Self-tuning knobs: champion vs challenger in 2-day switchback blocks, judged on the knob's KPI (normalised by its own 7-day mean). Machines read active[knob]."
 }

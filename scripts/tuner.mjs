@@ -27,6 +27,7 @@ const KPI = {
 // THE KNOBS (owner = the machine whose IQ the verdicts feed). Values are the ladder the tuner climbs.
 const KNOBS = [
   { id: "ai.exploreShare", owner: "ai", ladder: [0.08, 0.12, 0.15, 0.2, 0.27, 0.35], start: 0.15, kpi: "reads", what: "share of Bing sends spent exploring pages the machine knows least about" },
+  { id: "ai.resendDays", owner: "bing", ladder: [3, 5, 7, 10, 14], start: 7, kpi: "reads", what: "days before an unchanged page is re-sent to Bing (where the limited quota goes)" },
   // (sisterTop / surgeCap are NOT here: the core's mode episodes already tune them — one tuner per knob, never two)
 ];
 

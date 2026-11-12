@@ -565,7 +565,7 @@ function iqOut() {
   const last = P.at(-1), wk = new Date(NOW - 7 * DAY).toISOString().slice(0, 13), ago = [...P].reverse().find((p) => p.t <= wk) ?? P[0];
   for (const n of nodes) if (!n.id.startsWith("lead-")) n.iq = d.per?.[n.id] ?? 70; // per machine (70 = learned nothing yet)
   // its self-read (self.mjs) + any knob the tuner is climbing for it — what the panel says about the machine, in its words
-  const SM = J("data/machines/self.json", {})?.machines ?? {}, KN = J("data/machines/knobs.json", {})?.knobs ?? {}, OWNER = { "ai.exploreShare": "ai" };
+  const SM = J("data/machines/self.json", {})?.machines ?? {}, KN = J("data/machines/knobs.json", {})?.knobs ?? {}, OWNER = { "ai.exploreShare": "ai", "ai.resendDays": "bing" };
   for (const n of nodes) { const m = SM[n.id]; if (m) n.self = { level: m.level, limit: m.limit };
     const t = Object.entries(KN).filter(([id]) => OWNER[id] === n.id).map(([id, k]) => `${id.split(".")[1]}: ${k.champion}${k.challenge ? ` vs ${k.challenge.value} (${(k.challenge.read?.blocksA ?? 0) + (k.challenge.read?.blocksB ?? 0)} of ≥ 10 blocks judged)` : " (settled)"}`);
     if (t.length) n.tuning = t; }

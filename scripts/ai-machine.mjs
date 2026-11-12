@@ -329,11 +329,11 @@ const HELD = (p) => p !== "/" && fnv(HO.salt + p) < HO.pct;
   console.log(`holdout: ${held}/${lastmod.size} pages held · day ${postD.toFixed(1)} · push lift ${HO.last.pushLift ?? "—"} (people-fetches, pushed ÷ held, family-matched)`); }
 
 // ── 3. submit to Bing, most valuable first ────────────────────────────────────────────────────────────────────────────
-const SUB = "data/ai/submitted.json";
+const SUB = "data/ai/submitted.json", RESEND_D = KNOB("ai.resendDays", 7); // tuner: days before an unchanged page is re-sent
 const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
 const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
-  const changed = Date.parse(lm) > last, stale = NOW - last > 7 * DAY, evDue = ev && NOW - last > 2 * DAY;
+  const changed = Date.parse(lm) > last, stale = NOW - last > RESEND_D * DAY, evDue = ev && NOW - last > 2 * DAY;
   const rcmP = RECT.has(p) && NOW - last > 3 * DAY, fcP = FCJ.has(p) && NOW - last > 2 * DAY, old = bingOld(p) && NOW - last > DAY, lockP = LOCK.on && (LOCK.targets ?? []).includes(p) && lockPays(p) && NOW - last > 3 * 3.6e6, hotP = (surgePage.has(p) && NOW - last > 6 * 3.6e6) || lockP, riseP = risePage.has(p) && NOW - last > 2 * DAY, recP = recovery.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
   return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * weekMul(x.fam) * trendMul(x.fam) * wFam(p), conf: x.conf, fam: x.fam, why: lockP ? "LOCK-IN" : hotP ? "SURGE" : rcmP ? `RECOMMEND ${RECT.get(p)}` : fcP ? `FORECAST ${FCJ.get(p)}` : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).filter((q) => q.why && !SKIP.test(q.p) && !HELD(q.p));
