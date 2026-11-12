@@ -546,14 +546,21 @@ fs.writeFileSync("data/ai/plan.json", JSON.stringify(plan, null, 1));
 // ── 5b. CURATOR → llms.txt "Right now" (site lib/aiCurated.ts renders it; paths + reason codes only, no text) ──────────
 // surging pages first, then pages whose release is due in the next 3 days, then the pages that send the most accounts.
 { const picks = [], seen = new Set(), add = (path, why, date) => { if (seen.has(path) || !lastmod.has(path) || picks.length >= 12) return; seen.add(path); picks.push(date ? { path, why, date } : { path, why }); };
-  for (const x of surges.filter((y) => y.kind === "page")) if (picks.length < 4) add(x.key, "surge");
-  for (const x of rising) if (picks.length < 6) add(x.key, "surge"); // the site renders surge|release|winner only — "rising" was silently dropped
+  // 11-12: ORDER FOLLOWS THE EXECUTIVE — conversion-bound → the pages that send accounts / that people click lead (learned
+  // ×3.1 / ×3.9 sign weights); otherwise TRUE surges (world model, growth-adjusted) lead. Picks are logged daily so the world
+  // model credits "listed in llms.txt" like any other action.
+  const EXC = (() => { try { return JSON.parse(fs.readFileSync("data/machines/executive.json", "utf8")).constraint; } catch { return null; } })();
+  if (EXC === "conversion") { for (const x of plan.winners.slice(0, 4)) add(x.p, "winner"); }
+  for (const p of WSG ? [...WSG] : surges.filter((y) => y.kind === "page").map((y) => y.key)) if (picks.length < (EXC === "conversion" ? 7 : 4)) add(p, "surge");
+  if (!WSG) for (const x of rising) if (picks.length < 6) add(x.key, "surge"); // the site renders surge|release|winner only
   // the TRAFFIC BRAIN's branches (strongest first): surge/convergence pages = "surge", pages people click through = "winner"
   for (const b of FOCUS.filter((b) => b.kind === "surge" || b.kind === "channel").slice(0, 3)) if (picks.length < 8) add(b.target, /people|clicked/.test(b.why ?? "") ? "winner" : "surge");
   const due = [...lastmod.keys()].map((p) => ({ p, d: soon(p), v: page.get(p)?.value ?? 0 })).filter((x) => x.d).sort((a, b) => b.v - a.v);
   for (const x of due) { if (picks.filter((q) => q.why === "release").length >= 4) break; add(x.p, "release", x.d); }
   for (const x of plan.winners) add(x.p, "winner");
-  fs.writeFileSync("data/ai/llms.json", JSON.stringify({ at: plan.at, picks }, null, 1)); }
+  fs.writeFileSync("data/ai/llms.json", JSON.stringify({ at: plan.at, picks }, null, 1));
+  { const LL = "data/world/llms.jsonl", day = iso(NOW), rows = readLines(LL); const row = { day, paths: picks.map((q) => q.path) }; if (rows.at(-1)?.day === day) rows[rows.length - 1] = row; else rows.push(row);
+    fs.mkdirSync("data/world", { recursive: true }); fs.writeFileSync(LL, rows.slice(-120).map((x) => JSON.stringify(x)).join("\n") + "\n"); } }
 
 // ── 6. score: one line per finished day (re-written while the day can still change) ──────────────────────────────────
 const SC = "data/ai/score.jsonl";

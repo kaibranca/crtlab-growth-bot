@@ -56,7 +56,9 @@ const waves = lines("data/machines/waves.jsonl"), lock = J("data/machines/lockin
 const HO = J("data/ai/holdout.json", null), fnv = (str) => { let h = 0x811c9dc5; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h % 100; };
 const held = (p) => !!HO && p !== "/" && fnv(HO.salt + p) < HO.pct;
 const sentBy = new Map(); for (const s of sends) (sentBy.get(norm(s.p)) ?? sentBy.set(norm(s.p), []).get(norm(s.p))).push(Date.parse(s.at));
+const llmsBy = new Map(lines(`${OUT}/llms.jsonl`).map((r) => [r.day, new Set(r.paths)]));
 const ACTIONS = {
+  "llms-listed": (p, d) => !!llmsBy.get(back(d, 1))?.has(p) || !!llmsBy.get(d)?.has(p), // in llms.txt "right now" the day before / that day
   "bing-send": (p, d) => (sentBy.get(p) ?? []).some((t) => t < Date.parse(d + "T00:00:00Z") && t >= Date.parse(d + "T00:00:00Z") - 2 * DAY),
   "brain-boost": (p, d) => branches.some((b) => b.path !== false && b.boost && (p === b.target || p.startsWith(b.target + "/")) && iso(Date.parse(b.born)) < d && (!b.retired || iso(Date.parse(b.retired)) >= d)),
   "sister-spread": (p, d) => sisters.some((x) => norm(x.p) === p && x.d < d && Date.parse(d) - Date.parse(x.d) <= 3 * DAY),
