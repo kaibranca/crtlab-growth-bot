@@ -122,7 +122,9 @@ try {
   const dv = await fetch("https://crtlab.pro/api/data-version", { headers: { "user-agent": "crtlab-supervisor" } }).then((r) => r.json());
   const d = new Date(NOW); d.setUTCHours(0, 0, 0, 0); if (NOW - d.getTime() < 7.5 * H) d.setUTCDate(d.getUTCDate() - 1);
   do d.setUTCDate(d.getUTCDate() - 1); while (d.getUTCDay() === 0 || d.getUTCDay() === 6);
-  const want = d.toISOString().slice(0, 10);
+  // 11-12: the site says which day is due (holiday-aware: lib/marketCalendar dueEnd) — the weekend-only guess here would
+  // raise a false DATA BEHIND every day after Christmas/New Year/Good Friday and send the fixer retrying all day
+  const want = dv?.due || d.toISOString().slice(0, 10);
   if (dv?.end && dv.end >= want) lastGreen["Daily data (live site)"] = new Date().toISOString(); // fresh now = that failure is history
   if (!dv?.end || dv.end < want) { dataStale = { want, have: dv?.end ?? "unknown", live: dv?.live ?? "?" }; fix.unshift(`DAILY DATA BEHIND: site data through ${dataStale.have}, should be ${want} (live ${dataStale.live})`); mistakes.push({ where: "Daily data (live site)", what: `data through ${dataStale.have}, expected ${want}`, at: new Date(Math.floor(NOW / H) * H).toISOString() }); }
 } catch (e) { fix.unshift("DAILY DATA: could not read crtlab.pro/api/data-version — " + String(e).slice(0, 60)); }
