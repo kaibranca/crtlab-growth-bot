@@ -84,8 +84,13 @@ const SYS = `You are the growth analyst for CRTLAB, a free-every-day trading bac
 DATA.selfModel / experiments / buildQueue / tuner are the machines reading themselves (IQ, what limits each engine, live tests, what they want built): when two experiments point opposite ways, or an engine's weakest part blocks the executive's constraint, that is a finding. Rules: use ONLY numbers that appear in DATA, copied exactly. No guessing, no generic advice, no new pages or features — you can only point machines at existing pages. Be blunt and short.
 Return JSON: {"findings":[{"claim":"<one sentence, plain words>","numbers":[<each number you used, exactly as in DATA>],"so":"<what the machines should do, one short sentence>"}] (max 5, most important first),
 "proposals":[{"target":"<exact p from CANDIDATES>","why":"<one sentence citing a number>","explore":<true if a long shot>}] (0-2; a candidate with proven:false MUST be explore:true; at most 1 explore; propose nothing rather than something weak; never pick a page your own findings call a problem),
+"knobs":[{"id":"<a knob id from KNOB LADDERS>","value":<one number from that knob's ladder, not its champion>,"why":"<one sentence citing a number from DATA>"}] (0-1: the setting you think should be tested next — the tuner tests it on live data and promotes it only if it wins; propose none if nothing in DATA points to one),
 "headline":"<the single most important thing today, max 14 words>"}`;
-const USER = `DATA ${DIG}\n\nCANDIDATES ${JSON.stringify(CANDS)}\n\nYOUR TRACK RECORD (your past proposals, judged by AI reads/day after 7 days: kept at ×1.2+, else retired) ${JSON.stringify(record)}\nLearn from it: if your picks were retired, change what kind of page you pick.`;
+// KNOB LADDERS (11-12): the self-tuning settings and the values the tuner may test — the analyst can pick the next experiment
+const ladderFor = (d) => { const xs = [0.5, 0.75, 1, 1.33, 2].map((m) => d * m); return Number.isInteger(d) ? [...new Set(xs.map((x) => Math.max(1, Math.round(x))))] : xs.map((x) => +x.toPrecision(3)); };
+const KREG = J("data/machines/knob-registry.json", {}) ?? {}, KST = J("data/machines/knobs.json", {})?.knobs ?? {};
+const LADDERS = Object.fromEntries(Object.entries(KREG).filter(([, r]) => typeof r.start === "number").map(([id, r]) => [id, { what: r.what, ladder: r.ladder ?? ladderFor(r.start), champion: KST[id]?.champion ?? r.start, testing: KST[id]?.challenge?.value ?? null, history: (KST[id]?.history ?? []).slice(-3).map((h) => `${h.challenger} vs ${h.champion}: ${h.verdict}${h.source === "analyst" ? " (your idea)" : ""}`) }]));
+const USER = `DATA ${DIG}\n\nCANDIDATES ${JSON.stringify(CANDS)}\n\nKNOB LADDERS ${JSON.stringify(LADDERS)}\n\nYOUR TRACK RECORD (your past proposals, judged by AI reads/day after 7 days: kept at ×1.2+, else retired) ${JSON.stringify(record)}\nLearn from it: if your picks were retired, change what kind of page you pick.`;
 
 async function call(url, key, model) {
   const r = await fetch(url, { method: "POST", headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
@@ -119,8 +124,10 @@ const proposals = (Array.isArray(ans.proposals) ? ans.proposals : []).filter((p)
   if (!ok) rejected++; return ok;
 }).slice(0, 2).map((p) => ({ target: p.target, why: String(p.why ?? "").slice(0, 200), explore: !!p.explore, evidence: cand.get(p.target).why }));
 
+const knobs = (Array.isArray(ans.knobs) ? ans.knobs : []).filter((k) => { const L = LADDERS[k?.id]; const ok = !!L && L.ladder.includes(+k.value) && +k.value !== L.champion; if (!ok && k) rejected++; return ok; })
+  .slice(0, 1).map((k) => ({ id: k.id, value: +k.value, why: String(k.why ?? "").slice(0, 200), at: new Date().toISOString() }));
 const cost = +(((res.usage?.prompt_tokens ?? 0) * 0.4 + (res.usage?.completion_tokens ?? 0) * 1.6) / 1e6).toFixed(5);
-const plan = { at: new Date().toISOString(), model: via, headline: String(ans.headline ?? findings[0]?.claim ?? "").slice(0, 120), findings, proposals, rejected, record, candidates: CANDS.length, usage: res.usage, fellBack: errs };
+const plan = { at: new Date().toISOString(), model: via, headline: String(ans.headline ?? findings[0]?.claim ?? "").slice(0, 120), findings, proposals, knobs, rejected, record, candidates: CANDS.length, usage: res.usage, fellBack: errs };
 fs.writeFileSync(`${OUT}/plan.json`, JSON.stringify(plan, null, 1));
 fs.appendFileSync(`${OUT}/runs.jsonl`, JSON.stringify({ at: plan.at, ok: true, model: via, cost, findings: findings.length, proposals: proposals.map((p) => p.target), rejected }) + "\n");
 const rejRate = runs.length ? runs.reduce((a, r) => a + (r.rejected ?? 0), 0) / runs.length : null;

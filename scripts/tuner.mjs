@@ -61,7 +61,11 @@ for (const K of KNOBS) {
   // open a challenge if none is running (and not settled within 30 days)
   if (!k.challenge && !(k.settled && NOW - Date.parse(k.settled) < 30 * DAY)) {
     let ni = ci + k.dir; if (ni < 0 || ni >= L.length) { k.dir = -k.dir; ni = ci + k.dir; }
-    if (ni >= 0 && ni < L.length) { k.challenge = { value: L[ni], dir: k.dir, since: today, id: `${K.id}:${L[ni]}:${today}`, kpi: K.kpi, tries: (k.triesInRow ?? 0) }; k.settled = null; }
+    // THE ANALYST PROPOSES, THE TUNER TESTS (11-12): a fresh (< 3 d) analyst idea for this knob, on its ladder, not tried yet,
+    // becomes the next challenger instead of the neighbour step — judged exactly the same way, credited to the analyst
+    const AP = (J("data/analyst/plan.json", {})?.knobs ?? []).find((x) => x.id === K.id && L.includes(x.value) && x.value !== k.champion && NOW - Date.parse(x.at) < 3 * DAY && !(k.analystTried ?? []).includes(x.value));
+    if (AP) { ni = L.indexOf(AP.value); (k.analystTried ??= []).push(AP.value); k.analystTried = k.analystTried.slice(-10); }
+    if (ni >= 0 && ni < L.length) { k.challenge = { value: L[ni], dir: Math.sign(ni - ci) || k.dir, since: today, id: `${K.id}:${L[ni]}:${today}`, kpi: K.kpi, tries: (k.triesInRow ?? 0), ...(AP ? { source: "analyst", why: AP.why } : {}) }; k.settled = null; }
   }
   const ch = k.challenge;
   const arm = (d) => (ch && d >= ch.since ? (fnv(ch.id + "|" + blockOf(d)) % 2 ? "B" : "A") : "A"); // B = challenger
@@ -92,7 +96,8 @@ for (const K of KNOBS) {
   const done = P != null && (P >= 0.9 || P <= 0.1 || (A.length >= 14 && B.length >= 14));
   if (!done) continue;
   const verdict = P >= 0.9 ? "promoted" : P <= 0.1 ? "kept champion" : "no effect";
-  k.history.push({ champion: k.champion, challenger: ch.value, since: ch.since, ended: today, ...ch.read, verdict });
+  k.history.push({ champion: k.champion, challenger: ch.value, since: ch.since, ended: today, ...ch.read, verdict, ...(ch.source ? { source: ch.source } : {}) });
+  if (ch.source === "analyst") led({ at: new Date().toISOString(), key: `tune-analyst|${K.id}|${ch.since}`, machine: "analyst", kind: verdict === "promoted" ? "win" : verdict === "kept champion" ? "loss" : "lesson", what: `analyst's knob idea ${K.id} = ${ch.value} (${ch.why ?? ""}): ${verdict}` });
   k.history = k.history.slice(-30);
   led({ at: new Date().toISOString(), key: `tune|${K.id}|${ch.since}`, machine: K.owner, kind: verdict === "promoted" ? "win" : verdict === "kept champion" ? "loss" : "lesson",
     what: `tuner: ${K.what} ${k.champion} vs ${ch.value} — ${K.kpi} ×${ch.read.lift} (P ${P.toFixed(2)}, ${A.length}+${B.length} blocks): ${verdict}` });
