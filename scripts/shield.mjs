@@ -51,7 +51,8 @@ if (fresh.length) await cf(`/accounts/${ACC}/rules/lists/${LIST}/items`, { metho
   body: JSON.stringify(fresh.map(([ip, x]) => ({ ip, comment: `auto|${Object.entries(x.src).map(([k, v]) => `${k}:${v}`).join(",")}|asn=${x.asn}|exp=${exp}` }))) });
 
 // 5. flood → Under Attack (JS check for everyone) ; quiet for 2 runs → back to medium
-const total = ev.length - crawlerEv.length, FLOOD = 4000; // attacks only
+const floodRuleEv = ev.filter((e) => e.ruleId === "24a2d4af18f843f1a86340aeb2f581a4").length; // 11-12 homepage challenge: judged on its own below
+const total = ev.length - crawlerEv.length - floodRuleEv, FLOOD = 4000; // attacks only
 const lvl = (await cf(`/zones/${Z}/settings/security_level`)).result.value;
 let mode = lvl;
 // LOCK-IN (core.mjs): a wave of real people is arriving — "Under Attack" would put a 5-second check on every one of them,
@@ -82,6 +83,38 @@ if ((humanBans.length || changed) && process.env.RESEND_API_KEY && process.env.A
   console.log("emailed", r.status);
 }
 
+// FLOOD-RULE JUDGE (11-12): the homepage managed challenge (cookieless, no referer, US/CN/GB/CA, AI/search crawlers exempt)
+// must cost no real people. EYES: challenges it issued vs SOLVED (a solve = a real browser) per hour, the humans self-check
+// (homepage raw hits vs normal), and AI clicks landing on "/" (data/ai/clicks-hourly.json) before vs since the rule.
+// HANDS: AI clicks on "/" below 40 % of their pre-rule rate over ≥ 24 h (with ≥ 6 before), or more than half the challenged
+// solving it (people, not bots) → the rule is DISABLED by itself + a loss in the ledger. Judged once; re-enabling is a decision.
+{
+  const FR = (st.floodRule ??= { id: "24a2d4af18f843f1a86340aeb2f581a4", since: "2026-11-12T14:30:00Z", hours: [] });
+  if (FR.state !== "disabled") try {
+    const q2 = `{viewer{zones(filter:{zoneTag:"${Z}"}){issued:firewallEventsAdaptiveGroups(limit:5,filter:{datetime_gt:"${since}",ruleId:"${FR.id}",action:"managed_challenge"}){count} solved:firewallEventsAdaptiveGroups(limit:5,filter:{datetime_gt:"${since}",ruleId:"${FR.id}",action_in:["managed_challenge_non_interactive_solved","managed_challenge_interactive_solved","challenge_solved","managed_challenge_bypassed"]}){count}}}}`;
+    const r2 = await (await fetch(API + "/graphql", { method: "POST", headers: H, body: JSON.stringify({ query: q2 }) })).json();
+    const zz = r2.data?.viewer?.zones?.[0] ?? {}, issued = (zz.issued ?? []).reduce((t, x) => t + x.count, 0), solved = (zz.solved ?? []).reduce((t, x) => t + x.count, 0);
+    const HUm = (() => { try { return JSON.parse(fs.readFileSync("data/machines/humans.json", "utf8")); } catch { return {}; } })();
+    const home = (HUm.selfCheck?.rawSurge ?? []).find((x) => x.dim === "landing" && x.seg === "home");
+    FR.hours = [...FR.hours, { at: new Date().toISOString(), issued, solved, homeRaw24: home?.raw24 ?? null, homeNormal: home?.rawNormal ?? null }].slice(-24 * 14);
+    const CH = (() => { try { return JSON.parse(fs.readFileSync("data/ai/clicks-hourly.json", "utf8")).rows ?? {}; } catch { return {}; } })();
+    const t0 = Date.parse(FR.since), onHome = (from, to) => Object.entries(CH).filter(([k]) => { const [h, eng, path] = k.split("|"), t = Date.parse(h + ":00:00Z"); return path === "/" && eng !== "bing" && eng !== "google" && t >= from && t < to; }).reduce((n, [, v]) => n + (v[0] ?? 0), 0);
+    const hrsSince = (Date.now() - t0) / 3.6e6, before = onHome(t0 - 48 * 3.6e6, t0), after = onHome(t0, Date.now());
+    const sumI = FR.hours.reduce((n, x) => n + x.issued, 0), sumS = FR.hours.reduce((n, x) => n + x.solved, 0);
+    FR.read = { hrsSince: +hrsSince.toFixed(1), aiHomeClicksBefore48h: before, aiHomeClicksSince: after, issued: sumI, solved: sumS, solveShare: sumI ? +(sumS / sumI).toFixed(2) : null, homeRaw24: home?.raw24 ?? null, homeNormal: home?.rawNormal ?? null };
+    const clicksLost = hrsSince >= 24 && before >= 6 && after / Math.min(hrsSince, 48) < 0.4 * (before / 48);
+    const peopleHit = sumI >= 40 && sumS / sumI > 0.5;
+    if (clicksLost || peopleHit) {
+      await cf(`/zones/${Z}/rulesets/${(await cf(`/zones/${Z}/rulesets/phases/http_request_firewall_custom/entrypoint`)).result.id}/rules/${FR.id}`, { method: "PATCH", body: JSON.stringify({ enabled: false }) });
+      FR.state = "disabled"; FR.why = clicksLost ? `AI clicks on / fell ${before}→${after} since the rule` : `${sumS} of ${sumI} challenged visitors solved it — people, not bots`;
+      fs.appendFileSync("data/machines/ledger.jsonl", JSON.stringify({ at: new Date().toISOString(), key: `shield|floodrule|off`, machine: "shield", kind: "loss", what: `homepage flood challenge DISABLED by itself: ${FR.why}` }) + "\n");
+      console.log("shield: flood rule DISABLED — " + FR.why);
+    } else if (hrsSince >= 72 && !FR.verdict) {
+      FR.verdict = "kept"; fs.appendFileSync("data/machines/ledger.jsonl", JSON.stringify({ at: new Date().toISOString(), key: `shield|floodrule|kept`, machine: "shield", kind: "win", what: `homepage flood challenge kept after 3 days: ${sumI} challenged, ${sumS} solved; AI clicks on / ${before} (48 h before) → ${after} since; home raw ${home?.raw24 ?? "?"}/24 h vs ~${home?.rawNormal ?? "?"}` }) + "\n");
+    }
+    console.log(`shield: flood rule ${FR.state ?? "on"} · ${issued} challenged / ${solved} solved this hour · AI clicks on / ${before} (48 h before) → ${after} in ${hrsSince.toFixed(0)} h`);
+  } catch (e) { console.log("shield: flood-rule judge skipped — " + String(e.message || e).slice(0, 120)); }
+}
 st.at = new Date().toISOString(); st.lastHour = { crawlersChallenged: crawlerEv.length, blocked: total, ips: per.size, banned: fresh.length, unbanned: expired.length, listSize: items.length - expired.length + fresh.length, mode };
 st.history = [...(st.history || []), { at: st.at, blocked: total, banned: fresh.length }].slice(-24 * 14);
 st.bannedHashes = [...new Set([...(st.bannedHashes || []), ...fresh.map(([ip]) => hash(ip))])].slice(-2000);
