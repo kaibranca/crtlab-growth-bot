@@ -570,7 +570,7 @@ function iqOut() {
     const t = Object.entries(KN).filter(([id]) => OWNER[id] === n.id).map(([id, k]) => `${id.split(".")[1]}: ${k.champion}${k.challenge ? ` vs ${k.challenge.value} (${(k.challenge.read?.blocksA ?? 0) + (k.challenge.read?.blocksB ?? 0)} of ≥ 10 blocks judged)` : " (settled)"}`);
     if (t.length) n.tuning = t; }
   const U = J("data/machines/upgrades.json")?.summary ?? null; // did what we built pay? (scripts/upgrades.mjs)
-  return { iq: last.iq, iqWas: ago.iq, power: last.power, powerWas: ago.power, since: ago.t, parts: last.parts, points: thin(P).map((p) => [p.t, p.iq, p.power]), upgrades: U };
+  return { iq: last.iq, iqWas: ago.iq, power: last.power, powerWas: ago.power, since: ago.t, parts: last.parts, points: thin(P).map((p) => [p.t, p.iq, p.power]), upgrades: U, selfPower: last.selfPower ?? 0 };
 }
 const eco = { at: new Date().toISOString(), scout, widgets, modes, briefing, rules: CORE_RULES, capacity: cap, mode: modeOut, nodes, edges, feed: feed.slice(0, 160),
   totals: { machines: nodes.length, ok: nodes.filter((n) => n.state === "ok").length, late: nodes.filter((n) => n.state === "late").length, stopped: nodes.filter((n) => n.state === "stopped").length, actions24: Object.values(act).reduce((a, b) => a + b, 0) },

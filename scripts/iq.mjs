@@ -148,7 +148,11 @@ if (process.argv.includes("--backfill")) {
   for (const [t, [h, d]] of last) if (t < cur && t >= "2026-11-11") { const { per, ...r } = score(measure(reader(h)), hi); rows.set(t, { t, ...r, power: upTo(ups, d) }); perDay.set(t.slice(0, 10), per); }
 }
 const { per, ...nowS } = score(measure(reader(null)), hi);
-const now = { t: cur, ...nowS, power: upTo(ups, nowIso) ?? [...rows.values()].at(-1)?.power ?? null };
+// SELF-MADE POWER: upgrades the machines made to themselves — tuner promotions + curiosity episodes that paid (self.mjs)
+const selfUps = (() => { let n = 0; try { for (const k of Object.values(JSON.parse(fs.readFileSync("data/machines/knobs.json", "utf8")).knobs ?? {})) n += (k.history ?? []).filter((h) => h.verdict === "promoted").length; } catch { /* none yet */ }
+  try { n += fs.readFileSync("data/machines/ledger.jsonl", "utf8").split("\n").filter((l) => l.includes('"machine":"self"') && l.includes('"kind":"win"')).length; } catch { /* none */ } return n; })();
+const ourP = upTo(ups, nowIso) ?? [...rows.values()].at(-1)?.ours ?? null;
+const now = { t: cur, ...nowS, ours: ourP, selfPower: selfUps, power: ourP == null ? null : ourP + selfUps };
 rows.set(cur, now);
 perDay.set(cur.slice(0, 10), per);
 fs.writeFileSync(HF, JSON.stringify({ at: nowIso, note: "day → machine → IQ (70 = learned nothing; machines at 70 are left out)", days: Object.fromEntries([...perDay].sort((a, b) => a[0].localeCompare(b[0])).slice(-90)) }));
