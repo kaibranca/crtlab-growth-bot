@@ -210,13 +210,13 @@ const BRAINS = [
       { id: "auto", label: "Auto-fix", machines: ["fixer", "supervisor"], does: "data retries, transient re-runs, restarting stopped machines — each fix verified the next hour" },
       { id: "queue", label: "Needs you", machines: ["mistakes"], does: "what no machine can do, with the exact steps — one queue for every engine" },
     ],
-    sensors: () => { const q = needQueue(); const fx = J("data/machines/fixer.json", {}); return { humanOpen: q.length, autoActions24: (fx.actions ?? []).filter((a) => NOW - Date.parse(a.at) < DAY).length,
+    sensors: () => { const q = needQueue(); try { learnQueue(q); } catch (e) { console.log("fixer: queue learning skipped " + String(e.message).slice(0, 60)); } const fx = J("data/machines/fixer.json", {}); return { humanOpen: q.length, autoActions24: (fx.actions ?? []).filter((a) => NOW - Date.parse(a.at) < DAY).length,
       playbooks: Object.entries(fx.w ?? {}).map(([k, w]) => `${k} ${w.v}`).join(", ") || null, top: q[0]?.what ?? null }; },
     outcome: (s) => ({ label: "things that need you", v: s.humanOpen ?? 0, higher: false }),
     signals: () => needQueue().slice(0, 6).map((x) => ({ key: x.kind, target: x.what.slice(0, 60), v: 1, higher: false, days: 3, why: x.steps })),
     measureOf: (b) => (needQueue().some((x) => x.what.slice(0, 60) === b.target) ? 1 : 0),
     modes: (s) => [s.humanOpen >= 6 && { id: "backlog", label: "Backlog", level: "warn", why: `${s.humanOpen} things need you — top: ${s.top}` }].filter(Boolean),
-    admin: () => needQueue().slice(0, 5).map((x, i) => `${i + 1}. ${x.what} → ${x.steps}`) },
+    admin: () => needQueue().slice(0, 5).map((x, i) => `${i + 1}. ${x.what} → ${x.steps} [impact ${x.score}]`) },
 ];
 
 // THE NEED-YOU QUEUE (Fixer brain): every engine's "needs you" in one list, the same thing said twice merged, each with
@@ -242,7 +242,29 @@ function needQueue() {
   const out = new Map();
   for (const r of raw) { const k = KNOWN.find(([re]) => re.test(r.text)); const kind = k?.[1] ?? "other", key = kind === "other" ? r.text.slice(0, 50) : kind;
     if (!out.has(key)) out.set(key, { kind, what: r.text.split(" — ")[0].slice(0, 140), steps: k?.[2] ?? "needs a look in a build session", from: new Set([r.from]) }); else out.get(key).from.add(r.from); }
-  return [...out.values()].map((x) => ({ ...x, from: [...x.from] })).sort((a, b) => b.from.length - a.from.length);
+  // RANKED BY MEASURED IMPACT (11-12 — the brains' learning steered nothing): score = brains raising it × the strongest
+  // raiser's authority × the kind's impact weight. Weights start from what the item touches (money / every engine's sensor
+  // first, hygiene last) and LEARN: when an item leaves the queue (fixed), its owning brain's outcome is judged 7 days later
+  // — paid → that kind weighs more next time, didn't → less (data/brains/fixer/queue.json → impact).
+  const IMP0 = { checkout: 3, sensor: 3, "retention-email": 2.5, flood: 2, speed: 1.5, google: 1.5, gap: 1.2, budget: 1, stripe: 1, "deps-token": 0.8, deps: 0.8, tokens: 0.8, retention: 1.5, other: 1 };
+  const FM = J("data/brains/fixer/queue.json", {}), IMP = { ...IMP0, ...(FM.impact ?? {}) };
+  const auth = Object.fromEntries((J("data/brains/index.json", { brains: [] }).brains ?? []).map((b) => [b.id, b.authority ?? 1]));
+  return [...out.values()].map((x) => ({ ...x, from: [...x.from], score: +(x.from.size * Math.max(...[...x.from].map((f) => auth[f] ?? 1)) * (IMP[x.kind] ?? 1)).toFixed(2) })).sort((a, b) => b.score - a.score);
+}
+// THE QUEUE LEARNS WHICH FIXES PAY: remembers when each kind entered (with its owning brain's outcome), and when it leaves,
+// judges it 7 days later on that brain's outcome → nudges the kind's impact weight (bounded 0.5…4)
+function learnQueue(q) {
+  const FM = J("data/brains/fixer/queue.json", {}); const seen = (FM.queueSeen ??= {}), imp = (FM.impact ??= {});
+  const outOf = (id) => { const b = (J("data/brains/index.json", { brains: [] }).brains ?? []).find((x) => x.id === id); return b?.outcome ?? null; };
+  const now = new Set(q.map((x) => x.kind));
+  for (const x of q) if (!seen[x.kind]) { const o = outOf(x.from[0]); seen[x.kind] = { since: iso(NOW), brain: x.from[0], start: o?.v ?? null, higher: o?.higher ?? true }; }
+  for (const [k, v] of Object.entries(seen)) {
+    if (now.has(k)) { delete v.left; continue; }
+    v.left ??= iso(NOW);
+    if (NOW - Date.parse(v.left) >= 7 * DAY) { const o = outOf(v.brain); if (o?.v != null && v.start != null) { const paid = v.higher ? o.v > v.start : o.v < v.start;
+        imp[k] = +clamp((imp[k] ?? 1) * (paid ? 1.15 : 0.9), 0.5, 4).toFixed(2); (FM.queueLog ??= []).push({ at: iso(NOW), kind: k, brain: v.brain, from: v.start, to: o.v, paid }); FM.queueLog = FM.queueLog.slice(-60); }
+      delete seen[k]; } }
+  fs.mkdirSync("data/brains/fixer", { recursive: true }); fs.writeFileSync("data/brains/fixer/queue.json", JSON.stringify(FM, null, 1));
 }
 
 // ── RUN EACH BRAIN: sense → modes → judge last episode on its outcome → learn intensity → write its pyramid ───────────
@@ -281,7 +303,12 @@ for (const S of BRAINS) try {
     feed.push({ t: iso(NOW), m: "core", text: `opened a branch: ${x.target} (${x.why})`, kind: "hot" }); }
   for (const b of BR.branches.filter((b) => b.state === "open")) {
     let v = null; try { v = S.measureOf?.(b, sens); } catch { v = null; } if (v != null && Number.isFinite(+v)) b.now = v;
-    const age = (NOW - Date.parse(b.born)) / DAY; if (age < b.days || b.now == null) continue;
+    const age = (NOW - Date.parse(b.born)) / DAY; if (b.now == null) continue;
+    // EARLY VERDICT (11-12 — loops must close in days): from day 2, clearly better (30%+, or from 0 to something) resolves now
+    if (age >= 2 && age < b.days && !b.info && (b.higher ? (b.base > 0 ? b.now >= b.base * 1.3 : b.now > 0) : b.now <= b.base * 0.7)) { const w = wOf(b.key);
+      w.v = +clamp(w.v + 0.15 * (1 - w.v), 0.05, 0.95).toFixed(3); w.n++; b.state = "resolved"; b.closed = iso(NOW); b.early = true;
+      feed.push({ t: iso(NOW), m: "core", text: `resolved early (day ${age.toFixed(1)}): ${b.target} (${b.base} → ${b.now})`, kind: "win" }); continue; }
+    if (age < b.days) continue;
     const better = b.higher ? b.now >= b.base * 1.15 || (b.base === 0 && b.now > 0) : b.now <= b.base * 0.85; const w = wOf(b.key);
     w.v = +clamp(w.v + 0.25 * ((better ? 1 : 0) - w.v), 0.05, 0.95).toFixed(3); w.n++;
     if (better) { b.state = "resolved"; b.closed = iso(NOW); feed.push({ t: iso(NOW), m: "core", text: `resolved: ${b.target} (${b.base} → ${b.now})`, kind: "win" }); }
