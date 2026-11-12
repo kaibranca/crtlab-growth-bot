@@ -62,7 +62,7 @@ export function measure(R) {
   // Bing yield, crawl lag — each credited to the machine named for it on /machine
   const P = R("data/ai/plan.json") ?? {}, L = P.learned ?? {};
   at("ai").evidence += n0(P.families) * 10;
-  at("ai").judged += arr(P.verdicts).filter((v) => v.verdict && !/measuring|waiting/i.test(v.verdict)).length;
+  for (const v of arr(P.verdicts)) if (v.verdict && !/measuring|waiting|superseded/i.test(v.verdict)) at(/^factory/i.test(v.what ?? "") ? "factory" : /^hook test/i.test(v.what ?? "") ? "hooks" : "ai").judged++; // each verdict to the machine it judged
   at("weekly").evidence += (L.weekly?.daysSeen ?? []).reduce((t, v) => t + v, 0) * n0(L.weekly?.peaks);
   at("lift").evidence += Object.keys(P.releaseLift?.byRelease ?? {}).length * 5;
   at("yield").judged += +L.sendYield?.judged || 0;
