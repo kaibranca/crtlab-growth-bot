@@ -4,7 +4,11 @@
 import fs from "node:fs";
 import { SITE, get } from "./lib.mjs";
 const F = "data/ai/clicks.json";
-const r = await get(`${SITE}/api/ops/ai-referrals?days=3`, { headers: { "x-ops-key": process.env.OPS_KEY || "" } });
+// 11-12 FIRST-TOUCH BACKFILL: the site started counting AI sign-ups by first touch (users.signup_source) — old days only had
+// the narrower count, so this week vs last week would read as a fake jump. The first run that sees first-touch rows re-reads
+// 14 days once (both weeks counted the same way), then it is back to 3.
+const FT = "data/ai/.backfill-first-touch", days = fs.existsSync(FT) ? 3 : 14;
+const r = await get(`${SITE}/api/ops/ai-referrals?days=${days}`, { headers: { "x-ops-key": process.env.OPS_KEY || "" } });
 if (r.status !== 200) { console.log("ai-referrals not available yet", r.status); process.exit(0); }
 const j = JSON.parse(r.body);
 fs.mkdirSync("data/ai", { recursive: true });
@@ -15,6 +19,7 @@ for (const x of j.rows) all[`${x.day}|${x.engine}|${x.path}`] = [x.visitors, x.a
 const keep = new Date(Date.now() - 400 * 86400000).toISOString().slice(0, 10); // a year+ of history: the machine's memory
 for (const k of Object.keys(all)) if (k.slice(0, 10) < keep) delete all[k];
 fs.writeFileSync(F, JSON.stringify(all));
+if (days === 14 && j.rows.some((x) => x.path === "/auth/first-touch")) fs.writeFileSync(FT, new Date().toISOString()); // backfilled with the new count
 console.log(`ai clicks: ${j.rows.length} rows for ${[...fresh].sort().join(", ")} · ${Object.keys(all).length} kept`);
 // HOURLY GRAIN (11-12): the same funnel per UTC hour → data/ai/clicks-hourly.json (60 days). Feeds the 2-hour switchback
 // tests. One more light grouped scan per run; an old site (no grain support) answers daily rows → ignored.
