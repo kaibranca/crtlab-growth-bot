@@ -183,13 +183,39 @@ if (heapNote && /→ cap|back to 768/.test(heapNote)) actions.push(heapNote); //
     }
   }
 }
+// CREEP JUDGE (11-12, Kai: "I don't want the backend accumulating and slowly getting worse — random stuff we do spikes it"):
+// every deploy of web/data is judged on the service's average billed memory in the 24 h after it (from hour 2) vs the 24 h
+// before. A deploy that holds +60 MB or more is named — commit, +MB, $/month — and goes on the build list (data brain →
+// fixer), so the bill never creeps without a culprit. Judged once per deploy (data/cost/deploys.jsonl).
+const creep = [];
+{
+  const seen = new Set(readLines(`${DIR}/deploys.jsonl`).map((x) => x.id));
+  for (const svcName of ["web", "data"]) {
+    const sv = svcs.find((x) => x.name === svcName), mem = series[svcName]?.MEMORY_USAGE_GB ?? []; if (!sv || mem.length < 48) continue;
+    let deps = [];
+    try { deps = (await gql(`query { deployments(first: 30, input: { serviceId: "${sv.id}", environmentId: "${ENV}" }) { edges { node { id createdAt status meta } } } }`)).deployments.edges.map((e) => e.node).filter((d) => d.status !== "SKIPPED" && d.status !== "FAILED" && d.status !== "CRASHED"); } catch { continue; }
+    deps.sort((x, y) => Date.parse(x.createdAt) - Date.parse(y.createdAt));
+    for (let i = 0; i < deps.length; i++) {
+      const d = deps[i], t = Date.parse(d.createdAt), next = deps[i + 1] ? Date.parse(deps[i + 1].createdAt) : Infinity;
+      if (seen.has(d.id) || NOW - t < 26 * H || NOW - t > 8 * DAY) continue;
+      const end = Math.min(t + 26 * H, next), avgOf = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : null);
+      const before = avgOf(mem.filter(([u]) => u < t && u >= t - DAY).map(([, v]) => v)), after = avgOf(mem.filter(([u]) => u >= t + 2 * H && u < end).map(([, v]) => v));
+      if (before == null || after == null || end - t < 8 * H) continue; // replaced too soon to judge on its own
+      const dMB = Math.round((after - before) * 1000), m = d.meta ?? {};
+      const row = { at: new Date().toISOString(), id: d.id, svc: svcName, deployedAt: d.createdAt, commit: (m.commitHash ?? "").slice(0, 8), msg: String(m.commitMessage ?? "").split("\n")[0].slice(0, 90), beforeMB: Math.round(before * 1000), afterMB: Math.round(after * 1000), dMB, perMonth: +((after - before) * MEM_GB_MONTH).toFixed(2) };
+      append(`${DIR}/deploys.jsonl`, row); seen.add(d.id);
+      if (dMB >= 60) { creep.push(row); append("data/machines/ledger.jsonl", { at: row.at, key: `cost|creep|${d.id}`, machine: "cost", kind: "loss", what: `${svcName} deploy ${row.commit} "${row.msg}" raised billed memory ${row.beforeMB} → ${row.afterMB} MB (+$${row.perMonth}/mo)` }); }
+    }
+  }
+}
+const creep7 = readLines(`${DIR}/deploys.jsonl`).filter((x) => x.dMB >= 60 && NOW - Date.parse(x.at) < 7 * DAY);
 // LEARN: judge fixes 24 h later
 for (const f of state.fixes) if (!f.verdict && NOW - Date.parse(f.at) > DAY) { const r = rows.find((x) => x.svc === f.svc); if (!r) continue;
   f.after = r.memGB; f.verdict = r.memGB < f.before * 0.6 ? "helped" : "did not help";
   append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|verdict|${f.at}`, machine: "cost", kind: f.verdict === "helped" ? "win" : "loss", what: `${f.kind} fix on ${f.svc}: ${f.before} → ${f.after} GB a day later (${f.verdict})` }); }
 const total = rows.reduce((t, r) => t + r.dayCost, 0), avg = rows.reduce((t, r) => t + r.avgDayCost, 0);
 const weekPace = +(avg * 30).toFixed(2);
-const plan = { levers: (state.levers ?? []).map((x) => ({ id: x.id, svc: x.svc, set: `${x.name}=${x.value}`, live: !!x.liveAt, beforeGB: x.beforeGB ?? null, afterGB: x.afterGB ?? null, verdict: x.verdict ?? (x.liveAt ? "judging" : "waiting for a deploy") })), heap: { cap: HC.cap, stopped: HC.stopped, samples: HC.samples.length, note: heapNote }, at: new Date().toISOString(), status: weekPace > BUDGET_MONTH ? "over budget" : "ok", budget: BUDGET_MONTH, weekPace, overBy: +Math.max(0, weekPace - BUDGET_MONTH).toFixed(2), deploys, dayCost: +total.toFixed(2), avgDayCost: +avg.toFixed(2), monthPace: +(total * 30).toFixed(2), services: rows.sort((a, b) => b.dayCost - a.dayCost), incidents, actions, fixes: state.fixes.slice(-10) };
+const plan = { creep: creep7.map((x) => ({ svc: x.svc, commit: x.commit, msg: x.msg, dMB: x.dMB, perMonth: x.perMonth })), levers: (state.levers ?? []).map((x) => ({ id: x.id, svc: x.svc, set: `${x.name}=${x.value}`, live: !!x.liveAt, beforeGB: x.beforeGB ?? null, afterGB: x.afterGB ?? null, verdict: x.verdict ?? (x.liveAt ? "judging" : "waiting for a deploy") })), heap: { cap: HC.cap, stopped: HC.stopped, samples: HC.samples.length, note: heapNote }, at: new Date().toISOString(), status: weekPace > BUDGET_MONTH ? "over budget" : "ok", budget: BUDGET_MONTH, weekPace, overBy: +Math.max(0, weekPace - BUDGET_MONTH).toFixed(2), deploys, dayCost: +total.toFixed(2), avgDayCost: +avg.toFixed(2), monthPace: +(total * 30).toFixed(2), services: rows.sort((a, b) => b.dayCost - a.dayCost), incidents, actions, fixes: state.fixes.slice(-10) };
 fs.writeFileSync(`${DIR}/plan.json`, JSON.stringify(plan, null, 1));
 append(`${DIR}/score.jsonl`, { at: plan.at, dayCost: plan.dayCost, mem: Object.fromEntries(rows.map((r) => [r.svc, r.memGB])) });
 if (incidents.length && state.emailed !== iso(NOW) && process.env.RESEND_API_KEY && process.env.ALERT_TO) {
