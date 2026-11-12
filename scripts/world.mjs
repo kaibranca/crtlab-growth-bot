@@ -103,11 +103,24 @@ const fc = []; for (const [p, m] of F) { let s7 = 0; for (let k = 0; k < 7; k++)
   const rel = relTom.has(relFam(p) ?? "~") ? relLift : 1; fc.push({ p, base: +base.toFixed(2), tomorrow: +(base * trend * rel).toFixed(2), why: rel > 1 ? `release tomorrow ×${relLift}` : null }); }
 fc.sort((a, b) => b.tomorrow - a.tomorrow);
 
+// ── THE CURVE (Kai: "project the curve"): log-linear fit over the finished days, site-wide — people-fetches, AI clicks,
+// AI accounts → daily growth rate, doubling time, 7- and 30-day projection; and the GAP: reads compounding faster than clicks
+// = the conversion bottleneck as one number.
+const fit = (ys) => { const xs = ys.map((_, i) => i), n = ys.length, ly = ys.map((y) => Math.log(y + 0.5)), mx = mean(xs), my = mean(ly);
+  const b = xs.reduce((a, x, i) => a + (x - mx) * (ly[i] - my), 0) / Math.max(1e-9, xs.reduce((a, x) => a + (x - mx) ** 2, 0)), a0 = my - b * mx;
+  return { perDay: +((Math.exp(b) - 1) * 100).toFixed(1), doublingDays: b > 0.005 ? +(Math.log(2) / b).toFixed(1) : null, now: +(Math.exp(a0 + b * (n - 1)) - 0.5).toFixed(1),
+    in7: +(Math.exp(a0 + b * (n + 6)) - 0.5).toFixed(0), in30: +(Math.exp(a0 + b * (n + 29)) - 0.5).toFixed(0) }; };
+const cDay = (d) => { let c = 0; for (const [, m] of C) c += m.get(d) ?? 0; return c; };
+const aDay = (d) => { let a = 0; for (const [k, v] of Object.entries(J("data/ai/clicks.json", {}))) { const [dd, eng] = k.split("|"); if (dd === d && AIENG.test(eng)) a += v[1] ?? 0; } return a; };
+const span = full.slice(-14), curve = { days: span.length, reads: fit(span.map((d) => siteDay.get(d) ?? 0)), clicks: fit(span.map(cDay)), accounts: fit(span.map(aDay)) };
+curve.gap = +(curve.reads.perDay - curve.clicks.perDay).toFixed(1); // % per day reads outgrow clicks
+
 // ── OUT ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 const fitErr = rows.length ? +Math.sqrt(mean(rows.map((r) => r.lr * r.lr))).toFixed(3) : null; // how good the forecast is (lower = sharper)
-const C0 = { at: new Date().toISOString(), days: full.length, pageDays: rows.length, fitError: fitErr, siteTrendTomorrow: +trend.toFixed(2), releaseLift: relLift, credit,
+const C0 = { at: new Date().toISOString(), curve, days: full.length, pageDays: rows.length, fitError: fitErr, siteTrendTomorrow: +trend.toFixed(2), releaseLift: relLift, credit,
   verdicts: Object.values(credit).filter((c) => c.verdict && c.verdict !== "no clear effect yet").length };
 fs.writeFileSync(`${OUT}/credit.json`, JSON.stringify(C0, null, 1));
 fs.writeFileSync(`${OUT}/forecast.json`, JSON.stringify({ at: C0.at, for: tom, trend: C0.siteTrendTomorrow, pages: fc.slice(0, 300), jumps: fc.filter((x) => x.why).slice(0, 40) }));
 fs.appendFileSync(`${OUT}/residuals.jsonl`, JSON.stringify({ day: today, fitError: fitErr, credit: Object.fromEntries(Object.entries(credit).map(([k, v]) => [k, v.lift])) }) + "\n");
+console.log(`world curve (${curve.days} d): reads ${curve.reads.perDay}%/day → ${curve.reads.in30} in 30 d · clicks ${curve.clicks.perDay}%/day → ${curve.clicks.in30} · accounts ${curve.accounts.perDay}%/day · gap ${curve.gap}%/day`);
 console.log(`world: ${rows.length} page-days over ${full.length} days · forecast error ${fitErr} · release lift ×${relLift} · tomorrow ×${C0.siteTrendTomorrow} · credit: ${Object.entries(credit).map(([k, v]) => `${k} ${v.lift ?? "—"}${v.ci ? ` [${v.ci.join("–")}] ${v.verdict}` : ""} (${v.units})`).join(" · ")}`);
