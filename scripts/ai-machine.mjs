@@ -377,7 +377,10 @@ const verdicts = changes.map((c) => {
 // at 28 days without a clear answer (lost: the simpler page stays). Then the next approved template for that family starts
 // by itself, so the machine keeps testing forever. Templates (wording) are only ever ones Kai pushed in the site's code.
 const HOOKS = "data/ai/hooks.json";
-const LIBRARY = { "/economic-calendar/<event>": ["replay-last", "practise-next"], "/news/<release>": ["replay-last", "practise-next"], "/": ["yesterday-charts"] };
+// 11-12: calendar + news templates RETIRED — since 11-11 19:00 every page of both families carries the ReplayHook block (the
+// same replay + practise offer, judged in changes.jsonl), so a test of the same sentence on top would measure nothing.
+// Their running tests were closed as "superseded" (no lesson counted). New wording for them = new templates here + site.
+const LIBRARY = { "/economic-calendar/<event>": [], "/news/<release>": [], "/": ["yesterday-charts"] };
 const ONE_PAGE = new Set(["/"]); // one-page families: switchback by day, and they wait (paused) until the site renders the template
 const bucket = (str) => { let h = 0x811c9dc5; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h % 100; };
 const gamma = (k) => { // Marsaglia–Tsang, k > 0

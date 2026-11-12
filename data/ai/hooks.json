@@ -6,7 +6,7 @@
    "family": "/economic-calendar/<event>",
    "template": "replay-last",
    "split": 0.5,
-   "status": "running",
+   "status": "superseded",
    "started": "2026-11-10T01:49:57.211Z",
    "last": {
     "at": "2026-11-12T01:00:57.287Z",
@@ -31,14 +31,16 @@
     "preDays": 9.1,
     "pBbeatsA": 0.214,
     "enough": true
-   }
+   },
+   "ended": "2026-11-12T01:14:29.396150Z",
+   "why": "every page of the family got the ReplayHook block (same offer) on 11-11 19:00 — both arms changed mid-test; no lesson counted"
   },
   {
    "id": "rel-replay-last-1",
    "family": "/news/<release>",
    "template": "replay-last",
    "split": 0.5,
-   "status": "running",
+   "status": "superseded",
    "started": "2026-11-10T01:49:57.211Z",
    "last": {
     "at": "2026-11-12T01:00:57.341Z",
@@ -63,7 +65,9 @@
     "preDays": 9.1,
     "pBbeatsA": 0.65,
     "enough": true
-   }
+   },
+   "ended": "2026-11-12T01:14:29.396150Z",
+   "why": "every page of the family got the ReplayHook block (same offer) on 11-11 19:00 — both arms changed mid-test; no lesson counted"
   },
   {
    "id": "home-yesterday-charts-2026-11-12",
@@ -72,7 +76,8 @@
    "split": 0.5,
    "mode": "switchback",
    "status": "paused",
-   "auto": true
+   "auto": true,
+   "grain": "2h"
   }
  ]
 }
