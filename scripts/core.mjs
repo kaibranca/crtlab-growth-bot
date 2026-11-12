@@ -410,12 +410,16 @@ for (const n of nodes) {
 // its focus branches carry in the AI machine's Bing sends, and how many it may run. Proven machines get more; failing ones
 // are put on probation. Read by the branch builder next run (data/machines/ranks.json).
 const TIERS = [[-99, "Probation", 0.5], [0, "Rookie", 1], [2, "Proven", 1.25], [5, "Trusted", 1.5], [10, "Elite", 2]];
+const IQPER = (() => { try { return JSON.parse(fs.readFileSync("data/machines/iq.json", "utf8")).per ?? {}; } catch { return {}; } })();
 const prevRanks = (() => { try { return JSON.parse(fs.readFileSync("data/machines/ranks.json", "utf8")).ranks ?? {}; } catch { return {}; } })();
 const ranks = {};
 for (const n of nodes) {
   const o = OUTC[n.id];
   const trend = !o || o.neutral || o.change == null || (o.before ?? 0) < 10 ? 0 : (o.lowerBetter ? -o.change : o.change) >= 0.1 ? 1 : (o.lowerBetter ? -o.change : o.change) <= -0.2 ? -1 : 0;
-  const score = (n.xp?.wins ?? 0) - (n.xp?.losses ?? 0) + trend;
+  // + what it has learned by itself (IQ, iq.json — last run's): every 15 IQ above 70 = +1, at most +3 — a machine that has
+  // proven it learns earns some leverage before its wins pile up; losses still pull it down (wins − losses dominate)
+  const iqB = Math.max(0, Math.min(3, Math.floor(((IQPER[n.id] ?? 70) - 70) / 15)));
+  const score = (n.xp?.wins ?? 0) - (n.xp?.losses ?? 0) + trend + iqB;
   const [, tier, authority] = [...TIERS].reverse().find(([min]) => score >= min);
   n.rank = { tier, score, authority, trend };
   ranks[n.id] = n.rank;
