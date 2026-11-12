@@ -105,8 +105,14 @@ for (const [id, m] of Object.entries(machines)) {
 for (const t of J("data/machines/fixer.json", {})?.tasks ?? []) queue.push({ kind: "fix", what: t.what, why: t.fix, engine: "fixer", score: 4 });
 const ADMIN = Object.keys(ENG).filter((e) => e !== "main" && e !== "traffic").flatMap((e) => (J(`data/brains/${e}/ecosystem.json`, {})?.briefing?.notes ?? []).filter((n) => /^BUILD|build/i.test(n)).slice(0, 2).map((n) => ({ kind: "build", what: n.replace(/^BUILD \d+ \([^)]*\)\.?\s*/, ""), why: `${e} brain asks for it`, engine: e, score: 3 })));
 queue.push(...ADMIN);
+// THE BUILDER LEARNS HOW TO UPGRADE: every judged upgrade (upgrades.json) is evidence about where building pays. Per engine,
+// paid-rate Beta(1 + paid, 1 + hurt) with flats as half-misses → the queue's engine weight × (0.5 + rate): engines whose
+// upgrades keep paying rise, ones whose upgrades hurt sink. Starts neutral (×1) until verdicts exist (from 11-19).
+const payRate = {};
+for (const j of (UPG.judged ?? []).filter((x) => x.verdict !== "unjudgeable")) { const e = engOf(j.machine), r = (payRate[e] ??= { paid: 0, miss: 0 }); if (j.verdict === "paid") r.paid++; else r.miss += j.verdict === "hurt" ? 1 : 0.5; }
+for (const q of queue) { const r = payRate[q.engine]; q.buildPays = r ? +((1 + r.paid) / (2 + r.paid + r.miss)).toFixed(2) : 0.5; q.score = +(q.score * (0.5 + q.buildPays)).toFixed(2); }
 queue.sort((a, b) => b.score - a.score);
-fs.writeFileSync("data/machines/build-queue.json", JSON.stringify({ at: new Date().toISOString(), constraint: EX, note: "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.", items: queue.slice(0, 25) }, null, 1));
+fs.writeFileSync("data/machines/build-queue.json", JSON.stringify({ at: new Date().toISOString(), constraint: EX, buildPays: payRate, note: "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.", items: queue.slice(0, 25) }, null, 1));
 
 fs.writeFileSync(OUT, JSON.stringify({ at: new Date().toISOString(), note: "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.", whole, engines, machines }, null, 1));
 console.log(`self: ${Object.entries(engines).map(([e, x]) => `${e} ${x.iq}${x.curiosity > 1.0001 ? ` c×${x.curiosity}` : ""}`).join(" · ")}`);
