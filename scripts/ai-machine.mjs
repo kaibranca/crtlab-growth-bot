@@ -352,7 +352,8 @@ const verdicts = changes.map((c) => {
 // at 28 days without a clear answer (lost: the simpler page stays). Then the next approved template for that family starts
 // by itself, so the machine keeps testing forever. Templates (wording) are only ever ones Kai pushed in the site's code.
 const HOOKS = "data/ai/hooks.json";
-const LIBRARY = { "/economic-calendar/<event>": ["replay-last", "practise-next"], "/news/<release>": ["replay-last", "practise-next"] };
+const LIBRARY = { "/economic-calendar/<event>": ["replay-last", "practise-next"], "/news/<release>": ["replay-last", "practise-next"], "/": ["yesterday-charts"] };
+const ONE_PAGE = new Set(["/"]); // one-page families: switchback by day, and they wait (paused) until the site renders the template
 const bucket = (str) => { let h = 0x811c9dc5; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h % 100; };
 const gamma = (k) => { // Marsaglia–Tsang, k > 0
   if (k < 1) return gamma(k + 1) * Math.pow(Math.random(), 1 / k);
@@ -366,7 +367,37 @@ const LES = "data/ai/lessons.json", LESSONS = fs.existsSync(LES) ? JSON.parse(fs
 const winRate = (t) => ((LESSONS[t]?.won ?? 0) + 1) / ((LESSONS[t]?.won ?? 0) + (LESSONS[t]?.lost ?? 0) + 2);
 const hk = fs.existsSync(HOOKS) ? JSON.parse(fs.readFileSync(HOOKS, "utf8")) : { experiments: [] };
 const expReport = [];
-for (const e of hk.experiments.filter((x) => x.status === "running" && x.started)) {
+// SELF-START (11-12): a paused test whose template the live site now renders starts by itself. The homepage prints every
+// template its code supports (data-hooks="…", lib/aiHooks.ts TEMPLATES) — one light GET an hour, only while one waits.
+if (hk.experiments.some((x) => x.status === "paused" && x.auto)) try {
+  const html = await fetch("https://crtlab.pro/", { headers: { "user-agent": "crtlab-growth-bot (hook check)" }, signal: AbortSignal.timeout(15000) }).then((r) => (r.ok ? r.text() : ""));
+  const live = new Set((html.match(/data-hooks="([^"]*)"/)?.[1] ?? "").split(/\s+/).filter(Boolean));
+  for (const e of hk.experiments.filter((x) => x.status === "paused" && x.auto && live.has(x.template))) { e.status = "running"; e.started = new Date().toISOString(); delete e.auto;
+    append("data/ai/changes.jsonl", { at: e.started, family: e.family, what: `hook test ${e.id} (${e.template}) STARTED by itself — the site now renders it` }); console.log(`hooks: ${e.id} started (template live on the site)`); }
+} catch (err) { console.log("hooks: site check skipped (" + String(err.message).slice(0, 60) + ")"); }
+// SWITCHBACK JUDGE (11-12): a one-page family (the homepage) is split by UTC DAY, not by page — arm(day) = bucket(id + day),
+// the same hash the site uses. Only finished days count (from the day after the start). Outcome = AI clicks on the page per
+// people-fetch (ChatGPT-User / Claude-User / Perplexity-User): the day's page decides whether the assistant links.
+for (const e of hk.experiments.filter((x) => x.status === "running" && x.started && x.mode === "switchback")) {
+  const path = e.family, d0 = iso(Date.parse(e.started) + DAY), today = iso(NOW);
+  const arm = (d) => (bucket(e.id + d) < e.split * 100 ? "B" : "A"), daysT = {};
+  for (const win of crawl) { const d = iso(Date.parse(win.to) - 1); if (d < d0 || d >= today) continue;
+    for (const [bot, v] of Object.entries(win.bots)) if (LIVE.test(bot)) for (const [p0, n] of v.top) if ((p0.split("?")[0].replace(/\/$/, "") || "/") === path) (daysT[d] ??= { f: 0, c: 0, a: 0 }).f += n; }
+  for (const [k, [vis, acc]] of Object.entries(clicks)) { const [d, eng, p0] = k.split("|"); if (!AIENG.test(eng) || (p0.replace(/\/$/, "") || "/") !== path || d < d0 || d >= today) continue; const o = (daysT[d] ??= { f: 0, c: 0, a: 0 }); o.c += vis; o.a += acc; }
+  const A = { days: 0, fetches: 0, clicks: 0, accounts: 0 }, B = { days: 0, fetches: 0, clicks: 0, accounts: 0 };
+  for (const [d, o] of Object.entries(daysT)) { const x = arm(d) === "B" ? B : A; x.days++; x.fetches += o.f; x.clicks += o.c; x.accounts += o.a; }
+  for (const x of [A, B]) x.rate = x.fetches ? +(x.clicks / x.fetches).toFixed(4) : null;
+  const pr = A.days && B.days ? pBeats(B.clicks, B.fetches, A.clicks, A.fetches) : 0.5, n = A.days + B.days, enough = A.days >= 5 && B.days >= 5 && A.fetches >= 150 && B.fetches >= 150;
+  const truthBad = fs.existsSync("data/ai/truth.json") && JSON.parse(fs.readFileSync("data/ai/truth.json", "utf8")).problems?.some((x) => !/: missing "/.test(x));
+  let decision = null; if (!truthBad) { if (n >= 14 && enough && pr >= 0.975) decision = "won"; else if (n >= 14 && enough && pr <= 0.025) decision = "lost"; else if (n >= 42) decision = "lost"; }
+  e.last = { at: new Date().toISOString(), days: n, A, B, pBbeatsA: +pr.toFixed(3), enough, unit: "clicks per people-fetch, by day" };
+  if (decision) { e.status = decision; e.ended = new Date().toISOString();
+    (LESSONS[e.template] ??= { won: 0, lost: 0, families: {} }); LESSONS[e.template][decision]++; LESSONS[e.template].families[e.family] = decision;
+    append("data/machines/ledger.jsonl", { at: e.ended, key: `hook|${e.id}|${decision}`, machine: "hooks", kind: decision === "won" ? "win" : "loss", what: `homepage switchback ${e.id} (${e.template}): ${decision} — on-days ${B.clicks}/${B.fetches}, off-days ${A.clicks}/${A.fetches}` });
+    append("data/ai/changes.jsonl", { at: e.ended, family: e.family, what: `hook test ${e.id} (${e.template}) ${decision.toUpperCase()} · P=${pr.toFixed(2)} after ${n} days` }); }
+  expReport.push({ id: e.id, family: e.family, template: e.template, mode: "switchback", ...e.last, status: e.status });
+}
+for (const e of hk.experiments.filter((x) => x.status === "running" && x.started && x.mode !== "switchback")) {
   const t0 = Date.parse(e.started), days = Math.max(0.5, (NOW - t0) / DAY), day0 = iso(t0);
   const fam = [...lastmod.keys()].filter((p) => family(p) === e.family);
   const armOf = (p) => (bucket(e.id + p) < e.split * 100 ? "B" : "A");
@@ -410,7 +441,9 @@ for (const [famName, tpls] of Object.entries(LIBRARY)) {
   const mine = hk.experiments.filter((x) => x.family === famName);
   if (mine.some((x) => x.status === "running" || x.status === "won" || x.status === "paused")) continue;
   const next = [...tpls].sort((a, b) => winRate(b) - winRate(a)).find((t) => !mine.some((x) => x.template === t));
-  if (next) hk.experiments.push({ id: `${famName.replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "")}-${next}-${iso(NOW)}`, family: famName, template: next, split: 0.5, status: "running", started: new Date().toISOString() });
+  if (next) hk.experiments.push(ONE_PAGE.has(famName)
+    ? { id: `home-${next}-${iso(NOW)}`, family: famName, template: next, split: 0.5, mode: "switchback", status: "paused", auto: true }
+    : { id: `${famName.replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "")}-${next}-${iso(NOW)}`, family: famName, template: next, split: 0.5, status: "running", started: new Date().toISOString() });
 }
 fs.writeFileSync(HOOKS, JSON.stringify(hk, null, 1));
 fs.writeFileSync(LES, JSON.stringify(LESSONS, null, 1));
