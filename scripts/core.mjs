@@ -331,6 +331,32 @@ const statusOf = (m) => { let t = null; try { t = m.t(); } catch { t = null; } c
 // OUTCOMES (11-11): one real number per machine/lead from outcomes.mjs wins over the supervisor run-level KPI
 const OUTC = (() => { try { return JSON.parse(fs.readFileSync("data/machines/outcomes.json", "utf8")).kpi ?? {}; } catch { return {}; } })();
 const kpiOf = { ...Object.fromEntries((sup?.status ?? []).map((s) => [s.id, s.kpi])), ...OUTC };
+// ACTIVITY (11-12, Kai: "they better not just sit there doing nothing"): 42 of 65 machines had NO outcome number, so a machine
+// that ran every hour and changed nothing looked healthy. Every machine's output file (read from its own registry entry) is
+// fingerprinted hourly with timestamps stripped (an "at" that moves is not work) — jsonl by line count. A machine whose
+// output has not really changed for max(7 days, 3 runs) is IDLE → data/machines/activity.json idle[] → fixer build item.
+// Machines without an outcome get "days its output changed (7 d)" as their KPI so the map and the supervisor can judge them.
+{ const AF = "data/machines/activity.json", A0 = J(AF, { m: {} }), A = { at: new Date().toISOString(), m: A0.m ?? {}, idle: [] };
+  const TIMEKEY = /^(at|changed|updated|updatedAt|ts|time|t|checkedAt|generated|written|since|last|lastRun|asOf|from|to)$/;
+  const strip = (v) => Array.isArray(v) ? v.map(strip) : v && typeof v === "object" ? Object.fromEntries(Object.entries(v).filter(([k]) => !TIMEKEY.test(k)).map(([k, x]) => [k, strip(x)])) : v;
+  const fpOf = (f) => { try { if (f.endsWith(".jsonl")) return "n" + readLines(f).length; const raw = fs.readFileSync(f, "utf8"); let x; try { x = JSON.parse(raw); } catch { x = raw; }
+    const sx = JSON.stringify(strip(x)); let h = 0; for (let i = 0; i < sx.length; i++) h = (h * 31 + sx.charCodeAt(i)) | 0; return "h" + h + ":" + sx.length; } catch { return null; } };
+  const today = iso(NOW).slice(0, 10), inDays = (d, a, b) => { const t = Date.parse(d + "T12:00:00Z"); return NOW - t < a * DAY && NOW - t >= b * DAY; };
+  for (const m of REG) {
+    const files = [...new Set((m.t?.toString().match(/data\/[A-Za-z0-9_./<>-]+\.jsonl?/g) ?? []))].filter((f) => !f.includes("<"));
+    if (!files.length) continue;
+    const fp = files.map(fpOf).join("|"), r = (A.m[m.id] ??= { first: today, days: [], fp: null });
+    if (r.fp != null && fp !== r.fp && !r.days.includes(today)) r.days.push(today);
+    r.fp = fp; r.files = files; r.days = r.days.filter((d) => inDays(d, 30, 0));
+    const now7 = r.days.filter((d) => inDays(d, 7, 0)).length, prev7 = r.days.filter((d) => inDays(d, 14, 7)).length;
+    if (!kpiOf[m.id]) kpiOf[m.id] = { label: "days its output changed (7 d)", now: now7, before: Date.parse(r.first + "T00:00:00Z") < NOW - 14 * DAY ? prev7 : null, change: null, activity: true };
+    const quietDays = r.days.length ? Math.floor((NOW - Date.parse(r.days.at(-1) + "T12:00:00Z")) / DAY) : Math.floor((NOW - Date.parse(r.first + "T00:00:00Z")) / DAY);
+    const limit = Math.max(7, Math.ceil((3 * (m.every ?? 24)) / 24));
+    if (quietDays >= limit && Date.parse(r.first + "T00:00:00Z") < NOW - limit * DAY && !["core", "mode"].includes(m.id)) A.idle.push({ id: m.id, name: m.name, quietDays, files });
+  }
+  fs.writeFileSync(AF, JSON.stringify(A));
+  if (A.idle.length) console.log(`activity: ${A.idle.length} idle — ${A.idle.map((x) => `${x.name} (${x.quietDays} d)`).join(", ")}`); else console.log(`activity: ${Object.keys(A.m).length} machines fingerprinted, none idle`);
+}
 const act = {}; for (const e of feed) if (NOW - Date.parse(e.t) < DAY && e.kind !== "run" && !/ read \//.test(e.text)) act[e.m] = (act[e.m] ?? 0) + 1;
 const hotIds = new Set(mode === "surge" ? ["surge", "sisters", "bing", "curator", "mode", "ai", "rising"] : mode === "dip" ? ["mode", "bing", "curator", "ai"] : []);
 const nodes = REG.map((m) => { const s = statusOf(m); return { id: m.id, ...(m.link ? { link: m.link } : {}), name: m.name, group: m.group, parent: m.parent ?? null, does: m.does, every: m.every,

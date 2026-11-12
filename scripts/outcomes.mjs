@@ -52,7 +52,8 @@ const cp = J("data/cost/plan.json", {});
 out["cost"] = k("Railway $ / month pace (7 d)", cp.weekPace ?? (cp.avgDayCost != null ? cp.avgDayCost * 30 : null), null, { lowerBetter: true, target: cp.budget ?? 10 });
 const dv = await fetch("https://crtlab.pro/api/data-version").then((r) => r.json()).catch(() => null);
 if (dv?.end) { const d = new Date(NOW); d.setUTCHours(0, 0, 0, 0); if (NOW - d.getTime() < 7.5 * 3.6e6) d.setUTCDate(d.getUTCDate() - 1); do d.setUTCDate(d.getUTCDate() - 1); while ([0, 6].includes(d.getUTCDay()));
-  const behind = Math.max(0, Math.round((d.getTime() - Date.parse(dv.end + "T00:00:00Z")) / DAY)); out["datapull"] = k("trading days behind", behind, null, { lowerBetter: true }); }
+  const dueT = dv.due ? Date.parse(dv.due + "T00:00:00Z") : d.getTime(); // 11-12: holiday-aware due day from the site
+  const behind = Math.max(0, Math.round((dueT - Date.parse(dv.end + "T00:00:00Z")) / DAY)); out["datapull"] = k("trading days behind", behind, null, { lowerBetter: true }); }
 const sh = J("data/shield.json", {});
 out["lead-security"] = k("attacks blocked / week", win(sh.history ?? [], "blocked", 7, 0), win(sh.history ?? [], "blocked", 14, 7), { neutral: true });
 out["shield"] = out["lead-security"];

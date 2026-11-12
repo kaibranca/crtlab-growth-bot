@@ -276,6 +276,7 @@ function needQueue() {
     [/names CRTLAB in/i, "recommend", "earned mentions on the sources ChatGPT trusts for buyer questions (listed in the line) — your call within the no-Reddit/paid/creator rule; the recommendation engine judges the naming rate"],
     [/Google shows only/i, "google", "earn links to /news + /economic-calendar (a mention from a site Google trusts beats 1,000 pages) — the google machine reports coverage daily"],
     [/no page|Bing shows/i, "gap", "build the page the search wants (content brain's top gap) — a build session, no approval needed"],
+    [/ idle: its output/i, "idle", "a build session gives it a lever that changes something, or retires it"],
     [/word of mouth|outside sources/i, "mouth", "nothing to do today — the mentions machine flags the first outside links"],
     [/getting worse|hurting/i, "kpi", "a build session reads the machine's evidence and changes what it does"]];
   // WHO (11-12, Kai: "the need-you list is wrong half the time and a lot of it is useless"): only things that need Kai's own

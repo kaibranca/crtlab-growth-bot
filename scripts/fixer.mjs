@@ -82,6 +82,8 @@ for (const [k, v] of Object.entries(state.verify ?? {})) { if (NOW - Date.parse(
   append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `fixer-verify|${k}|${v.at}`, machine: "fixer", kind: fixed ? "win" : "loss", what: `${v.playbook} on ${v.id}: ${fixed ? "fixed" : "did NOT fix it"} (playbook ${w.v})` });
   actions.push({ at: new Date().toISOString(), what: `checked: ${v.playbook} on ${v.id} ${fixed ? "worked" : "did not work"}`, ok: fixed }); delete state.verify[k]; }
 
+// 2b. IDLE machines (core activity fingerprint): running but their output has not changed — a lever to add or a machine to retire
+for (const x of (J("data/machines/activity.json", {}).idle ?? []).slice(0, 5)) tasks.push({ what: `${x.name} idle: its output has not changed for ${x.quietDays} days`, evidence: x.files.join(", "), fix: "a build session: give it a lever that changes something, or retire it" });
 // 3. the rest of the supervisor's fix list becomes tasks (word of mouth etc. are not machine-fixable)
 for (const f of status.fix ?? []) if (!/^DAILY DATA BEHIND|failed \d+× this week/.test(f)) tasks.push({ what: f, evidence: "supervisor", fix: "needs a build or a decision" });
 
