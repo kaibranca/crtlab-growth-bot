@@ -5,14 +5,15 @@
   "43095119609": true
  },
  "day": "2026-11-12",
- "at": "2026-11-12T07:19:53.246Z",
- "actions": [],
- "tasks": [
+ "at": "2026-11-12T07:39:53.032Z",
+ "actions": [
   {
-   "what": "Same-day news stopped (last run 6.1 h ago)",
-   "evidence": "supervisor",
-   "fix": "no workflow known for it — needs a look"
-  },
+   "at": "2026-11-12T07:39:53.032Z",
+   "what": "data behind — a daily-data run is running, waiting for it",
+   "ok": true
+  }
+ ],
+ "tasks": [
   {
    "what": "AI accounts / week getting worse: 11 vs 32 last week (hooks)",
    "evidence": "supervisor",
@@ -20,11 +21,6 @@
   },
   {
    "what": "Holdout is waiting (last run never h ago, normal every 1 h)",
-   "evidence": "supervisor",
-   "fix": "needs a build or a decision"
-  },
-  {
-   "what": "Same-day news is STOPPED (last run 6.1 h ago, normal every 1 h)",
    "evidence": "supervisor",
    "fix": "needs a build or a decision"
   },
