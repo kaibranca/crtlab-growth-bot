@@ -133,7 +133,7 @@ const BRAINS = [
       { id: "app", label: "App", machines: ["security"], does: "secrets, headers, exposed paths" },
       { id: "watch", label: "Watchdogs", machines: ["watchdog", "health"], does: "independent uptime + data checks" },
     ],
-    sensors: () => ({ crawlersChallengedHour: shield.lastHour?.crawlersChallenged ?? null, blockedHour: shield.lastHour?.blocked ?? null, bannedList: shield.lastHour?.listSize ?? null, shieldMode: shield.lastHour?.mode ?? null,
+    sensors: () => ({ flood: (J("data/machines/humans.json", {}).selfCheck?.flood ?? []).join(" · ") || null, crawlersChallengedHour: shield.lastHour?.crawlersChallenged ?? null, blockedHour: shield.lastHour?.blocked ?? null, bannedList: shield.lastHour?.listSize ?? null, shieldMode: shield.lastHour?.mode ?? null,
       blocked24: (shield.history ?? []).filter((h) => NOW - Date.parse(h.at) < DAY).reduce((a, h) => a + (h.blocked ?? 0), 0), deps: deps?.open ?? null, depsHigh: deps?.high ?? null, depsUnmeasured: deps?.open == null ? (deps?.error ?? "no token") : null }),
     outcome: (s) => ({ label: "attacks blocked / 24 h", v: s.blocked24 ?? 0, higher: false }),
     signals: (s) => [s.blocked24 >= 1000 && { key: "attack-volume", target: "blocked / 24 h", v: s.blocked24, higher: false, days: 3, why: `${s.blocked24} blocked in 24 h` },
@@ -141,9 +141,10 @@ const BRAINS = [
     measureOf: (b, s) => b.key === "attack-volume" ? s.blocked24 : s.deps,
     modes: (s) => [
       s.shieldMode && s.shieldMode !== "medium" && s.shieldMode !== "low" && { id: "under-attack", label: "Under attack", level: "critical", why: `Cloudflare in ${s.shieldMode} mode` },
+      s.flood && { id: "flood", label: "Headless flood", level: "warn", why: s.flood },
       s.blockedHour >= 200 && { id: "attack", label: "Attack", level: "warn", why: `${s.blockedHour} blocked in the last hour` },
     ].filter(Boolean),
-    admin: (s) => [s.deps > 0 ? `Dependabot: ${s.deps} open alerts on crtlab-standalone (${s.depsHigh} high) — dependency upgrades are an admin job (they need a build + test).` : s.depsUnmeasured ? `Dependabot alerts can't be read (${s.depsUnmeasured}) — give the bot token "Dependabot alerts: read" on crtlab-standalone.` : null,
+    admin: (s) => [s.flood ? `Headless flood: ${s.flood} — loads the site, never stays (inflates raw visitors + desktop load time). Cloudflare → Security → WAF custom rule: Managed Challenge for that country on non-verified-bot traffic (real people pass the check; 5 min).` : null, s.deps > 0 ? `Dependabot: ${s.deps} open alerts on crtlab-standalone (${s.depsHigh} high) — dependency upgrades are an admin job (they need a build + test).` : s.depsUnmeasured ? `Dependabot alerts can't be read (${s.depsUnmeasured}) — give the bot token "Dependabot alerts: read" on crtlab-standalone.` : null,
       "Rotate the Cloudflare + Railway tokens that were pasted in chat; turn on 2FA."].filter(Boolean) },
   { id: "content", name: "Content brain", color: "#ffd166",
     managers: [
@@ -194,7 +195,8 @@ const BRAINS = [
       const serverOk = s.serverPageS != null && s.serverPageS < 1.5 && s.candlesS != null && s.candlesS < 1.5;
       const dev = s.mobileP90 != null && s.desktopP90 != null ? ` — phones ${s.mobileP90}s vs desktop ${s.desktopP90}s (${s.mobileShare}% of loads on phones)` : "";
       // only what was measured: server/edge vs the visitor side, and WHERE the slow loads sit (device × country)
-      const where = s.slowSegments ? ` Most slow-load time sits in: ${s.slowSegments}.` : "";
+      const fl = J("data/machines/humans.json", {}).selfCheck?.flood ?? [];
+      const where = (fl.length ? ` A headless flood is on (${fl.join(", ")}) — its loads pollute the desktop number; trust phones until it stops.` : "") + (s.slowSegments ? ` Most slow-load time sits in: ${s.slowSegments}.` : "");
       const side = s.mobileP90 != null && s.desktopP90 != null ? (s.desktopP90 > s.mobileP90 * 1.3 ? " Desktops are slower than phones, so it is not phone CPU — something desktop loads (more candles, panels, a far country) is the lead." : s.mobileP90 > s.desktopP90 * 1.3 ? " Phones are the slow side — the chart bundle on weak CPUs is the lead." : "") : "";
       return [serverOk ? `Chart pages: the slowest 10% of real loads take ${s.chartP90}s${dev}; the server answers in ${s.serverPageS}s and candles in ${s.candlesS}s (${s.candlesCache}) — the time is on the visitor's side.${side}${where} Needs a build session to profile one slow load.`
         : `Chart pages: the slowest 10% of real loads take ${s.chartP90}s${dev}; the server probe took ${s.serverPageS ?? "?"}s, candles ${s.candlesS ?? "?"}s (${s.candlesCache ?? "?"}) — server/edge side is slow, check web memory + the data service.`]; } },
@@ -222,6 +224,7 @@ function needQueue() {
   const KNOWN = [[/retention email/i, "retention-email", "approve the wording of a daily-era \"your candles are back\" email (people who replayed, gone 2+ days) — then it's a build + switchback test"],
     [/can't be read|Dependabot alerts: read/i, "deps-token", "GitHub → Settings → Developer settings → the bot's fine-grained token → add crtlab-standalone with \"Dependabot alerts: Read\" (2 min)"],
     [/Smart Retries|failed-payment/i, "stripe", "Stripe dashboard → Settings → Billing → turn on Smart Retries + failed-payment emails (5 min)"],
+    [/Headless flood/i, "flood", "Cloudflare → Security → WAF → custom rule: Managed Challenge, country = the flood's, not verified bots (5 min) — the shield brain judges it next hour"],
     [/Rotate|2FA/i, "tokens", "Cloudflare + Railway: roll the tokens pasted in chat, update GH secrets CF_API_TOKEN; turn on 2FA (10 min)"],
     [/Dependabot/i, "deps", "say \"fix dependabot\" — upgrades need a build + test session"],
     [/pack|card|checkout/i, "checkout", "decide the checkout fix (wallets/PayPal first, fewer fields) — a build session"],

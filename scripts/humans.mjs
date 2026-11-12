@@ -72,7 +72,14 @@ try {
     .filter((x) => x.raw24 >= 10);
   const broken = check.filter((x) => x.beatNormal >= 0.2 && x.beat24 != null && x.beat24 < x.beatNormal * 0.4);
   const leaving = check.filter((x) => !broken.includes(x) && x.stayNormal >= 0.05 && x.stay24 != null && x.stay24 < x.stayNormal * 0.5);
-  const selfCheck = { devices: check, verdict: broken.length ? `INSTRUMENT: heartbeat share collapsed on ${broken.map((x) => `${x.dev} (${x.beat24} vs ${x.beatNormal})`).join(", ")} — "real visitors" is under-counted, not a real dip`
+  // RAW COMPOSITION: what the raw surge is made of (country / source / landing / device, raw today vs normal) — one network
+  // or country with a huge raw gain and ~0 stays = a headless flood (the shield's job), not people leaving
+  const rawSeg = []; for (const [dim, key] of [["country", "cc"], ["source", "src"], ["landing", "lp"], ["device", "dev"]]) for (const v of [...new Set(rows.map((r) => r[key]))]) {
+    const a = new Array(15).fill(0), st = new Array(15).fill(0); for (const r of rows) if (r[key] === v && r.d >= 0 && r.d < 15) { a[r.d] += r.raw; st[r.d] += r.n; }
+    const mu = a.slice(1).reduce((x, y) => x + y, 0) / 14; if (a[0] - mu >= 15) rawSeg.push({ dim, seg: v, raw24: a[0], rawNormal: +mu.toFixed(1), stayed24: st[0], stayShare: a[0] ? +(st[0] / a[0]).toFixed(3) : null }); }
+  rawSeg.sort((x, y) => (y.raw24 - y.rawNormal) - (x.raw24 - x.rawNormal));
+  const flood = rawSeg.filter((x) => x.dim === "country" && x.stayShare != null && x.stayShare < 0.03 && x.raw24 >= 3 * Math.max(5, x.rawNormal));
+  const selfCheck = { devices: check, rawSurge: rawSeg.slice(0, 6), flood: flood.map((x) => `${x.seg}: ${x.raw24} raw vs ~${x.rawNormal}, ${x.stayed24} stayed`), verdict: flood.length && !broken.length ? `FLOOD: the raw surge is ${flood.map((x) => `${x.seg} (${x.raw24} vs ~${x.rawNormal}, ${x.stayed24} stayed)`).join(", ")} — headless traffic, not people leaving` : broken.length ? `INSTRUMENT: heartbeat share collapsed on ${broken.map((x) => `${x.dev} (${x.beat24} vs ${x.beatNormal})`).join(", ")} — "real visitors" is under-counted, not a real dip`
     : leaving.length ? `PEOPLE LEAVING: heartbeats fine, but the share who stay 30 s fell on ${leaving.map((x) => `${x.dev} (${x.stay24} vs ${x.stayNormal})`).join(", ")}` : "measuring right" };
   const out = {
     at: new Date().toISOString(), selfCheck, wave, visitors, rawVisitors: stat(rawDay), signups, state: broken.length ? "instrument" : drop ? "dip" : rise ? "up" : "normal",
