@@ -250,6 +250,7 @@ function needQueue() {
   // — paid → that kind weighs more next time, didn't → less (data/brains/fixer/queue.json → impact).
   const IMP0 = { regression: 4, checkout: 3, sensor: 3, "retention-email": 2.5, flood: 2, speed: 1.5, google: 1.5, gap: 1.2, budget: 1, stripe: 1, "deps-token": 0.8, deps: 0.8, tokens: 0.8, retention: 1.5, other: 1 };
   const FM = J("data/brains/fixer/queue.json", {}), IMP = { ...IMP0, ...(FM.impact ?? {}) };
+  { const EXg = J("data/machines/executive.json", {}); const b = EXg.knobs?.fixerSiteBoost ?? 1; if (EXg.constraint === "pay") IMP.checkout = (IMP.checkout ?? 3) * b; if (EXg.constraint === "signup") { IMP.speed = (IMP.speed ?? 1.5) * b; IMP.regression = (IMP.regression ?? 4) * b; } }
   const auth = Object.fromEntries((J("data/brains/index.json", { brains: [] }).brains ?? []).map((b) => [b.id, b.authority ?? 1]));
   return [...out.values()].map((x) => ({ ...x, from: [...x.from], score: +(x.from.size * Math.max(...[...x.from].map((f) => auth[f] ?? 1)) * (IMP[x.kind] ?? 1)).toFixed(2) })).sort((a, b) => b.score - a.score);
 }

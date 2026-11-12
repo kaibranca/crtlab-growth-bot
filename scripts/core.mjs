@@ -459,6 +459,7 @@ if (mode === "dip") next.push(`Recovery: the ${P.recoveryN} best pages go back t
   const PF = "data/machines/pulse.jsonl", rowsP = readLines(PF); if (rowsP.at(-1)?.day === P.day) rowsP[rowsP.length - 1] = P; else rowsP.push(P);
   fs.writeFileSync(PF, rowsP.slice(-365).map((x) => JSON.stringify(x)).join("\n") + "\n");
   const prevP = rowsP.at(-8);
+  { const EX = J("data/machines/executive.json", null); if (EX?.constraint) next.unshift(`Executive: the constraint is ${EX.constraint.toUpperCase()} — ${EX.why}. Every engine is tuned to it (knob strength ×${EX.strength}).`); }
   { const KB = J("data/machines/knowledge.json", null); if (KB?.top?.length) next.push(`The ecosystem knows (${KB.count} facts): ${KB.top.slice(0, 3).join(" · ")}`); }
   if (WC?.curve) { const cv = WC.curve; next.push(`The curve (${cv.days} d): people asking AI about us ${cv.reads.perDay >= 0 ? "+" : ""}${cv.reads.perDay}%/day (→ ~${cv.reads.in30}/day in 30 d) · AI clicks ${cv.clicks.perDay >= 0 ? "+" : ""}${cv.clicks.perDay}%/day (→ ~${cv.clicks.in30}/day) · accounts ${cv.accounts.perDay >= 0 ? "+" : ""}${cv.accounts.perDay}%/day${cv.gap > 2 ? ` — reads outgrow clicks by ${cv.gap}%/day: conversion is the bottleneck` : ""}`); }
   next.push(`World model: ${WC ? `${WC.pageDays} page-days, forecast error ${WC.fitError}, ${Object.entries(WC.credit ?? {}).filter(([, c]) => c.lift != null).map(([k, c]) => `${k} ×${c.lift}${c.ci ? ` [${c.ci.join("–")}]` : ""}`).join(", ")}` : "warming up"}`);

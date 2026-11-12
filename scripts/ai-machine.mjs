@@ -220,7 +220,8 @@ const wFam = (p) => { const s0 = p.split("/").filter(Boolean); const f = !s0.len
 // WORLD MODEL (world.mjs): pages forecast to jump tomorrow (a release × the learned lift) go to Bing before the demand comes
 const FCJ = new Map(((() => { try { return JSON.parse(fs.readFileSync("data/world/forecast.json", "utf8")).jumps ?? []; } catch { return []; } })()).map((x) => [x.p, x.why]));
 const LOCK = (() => { try { return JSON.parse(fs.readFileSync("data/machines/lockin.json", "utf8")); } catch { return { on: false }; } })(); // core.mjs lock-in
-const MP = MODE.params ?? {}, SIS_TOP = (MODE.mode === "surge" ? (MP.sisterTop ?? 5) : 3) + (LOCK.on ? 2 : 0), URG_CAP = LOCK.on ? 1 : MODE.mode === "surge" ? (MP.surgeCap ?? 0.8) : 0.6;
+const EXK = (() => { try { return JSON.parse(fs.readFileSync("data/machines/executive.json", "utf8")).knobs ?? {}; } catch { return {}; } })(); // the executive's knobs
+const MP = MODE.params ?? {}, SIS_TOP = (MODE.mode === "surge" ? (MP.sisterTop ?? 5) : 3) + (LOCK.on ? 2 : 0) + (EXK.sisterAdd ?? 0), URG_CAP = LOCK.on ? 1 : Math.min(1, (MODE.mode === "surge" ? (MP.surgeCap ?? 0.8) : 0.6) + (EXK.urgentCapAdd ?? 0));
 const recovery = new Set(MODE.mode === "dip" ? (MODE.targets ?? []) : []);
 // the hottest surges + climbers only (3 each normally, more in surge mode), so sisters never eat the whole Bing quota
 const hot = [...surges.filter((x) => x.kind === "page").slice(0, SIS_TOP), ...rising.slice(0, SIS_TOP)].map((x) => x.key), sisterOf = new Map();

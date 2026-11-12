@@ -261,7 +261,8 @@ const AUTH = Object.fromEntries(["brain", "ai", "search", "content", "social", "
 const epAll = Object.values(brain.modes).reduce((a, m) => ({ e: a.e + m.episodes, w: a.w + m.wins }), { e: 0, w: 0 });
 const ENGINE_AUTH = epAll.e >= 4 ? +clamp(0.85 + 0.5 * (epAll.w / epAll.e), 0.85, 1.25).toFixed(2) : 1;
 brain.authority = { engine: ENGINE_AUTH, managers: AUTH, scores: groupScore };
-const boost = (p, owner) => +clamp(1.5 * intensity * ENGINE_AUTH * (AUTH[OWNER_GROUP[owner]] ?? 1) * (J("data/machines/lockin.json", {}).on ? 1.25 : 1) + 0.25 * Math.max(0, nSigns(p ?? "") - 1), 1.2, J("data/machines/lockin.json", {}).on ? 2.6 : 2.2).toFixed(2);
+const EXEC = J("data/machines/executive.json", {}).knobs ?? {}, REACH = new Set(["channels", "surges", "events", "convergence"]); // executive: reach branches ease when conversion is the constraint
+const boost = (p, owner) => +clamp(1.5 * intensity * (REACH.has(owner) ? EXEC.reachIntensity ?? 1 : 1) * ENGINE_AUTH * (AUTH[OWNER_GROUP[owner]] ?? 1) * (J("data/machines/lockin.json", {}).on ? 1.25 : 1) + 0.25 * Math.max(0, nSigns(p ?? "") - 1), 1.2, J("data/machines/lockin.json", {}).on ? 2.6 : 2.2).toFixed(2);
 const REALP = (() => { const x = J(`${OUT}/pages.json`); return x?.pages?.length > 500 ? new Set(x.pages) : null; })(); // sitemap, from the demand miner
 const isReal = (p) => !REALP || REALP.has(p) || [...REALP].some((q) => q.startsWith(p.endsWith("/") ? p : p + "/")); // a family prefix counts if real pages sit under it
 // HOLDOUT (ai-machine.mjs): the 5% of pages no push machine touches — the brain never builds on one (it would spoil the measure)

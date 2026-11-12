@@ -41,6 +41,7 @@ const clicks = new Map(); for (const [k, v] of Object.entries(J("data/ai/clicks.
 const gamma = (k) => { if (k < 1) return gamma(k + 1) * Math.pow(Math.random(), 1 / k); const d = k - 1 / 3, c = 1 / Math.sqrt(9 * d);
   for (;;) { let x, v; do { const u1 = Math.random(), u2 = Math.random(); x = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2); v = 1 + c * x; } while (v <= 0); v = v * v * v; const u = Math.random(); if (u < 1 - 0.0331 * x ** 4 || Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v; } };
 const today = iso(NOW), tomorrow = iso(NOW + DAY), report = [];
+const EX = Math.max(0.1, Math.min(0.35, J("data/machines/executive.json", {}).knobs?.banditExplore ?? 0.15)); // the executive's knob
 // HIERARCHICAL TRANSFER (11-12 — every click teaches every family): pass 1 counts each wording's clicks/fetches in every
 // family; a wording's LIFT across families (its pooled rate ÷ the pooled rate of all wordings, shrunk by its sample) becomes
 // the prior every family starts that wording from. A family then moves away from it only on its own evidence.
@@ -71,7 +72,7 @@ for (const f of FAMS) {
   const live2 = ARMS.filter((a) => !S.retired.includes(a)), tot = live2.reduce((s, a) => s + (pBest[a] ?? 0), 0) || 1;
   // STABILITY: equal shares until the family has 100+ judged people-fetches; after that a share moves ≤ 0.15 a day from
   // the last day's (fast, never jumpy — Thompson on 5 clicks alone would swing half the traffic)
-  if (!S.probs[tomorrow]) { const target = Object.fromEntries(ARMS.map((a) => [a, !live2.includes(a) ? 0 : totF < 100 ? 1 / live2.length : 0.15 / live2.length + 0.85 * ((pBest[a] ?? 0) / tot)]));
+  if (!S.probs[tomorrow]) { const target = Object.fromEntries(ARMS.map((a) => [a, !live2.includes(a) ? 0 : totF < 100 ? 1 / live2.length : EX / live2.length + (1 - EX) * ((pBest[a] ?? 0) / tot)]));
     const lastD = Object.keys(S.probs).filter((d) => d < tomorrow).sort().at(-1), prevP = lastD ? S.probs[lastD] : null;
     const step = Object.fromEntries(ARMS.map((a) => [a, !live2.includes(a) ? 0 : prevP ? Math.max(0.005, (prevP[a] ?? 1 / live2.length) + Math.max(-0.15, Math.min(0.15, target[a] - (prevP[a] ?? 1 / live2.length)))) : target[a]]));
     const z = Object.values(step).reduce((x, y) => x + y, 0) || 1;
