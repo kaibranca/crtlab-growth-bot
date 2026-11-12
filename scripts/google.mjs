@@ -3,7 +3,7 @@
 // than Bing) while Search Console showed CRTLAB on ~25 of 2,834 pages. Nothing watched Google daily; the one diagnosis
 // (gsc-diag, 11-10) hung on 160 untimed inspections and was cancelled. This one is bounded and cumulative:
 //   EYES  search analytics, 28 d by page and page+query → where Google shows us, the position, the near-misses (8–20)
-//   EYES  index coverage: 40 sitemap URLs a run, oldest-inspected first, spread over families; 12 s per call, 120 s total.
+//   EYES  index coverage: 80 sitemap URLs a run (4 in parallel), oldest-inspected first, spread over families; 12 s per call, 120 s total.
 //         The verdicts accumulate in data/google/index.json, so coverage per family + WHY (each reason = a different fix)
 //         sharpens every day without a big run.
 //   BRAIN data/google/plan.json — totals, coverage by family, the top reason Google skips each family, rank targets, queries.
@@ -45,16 +45,18 @@ if (urls.length && urls.every((u) => u.endsWith(".xml"))) { const all = []; for 
 const fams = {}; for (const u of urls) (fams[family(strip(u))] ??= []).push(u);
 // oldest-inspected first, round-robin over families so every family's picture fills in
 const queues = Object.values(fams).map((v) => [...v].sort((a, b) => (Date.parse(IX[strip(a)]?.at ?? 0) - Date.parse(IX[strip(b)]?.at ?? 0))));
-const pick = []; for (let i = 0; pick.length < 40 && queues.some((qq) => qq.length > i); i++) for (const qq of queues) if (qq[i] && NOW - Date.parse(IX[strip(qq[i])]?.at ?? 0) > 14 * DAY && pick.length < 40) pick.push(qq[i]);
+const CAP = 80; const pick = []; for (let i = 0; pick.length < CAP && queues.some((qq) => qq.length > i); i++) for (const qq of queues) if (qq[i] && NOW - Date.parse(IX[strip(qq[i])]?.at ?? 0) > 14 * DAY && pick.length < CAP) pick.push(qq[i]);
 let inspected = 0, inspErr = null;
-for (const u of pick) {
-  if (Date.now() - T0 > 120000) break;
+// 4 at a time (Google allows 600/min, 2,000/day) — ~80 a run inside the 120 s budget instead of ~20
+const inspect = async (u) => {
+  if (Date.now() - T0 > 120000 || /quota|rate/i.test(inspErr ?? "")) return;
   try { const r = await (await fetch("https://searchconsole.googleapis.com/v1/urlInspection/index:inspect", { method: "POST", headers: H, body: JSON.stringify({ inspectionUrl: u, siteUrl: PROP }), signal: AbortSignal.timeout(12000) })).json();
-    if (r.error) { inspErr = r.error.message?.slice(0, 120); if (/quota|rate/i.test(inspErr)) break; continue; }
+    if (r.error) { inspErr = r.error.message?.slice(0, 120); return; }
     const x = r.inspectionResult?.indexStatusResult ?? {};
     IX[strip(u)] = { at: new Date().toISOString(), verdict: x.verdict ?? null, cov: x.coverageState ?? null, crawled: x.lastCrawlTime?.slice(0, 10) ?? null, ...(x.googleCanonical && x.userCanonical && x.googleCanonical !== x.userCanonical ? { canon: strip(x.googleCanonical) } : {}) }; inspected++;
   } catch { /* one slow call never stops the run */ }
-}
+};
+for (let i = 0; i < pick.length; i += 4) { if (Date.now() - T0 > 120000) break; await Promise.all(pick.slice(i, i + 4).map(inspect)); }
 const live = new Set(urls.map(strip)); for (const k of Object.keys(IX)) if (!live.has(k)) delete IX[k]; // bin pages that left the sitemap
 fs.writeFileSync(`${OUT}/index.json`, JSON.stringify(IX));
 
