@@ -2,10 +2,10 @@
  "heap": {
   "cap": 512,
   "stopped": false,
-  "samples": 27,
-  "note": "heap peak 295 MB over 27 h → cap 448 → 512 MB (applies at the next deploy window)"
+  "samples": 28,
+  "note": "heap peak 295 MB → cap 512 MB is right"
  },
- "at": "2026-11-12T05:02:39.165Z",
+ "at": "2026-11-12T05:18:22.574Z",
  "status": "over budget",
  "budget": 10,
  "weekPace": 22.2,
@@ -22,11 +22,11 @@
  "services": [
   {
    "svc": "web",
-   "memGB": 0.92,
+   "memGB": 0.94,
    "normalGB": 0.73,
    "dayCost": 0.47,
    "avgDayCost": 0.42,
-   "monthPace": 14.01
+   "monthPace": 14.04
   },
   {
    "svc": "Postgres",
@@ -62,7 +62,7 @@
   }
  ],
  "actions": [
-  "heap peak 295 MB over 27 h → cap 448 → 512 MB (applies at the next deploy window)"
+  "heap peak 295 MB → cap 512 MB is right"
  ],
  "fixes": [
   {
