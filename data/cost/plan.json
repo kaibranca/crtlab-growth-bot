@@ -2,10 +2,10 @@
  "heap": {
   "cap": 512,
   "stopped": false,
-  "samples": 46,
+  "samples": 47,
   "note": "heap peak 313 MB → cap 512 MB is right"
  },
- "at": "2026-11-12T14:05:06.625Z",
+ "at": "2026-11-12T14:18:29.007Z",
  "status": "over budget",
  "budget": 10,
  "weekPace": 23.1,
@@ -13,20 +13,20 @@
  "deploys": {
   "Postgres": 0,
   "data": 2,
-  "web": 11,
-  "ops": 3
+  "web": 10,
+  "ops": 2
  },
- "dayCost": 0.7,
+ "dayCost": 0.71,
  "avgDayCost": 0.77,
- "monthPace": 21,
+ "monthPace": 21.3,
  "services": [
   {
    "svc": "web",
    "memGB": 0.98,
    "normalGB": 0.75,
-   "dayCost": 0.46,
+   "dayCost": 0.47,
    "avgDayCost": 0.43,
-   "monthPace": 13.95
+   "monthPace": 13.99
   },
   {
    "svc": "Postgres",
@@ -34,7 +34,7 @@
    "normalGB": 0.38,
    "dayCost": 0.15,
    "avgDayCost": 0.13,
-   "monthPace": 4.36
+   "monthPace": 4.39
   },
   {
    "svc": "data",
@@ -42,7 +42,7 @@
    "normalGB": 0.2,
    "dayCost": 0.09,
    "avgDayCost": 0.21,
-   "monthPace": 2.63
+   "monthPace": 2.78
   },
   {
    "svc": "ops",
@@ -60,16 +60,16 @@
    "normalGB": 0.2,
    "dayCost": 0.09,
    "avgDayCost": 0.21,
-   "monthPace": 2.63,
+   "monthPace": 2.78,
    "kind": "cache bloat",
-   "rssGB": 0.196,
+   "rssGB": 0.198,
    "why": "Railway counts 0.73 GB but the server itself uses 0.20 GB — file cache from the data swap"
   },
   {
    "svc": "web",
    "kind": "too many deploys",
-   "n": 11,
-   "why": "11 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
+   "n": 10,
+   "why": "10 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
   }
  ],
  "actions": [

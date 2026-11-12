@@ -1,11 +1,11 @@
 {
- "at": "2026-11-12T14:05:09.751Z",
+ "at": "2026-11-12T14:18:32.344Z",
  "selfCheck": {
   "devices": [
    {
     "dev": "desktop",
-    "raw24": 537,
-    "beat24": 0.644,
+    "raw24": 540,
+    "beat24": 0.646,
     "beatNormal": 0.545,
     "stay24": 0.02,
     "stayNormal": 0.475
@@ -23,7 +23,7 @@
    {
     "dim": "landing",
     "seg": "home",
-    "raw24": 545,
+    "raw24": 548,
     "rawNormal": 43.1,
     "stayed24": 17,
     "stayShare": 0.031
@@ -31,23 +31,23 @@
    {
     "dim": "source",
     "seg": "Direct",
-    "raw24": 553,
-    "rawNormal": 54.3,
+    "raw24": 556,
+    "rawNormal": 54.2,
     "stayed24": 17,
     "stayShare": 0.031
    },
    {
     "dim": "device",
     "seg": "desktop",
-    "raw24": 537,
-    "rawNormal": 58.4,
+    "raw24": 540,
+    "rawNormal": 58.3,
     "stayed24": 11,
     "stayShare": 0.02
    },
    {
     "dim": "country",
     "seg": "US",
-    "raw24": 177,
+    "raw24": 178,
     "rawNormal": 9.6,
     "stayed24": 2,
     "stayShare": 0.011
@@ -70,45 +70,45 @@
    }
   ],
   "flood": [
-   "US: 177 raw vs ~9.6, 2 stayed",
+   "US: 178 raw vs ~9.6, 2 stayed",
    "CN: 161 raw vs ~5.7, 0 stayed",
    "GB: 75 raw vs ~6, 0 stayed",
    "CA: 55 raw vs ~0.9, 1 stayed"
   ],
-  "verdict": "FLOOD: the raw surge is US (177 vs ~9.6, 2 stayed), CN (161 vs ~5.7, 0 stayed), GB (75 vs ~6, 0 stayed), CA (55 vs ~0.9, 1 stayed) — headless traffic, not people leaving"
+  "verdict": "FLOOD: the raw surge is US (178 vs ~9.6, 2 stayed), CN (161 vs ~5.7, 0 stayed), GB (75 vs ~6, 0 stayed), CA (55 vs ~0.9, 1 stayed) — headless traffic, not people leaving"
  },
  "wave": {
   "window": "3h",
   "visitors": {
-   "now": 5,
-   "normal": 6.1,
-   "ratio": 0.81,
-   "z": -0.3
+   "now": 4,
+   "normal": 6.3,
+   "ratio": 0.64,
+   "z": -0.6
   },
   "signups": {
    "now": 7,
-   "normal": 2.3,
-   "ratio": 3.06,
-   "z": 1.5
+   "normal": 2.1,
+   "ratio": 3.27,
+   "z": 1.8
   },
   "riding": [
    {
     "dim": "landing",
     "seg": "home",
-    "now": 4,
-    "normal": 2.1,
-    "ratio": 1.87,
-    "z": 1,
-    "gain": 1.9
+    "now": 3,
+    "normal": 2.2,
+    "ratio": 1.35,
+    "z": 0.4,
+    "gain": 0.8
    },
    {
     "dim": "source",
     "seg": "Direct",
-    "now": 4,
-    "normal": 3.4,
-    "ratio": 1.17,
-    "z": 0.2,
-    "gain": 0.6
+    "now": 3,
+    "normal": 3.6,
+    "ratio": 0.82,
+    "z": -0.3,
+    "gain": -0.6
    }
   ]
  },
@@ -119,10 +119,10 @@
   "z": -1.2
  },
  "rawVisitors": {
-  "now": 568,
+  "now": 571,
   "normal": 76.1,
-  "ratio": 7.46,
-  "z": 17.9
+  "ratio": 7.51,
+  "z": 17.8
  },
  "signups": {
   "now": 17,
@@ -149,7 +149,7 @@
    "now": 11,
    "normal": 27.7,
    "ratio": 0.4,
-   "z": -2.3,
+   "z": -2.2,
    "gap": -16.7
   },
   {
@@ -158,7 +158,7 @@
    "now": 0,
    "normal": 5.8,
    "ratio": 0,
-   "z": -2.2,
+   "z": -2.4,
    "gap": -5.8
   },
   {
