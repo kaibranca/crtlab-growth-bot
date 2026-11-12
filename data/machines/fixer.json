@@ -7,8 +7,13 @@
   "43095119609": true
  },
  "day": "2026-11-12",
- "at": "2026-11-12T11:06:19.320Z",
+ "at": "2026-11-12T11:20:23.914Z",
  "actions": [
+  {
+   "at": "2026-11-12T11:20:23.914Z",
+   "what": "checked: data-retry on daily-data did not work",
+   "ok": false
+  },
   {
    "at": "2026-11-12T10:20:12.112Z",
    "what": "data behind → started a daily-data retry (3/3 today)",
@@ -67,12 +72,11 @@
    "fix": "needs a build or a decision"
   }
  ],
- "w": {},
- "verify": {
-  "data": {
-   "at": "2026-11-12T10:20:10.274Z",
-   "id": "daily-data",
-   "playbook": "data-retry"
+ "w": {
+  "data-retry": {
+   "v": 0.375,
+   "n": 1
   }
- }
+ },
+ "verify": {}
 }
