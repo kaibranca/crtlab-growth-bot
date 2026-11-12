@@ -53,9 +53,13 @@ if (process.env.CF_API_TOKEN && process.env.CF_ACCOUNT_ID) try {
 // speed, BY DEVICE (11-12): the same 24 h of real loads split mobile / desktop / tablet — tells "slow phones" from "slow server"
 let rumDev = null;
 if (process.env.CF_API_TOKEN && process.env.CF_ACCOUNT_ID) try {
-  const q = `{ viewer { accounts(filter:{accountTag:"${process.env.CF_ACCOUNT_ID}"}) { rumPerformanceEventsAdaptiveGroups(limit: 20, filter:{siteTag:"029faa8748554349b362fc3789b58acc", datetime_geq:"${iso(NOW - DAY)}"}, orderBy:[count_DESC]) { count quantiles { pageLoadTimeP50 pageLoadTimeP90 } dimensions { deviceType } } } } }`;
+  const q = `{ viewer { accounts(filter:{accountTag:"${process.env.CF_ACCOUNT_ID}"}) { rumPerformanceEventsAdaptiveGroups(limit: 60, filter:{siteTag:"029faa8748554349b362fc3789b58acc", datetime_geq:"${iso(NOW - DAY)}"}, orderBy:[count_DESC]) { count quantiles { pageLoadTimeP50 pageLoadTimeP90 } dimensions { deviceType countryName } } } } }`;
   const j = await fetch("https://api.cloudflare.com/client/v4/graphql", { method: "POST", headers: { Authorization: `Bearer ${process.env.CF_API_TOKEN}`, "Content-Type": "application/json" }, body: JSON.stringify({ query: q }), signal: AbortSignal.timeout(20000) }).then((r) => r.json());
-  rumDev = (j.data?.viewer?.accounts?.[0]?.rumPerformanceEventsAdaptiveGroups ?? []).map((x) => ({ d: x.dimensions.deviceType, n: x.count, p50: r1(x.quantiles.pageLoadTimeP50 / 1e6), p90: r1(x.quantiles.pageLoadTimeP90 / 1e6) }));
+  const segs = (j.data?.viewer?.accounts?.[0]?.rumPerformanceEventsAdaptiveGroups ?? []).map((x) => ({ d: x.dimensions.deviceType, c: x.dimensions.countryName, n: x.count, p50: x.quantiles.pageLoadTimeP50 / 1e6, p90: x.quantiles.pageLoadTimeP90 / 1e6 }));
+  // per device: count-weighted p90 across countries (a quantile can't be summed exactly — close enough to rank, flagged as such)
+  const by = {}; for (const x of segs) { const o = (by[x.d] ??= { n: 0, p50: 0, p90: 0 }); o.n += x.n; o.p50 += x.p50 * x.n; o.p90 += x.p90 * x.n; }
+  rumDev = Object.entries(by).map(([d, o]) => ({ d, n: o.n, p50: r1(o.p50 / o.n), p90: r1(o.p90 / o.n) }));
+  rumDev.segments = segs.filter((x) => x.n >= 10).sort((a, b) => b.p90 * b.n - a.p90 * a.n).slice(0, 4).map((x) => `${x.d}/${x.c} ${r1(x.p90)}s ×${x.n}`);
   if (j.errors?.length) console.log("brains: speed by device — " + JSON.stringify(j.errors).slice(0, 120));
 } catch (e) { console.log("brains: speed by device skipped (" + String(e.message).slice(0, 60) + ")"); }
 // speed, OWN PROBE (11-12): every hour, one chart page + one guest candle window from the runner — server time and whether
@@ -178,7 +182,7 @@ const BRAINS = [
       const dv = (k) => (rumDev ?? []).find((x) => x.d === k);
       return { chartP90: w(ch), pageP90: w(pg2), worstChart: worst ? `${worst.p} ${worst.p90}s` : null, loads24: (rum ?? []).reduce((a, x) => a + x.n, 0) || null,
         mobileP90: dv("mobile")?.p90 ?? null, desktopP90: dv("desktop")?.p90 ?? null, mobileShare: rumDev?.length ? r1((dv("mobile")?.n ?? 0) / rumDev.reduce((a, x) => a + x.n, 0) * 100) : null,
-        serverPageS: probe.pageS ?? null, candlesS: probe.candlesS ?? null, candlesCache: probe.candlesCache ?? null }; },
+        slowSegments: rumDev?.segments?.join(", ") || null, serverPageS: probe.pageS ?? null, candlesS: probe.candlesS ?? null, candlesCache: probe.candlesCache ?? null }; },
     outcome: (s) => ({ label: "chart pages: slowest 10% load (s)", v: s.chartP90 ?? 0, higher: false }),
     signals: () => (rum ?? []).filter((x) => x.n >= 8 && x.p90 > 5).sort((a, b) => b.p90 * b.n - a.p90 * a.n).slice(0, 3).map((x) => { const pushed = (trafficBranches ?? []).some((t) => t.state === "alive" && t.target === x.p);
       return { key: "slow-page", target: x.p, v: x.p90, higher: false, days: 7, why: `slowest 10% load ${x.p90}s (${x.n} loads)${pushed ? " — and the traffic brain is pushing it" : ""}` }; }),
@@ -188,7 +192,10 @@ const BRAINS = [
     admin: (s) => { if (!(s.chartP90 > 4)) return [];
       const serverOk = s.serverPageS != null && s.serverPageS < 1.5 && s.candlesS != null && s.candlesS < 1.5;
       const dev = s.mobileP90 != null && s.desktopP90 != null ? ` — phones ${s.mobileP90}s vs desktop ${s.desktopP90}s (${s.mobileShare}% of loads on phones)` : "";
-      return [serverOk ? `Chart pages: the slowest 10% of real loads take ${s.chartP90}s${dev}, while the server answers in ${s.serverPageS}s and candles in ${s.candlesS}s (${s.candlesCache}). The time is the visitor's device running the chart bundle (~300 KB gzipped) — the fix is splitting that bundle (a build session), not the server.`
+      // only what was measured: server/edge vs the visitor side, and WHERE the slow loads sit (device × country)
+      const where = s.slowSegments ? ` Most slow-load time sits in: ${s.slowSegments}.` : "";
+      const side = s.mobileP90 != null && s.desktopP90 != null ? (s.desktopP90 > s.mobileP90 * 1.3 ? " Desktops are slower than phones, so it is not phone CPU — something desktop loads (more candles, panels, a far country) is the lead." : s.mobileP90 > s.desktopP90 * 1.3 ? " Phones are the slow side — the chart bundle on weak CPUs is the lead." : "") : "";
+      return [serverOk ? `Chart pages: the slowest 10% of real loads take ${s.chartP90}s${dev}; the server answers in ${s.serverPageS}s and candles in ${s.candlesS}s (${s.candlesCache}) — the time is on the visitor's side.${side}${where} Needs a build session to profile one slow load.`
         : `Chart pages: the slowest 10% of real loads take ${s.chartP90}s${dev}; the server probe took ${s.serverPageS ?? "?"}s, candles ${s.candlesS ?? "?"}s (${s.candlesCache ?? "?"}) — server/edge side is slow, check web memory + the data service.`]; } },
   { id: "fixer", name: "Fixer brain", color: "#e2b93b",
     managers: [
