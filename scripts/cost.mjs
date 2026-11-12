@@ -18,7 +18,7 @@ import { append, readLines } from "./lib.mjs";
 
 const DIR = "data/cost", NOW = Date.now(), H = 3.6e6, DAY = 24 * H, iso = (t) => new Date(t).toISOString().slice(0, 10);
 const PROJECT = "32042912-e5d4-47b9-a2a7-3dedb3d6e2a1", ENV = "40c5d3f7-4331-4169-b5aa-f6b7e6d17a06";
-const MEM_GB_MONTH = 10, EGRESS_GB = 0.05;
+const MEM_GB_MONTH = 10, EGRESS_GB = 0.05, CPU_MONTH = 20; // 11-12: CPU was never counted (≈ $0.8/mo today — small, but the bill must match Railway's)
 // BUDGET (11-11, Kai: "as low as possible, under $10 — it creeps up every time we add stuff"): the machine holds the bill to this
 const BUDGET_MONTH = 10, WINDOW_DEPLOYS = 4; // the site deploys at 3 windows a day (promote-site) + the odd "deploy now"
 fs.mkdirSync(DIR, { recursive: true }); fs.mkdirSync("data/machines/self", { recursive: true });
@@ -28,23 +28,28 @@ const J = (f, d = null) => { try { return JSON.parse(fs.readFileSync(f, "utf8"))
 const state = J(`${DIR}/state.json`, { fixes: [], emailed: null });
 const TOKEN = process.env.RAILWAY_API_TOKEN;
 if (!TOKEN) { fs.writeFileSync(`${DIR}/plan.json`, JSON.stringify({ at: new Date().toISOString(), status: "needs RAILWAY_API_TOKEN (GitHub secret)" })); console.log("cost: no RAILWAY_API_TOKEN — waiting"); process.exit(0); }
-const gql = async (query) => { const r = await fetch("https://backboard.railway.com/graphql/v2", { method: "POST", headers: { Authorization: `Bearer ${TOKEN}`, "content-type": "application/json" }, body: JSON.stringify({ query }) });
+const gql = async (query) => { const r = await fetch("https://backboard.railway.com/graphql/v2", { method: "POST", headers: { ...(process.env.RAILWAY_PROJECT_TOKEN ? { "Project-Access-Token": TOKEN } : { Authorization: `Bearer ${TOKEN}` }), "content-type": "application/json" }, body: JSON.stringify({ query }) });
   const j = await r.json(); if (j.errors) throw new Error(JSON.stringify(j.errors).slice(0, 200)); return j.data; };
 
 const svcs = (await gql(`query { project(id: "${PROJECT}") { services { edges { node { id name serviceInstances { edges { node { environmentId latestDeployment { id createdAt } } } } } } } } }`)).project.services.edges.map((e) => e.node);
 const name = Object.fromEntries(svcs.map((s) => [s.id, s.name]));
-const m = (await gql(`query { metrics(projectId: "${PROJECT}", environmentId: "${ENV}", startDate: "${new Date(NOW - 8 * DAY).toISOString()}", measurements: [MEMORY_USAGE_GB, NETWORK_TX_GB], groupBy: [SERVICE_ID], sampleRateSeconds: 3600) { measurement tags { serviceId } values { ts value } } }`)).metrics;
+const m = (await gql(`query { metrics(projectId: "${PROJECT}", environmentId: "${ENV}", startDate: "${new Date(NOW - 8 * DAY).toISOString()}", measurements: [MEMORY_USAGE_GB, NETWORK_TX_GB, CPU_USAGE], groupBy: [SERVICE_ID], sampleRateSeconds: 3600) { measurement tags { serviceId } values { ts value } } }`)).metrics;
 const series = {}; for (const x of m) { const s = name[x.tags.serviceId] ?? x.tags.serviceId; (series[s] ??= {})[x.measurement] = x.values.map((v) => [v.ts * 1000, v.value]); }
 const med = (a) => { const b = [...a].sort((x, y) => x - y); return b.length ? b[Math.floor(b.length / 2)] : 0; };
 const load = readLines(`data/load/${iso(NOW).slice(0, 7)}.jsonl`).slice(-6), rssGB = load.length ? Math.max(...load.map((x) => x.rssMB ?? 0)) / 1000 : null;
 
 const rows = [], incidents = [];
 for (const [svc, s] of Object.entries(series)) {
-  const mem = s.MEMORY_USAGE_GB ?? [], tx = s.NETWORK_TX_GB ?? [];
+  const mem = s.MEMORY_USAGE_GB ?? [], tx = s.NETWORK_TX_GB ?? [], cpu = s.CPU_USAGE ?? [];
+  const cpuCost = (from) => cpu.filter(([t]) => NOW - t < from).reduce((t, [, v]) => t + (v * CPU_MONTH) / 730, 0);
   const recent = mem.filter(([t]) => NOW - t < 3 * H).map(([, v]) => v), base = mem.filter(([t]) => NOW - t > DAY && NOW - t < 8 * DAY).map(([, v]) => v);
-  const now = recent.length ? Math.max(...recent) : 0, normal = med(base);
-  const day = mem.filter(([t]) => NOW - t < DAY), dayCost = day.reduce((t, [, v]) => t + (v * MEM_GB_MONTH) / 730, 0) + tx.filter(([t]) => NOW - t < DAY).reduce((t, [, v]) => t + v * EGRESS_GB, 0);
-  const week = mem.filter(([t]) => NOW - t < 7 * DAY), weekCost = (week.reduce((t, [, v]) => t + (v * MEM_GB_MONTH) / 730, 0) + tx.filter(([t]) => NOW - t < 7 * DAY).reduce((t, [, v]) => t + v * EGRESS_GB, 0)) / 7;
+  // SUSTAINED, not peak (11-12): a deploy runs two containers side by side for a minute — the max of 3 h read that as "cache
+  // bloat" on data all day. The lowest of the last 3 hourly samples is what the service really holds.
+  const now = recent.length ? Math.min(...recent) : 0, normal = med(base);
+  const day = mem.filter(([t]) => NOW - t < DAY), dayCost = day.reduce((t, [, v]) => t + (v * MEM_GB_MONTH) / 730, 0) + tx.filter(([t]) => NOW - t < DAY).reduce((t, [, v]) => t + v * EGRESS_GB, 0) + cpuCost(DAY);
+  const week = mem.filter(([t]) => NOW - t < 7 * DAY), weekCost = (week.reduce((t, [, v]) => t + (v * MEM_GB_MONTH) / 730, 0) + tx.filter(([t]) => NOW - t < 7 * DAY).reduce((t, [, v]) => t + v * EGRESS_GB, 0) + cpuCost(7 * DAY)) / 7;
+  const memAvg = (from, to = 0) => { const a = mem.filter(([t]) => NOW - t < from && NOW - t >= to).map(([, v]) => v); return a.length ? a.reduce((x, y) => x + y, 0) / a.length : null; };
+  (series[svc].avg ??= memAvg);
   const row = { svc, memGB: +now.toFixed(2), normalGB: +normal.toFixed(2), dayCost: +dayCost.toFixed(2), avgDayCost: +weekCost.toFixed(2), monthPace: +(dayCost * 30).toFixed(2) };
   rows.push(row);
   if (now > Math.max(2 * normal, normal + 0.5)) {
@@ -104,20 +109,62 @@ try {
       append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|heap-revert|${iso(NOW)}`, machine: "cost", kind: "loss", what: heapNote });
     } else if (!HC.stopped && HC.samples.length >= 24) {
       const peak = Math.max(...HC.samples.map((x) => x.peak)), want = Math.min(768, Math.max(384, Math.ceil((peak * 1.6) / 64) * 64));
-      if (Math.abs(want - HC.cap) >= 64) { await setCap(want); heapNote = `heap peak ${peak} MB over ${HC.samples.length} h → cap ${HC.cap} → ${want} MB (applies at the next deploy window)`; HC.cap = want;
+      if (Math.abs(want - HC.cap) >= 64) { await setCap(want); heapNote = `heap peak ${peak} MB over ${HC.samples.length} h → cap ${HC.cap} → ${want} MB (applies at the next deploy window)`;
+        (state.levers ??= []).forEach((x) => { if (x.name === "WEB_NODE_OPTIONS" && !x.verdict) { x.verdict = "superseded"; } }); // a newer cap replaces an unjudged one
+        state.levers.push({ id: `web-heap-${want}-${iso(NOW)}`, svc: "web", name: "WEB_NODE_OPTIONS", value: `--max-old-space-size=${want}`, prev: `--max-old-space-size=${HC.cap}`, setAt: new Date().toISOString(), why: `heap tuner: peak ${peak} MB` }); HC.cap = want;
         append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|heap-cap|${iso(NOW)}`, machine: "cost", kind: "lesson", what: heapNote }); }
       else heapNote = `heap peak ${peak} MB → cap ${HC.cap} MB is right`;
     } else heapNote = HC.stopped ? "heap tuner stopped after a crash (cap 768)" : `measuring heap (${HC.samples.length}/24 h, peak so far ${Math.max(...HC.samples.map((x) => x.peak))} MB)`;
   } else heapNote = process.env.OPS_KEY ? "no /api/ops/mem yet (deploys at the next window)" : "no OPS_KEY";
 } catch (e) { heapNote = "heap tuner error: " + String(e).slice(0, 80); }
 if (heapNote && /→ cap|back to 768/.test(heapNote)) actions.push(heapNote); // only real changes count as actions
+// LEVERS (11-12, Kai: "the budget machine better not just sit there"): every Railway variable change aimed at the bill —
+// made by this machine or by a Claude session (seeded in data/cost/levers-seed.json) — is tracked: set → LIVE once a deploy
+// of that service carries it → judged on the service's average billed memory 24 h after going live vs the 3 days before it
+// was set. helped (−8 % or better) → kept + a win in the ledger; hurt (+5 %) or a crash-restart while live → REVERTED with
+// skipDeploys (never a restart) + a loss. Variable changes need no restart, so lock-in does not block them.
+{
+  const L = (state.levers ??= []);
+  for (const x of J(`${DIR}/levers-seed.json`, { levers: [] }).levers) if (!L.some((y) => y.id === x.id)) L.push({ ...x });
+  const inst = (n) => svcs.find((s) => s.name === n)?.serviceInstances.edges.map((e) => e.node).find((e) => e.environmentId === ENV);
+  const sid = (n) => svcs.find((s) => s.name === n)?.id;
+  const upsert = (svc, k, v) => gql(`mutation { variableUpsert(input: { projectId: "${PROJECT}", environmentId: "${ENV}", serviceId: "${sid(svc)}", name: "${k}", value: "${v}", skipDeploys: true }) }`);
+  const del = (svc, k) => gql(`mutation { variableDelete(input: { projectId: "${PROJECT}", environmentId: "${ENV}", serviceId: "${sid(svc)}", name: "${k}" }) }`);
+  const memNow = process.env.OPS_KEY ? await fetch("https://crtlab.pro/api/ops/mem", { headers: { "x-ops-key": process.env.OPS_KEY } }).then((r) => (r.ok ? r.json() : null)).catch(() => null) : null;
+  for (const x of L) {
+    if (x.verdict) continue;
+    const dep = inst(x.svc)?.latestDeployment, avg = series[x.svc]?.avg;
+    if (x.beforeGB == null && avg) { const v = avg(NOW - Date.parse(x.setAt) + 3 * DAY, NOW - Date.parse(x.setAt)); if (v != null) x.beforeGB = +v.toFixed(3); }
+    if (!x.liveAt && dep && Date.parse(dep.createdAt) > Date.parse(x.setAt)) { x.liveAt = dep.createdAt; actions.push(`lever ${x.id} is live (deploy ${dep.createdAt.slice(0, 16)})`); }
+    if (!x.liveAt) continue;
+    const sinceLive = (NOW - Date.parse(x.liveAt)) / H;
+    const crashed = x.svc === "web" && memNow && dep && memNow.uptimeH + 0.25 < (NOW - Date.parse(dep.createdAt)) / H;
+    const revert = async (why) => {
+      try {
+        if (x.prev == null) await del(x.svc, x.name); else await upsert(x.svc, x.name, x.prev);
+        x.verdict = "reverted"; x.why = why; actions.push(`lever ${x.id} REVERTED — ${why}`);
+        append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|lever|${x.id}`, machine: "cost", kind: "loss", what: `${x.name}=${x.value} on ${x.svc}: ${why} → reverted (applies next deploy)` });
+      } catch (e) { actions.push(`lever ${x.id} revert failed: ${String(e).slice(0, 60)}`); }
+    };
+    if (crashed && sinceLive < 48) { await revert("the service restarted without a deploy while it was live (crash)"); continue; }
+    if (sinceLive < 24 || !avg || !x.beforeGB) continue;
+    const after = avg(NOW - Date.parse(x.liveAt)); if (after == null) continue;
+    x.afterGB = +after.toFixed(3);
+    const ch = x.afterGB / x.beforeGB - 1;
+    if (ch <= -0.08) {
+      x.verdict = "helped"; actions.push(`lever ${x.id} HELPED ${(ch * 100).toFixed(0)}%`);
+      append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|lever|${x.id}`, machine: "cost", kind: "win", what: `${x.name}=${x.value} on ${x.svc}: ${x.beforeGB} → ${x.afterGB} GB (${(ch * 100).toFixed(0)}%) ≈ $${((x.beforeGB - x.afterGB) * MEM_GB_MONTH).toFixed(2)}/mo saved` });
+    } else if (ch >= 0.05) await revert(`memory ${x.beforeGB} → ${x.afterGB} GB (+${(ch * 100).toFixed(0)}%)`);
+    else if (sinceLive > 72) { x.verdict = "no effect"; actions.push(`lever ${x.id}: no measurable effect after 3 days (kept)`); }
+  }
+}
 // LEARN: judge fixes 24 h later
 for (const f of state.fixes) if (!f.verdict && NOW - Date.parse(f.at) > DAY) { const r = rows.find((x) => x.svc === f.svc); if (!r) continue;
   f.after = r.memGB; f.verdict = r.memGB < f.before * 0.6 ? "helped" : "did not help";
   append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|verdict|${f.at}`, machine: "cost", kind: f.verdict === "helped" ? "win" : "loss", what: `${f.kind} fix on ${f.svc}: ${f.before} → ${f.after} GB a day later (${f.verdict})` }); }
 const total = rows.reduce((t, r) => t + r.dayCost, 0), avg = rows.reduce((t, r) => t + r.avgDayCost, 0);
 const weekPace = +(avg * 30).toFixed(2);
-const plan = { heap: { cap: HC.cap, stopped: HC.stopped, samples: HC.samples.length, note: heapNote }, at: new Date().toISOString(), status: weekPace > BUDGET_MONTH ? "over budget" : "ok", budget: BUDGET_MONTH, weekPace, overBy: +Math.max(0, weekPace - BUDGET_MONTH).toFixed(2), deploys, dayCost: +total.toFixed(2), avgDayCost: +avg.toFixed(2), monthPace: +(total * 30).toFixed(2), services: rows.sort((a, b) => b.dayCost - a.dayCost), incidents, actions, fixes: state.fixes.slice(-10) };
+const plan = { levers: (state.levers ?? []).map((x) => ({ id: x.id, svc: x.svc, set: `${x.name}=${x.value}`, live: !!x.liveAt, beforeGB: x.beforeGB ?? null, afterGB: x.afterGB ?? null, verdict: x.verdict ?? (x.liveAt ? "judging" : "waiting for a deploy") })), heap: { cap: HC.cap, stopped: HC.stopped, samples: HC.samples.length, note: heapNote }, at: new Date().toISOString(), status: weekPace > BUDGET_MONTH ? "over budget" : "ok", budget: BUDGET_MONTH, weekPace, overBy: +Math.max(0, weekPace - BUDGET_MONTH).toFixed(2), deploys, dayCost: +total.toFixed(2), avgDayCost: +avg.toFixed(2), monthPace: +(total * 30).toFixed(2), services: rows.sort((a, b) => b.dayCost - a.dayCost), incidents, actions, fixes: state.fixes.slice(-10) };
 fs.writeFileSync(`${DIR}/plan.json`, JSON.stringify(plan, null, 1));
 append(`${DIR}/score.jsonl`, { at: plan.at, dayCost: plan.dayCost, mem: Object.fromEntries(rows.map((r) => [r.svc, r.memGB])) });
 if (incidents.length && state.emailed !== iso(NOW) && process.env.RESEND_API_KEY && process.env.ALERT_TO) {

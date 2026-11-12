@@ -1,0 +1,5 @@
+{ "_": "Levers set by a Claude session — the cost machine (scripts/cost.mjs LEVERS) tracks, judges 24 h after live, and reverts them like its own.",
+  "levers": [
+  { "id": "web-malloc-arena-2", "svc": "web", "name": "MALLOC_ARENA_MAX", "value": "2", "prev": null, "setAt": "2026-11-12T14:45:00Z", "why": "web RSS 736 MB vs heap 271 MB: ~465 MB native — glibc arena fragmentation is the usual cause" },
+  { "id": "web-heap-512", "svc": "web", "name": "WEB_NODE_OPTIONS", "value": "--max-old-space-size=512", "prev": "--max-old-space-size=768", "setAt": "2026-11-12T05:02:39Z", "why": "heap tuner: peak 313 MB → cap 512" }
+ ] }
