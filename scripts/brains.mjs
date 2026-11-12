@@ -210,14 +210,15 @@ function needQueue() {
   const raw = [];
   for (const id of ["money", "data", "security", "content", "retention", "speed"]) for (const w of J(`data/brains/${id}/ecosystem.json`, {}).briefing?.watch ?? []) if (/^(Admin|Escalated):/.test(w) && !/Optional|not an alarm/i.test(w)) raw.push({ from: id, text: w.replace(/^(Admin|Escalated):\s*/, "") });
   for (const t of J("data/machines/fixer.json", {}).tasks ?? []) raw.push({ from: "fixer", text: `${t.what} — ${t.fix}` });
-  const KNOWN = [[/Smart Retries|failed-payment/i, "stripe", "Stripe dashboard → Settings → Billing → turn on Smart Retries + failed-payment emails (5 min)"],
-    [/Rotate|2FA|token/i, "tokens", "Cloudflare + Railway: roll the tokens pasted in chat, update GH secrets CF_API_TOKEN; turn on 2FA (10 min)"],
+  // MOST SPECIFIC FIRST (11-12 fix: "no token" took the token-rotation steps and "candles are back" took chart speed)
+  const KNOWN = [[/retention email/i, "retention-email", "approve the wording of a daily-era \"your candles are back\" email (people who replayed, gone 2+ days) — then it's a build + switchback test"],
     [/can't be read|Dependabot alerts: read/i, "deps-token", "GitHub → Settings → Developer settings → the bot's fine-grained token → add crtlab-standalone with \"Dependabot alerts: Read\" (2 min)"],
+    [/Smart Retries|failed-payment/i, "stripe", "Stripe dashboard → Settings → Billing → turn on Smart Retries + failed-payment emails (5 min)"],
+    [/Rotate|2FA/i, "tokens", "Cloudflare + Railway: roll the tokens pasted in chat, update GH secrets CF_API_TOKEN; turn on 2FA (10 min)"],
     [/Dependabot/i, "deps", "say \"fix dependabot\" — upgrades need a build + test session"],
     [/pack|card|checkout/i, "checkout", "decide the checkout fix (wallets/PayPal first, fewer fields) — a build session"],
-    [/Chart pages|slowest 10%|candle/i, "speed", "say \"chart speed\" — edge-cache immutable candle windows (a build session)"],
+    [/Chart pages|slowest 10%/i, "speed", "say \"chart speed\" — edge-cache immutable candle windows (a build session)"],
     [/Railway pace|deploys/i, "budget", "fewer direct deploys (use the windows); heap tuner after 24 h of samples"],
-    [/retention email/i, "retention-email", "approve the wording of a daily-era \"your candles are back\" email (people who replayed, gone 2+ days) — then it's a build + switchback test"],
     [/came back|week 2|first session/i, "retention", "decide a first-session change (golden actions from the behaviour machine)"],
     [/no page|Bing shows/i, "gap", "approve a page for the search (content brain's top gap)"]];
   const out = new Map();
