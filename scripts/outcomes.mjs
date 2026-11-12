@@ -32,6 +32,22 @@ if (process.env.ANALYTICS_DB_URL) {
     out["ai"] = k("AI-referred real visitors / week", a.ai ?? 0, b.ai ?? 0);
     out["lead-conversion"] = k("sign-ups / week", sa, sb);
     out["leak"] = k("guests → account %", a.real ? (100 * (a.acc ?? 0)) / a.real : null, b.real ? (100 * (b.acc ?? 0)) / b.real : null);
+    // THE PRODUCT ITSELF (11-12, Kai: "the ecosystem needs access to as much data as possible") — user_events (406k rows, read
+    // by no machine before) logs replay seconds per user/market/TF. North star: replay hours a week + people who really
+    // replayed (≥ 10 min). SOURCE QUALITY: of each source's sign-ups 7–21 days old, the share that replayed ≥ 10 min in
+    // their first 7 days → data/machines/quality.json (11-12 first read: ChatGPT 11 % vs Google 25 % — reach ≠ value).
+    const rp = await db.query(`select (created_at > now() - interval '7 days') wk, coalesce(sum(seconds), 0)::float secs, count(distinct user_id)::int users from user_events where type in ('replay', 'backtest') and created_at > now() - interval '14 days' group by 1`);
+    const ra = rp.rows.find((r) => r.wk) ?? {}, rb = rp.rows.find((r) => !r.wk) ?? {};
+    out["lead-product"] = k("replay hours / week", (ra.secs ?? 0) / 3600, (rb.secs ?? 0) / 3600);
+    out["replayers"] = k("people who replayed / week", ra.users ?? 0, rb.users ?? 0);
+    const q = await db.query(`with s as (select u.id, coalesce(nullif(lower(u.signup_source), ''), 'direct') src, u.created_at from users u where u.created_at between now() - interval '21 days' and now() - interval '7 days' and u.is_admin is not true),
+        e as (select s.id, s.src, coalesce(sum(ev.seconds), 0)::float secs from s left join user_events ev on ev.user_id = s.id and ev.type in ('replay', 'backtest') and ev.created_at < s.created_at + interval '7 days' group by 1, 2)
+        select src, count(*)::int n, count(*) filter (where secs >= 600)::int engaged, avg(secs)::float avgsecs from e group by 1 order by 2 desc limit 12`);
+    const all = q.rows.reduce((t, r) => ({ n: t.n + r.n, e: t.e + r.engaged }), { n: 0, e: 0 }), base = all.n ? all.e / all.n : 0;
+    // shrunk to the site rate with 20 sign-ups so a 2-person source can't read as 0 % or 100 %
+    const quality = Object.fromEntries(q.rows.map((r) => [r.src, { signups: r.n, engaged: r.engaged, rate: +((r.engaged + base * 20) / (r.n + 20)).toFixed(3), rawRate: r.n ? +(r.engaged / r.n).toFixed(3) : null, avgMin: +(r.avgsecs / 60).toFixed(1), value: base ? +(((r.engaged + base * 20) / (r.n + 20)) / base).toFixed(2) : 1 }]));
+    fs.writeFileSync("data/machines/quality.json", JSON.stringify({ at: new Date().toISOString(), window: "sign-ups 7–21 days old · engaged = ≥ 10 min replay in their first 7 days", siteRate: +base.toFixed(3), sources: quality }, null, 1));
+    out["quality-ai"] = k("ChatGPT sign-ups who really replay %", quality.chatgpt ? quality.chatgpt.rawRate * 100 : null, null);
   } catch (e) { console.log("outcomes: db", String(e).slice(0, 80)); } finally { await db.end().catch(() => {}); }
 }
 
