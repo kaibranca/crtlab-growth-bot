@@ -31,6 +31,18 @@ const prev = fs.existsSync(F) ? fs.readFileSync(F, "utf8").trim() : "";
     const flood = new Set((hum?.selfCheck?.rawSurge ?? []).filter((x) => x.dim === "device" && x.stayShare != null && x.stayShare < 0.03).map((x) => x.seg));
     const bad = (hum?.selfCheck?.devices ?? []).filter((d) => !flood.has(d.dev) && d.stayNormal >= 0.1 && d.stay24 != null && d.stay24 < d.stayNormal * 0.5 && d.raw24 >= 15);
     r.verdict = bad.length ? `REGRESSION: stay share fell on ${bad.map((d) => `${d.dev} (${d.stay24} vs ${d.stayNormal})`).join(", ")} in the 24 h after this deploy` : "healthy";
+    // SPEED + WEIGHT (11-12, Kai: "the front end must be light, no backend strain"): the hourly load log 24 h after vs 24 h
+    // before — median worst response, slow + failed chart loads, server memory. +50 % slower or +30 % heavier = SLOWER.
+    { const ld = fs.existsSync(`data/load/${r.at.slice(0, 7)}.jsonl`) ? fs.readFileSync(`data/load/${r.at.slice(0, 7)}.jsonl`, "utf8").split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean) : [];
+      const t0 = Date.parse(r.at), win = (a, b) => ld.filter((x) => { const t = Date.parse(x.at); return t >= a && t < b; }), med = (xs) => { const a = xs.filter((v) => v != null).sort((x, y) => x - y); return a.length ? a[Math.floor(a.length / 2)] : null; };
+      const B0 = win(t0 - H24, t0), A0 = win(t0 + 3600e3, t0 + H24); // skip the boot hour
+      if (B0.length >= 6 && A0.length >= 6) { const s = { msB: med(B0.map((x) => x.worstMs)), msA: med(A0.map((x) => x.worstMs)), rssB: med(B0.map((x) => x.rssMB)), rssA: med(A0.map((x) => x.rssMB)),
+          badB: B0.reduce((t, x) => t + (x.slow ?? 0) + (x.failed ?? 0), 0), badA: A0.reduce((t, x) => t + (x.slow ?? 0) + (x.failed ?? 0), 0) };
+        const slower = s.msB && s.msA > s.msB * 1.5 && s.msA - s.msB > 20, heavier = s.rssB && s.rssA > s.rssB * 1.3, worse = s.badA > s.badB + 3;
+        r.speed = { ...s, verdict: slower || heavier || worse ? `SLOWER: ${[slower && `worst response ${s.msB} → ${s.msA} ms`, heavier && `memory ${s.rssB} → ${s.rssA} MB`, worse && `slow/failed loads ${s.badB} → ${s.badA}`].filter(Boolean).join(", ")}` : `light: ${s.msB} → ${s.msA} ms, ${s.rssB} → ${s.rssA} MB` };
+        if (/^SLOWER/.test(r.speed.verdict)) { r.verdict = (r.verdict === "healthy" ? "" : r.verdict + " · ") + `REGRESSION (speed) — ${r.speed.verdict.slice(8)}`; if (!bad.length) out.push(r); } } }
+    try { fs.appendFileSync("data/machines/ledger.jsonl", JSON.stringify({ at: new Date().toISOString(), key: `deploy|${r.build}`, machine: "deployjudge", kind: /REGRESSION/.test(r.verdict) ? "loss" : "lesson", what: `deploy ${r.commit ?? r.build}: ${r.verdict}${r.speed ? ` · ${r.speed.verdict}` : ""}` }) + "\n");
+      if (r.speed) fs.appendFileSync("data/machines/ledger.jsonl", JSON.stringify({ at: new Date().toISOString(), key: `speed|${r.build}`, machine: "load", kind: /^SLOWER/.test(r.speed.verdict) ? "loss" : "lesson", what: `deploy ${r.commit ?? r.build} speed: ${r.speed.verdict}` }) + "\n"); } catch { /* fine */ }
     r.judged = new Date().toISOString(); if (bad.length) out.push(r); }
   fs.writeFileSync(DL, rows.slice(-200).map((x) => JSON.stringify(x)).join("\n") + "\n");
   const open = rows.filter((x) => /^REGRESSION/.test(x.verdict ?? "") && Date.now() - Date.parse(x.judged) < 3 * H24);
