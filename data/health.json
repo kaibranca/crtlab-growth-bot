@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T22:34:39.951Z",
+ "at": "2026-11-12T00:41:47.870Z",
  "checks": [
   {
    "name": "database size",
@@ -18,23 +18,23 @@
   },
   {
    "name": "payments",
-   "ok": false,
-   "note": "failed payment"
+   "ok": true,
+   "note": "ok (1 customer card declined — Stripe retries)"
   },
   {
    "name": "nightly backup",
    "ok": true,
-   "note": "20h old · 32.9 MB"
+   "note": "22h old · 32.9 MB"
   },
   {
    "name": "market data fresh",
    "ok": true,
-   "note": "newest candle 1d old"
+   "note": "newest candle 2d old"
   },
   {
    "name": "AI radar",
    "ok": true,
-   "note": "16h ago · asked 6/6"
+   "note": "18h ago · asked 6/6"
   }
  ],
  "db": {
@@ -46,7 +46,7 @@
    ],
    [
     "ui_events",
-    61
+    62
    ],
    [
     "meter_identities",
@@ -68,32 +68,30 @@
   "count": 31
  },
  "data": {
-  "newestDays": 1
+  "newestDays": 2
  },
  "weight": {
   "home": {
    "kb": 2603,
-   "scripts": 24,
-   "ttfbMs": 177
+   "scripts": 23,
+   "ttfbMs": 187
   },
   "backtest": {
-   "kb": 1450,
-   "scripts": 14,
-   "ttfbMs": 160
+   "kb": 1449,
+   "scripts": 13,
+   "ttfbMs": 262
   },
   "chart app": {
    "kb": 2603,
-   "scripts": 24,
-   "ttfbMs": 342
+   "scripts": 23,
+   "ttfbMs": 463
   },
   "statistics": {
    "kb": 1213,
-   "scripts": 15,
-   "ttfbMs": 140
+   "scripts": 14,
+   "ttfbMs": 236
   }
  },
  "heavier": [],
- "alerts": [
-  "payment-failed"
- ]
+ "alerts": []
 }
