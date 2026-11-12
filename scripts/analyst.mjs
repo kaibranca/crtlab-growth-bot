@@ -8,6 +8,7 @@
 import fs from "node:fs";
 
 const J = (p, d = null) => { try { return JSON.parse(fs.readFileSync(p, "utf8")); } catch { return d; } };
+const readL = (p) => { try { return fs.readFileSync(p, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)); } catch { return []; } };
 const readLines = (p) => { try { return fs.readFileSync(p, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)); } catch { return []; } };
 const NOW = Date.now(), DAY = 864e5, OUT = "data/analyst";
 fs.mkdirSync(OUT, { recursive: true });
