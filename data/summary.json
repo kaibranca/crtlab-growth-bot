@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12T12:20:19.014Z",
+ "updated": "2026-11-12T12:41:55.954Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 100,
@@ -442,6 +442,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-12T12:41:47.361Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
+  },
+  {
    "at": "2026-11-12T12:18:09.373Z",
    "job": "watchdog",
    "ok": true,
@@ -548,12 +554,6 @@
    "job": "reels",
    "ok": true,
    "text": "posted \"EURUSD PDL 63 PIPS\" (EURUSD) to Instagram"
-  },
-  {
-   "at": "2026-11-12T10:35:10.844Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
   },
   {
    "at": "2026-11-12T10:18:02.578Z",
@@ -1029,7 +1029,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-12T10:35:10.844Z",
+  "at": "2026-11-12T12:41:47.361Z",
   "alerts": [],
   "checks": [
    {
@@ -1055,7 +1055,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "8h old · 33.4 MB"
+    "note": "10h old · 33.4 MB"
    },
    {
     "name": "market data fresh",
@@ -1065,7 +1065,7 @@
    {
     "name": "AI radar",
     "ok": true,
-    "note": "4h ago · asked 4/4"
+    "note": "6h ago · asked 4/4"
    }
   ],
   "db": {
@@ -1077,7 +1077,7 @@
     ],
     [
      "ui_events",
-     62
+     63
     ],
     [
      "meter_identities",
@@ -1103,24 +1103,24 @@
   },
   "weight": {
    "home": {
-    "kb": 2603,
+    "kb": 2606,
     "scripts": 23,
-    "ttfbMs": 242
+    "ttfbMs": 206
    },
    "backtest": {
     "kb": 1449,
     "scripts": 13,
-    "ttfbMs": 262
+    "ttfbMs": 214
    },
    "chart app": {
-    "kb": 2603,
+    "kb": 2606,
     "scripts": 23,
-    "ttfbMs": 466
+    "ttfbMs": 418
    },
    "statistics": {
     "kb": 1213,
     "scripts": 14,
-    "ttfbMs": 248
+    "ttfbMs": 177
    }
   },
   "heavier": []
