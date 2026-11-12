@@ -550,10 +550,17 @@ if (!(widgets.aiAccounts7 >= widgets.aiAccountsPrev)) scout.push({ what: "AI lan
 { const lk = J("data/leak/plan.json"); for (const l of (lk?.leaks ?? []).slice(0, 2)) scout.unshift({ what: `Fix the leak: ${l.segment.replace(/^\w+:/, "")} at ${l.stage}`, why: `${l.lost} people lost in 14 days (${Math.round(l.rate * 100)}% vs ${Math.round(l.best * 100)}% best) — ${l.fix}`, kind: "leak" }); }
 scout.push({ what: "Cost machine (Railway)", why: "budget watch + backend optimiser — Kai asked 11-11", kind: "new" });
 
+// MACHINES IQ + POWER (scripts/iq.mjs): IQ = learned by themselves; POWER = upgrades we built in. 7-day change for the tiles.
+function iqOut() {
+  const d = J("data/machines/iq.json"), P = d?.points ?? [];
+  if (!P.length) return null;
+  const last = P.at(-1), wk = new Date(NOW - 7 * DAY).toISOString().slice(0, 13), ago = [...P].reverse().find((p) => p.t <= wk) ?? P[0];
+  return { iq: last.iq, iqWas: ago.iq, power: last.power, powerWas: ago.power, since: ago.t, parts: last.parts, points: P.map((p) => [p.t, p.iq, p.power]) };
+}
 const eco = { at: new Date().toISOString(), scout, widgets, modes, briefing, rules: CORE_RULES, capacity: cap, mode: modeOut, nodes, edges, feed: feed.slice(0, 160),
   totals: { machines: nodes.length, ok: nodes.filter((n) => n.state === "ok").length, late: nodes.filter((n) => n.state === "late").length, stopped: nodes.filter((n) => n.state === "stopped").length, actions24: Object.values(act).reduce((a, b) => a + b, 0) },
   allIn: sup?.allIn ?? [], fix: sup?.fix ?? [], mistakes: sup?.mistakes ?? [], ledger: (sup?.ledger ?? []).slice(0, 15), episodes: readLines("data/machines/modes.jsonl").slice(-8).reverse(),
   spawned: spawned.branches.slice(-12),
-  score: readLines("data/ai/score.jsonl").slice(-30).map((s) => ({ day: s.day, reads: s.reads, clicks: s.clicks, accounts: s.accounts })) };
+  score: readLines("data/ai/score.jsonl").slice(-30).map((s) => ({ day: s.day, reads: s.reads, clicks: s.clicks, accounts: s.accounts })), iq: iqOut() };
 fs.writeFileSync("data/machines/ecosystem.json", JSON.stringify(eco));
 console.log(`core: ${eco.totals.ok}/${eco.totals.machines} ok · mode ${mode} (${why}) · ${eco.totals.actions24} actions in 24 h`);
