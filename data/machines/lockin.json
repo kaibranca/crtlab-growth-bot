@@ -1,28 +1,15 @@
 {
- "on": true,
- "since": "2026-11-12T07:39:53.197Z",
- "kind": "spike",
- "triggers": [
-  "spike"
- ],
- "why": "edge sentinel: 15 people-fetches in 15 min vs ~5.3 normal",
+ "on": false,
  "bars": {
   "people": 2,
   "signups": 2.5,
   "ai": 2,
-  "spike": 1
+  "spike": 1.5
  },
- "startSignups24": 11,
- "normalSignups24": 15.7,
- "peak": 2.25,
- "targets": [
-  "/",
-  "/tools/position-size-calculator",
-  "/news/ppi/nasdaq",
-  "/topstep-challenge-simulator",
-  "/economic-calendar/us-core-ppi-mom",
-  "/economic-calendar/us-ppi-mom"
- ],
- "emailed": true,
- "quiet": 1
+ "last": {
+  "since": "2026-11-12T07:39:53.197Z",
+  "kind": "spike",
+  "verdict": "flat",
+  "ratio": 1.08
+ }
 }
