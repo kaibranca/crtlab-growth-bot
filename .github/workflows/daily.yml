@@ -12,6 +12,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
+      - name: Site lockfile (deps audit — npm advisory DB, no token)
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with: { repository: kaibranca/crtlab-standalone, ref: live, path: site, ssh-key: "${{ secrets.SITE_DEPLOY_KEY }}", sparse-checkout: package-lock.json, sparse-checkout-cone-mode: false }
+      - name: Deps audit (security brain reads data/security/deps.json)
+        continue-on-error: true
+        run: node scripts/deps-audit.mjs site/package-lock.json
       - run: node scripts/upcoming.mjs
         continue-on-error: true
       - run: node scripts/cal-history.mjs

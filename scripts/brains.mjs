@@ -11,6 +11,7 @@
 // retries, factory); their own job is to sense, prioritise, judge and remember — and to say what only an admin can fix.
 // ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
 import fs from "node:fs";
+import { NEED_KNOWN, NEED_WHO, splitNeeds } from "./needs.mjs";
 
 const NOW = Date.now(), H = 3600e3, DAY = 24 * H, iso = (t) => new Date(t).toISOString();
 const J = (p, d = null) => { try { return JSON.parse(fs.readFileSync(p, "utf8")); } catch { return d; } };
@@ -107,6 +108,8 @@ if (process.env.GH_WATCH_TOKEN || process.env.GH_TOKEN) try {
   const r = await fetch("https://api.github.com/repos/kaibranca/crtlab-standalone/dependabot/alerts?state=open&per_page=100", { headers: { Authorization: `Bearer ${process.env.GH_WATCH_TOKEN || process.env.GH_TOKEN}`, Accept: "application/vnd.github+json" }, signal: AbortSignal.timeout(15000) });
   if (r.ok) { const xs = await r.json(); deps = { open: xs.length, high: xs.filter((x) => /high|critical/.test(x.security_advisory?.severity ?? "")).length }; } else deps = { open: null, error: r.status };
 } catch (e) { deps = { open: null, error: String(e.message).slice(0, 40) }; }
+// 11-12: the token can't read Dependabot (404) → the daily deps audit (npm advisory DB × the site's lockfile) is the truth
+if (deps?.open == null) { const da = J("data/security/deps.json", null); if (da?.open != null && NOW - Date.parse(da.at) < 3 * DAY) deps = { open: da.open, high: da.high + (da.critical ?? 0), direct: da.direct, top: da.top?.find((x) => x.direct)?.name ?? da.top?.[0]?.name, src: "audit" }; }
 // BRAINS TALK: every brain reads every other brain's mode from the last run (and the traffic + main engines')
 const peers = J("data/brains/index.json", { brains: [] }).brains ?? [];
 const trafficEco = J("data/traffic/ecosystem.json", {}), trafficBranches = J("data/traffic/branches.json", { branches: [] }).branches;
@@ -178,7 +181,7 @@ const BRAINS = [
       s.flood && { id: "flood", label: "Headless flood", level: "warn", why: s.flood },
       s.blockedHour >= 200 && { id: "attack", label: "Attack", level: "warn", why: `${s.blockedHour} blocked in the last hour` },
     ].filter(Boolean),
-    admin: (s) => [s.flood ? `Headless flood: ${s.flood} — loads the site, never stays (inflates raw visitors + desktop load time). Cloudflare → Security → WAF custom rule: Managed Challenge for that country on non-verified-bot traffic (real people pass the check; 5 min).` : null, s.deps > 0 ? `Dependabot: ${s.deps} open alerts on crtlab-standalone (${s.depsHigh} high) — dependency upgrades are an admin job (they need a build + test).` : s.depsUnmeasured ? `Dependabot alerts can't be read (${s.depsUnmeasured}) — give the bot token "Dependabot alerts: read" on crtlab-standalone.` : null,
+    admin: (s) => [s.flood ? `Headless flood: ${s.flood} — loads the site, never stays (inflates raw visitors + desktop load time). Cloudflare → Security → WAF custom rule: Managed Challenge for that country on non-verified-bot traffic (real people pass the check; 5 min).` : null, s.deps > 0 ? `Dependencies: ${s.deps} open advisories on crtlab-standalone (${s.depsHigh} high${deps?.top ? `, start with ${deps.top}` : ""}) — upgrades are a build + test session.` : null,
       "Rotate the Cloudflare + Railway tokens that were pasted in chat; turn on 2FA."].filter(Boolean) },
   { id: "content", name: "Content brain", color: "#ffd166",
     managers: [
@@ -263,34 +266,12 @@ const BRAINS = [
 // the exact steps. Only what no machine can do lands here (auto-fixable things are the fixer's, verified next hour).
 function needQueue() {
   const raw = [];
-  for (const id of ["money", "data", "security", "content", "retention", "speed"]) for (const w of J(`data/brains/${id}/ecosystem.json`, {}).briefing?.watch ?? []) if (/^(Admin|Escalated):/.test(w) && !/Optional|not an alarm/i.test(w)) raw.push({ from: id, text: w.replace(/^(Admin|Escalated):\s*/, "") });
+  for (const id of ["money", "data", "security", "content", "retention", "speed"]) for (const w of [...(J(`data/brains/${id}/ecosystem.json`, {}).briefing?.watch ?? []), ...(J(`data/brains/${id}/ecosystem.json`, {}).briefing?.notes ?? [])]) if (/^(Admin|Escalated):/.test(w) && !/Optional|not an alarm/i.test(w)) raw.push({ from: id, text: w.replace(/^(Admin|Escalated):\s*/, "") });
   for (const t of J("data/machines/fixer.json", {}).tasks ?? []) raw.push({ from: "fixer", text: `${t.what} — ${t.fix}` });
-  // MOST SPECIFIC FIRST (11-12 fix: "no token" took the token-rotation steps and "candles are back" took chart speed)
-  const KNOWN = [[/retention email/i, "retention-email", "approve the wording of a daily-era \"your candles are back\" email (people who replayed, gone 2+ days) — then it's a build + switchback test"],
-    [/can't be read|Dependabot alerts: read/i, "deps-token", "GitHub → Settings → Developer settings → the bot's fine-grained token → add crtlab-standalone with \"Dependabot alerts: Read\" (2 min)"],
-    [/Smart Retries|failed-payment/i, "stripe", "Stripe dashboard → Settings → Billing → turn on Smart Retries + failed-payment emails (5 min)"],
-    [/Headless flood/i, "flood", "Cloudflare → Security → WAF → custom rule: Managed Challenge, country = the flood's, not verified bots (5 min) — the shield brain judges it next hour"],
-    [/Rotate|2FA/i, "tokens", "Cloudflare + Railway: roll the tokens pasted in chat, update GH secrets CF_API_TOKEN; turn on 2FA (10 min)"],
-    [/Dependabot/i, "deps", "say \"fix dependabot\" — upgrades need a build + test session"],
-    [/pack|card|checkout/i, "checkout", "decide the checkout fix (wallets/PayPal first, fewer fields) — a build session"],
-    [/Chart pages|slowest 10%/i, "speed", "say \"chart speed\" — edge-cache immutable candle windows (a build session)"],
-    [/Deploy regression/i, "regression", "check the deploy named (the evidence is in the line); roll back with the command given only if the site really broke"],
-    [/INSTRUMENT|heartbeat/i, "sensor", "say \"fix the heartbeat\" — a build session on /api/stats + the newest deploy (every engine reads a wrong people number until then)"],
-    [/Railway pace|deploys/i, "budget", "fewer direct deploys (use the windows); heap tuner after 24 h of samples"],
-    [/came back|week 2|first session/i, "retention", "decide a first-session change (golden actions from the behaviour machine)"],
-    [/names CRTLAB in/i, "recommend", "earned mentions on the sources ChatGPT trusts for buyer questions (listed in the line) — your call within the no-Reddit/paid/creator rule; the recommendation engine judges the naming rate"],
-    [/Google shows only/i, "google", "earn links to /news + /economic-calendar (a mention from a site Google trusts beats 1,000 pages) — the google machine reports coverage daily"],
-    [/no page|Bing shows/i, "gap", "build the page the search wants (content brain's top gap) — a build session, no approval needed"],
-    [/ idle: its output/i, "idle", "a build session gives it a lever that changes something, or retires it"],
-    [/word of mouth|outside sources/i, "mouth", "nothing to do today — the mentions machine flags the first outside links"],
-    [/getting worse|hurting/i, "kpi", "a build session reads the machine's evidence and changes what it does"]];
-  // WHO (11-12, Kai: "the need-you list is wrong half the time and a lot of it is useless"): only things that need Kai's own
-  // accounts or his call are "kai"; build work is for a Claude session; the rest is FYI and never counted as "needs you".
-  const WHO = { "deps-token": "kai", tokens: "kai", stripe: "kai", recommend: "kai", regression: "kai", mouth: "fyi", google: "fyi", budget: "fyi" };
   const out = new Map(), DONE = J("data/machines/kai-done.json", {}).done ?? {}; // owner-confirmed done kinds never come back (11-12)
-  for (const r of raw) { const k = KNOWN.find(([re]) => re.test(r.text)); const kind = k?.[1] ?? "other", key = kind === "other" ? r.text.slice(0, 50) : kind;
+  for (const r of raw) { const k = NEED_KNOWN.find(([re]) => re.test(r.text)); const kind = k?.[1] ?? "other", key = kind === "other" ? r.text.slice(0, 50) : kind;
     if (DONE[kind]) continue;
-    if (!out.has(key)) out.set(key, { kind, who: WHO[kind] ?? "build", what: r.text.split(" — ")[0].slice(0, 140), steps: k?.[2] ?? "needs a look in a build session", from: new Set([r.from]) }); else out.get(key).from.add(r.from); }
+    if (!out.has(key)) out.set(key, { kind, who: NEED_WHO[kind] ?? "build", what: r.text.split(" — ")[0].slice(0, 140), steps: k?.[2] ?? "needs a look in a build session", from: new Set([r.from]) }); else out.get(key).from.add(r.from); }
   // RANKED BY MEASURED IMPACT (11-12 — the brains' learning steered nothing): score = brains raising it × the strongest
   // raiser's authority × the kind's impact weight. Weights start from what the item touches (money / every engine's sensor
   // first, hygiene last) and LEARN: when an item leaves the queue (fixed), its owning brain's outcome is judged 7 days later
@@ -399,7 +380,7 @@ for (const S of BRAINS) try {
   if (heard.length) good.unshift(`Other brains: ${heard.join(" · ")}`);
   const mainFeed = (main.feed ?? []).filter((f) => ids.has(f.m) && f.m !== "core").slice(0, 30);
   const eco = { at: iso(NOW), engine: S.id, color: S.color, modes: modes.length ? modes : [lead], sensors: sens, authority,
-    briefing: { key: S.id + lead.id, changed: mem.episode.since, headline: `${S.name}: ${lead.label}`, good: good.slice(0, 8), watch, next, conclusion: `${lead.label === "Normal" ? "All steady" : lead.label}: ${lead.why}. Judged on ${out.label} (${out.v ?? "—"}).` },
+    briefing: { key: S.id + lead.id, changed: mem.episode.since, headline: `${S.name}: ${lead.label}`, good: good.slice(0, 8), ...splitNeeds(watch), next, conclusion: `${lead.label === "Normal" ? "All steady" : lead.label}: ${lead.why}. Judged on ${out.label} (${out.v ?? "—"}).` },
     mode: { mode: lead.level === "critical" ? "dip" : "normal", since: mem.episode.since, why: lead.why, z: 0, r24: 0, normal: 0 },
     nodes, edges, feed: [...feed, ...mainFeed], totals: { machines: nodes.length, ok: nodes.filter((n) => n.state === "ok").length, late: nodes.filter((n) => n.state === "late").length, stopped: nodes.filter((n) => n.state === "stopped").length, actions24: feed.length + mainFeed.length },
     widgets: main.widgets, rules: [...Object.entries(W).filter(([, w]) => w.n >= 1).map(([k, w]) => `${k.replace(/-/g, " ")} problems ${w.v >= 0.6 ? "usually fix themselves" : w.v <= 0.35 ? "do NOT fix themselves → escalated to an admin" : "sometimes fix themselves"} (${w.v} after ${w.n})`),

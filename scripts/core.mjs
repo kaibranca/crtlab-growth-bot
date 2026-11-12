@@ -10,6 +10,7 @@
 // out,feeds}; any data/<dir>/plan.json nobody registered shows up as "discovered". No list to keep by hand.
 import fs from "node:fs";
 import { readLines, append } from "./lib.mjs";
+import { splitNeeds } from "./needs.mjs";
 
 const NOW = Date.now(), H = 3.6e6, DAY = 24 * H, iso = (t) => new Date(t).toISOString().slice(0, 10);
 const J = (f, d = null) => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return d; } };
@@ -456,7 +457,7 @@ const LV = { critical: 3, warn: 2, good: 1, info: 0 }; modes.sort((a, b) => LV[b
 // and the page marks the briefing as updated. The greeting itself is set by the page from Kai's own clock.
 const pct = (x) => `${x >= 0 ? "+" : ""}${Math.round(x * 100)}%`;
 // Written the way Kai talks: short, plain, most important first. Every line is a number the machines measured.
-const good = [], watch = [], next = [];
+const good = [], next = []; let watch = [];
 const xN = r24 / Math.max(1, mu);
 if (xN >= 1.5) good.push(`ChatGPT and co. are reading CRTLAB ${xN.toFixed(1)}× more than normal — ${r24} reads in 24 h vs ~${Math.round(mu)} a day.`);
 for (const x of (ai.surges ?? []).filter((y) => y.kind === "page").slice(0, 4)) good.push(`${x.key} is flying: ${x.last24h} reads today vs ~${x.normal} normally.`);
@@ -509,11 +510,13 @@ if (mode === "dip") next.push(`Recovery: the ${P.recoveryN} best pages go back t
 { const tb = J("data/traffic/ecosystem.json"); if (tb?.briefing && NOW - Date.parse(tb.at) < 3 * 3600e3) { next.unshift(`Traffic brain (${tb.modes?.[0]?.label ?? "on"}): ${tb.briefing.conclusion}`); for (const w of (tb.briefing.watch ?? []).slice(0, 1)) watch.push(`Traffic: ${w}`); } }
 for (const b of (spawned.branches ?? []).filter((x) => x.state === "alive").slice(0, 2)) next.push(`Focus branch on ${b.target} is running (${b.why}).`);
 const topSurge = (ai.surges ?? []).find((y) => y.kind === "page");
+// 11-12: only what needs Kai is "needs you"; observations + build work go to notes (Kai: "they keep piling up")
+const NW = splitNeeds(watch), allWatch = watch; watch = NW.watch;
 const conclusion = mode === "surge" ? `Big day, Kai. AI is reading us ${xN.toFixed(1)}× normal${topSurge ? `, led by ${topSurge.key}` : ""}, and I've got every machine pushing it.${watch.length ? ` ${watch.length === 1 ? "One thing needs" : `${watch.length} things need`} you.` : " Nothing needs you."}`
   : mode === "dip" ? `Quiet one, Kai. Reads are under normal, so I switched to recovery and I'm pushing the pages that already work.${watch.length ? " Have a look below." : ""}`
   : `All steady, Kai. ${nodes.filter((n) => n.state === "ok").length} of ${nodes.length} machines running and learning.${watch.length ? ` ${watch.length === 1 ? "One thing to look at." : `${watch.length} things to look at.`}` : " Nothing needs you."}`;
 const prevEco = J("data/machines/ecosystem.json"), bKey = [mode, ...good.slice(0, 3), ...watch.slice(0, 2)].join("|").replace(/\d+/g, "#");
-const briefing = { key: bKey, changed: prevEco?.briefing?.key === bKey ? prevEco.briefing.changed : new Date().toISOString(), headline: modeOut.why, good: good.slice(0, 10), watch: watch.slice(0, 6), next: next.slice(0, 6), conclusion };
+const briefing = { key: bKey, changed: prevEco?.briefing?.key === bKey ? prevEco.briefing.changed : new Date().toISOString(), headline: modeOut.why, good: good.slice(0, 10), watch: watch.slice(0, 6), notes: NW.notes.slice(0, 8), next: next.slice(0, 6), conclusion };
 
 // ── 6. WIDGETS: the live numbers the page shows as tiles (all from files the machines already wrote)
 const today = iso(NOW), runsToday = readLines("data/ai/runs.jsonl").filter((r) => r.at.slice(0, 10) === today);
