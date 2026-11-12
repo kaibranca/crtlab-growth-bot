@@ -4,8 +4,8 @@
 //   SWITCHBACK  each 2-day block of the calendar runs either the CHAMPION value or a CHALLENGER (one step up or down),
 //               by a hash of (knob, challenge, block) — every knob has its own random schedule, so several run at once
 //               without confounding (a factorial design).
-//   JUDGE       the knob's KPI per day, normalised by its own trailing 7-day mean (so growth and slumps cancel out), averaged
-//               per block; bootstrap over blocks → P(challenger beats champion). ≥ 5 blocks per arm before any verdict.
+//   JUDGE       regression per day: log KPI = level + trend + release-day effect + δ·challenger (growth and release spikes
+//               fitted out); block bootstrap → P(δ > 0). ≥ 5 blocks per arm before any verdict.
 //   ACT         P ≥ 0.9 → challenger PROMOTED, the next step in the same direction is tried (hill-climbing);
 //               P ≤ 0.1 → champion kept, the other direction is tried next; 14 blocks per arm with no answer → "no effect",
 //               the other direction, then it settles and re-opens after 30 days (the world changes).
@@ -44,6 +44,7 @@ for (const [id, r] of Object.entries(REG)) { if (typeof r.start !== "number") co
   const K = { id, owner: r.owner, ladder: r.ladder ?? ladderFor(r.start), start: r.start, kpi: r.kpi ?? "auto", what: r.what ?? id };
   if (b) Object.assign(b, { ...K, ladder: r.ladder ?? b.ladder }); else KNOBS.push(K); }
 for (const K of KNOBS) if (K.kpi === "auto") K.kpi = AUTO_KPI;
+const REL = new Map(); for (const e of J("data/events/index.json", []) ?? []) if (e.date) REL.set(e.date, (REL.get(e.date) ?? 0) + 1); // releases per day
 const S = J(OUT, { knobs: {} }); S.knobs ??= {};
 const days = [...score.keys()].sort(), today = iso(NOW), blockOf = (d) => Math.floor(Date.parse(d + "T12:00:00Z") / (2 * DAY));
 const norm = (d) => { const i = days.indexOf(d); if (i < 7) return null; const prev = days.slice(i - 7, i).map((x) => KPI_FN(x)).filter((v) => v != null);
@@ -68,13 +69,26 @@ for (const K of KNOBS) {
   if (!ch) continue;
   // judge: per block mean of the normalised KPI
   KPI_FN = KPI[K.kpi];
-  const blocks = new Map();
-  for (const d of days.filter((x) => x >= ch.since && x < today)) { const v = norm(d); if (v == null) continue; const b = blockOf(d), o = blocks.get(b) ?? { arm: arm(d), s: 0, n: 0 }; o.s += v; o.n++; blocks.set(b, o); }
-  const A = [...blocks.values()].filter((b) => b.arm === "A").map((b) => b.s / b.n), B = [...blocks.values()].filter((b) => b.arm === "B").map((b) => b.s / b.n);
-  const mean = (xs) => xs.reduce((a, b) => a + b, 0) / Math.max(1, xs.length);
-  let P = null;
-  if (A.length >= 5 && B.length >= 5) { let w = 0; for (let i = 0; i < 2000; i++) { const ra = A.map(() => A[Math.floor(Math.random() * A.length)]), rb = B.map(() => B[Math.floor(Math.random() * B.length)]); if (mean(rb) > mean(ra)) w++; } P = w / 2000; }
-  ch.read = { blocksA: A.length, blocksB: B.length, lift: A.length && B.length ? +Math.exp(mean(B) - mean(A)).toFixed(3) : null, P, at: new Date().toISOString() };
+  // REGRESSION JUDGE (11-12): log KPI_d = level + trend·t + release-day effect + δ·[challenger day]. Growth and release spikes
+  // are fitted out instead of being noise; δ is the knob's own effect. P(δ > 0) = share of block-bootstrap refits with δ > 0.
+  const obs = [];
+  for (const d of days.filter((x) => x >= ch.since && x < today)) { const v = KPI_FN(d); if (v == null) continue;
+    obs.push({ d, b: blockOf(d), t: (Date.parse(d) - Date.parse(ch.since)) / DAY, rel: Math.log1p(REL.get(d) ?? 0), y: Math.log(v + (K.kpi === "ctr" ? 0.001 : 1)), x: arm(d) === "B" ? 1 : 0 }); }
+  const bl = [...new Set(obs.map((o) => o.b))], armOf = (b) => obs.find((o) => o.b === b).x;
+  const A = bl.filter((b) => !armOf(b)), B = bl.filter((b) => armOf(b));
+  const fitD = (rows) => { // OLS on [1, t, rel, x] → δ (normal equations, 4×4)
+    const X = rows.map((o) => [1, o.t, o.rel, o.x]), y = rows.map((o) => o.y), n = 4;
+    const M = Array.from({ length: n }, (_, a) => Array.from({ length: n + 1 }, (_, c) => (c < n ? X.reduce((t, r) => t + r[a] * r[c], 0) : X.reduce((t, r, k) => t + r[a] * y[k], 0))));
+    for (let c = 0; c < n; c++) { let piv = c; for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[piv][c])) piv = r; [M[c], M[piv]] = [M[piv], M[c]]; if (Math.abs(M[c][c]) < 1e-9) return null;
+      for (let r = 0; r < n; r++) if (r !== c) { const f = M[r][c] / M[c][c]; for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k]; } }
+    return M[3][n] / M[3][3]; };
+  let P = null, delta = null;
+  if (A.length >= 5 && B.length >= 5) { delta = fitD(obs); let w = 0, m = 0;
+    const byB = new Map(bl.map((b) => [b, obs.filter((o) => o.b === b)]));
+    for (let i = 0; i < 1000; i++) { const pick = [...A.map(() => A[Math.floor(Math.random() * A.length)]), ...B.map(() => B[Math.floor(Math.random() * B.length)])];
+      const dd = fitD(pick.flatMap((b, k) => byB.get(b).map((o) => ({ ...o, b: k })))); if (dd == null) continue; m++; if (dd > 0) w++; }
+    P = m ? w / m : null; }
+  ch.read = { blocksA: A.length, blocksB: B.length, lift: delta != null ? +Math.exp(delta).toFixed(3) : null, P, at: new Date().toISOString(), model: "log KPI ~ trend + release + arm" };
   const done = P != null && (P >= 0.9 || P <= 0.1 || (A.length >= 14 && B.length >= 14));
   if (!done) continue;
   const verdict = P >= 0.9 ? "promoted" : P <= 0.1 ? "kept champion" : "no effect";
