@@ -35,6 +35,11 @@ jobs:
         continue-on-error: true
         run: npm i pg@8 --no-save --no-package-lock --silent && node scripts/mentions.mjs
         env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}", BING_API_KEY: "${{ secrets.BING_API_KEY }}", OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
+      - name: Google machine — search analytics + rotating index coverage (bounded, read-only)
+        continue-on-error: true
+        timeout-minutes: 4
+        run: node scripts/google.mjs
+        env: { GSC_SA_JSON: "${{ secrets.GSC_SA_JSON }}" }
       - name: Traffic engine — demand miner, rank pusher, ghost catcher (Bing Webmaster + crawl history + guest landing paths)
         continue-on-error: true
         run: npm i pg@8 --no-save --no-package-lock --silent && node scripts/traffic.mjs

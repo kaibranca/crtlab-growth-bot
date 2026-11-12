@@ -1,0 +1,17 @@
+name: google
+# manual run of the Google machine (it runs daily inside daily.yml); commits its data like the other machines
+on: { workflow_dispatch: {} }
+concurrency: { group: data, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node scripts/google.mjs
+        timeout-minutes: 4
+        env: { GSC_SA_JSON: "${{ secrets.GSC_SA_JSON }}" }
+      - run: bash scripts/push.sh "google $(date -u +%FT%H:%M)"
