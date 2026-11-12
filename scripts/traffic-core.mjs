@@ -117,6 +117,46 @@ const RATE = 0.25, BAR = judged20.length >= 6 ? +clamp(0.42 - (hit / judged20.le
 const fire = (k) => { const w = W(k); w.used = iso(NOW); return w.v >= BAR || rnd() < 0.15; };
 const reward = (k, r) => { const w = W(k); w.v = +clamp(w.v + RATE * (r - w.v), 0.05, 0.95).toFixed(3); w.n++; w.used = iso(NOW); };
 
+// ── PRE-TRAINING FROM HISTORY (11-12 overclock — "the brains were deciding blind": 0 verdicts anywhere, every neuron at its
+// 0.5 start). Once a day the brain replays the saved history (per-page people-fetches in aicrawl, AI clicks in clicks.json)
+// for each neuron's signal: every past moment the signal fired, what followed — with the brain's own reward (own number .3 ·
+// clicks .5 · accounts .2). The rate (shrunk to .5 by sample size, K 12) becomes the neuron's start while it has no live
+// verdict; live verdicts always win from the first one. A prior learned from data, never assumed.
+if (!brain.pretrain || NOW - Date.parse(brain.pretrain.at) > DAY) {
+  const PEOPLE = /^(ChatGPT-User|Claude-User|Perplexity-User)$/, HH = 6 * H; // 6-hour cells
+  const cells = new Map(); // page → Map(cellIndex → fetches)
+  for (const w of crawl) { const t = Date.parse(w.to), ci = Math.floor(t / HH); for (const [b, v] of Object.entries(w.bots ?? {})) if (PEOPLE.test(b)) for (const [p0, n] of v.top ?? []) {
+    const p = p0.split("?")[0].replace(/\/$/, "") || "/"; if (/image|icon|\.(png|jpg|xml|txt)$|^\/api/.test(p)) continue; const m = cells.get(p) ?? cells.set(p, new Map()).get(p); m.set(ci, (m.get(ci) ?? 0) + n); } }
+  const clickDay = new Map(); for (const [k, v] of Object.entries(clicks)) { const [d, src, p0] = k.split("|"); if (!/^(chatgpt|perplexity|claude|copilot|gemini)$/.test(src)) continue; const p = (p0 || "/").replace(/\/$/, "") || "/";
+    const m = clickDay.get(p) ?? clickDay.set(p, new Map()).get(p); const o = m.get(d) ?? { c: 0, a: 0 }; o.c += v[0] ?? 0; o.a += v[1] ?? 0; m.set(d, o); }
+  const clk = (p, from, to) => { let c = 0, a = 0; for (const [d, o] of clickDay.get(p) ?? []) { const t = Date.parse(d + "T12:00:00Z"); if (t >= from && t < to) { c += o.c; a += o.a; } } return { c, a }; };
+  const sumCells = (m, a, b) => { let n = 0; for (let i = a; i < b; i++) n += m.get(i) ?? 0; return n; };
+  const lastCell = Math.floor(NOW / HH), firstCell = Math.min(...[...cells.values()].flatMap((m) => [...m.keys()]), lastCell);
+  const ev = { "surge→bing": [], "peopleclick→bing": [], "peoplenoclick→hook": [] };
+  for (const [p, m] of cells) {
+    let lastFire = -99;
+    for (let i = firstCell + 12; i <= lastCell - 16; i++) { // need 3 days before, 4 days after
+      const d24 = sumCells(m, i - 3, i + 1), prev = sumCells(m, i - 15, i - 3) / 3; // 24 h vs the 3 days before (per day)
+      if (d24 >= 6 && d24 >= 2 * Math.max(1, prev) && i - lastFire >= 12) { lastFire = i;
+        const after = sumCells(m, i + 1, i + 17) / 4, e = clk(p, (i + 1) * HH, (i + 17) * HH);
+        ev["surge→bing"].push(0.3 * (after >= Math.max(1, prev) * 1.2 ? 1 : 0) + 0.5 * (e.c > 0 ? 1 : 0) + 0.2 * (e.a > 0 ? 1 : 0)); }
+    }
+    // read a lot, never clicked (7 d) → did clicks come by themselves in the next 7 d? (the no-action baseline a hook must beat)
+    for (let i = firstCell + 28; i <= lastCell - 28; i += 28) { const f7 = sumCells(m, i - 28, i), c7 = clk(p, (i - 28) * HH, i * HH).c;
+      if (f7 >= 25 && c7 === 0) { const e = clk(p, i * HH, (i + 28) * HH); ev["peoplenoclick→hook"].push(e.c > 0 ? 1 : 0); } }
+  }
+  // pages that got AI clicks on a day → clicks again in the next 7 days? (does pushing a converting page keep paying)
+  for (const [p, m] of clickDay) for (const [d, o] of m) { const t = Date.parse(d + "T12:00:00Z"); if (o.c < 1 || t > NOW - 8 * DAY || t < NOW - 60 * DAY) continue;
+    const e = clk(p, t + DAY / 2, t + 7.5 * DAY); ev["peopleclick→bing"].push(0.3 * (e.c >= 2 ? 1 : 0) + 0.5 * (e.c > 0 ? 1 : 0) + 0.2 * (e.a > 0 ? 1 : 0)); } // own number = it kept converting (2+)
+  const K = 12, out = {};
+  for (const [k, xs] of Object.entries(ev)) { const mean = xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null; const v = mean == null ? 0.5 : (mean * xs.length + 0.5 * K) / (xs.length + K);
+    out[k] = { samples: xs.length, mean: mean == null ? null : +mean.toFixed(3), prior: +v.toFixed(3) };
+    const w = W(k); if (!w.n) { w.v = +clamp(v, 0.05, 0.95).toFixed(3); w.prior = `history ${xs.length} cases → ${out[k].mean ?? "—"}`; } }
+  brain.pretrain = { at: iso(NOW), cells6h: lastCell - firstCell, out };
+  say("neurons", `pre-trained from history: ${Object.entries(out).map(([k, o]) => `${k} ${o.prior} (${o.samples} cases)`).join(" · ")}`, "win");
+  learn("neurons", "lesson", `pre-training from saved history: ${Object.entries(out).map(([k, o]) => `${k} ${o.mean ?? "—"} over ${o.samples}`).join(", ")}`, `pretrain|${iso(NOW).slice(0, 10)}`);
+}
+
 // ── SHARED LEARNING (engines teach each other): the main engine's focus-branch verdicts (core + AI analyst picks) are the
 // same action as this brain's surge/convergence branches (pages Bing-first) → each new verdict moves "surge→bing" at half
 // strength. Every verdict anywhere teaches the brain that does the same kind of thing.
