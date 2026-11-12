@@ -48,6 +48,16 @@ const REG = [
   { id: "indexnow", name: "IndexNow", group: "traffic", does: "Tells Bing and others the moment a page changes", every: 24, t: () => lastAt("data/indexnow.jsonl") },
   { id: "seo", name: "Search console", group: "traffic", does: "Google + Bing weekly: queries, pages, title rewrites", every: 168, t: () => lastAt("data/gsc-weekly.jsonl"), feeds: ["factory"] },
 
+  // 11-12 OVERCLOCK — the new machines, watched by the supervisor like every other (late / stopped → the Fixer)
+  { id: "world", name: "World model", group: "core", parent: "core", does: "Forecasts every page every day and credits every action type against untouched pages (bootstrap CI) — a verdict per action per day; true surges hourly; the curve", every: 1, t: () => atOf("data/world/surges.json"), feeds: ["ai", "traffic-brain", "executive"] },
+  { id: "executive", name: "Executive", group: "core", parent: "core", does: "Finds the funnel's constraint (reach → click → sign-up → pay) and turns every engine's knob toward it; judges each focus period", every: 24, t: () => atOf("data/machines/executive.json"), feeds: ["bandit", "ai", "traffic-brain"] },
+  { id: "memory", name: "Long-term memory", group: "core", parent: "ledger", does: "Nightly: every engine's verdicts consolidated into durable facts (decay, contradictions flagged) — the analyst's memory", every: 24, t: () => atOf("data/machines/knowledge.json"), feeds: ["analyst"] },
+  { id: "bandit", name: "Conversion bandit", group: "conversion", does: "ReplayHook wording per page × day on news + calendar, Thompson sampling on clicks per people-fetch, transfer across families", every: 1, t: () => atOf("data/ai/bandit.json"), feeds: ["ledger"] },
+  { id: "holdout", name: "Holdout", group: "traffic", parent: "ai", does: "5% of pages never pushed — the honest measure of what pushing adds", every: 1, t: () => atOf("data/ai/holdout.json") },
+  { id: "lockin", name: "Lock-in", group: "core", parent: "mode", does: "A wave of people, sign-ups or AI people-reads locks the whole system in: Bing all-in, hands off, deploys held", every: 1, t: () => (fs.existsSync("data/machines/lockin.json") ? fs.statSync("data/machines/lockin.json").mtimeMs : null) },
+  { id: "selfcheck", name: "People self-check", group: "health", parent: "health", does: "Verifies the people number itself: heartbeat vs stay share per device, raw-surge composition (flood / instrument / leaving)", every: 1, t: () => atOf("data/machines/humans.json") },
+  { id: "deployjudge", name: "Deploy judge", group: "health", parent: "health", does: "Every site deploy judged 24 h later on real people's stay share; regressions get the rollback in the Fixer queue", every: 1, t: () => atOf("data/machines/deploy-judge.json") },
+  { id: "google", name: "Google machine", group: "traffic", parent: "seo", does: "Google search analytics + rotating index coverage per family, and why Google skips pages", every: 24, t: () => atOf("data/google/plan.json") },
   { id: "factory", name: "Reaction factory", group: "content", does: "How each market reacts to each release: 129 pages, rebuilt the morning after every release", every: 24, t: () => lastAt("data/recap-runs.jsonl"), feeds: ["ai", "indexnow"] },
   { id: "news", name: "News engine", group: "content", parent: "factory", does: "Every release measured on 12 markets minute by minute, same day", every: 24, t: () => lastAt("data/recap-runs.jsonl"), feeds: ["factory"] },
   { id: "recaps", name: "Daily recaps", group: "content", parent: "factory", does: "Each market's day written from the data", every: 24, t: () => lastAt("data/recap-runs.jsonl"), feeds: ["indexnow"] },
@@ -80,7 +90,7 @@ const selfDir = "data/machines/self";
 for (const f of fs.existsSync(selfDir) ? fs.readdirSync(selfDir).filter((x) => x.endsWith(".json")) : []) {
   const m = J(`${selfDir}/${f}`); if (m?.id && !REG.some((r) => r.id === m.id)) REG.push({ ...m, t: () => (m.out ? atOf(m.out) ?? lastAt(m.out) : null) });
 }
-const covered = new Set(["ai", "behaviour", "radar", "mentions", "mobile", "machines", "reels", "events", "recaps", "cost", "leak"]);
+const covered = new Set(["ai", "behaviour", "radar", "mentions", "mobile", "machines", "reels", "events", "recaps", "cost", "leak", "world", "google"]);
 for (const d of fs.readdirSync("data", { withFileTypes: true }).filter((x) => x.isDirectory() && !covered.has(x.name)))
   if (fs.existsSync(`data/${d.name}/plan.json`)) REG.push({ id: d.name, name: d.name, group: "core", does: "Discovered: writes a plan the core has not been told about yet", every: 24, t: () => atOf(`data/${d.name}/plan.json`), discovered: true });
 
