@@ -21,7 +21,7 @@ const reader = (sha) => (p) => parse(sha ? sh(`git show ${sha}:${p}`) : (fs.exis
 
 // WHO LEARNED IT: ledger "machine" names and fact ids → the /machine node that did the learning
 const LED = { convergence: "traffic-brain", converter: "traffic-brain", neurons: "traffic-brain", rank: "traffic-brain", surges: "surge", supervisor: "mistakes", modes: "mode", events: "lift", demand: "lift" };
-const FACT = [[/^(world|curve)/, "world"], [/^release-lift/, "lift"], [/^(prior|sign):/, "traffic-brain"], [/^cost/, "cost"], [/^google/, "google"]];
+const FACT = [[/^yield:/, "yield"], [/^forecast-skill/, "world"], [/^golden:/, "behaviour"], [/^deploy-speed/, "load"], [/^quality:/, "outcomes"], [/^(world|curve)/, "world"], [/^release-lift/, "lift"], [/^(prior|sign):/, "traffic-brain"], [/^cost/, "cost"], [/^google/, "google"]];
 const n0 = (x) => (Array.isArray(x) ? x.length : 0);
 
 export function measure(R) {

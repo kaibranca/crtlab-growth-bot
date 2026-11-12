@@ -54,6 +54,16 @@ const led = [...lines("data/machines/ledger.jsonl"), ...lines("data/traffic/ledg
 const byM = {}; for (const l of led) { const k = `${l.machine}:${(l.key ?? "").split("|")[0]}`; const o = (byM[k] ??= { w: 0, l: 0 }); l.kind === "win" ? o.w++ : o.l++; }
 for (const [k, o] of Object.entries(byM)) fact(`ledger:${k}`, "which machines pay", `${k.replace(":", " · ")}: ${o.w} won, ${o.l} lost (30 d)`, o.w + o.l, o.w > o.l ? 1 : o.l > o.w ? -1 : 0, "ledgers");
 
+// 6. THE NEW LEARNERS (11-12): Bing yield per family, forecast skill, tuner verdicts, what brings people back, deploy speed
+{ const Y = J("data/ai/plan.json", {})?.learned?.sendYield;
+  if (Y?.judged >= 20) { fact("yield:all", "where Bing sends pay", `${Math.round(Y.overall * 100)}% of Bing sends get a live AI read within 3 days (${Y.judged} judged)`, Y.judged, 0, "yield");
+    for (const [f, r] of Object.entries(Y.byFamily ?? {})) if (Math.abs(r - Y.overall) / Math.max(0.01, Y.overall) > 0.15) fact(`yield:${f}`, "where Bing sends pay", `${f}: ${Math.round(r * 100)}% read within 3 days vs ${Math.round(Y.overall * 100)}% overall`, Y.judged, r > Y.overall ? 1 : -1, "yield"); } }
+{ const SK = lines("data/world/skill.jsonl").slice(-14), C = J("data/world/credit.json", {});
+  if (SK.length >= 3) { const sk = SK.reduce((a, r) => a + r.skill, 0) / SK.length; fact("forecast-skill", "how well we predict", `forecasts ${sk >= 0 ? "beat" : "lose to"} "same as last week" by ${Math.abs(Math.round(sk * 100))}% (${SK.length} graded; trend trusted at α ${C.trendAlpha ?? 1})`, SK.length, sk > 0 ? 1 : -1, "world"); } }
+for (const [id, k] of Object.entries(J("data/machines/knobs.json", {})?.knobs ?? {})) for (const h of (k.history ?? []).slice(-3)) fact(`tune:${id}:${h.challenger}`, "which settings pay", `${k.what ?? id}: ${h.challenger} vs ${h.champion} → ${h.verdict} (${k.kpi ?? "reads"} ×${h.lift}, ${h.blocksA}+${h.blocksB} blocks)`, h.blocksA + h.blocksB, h.verdict === "promoted" ? 1 : h.verdict === "kept champion" ? -1 : 0, "tuner");
+{ const B = J("data/behaviour/plan.json", {}); for (const [dev, g] of Object.entries(B.golden ?? {})) { const t = (g.top ?? [])[0]; if (t && t.conf >= 0.8) fact(`golden:${dev}`, "what brings people back", `${dev}: people who use "${t.k}" come back ×${t.backLift} and sign up ×${t.signLift} (${t.people} people)`, t.people, 1, "behaviour"); } }
+{ const D = lines("data/machines/deploys.jsonl").filter((r) => r.speed).slice(-10); if (D.length >= 2) { const sl = D.filter((r) => /^SLOWER/.test(r.speed.verdict)).length; fact("deploy-speed", "how deploys land", `${D.length} recent deploys judged on speed + memory: ${sl} made the site slower or heavier`, D.length, sl ? -1 : 1, "deployjudge"); } }
+
 // DECAY + BIN: facts not re-confirmed fade (half-life 30 d); below 0.05 they're forgotten
 let binned = 0;
 for (const [id, f] of Object.entries(KB.facts)) { if (seen.has(id)) continue; const idle = (NOW - Date.parse(f.last)) / DAY; f.strength = +(f.strength * Math.pow(0.5, 1 / 30)).toFixed(3); if (f.strength < 0.05 || idle > 180) { delete KB.facts[id]; binned++; } }
