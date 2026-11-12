@@ -572,7 +572,11 @@ fs.writeFileSync("data/ai/plan.json", JSON.stringify(plan, null, 1));
 
 // ── 6. score: one line per finished day (re-written while the day can still change) ──────────────────────────────────
 const SC = "data/ai/score.jsonl";
-const old = readLines(SC).filter((s) => NOW - Date.parse(s.day + "T00:00:00Z") > 4 * DAY);
+// 11-12: frozen days still take clicks/accounts from clicks.json (the site re-reads 14 days — the first-touch backfill
+// raised old AI accounts, but frozen lines kept the narrow count → "AI accounts −63%" was a fake alarm). Reads stay frozen
+// (the crawl log is a rolling window) unless the new count is higher.
+const old = readLines(SC).filter((s) => NOW - Date.parse(s.day + "T00:00:00Z") > 4 * DAY).map((s) => { const v = daily[s.day]; if (!v || !(v.clicks + v.otherClicks)) return s;
+  return { ...s, reads: Math.max(s.reads, v.reads), index: Math.max(s.index, v.index), clicks: v.clicks, accounts: v.accounts, otherClicks: v.otherClicks, aiShare: r2(v.clicks / (v.clicks + v.otherClicks)) }; });
 const have = new Set(old.map((s) => s.day));
 const lines = [...old, ...Object.entries(daily).filter(([d]) => !have.has(d) && d < iso(NOW)).map(([day, v]) => ({ day, ...v, aiShare: v.clicks + v.otherClicks ? r2(v.clicks / (v.clicks + v.otherClicks)) : null }))].sort((a, b) => a.day.localeCompare(b.day));
 fs.writeFileSync(SC, lines.map((l) => JSON.stringify(l)).join("\n") + "\n");
