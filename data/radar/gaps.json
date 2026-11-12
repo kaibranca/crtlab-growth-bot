@@ -1,5 +1,5 @@
 {
- "at": "2026-11-12T06:35:50.186Z",
+ "at": "2026-11-12T06:41:18.873Z",
  "note": "Questions where CRTLAB is usually NOT recommended: who wins, with what claim, and the CRTLAB page that should win. Build list for Claude sessions (new pages need Kai's OK).",
  "gaps": [
   {
@@ -693,6 +693,70 @@
     "tradingview.com",
     "forexsb.com"
    ],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "what-percentage-of-fair-value-gaps-get-filled",
+   "q": "What percentage of fair value gaps get filled?",
+   "cluster": "stats",
+   "ourPage": "/tools/fair-value-gap-statistics",
+   "value": 2.83,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "tradeanalysis.io",
+     "r": 1,
+     "why": "Discusses FVG fill rates and how fill depends on definitions/time window.",
+     "$": ""
+    },
+    {
+     "n": "Chartriai",
+     "r": 2,
+     "why": "Reports example FVG statistics like 81%–96% fills and NAS100 87% in 24h.",
+     "$": ""
+    }
+   ],
+   "winningDomains": [
+    "tradeanalysis.io",
+    "chartriaai.com"
+   ],
+   "diag": "found, not chosen",
+   "fix": "content: winners say \"Discusses FVG fill rates and how fill depends on definitions/time window.\" / \"Reports example FVG statistics like 81%–96% fills and NAS100 87% in 24h.\" — our page must answer that"
+  },
+  {
+   "id": "how-often-is-the-previous-day-high-or-low-taken",
+   "q": "How often is the previous day high or low taken?",
+   "cluster": "stats",
+   "ourPage": "/tools/previous-day-high-low-statistics",
+   "value": 2.83,
+   "p": 0.01,
+   "winners": [],
+   "winningDomains": [],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "does-london-sweep-the-asian-range",
+   "q": "Does London sweep the Asian range?",
+   "cluster": "stats",
+   "ourPage": "/answers/does-london-sweep-the-asian-range-and-reverse",
+   "value": 2.83,
+   "p": 0.01,
+   "winners": [],
+   "winningDomains": [],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "what-time-does-gold-make-its-high-or-low-of-the-day",
+   "q": "What time does gold make its high or low of the day?",
+   "cluster": "stats",
+   "ourPage": "/answers/what-time-does-gold-make-its-high-or-low-of-the-day",
+   "value": 2.83,
+   "p": 0.01,
+   "winners": [],
+   "winningDomains": [],
    "diag": "not found",
    "fix": "indexing: push our page to Bing"
   }
