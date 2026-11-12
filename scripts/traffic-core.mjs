@@ -148,11 +148,24 @@ if (!brain.pretrain || NOW - Date.parse(brain.pretrain.at) > DAY) {
   // pages that got AI clicks on a day → clicks again in the next 7 days? (does pushing a converting page keep paying)
   for (const [p, m] of clickDay) for (const [d, o] of m) { const t = Date.parse(d + "T12:00:00Z"); if (o.c < 1 || t > NOW - 8 * DAY || t < NOW - 60 * DAY) continue;
     const e = clk(p, t + DAY / 2, t + 7.5 * DAY); ev["peopleclick→bing"].push(0.3 * (e.c >= 2 ? 1 : 0) + 0.5 * (e.c > 0 ? 1 : 0) + 0.2 * (e.a > 0 ? 1 : 0)); } // own number = it kept converting (2+)
+  // SIGN WEIGHTS (Hebbian, from history): for every page-moment with people reading it, which signs were on, and did AI clicks
+  // follow within 4 days? lift = P(click | sign) ÷ P(click | any read page), shrunk to 1 (K 20). Convergence adds these up.
+  const SG = { "people ask for it": [0, 0], "AI surge": [0, 0], "people click it": [0, 0], converts: [0, 0] }; let baseN = 0, baseC = 0;
+  for (let i = firstCell + 12; i <= lastCell - 16; i += 2) { const t = i * HH, rank = [];
+    for (const [p, m] of cells) { const d24 = sumCells(m, i - 3, i + 1); if (d24 >= 2) rank.push([p, d24, m]); }
+    rank.sort((a, b) => b[1] - a[1]); const top6 = new Set(rank.slice(0, 6).map((x) => x[0]));
+    for (const [p, d24, m] of rank) { const hit = clk(p, t + HH, t + 17 * HH).c > 0 ? 1 : 0; baseN++; baseC += hit;
+      const prev = sumCells(m, i - 15, i - 3) / 3, c7 = clk(p, t - 7 * DAY, t), a14 = clk(p, t - 14 * DAY, t).a;
+      const on = { "people ask for it": top6.has(p), "AI surge": d24 >= 6 && d24 >= 2 * Math.max(1, prev), "people click it": c7.c >= 2, converts: a14 >= 1 };
+      for (const [k, v] of Object.entries(on)) if (v) { SG[k][0]++; SG[k][1] += hit; } } }
+  const baseRate = baseN ? baseC / baseN : 0, signW = {};
+  for (const [k, [n, c]] of Object.entries(SG)) { const lift = baseRate > 0 && n ? (c / n) / baseRate : 1; signW[k] = { n, lift: +(((lift * n) + 20) / (n + 20)).toFixed(2) }; }
+  brain.signW = signW;
   const K = 12, out = {};
   for (const [k, xs] of Object.entries(ev)) { const mean = xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null; const v = mean == null ? 0.5 : (mean * xs.length + 0.5 * K) / (xs.length + K);
     out[k] = { samples: xs.length, mean: mean == null ? null : +mean.toFixed(3), prior: +v.toFixed(3) };
     const w = W(k); if (!w.n) { w.v = +clamp(v, 0.05, 0.95).toFixed(3); w.prior = `history ${xs.length} cases → ${out[k].mean ?? "—"}`; } }
-  brain.pretrain = { at: iso(NOW), cells6h: lastCell - firstCell, out };
+  brain.pretrain = { at: iso(NOW), cells6h: lastCell - firstCell, out, signW, baseRate: +baseRate.toFixed(4), moments: baseN };
   say("neurons", `pre-trained from history: ${Object.entries(out).map(([k, o]) => `${k} ${o.prior} (${o.samples} cases)`).join(" · ")}`, "win");
   learn("neurons", "lesson", `pre-training from saved history: ${Object.entries(out).map(([k, o]) => `${k} ${o.mean ?? "—"} over ${o.samples}`).join(", ")}`, `pretrain|${iso(NOW).slice(0, 10)}`);
 }
@@ -215,8 +228,10 @@ for (const g of radar.gaps ?? []) sign(g.ourPage, "AI answer gap");
 for (const w of (ai.winners ?? []).slice(0, 8)) sign(w.p, "converts");
 for (const x of liveWin) sign(x.p, "people click it");
 for (const x of liveRows.slice(0, 6)) sign(x.p, "people ask for it");
-const nSigns = (p) => Math.max(signs.get(p)?.size ?? 0, signs.get(famKey(p))?.size ?? 0);
-const convergent = [...signs].filter(([p, s]) => s.size >= 3 && p.split("/").filter(Boolean).length >= 1).sort((a, b) => b[1].size - a[1].size);
+// signs count by their LEARNED weight (history lift; unknown signs = 1) — a sign that predicts clicks counts more
+const sw = (k) => clamp(brain.signW?.[k]?.lift ?? 1, 0.4, 2.5), wSum = (set) => [...(set ?? [])].reduce((a, k) => a + sw(k), 0);
+const nSigns = (p) => Math.max(wSum(signs.get(p)), wSum(signs.get(famKey(p))));
+const convergent = [...signs].filter(([p, s]) => wSum(s) >= 3 && p.split("/").filter(Boolean).length >= 1).sort((a, b) => wSum(b[1]) - wSum(a[1]));
 
 // ── BUILD: signals → branches (the brain builds machines), gated by neuron weights ──────────────────────────────────
 const alive = () => B.branches.filter((b) => b.state === "alive");
@@ -277,7 +292,7 @@ for (const s of (men.rising ?? []).slice(0, 1)) build({ kind: "source", owner: "
 // pages that turn people into clicks: more of that attention (Bing first)
 for (const x of liveWin.slice(0, 2)) build({ kind: "surge", owner: "converter", target: x.p, neuron: "peopleclick→bing", base: r1(readsOf(x.p, NOW - 8 * DAY, NOW - DAY) / 7), why: `${x.clicks} of ${x.fetches} people who got it through ChatGPT clicked (×${x.lift} the site rate)` });
 // convergence: 3+ independent signs on one page/family and nothing else covers it yet
-for (const [p, s] of convergent.slice(0, 2)) if (!alive().some((b) => b.target === p)) build({ kind: "surge", owner: "convergence", target: p, neuron: "convergence→bing", base: r1(readsOf(p, NOW - 8 * DAY, NOW - DAY) / 7), why: `${s.size} signs at once: ${[...s].join(" + ")}` });
+for (const [p, s] of convergent.slice(0, 2)) if (!alive().some((b) => b.target === p)) build({ kind: "surge", owner: "convergence", target: p, neuron: "convergence→bing", base: r1(readsOf(p, NOW - 8 * DAY, NOW - DAY) / 7), why: `${s.size} signs (weight ${wSum(s).toFixed(1)}) at once: ${[...s].join(" + ")}` });
 
 // ── MEMORY + BIN: hold what matters, drop the rest ──────────────────────────────────────────────────────────────────
 let binned = 0;
