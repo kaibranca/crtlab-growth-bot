@@ -153,12 +153,17 @@ const BRAINS = [
       { id: "quality", label: "Quality", machines: ["linkcheck"], does: "dead links, broken pages" },
     ],
     sensors: () => { const fam = (f) => (ai.families ?? []).find((x) => x.family === f); const react = fam("/news/<type>/<market>");
-      return { reactPages: react?.pages ?? null, reactReads: r1(react?.reads), reactClicks: r1(react?.clicks), gaps: (tplan.gaps ?? []).length, topGap: tplan.gaps?.[0]?.q ?? null }; },
+      const G = J("data/google/plan.json", null), nonBrand = (G?.topQueries ?? []).filter((x) => !/crt ?lab/i.test(x.q));
+      return { reactPages: react?.pages ?? null, reactReads: r1(react?.reads), reactClicks: r1(react?.clicks), gaps: (tplan.gaps ?? []).length, topGap: tplan.gaps?.[0]?.q ?? null,
+        // GOOGLE (11-12 google machine): how much of the site Google knows, and why it skips the rest
+        googleShown: G?.totals?.pagesShown ?? null, googleOf: G?.totals?.sitemapPages ?? null, googleIndexedPct: G?.totals?.inspected ? Math.round((G.totals.indexed / G.totals.inspected) * 100) : null,
+        googleTopReason: G?.reasons?.[0] ? `${G.reasons[0].reason} (${G.reasons[0].n} of ${G.totals.inspected} checked)` : null, googleNonBrandClicks: nonBrand.reduce((a, x) => a + x.clicks, 0) || (G ? 0 : null) }; },
     outcome: (s) => ({ label: "AI clicks on factory pages (decayed)", v: s.reactClicks ?? 0, higher: true }),
     signals: () => (tplan.gaps ?? []).slice(0, 3).map((g) => ({ key: "gap", target: g.q, v: 0, higher: true, days: 14, why: `Bing shows us for it (${g.impr} impressions, #${g.pos}) with no page` })),
     measureOf: (b) => ((tplan.demand ?? []).find((d) => d.q === b.target)?.page ? 1 : 0),
     modes: (s) => [s.gaps >= 5 && { id: "gaps", label: "Gaps", level: "info", why: `${s.gaps} searches Bing shows us for with no page (top: "${s.topGap}")` }].filter(Boolean),
-    admin: (s) => [s.topGap ? `Bing shows CRTLAB for "${s.topGap}" with no page that fits — a page for it is the content brain's top request.` : null].filter(Boolean) },
+    admin: (s) => [s.topGap ? `Bing shows CRTLAB for "${s.topGap}" with no page that fits — a page for it is the content brain's top request.` : null,
+      s.googleShown != null && s.googleOf && s.googleShown / s.googleOf < 0.2 ? `Google shows only ${s.googleShown} of ${s.googleOf} pages (${s.googleTopReason ?? "reason pending"}); its clicks are almost all brand searches. Links are in place — Google isn't spending crawls on us (authority). Earned links to the hubs (/news, /economic-calendar) are the lever; the google machine tracks the curve daily.` : null].filter(Boolean) },
   { id: "retention", name: "Retention brain", color: "#5b8cff",
     managers: [
       { id: "firstday", label: "First day", machines: ["behaviour"], does: "first-day actions that bring people back" },
@@ -232,6 +237,7 @@ function needQueue() {
     [/INSTRUMENT|heartbeat/i, "sensor", "say \"fix the heartbeat\" — a build session on /api/stats + the newest deploy (every engine reads a wrong people number until then)"],
     [/Railway pace|deploys/i, "budget", "fewer direct deploys (use the windows); heap tuner after 24 h of samples"],
     [/came back|week 2|first session/i, "retention", "decide a first-session change (golden actions from the behaviour machine)"],
+    [/Google shows only/i, "google", "earn links to /news + /economic-calendar (a mention from a site Google trusts beats 1,000 pages) — the google machine reports coverage daily"],
     [/no page|Bing shows/i, "gap", "approve a page for the search (content brain's top gap)"]];
   const out = new Map();
   for (const r of raw) { const k = KNOWN.find(([re]) => re.test(r.text)); const kind = k?.[1] ?? "other", key = kind === "other" ? r.text.slice(0, 50) : kind;
