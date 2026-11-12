@@ -32,7 +32,8 @@ const banRule = st.banRuleId;
 const CRAWLER_RULE = "6ada962bdf364810b175d41c8f427012", crawlerEv = ev.filter((e) => e.ruleId === CRAWLER_RULE);
 const per = new Map();
 for (const e of ev) {
-  if (e.ruleId && (e.ruleId === banRule || e.ruleId === CRAWLER_RULE)) continue;
+  // 11-12: the homepage flood challenge is a CHALLENGE, never ban evidence — it banned the owner's own home IP (7 test hits)
+  if (e.ruleId && (e.ruleId === banRule || e.ruleId === CRAWLER_RULE || e.ruleId === "24a2d4af18f843f1a86340aeb2f581a4")) continue;
   const s = SCORE[e.source]; if (!s) continue;
   const x = per.get(e.clientIP) || { n: 0, asn: e.clientAsn, org: e.clientASNDescription || "", src: {}, uas: new Set(), wp: 0, reqs: 0 }; x.n += s; x.src[e.source] = (x.src[e.source] || 0) + 1; x.uas.add(e.userAgent || ""); x.reqs++; if (/^\/(wp-|xmlrpc|\.env|\.git|cgi-bin|phpmyadmin|vendor\/phpunit)|\.php$/i.test(e.clientRequestPath || "")) x.wp++; per.set(e.clientIP, x);
 }
