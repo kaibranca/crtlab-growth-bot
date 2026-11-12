@@ -25,7 +25,10 @@ const H = { authorization: `Bearer ${tk}`, "content-type": "application/json" };
 const PROP = "sc-domain:crtlab.pro", P = encodeURIComponent(PROP), day = (n) => new Date(NOW - n * DAY).toISOString().slice(0, 10);
 const q = async (b) => { try { const r = await fetch(`https://www.googleapis.com/webmasters/v3/sites/${P}/searchAnalytics/query`, { method: "POST", headers: H, body: JSON.stringify(b), signal: AbortSignal.timeout(30000) }); const j = await r.json(); if (j.error) console.log("google: query error", j.error.message?.slice(0, 120)); return j.rows ?? []; } catch (e) { console.log("google: query failed", String(e).slice(0, 80)); return []; } };
 const strip = (u) => u.replace(/^https:\/\/(www\.)?crtlab\.pro/, "") || "/";
-const family = (p) => { const s = p.split("/").filter(Boolean); if (!s.length) return "/"; if (s.length === 1) return /^[a-z]{3,6}usd$|^(nas100|us30|sp500|ger40|usoil)$/.test(s[0]) ? "/<market>" : /-backtest/.test(s[0]) ? "/<x>-backtest…" : `/${s[0]}`; return `/${s[0]}/<…>`; };
+const family = (p) => { const s = p.split("/").filter(Boolean); if (!s.length) return "/";
+  if (s.length === 1) { const x = s[0]; return /-challenge-simulator$/.test(x) ? "/<firm>-challenge-simulator" : /^backtest-/.test(x) ? "/backtest-<x>" : /-alternative$/.test(x) ? "/<x>-alternative"
+    : /-backtest(er|ing)?$|-backtesting-/.test(x) ? "/<x>-backtest…" : /^[a-z]{3,6}usd$|^(nas100|us30|sp500|ger40|usoil)$/.test(x) ? "/<market>" : "/<page>"; }
+  return `/${s[0]}/<…>`; };
 fs.mkdirSync(OUT, { recursive: true });
 
 // ── 1. SEARCH ANALYTICS (28 d; Google's data lags ~2 days) ────────────────────────────────────────────────────────────
@@ -45,7 +48,10 @@ if (urls.length && urls.every((u) => u.endsWith(".xml"))) { const all = []; for 
 const fams = {}; for (const u of urls) (fams[family(strip(u))] ??= []).push(u);
 // oldest-inspected first, round-robin over families so every family's picture fills in
 const queues = Object.values(fams).map((v) => [...v].sort((a, b) => (Date.parse(IX[strip(a)]?.at ?? 0) - Date.parse(IX[strip(b)]?.at ?? 0))));
-const CAP = 80; const pick = []; for (let i = 0; pick.length < CAP && queues.some((qq) => qq.length > i); i++) for (const qq of queues) if (qq[i] && NOW - Date.parse(IX[strip(qq[i])]?.at ?? 0) > 14 * DAY && pick.length < CAP) pick.push(qq[i]);
+const CAP = 80; // share of the run per family ∝ √size (news with 2,109 pages gets ~10× a one-page family), at least 1, oldest-checked first
+const due = queues.map((qq) => qq.filter((u) => NOW - Date.parse(IX[strip(u)]?.at ?? 0) > 14 * DAY)), rootSum = due.reduce((a, qq) => a + Math.sqrt(qq.length), 0) || 1;
+const pick = []; for (const qq of due) pick.push(...qq.slice(0, Math.max(1, Math.round((CAP * Math.sqrt(qq.length)) / rootSum))));
+pick.splice(CAP);
 let inspected = 0, inspErr = null;
 // 4 at a time (Google allows 600/min, 2,000/day) — ~80 a run inside the 120 s budget instead of ~20
 const inspect = async (u) => {
