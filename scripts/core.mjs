@@ -441,6 +441,20 @@ if (mode === "dip") next.push(`Recovery: the ${P.recoveryN} best pages go back t
 { const up = (J("data/events/upcoming.json", { events: [] }).events ?? []).filter((e) => e.t > NOW && e.t < NOW + 3 * DAY && e.imp >= 2 && e.fam);
   const seen = new Set(); for (const e of up) { if (seen.has(e.fam)) continue; seen.add(e.fam); if (seen.size > 3) break;
     next.push(`${e.title} drops ${new Date(e.t).toUTCString().slice(0, 11)} — its pages are already queued for Bing before people ask.`); } }
+// LEARNING PULSE (11-12, admin view: "how strong is the learning?") — every engine's closed loops in one line + a daily row
+// in data/machines/pulse.jsonl, so the curve is visible: verdicts per week (wins + losses anywhere), neurons with real
+// experience, priors learned from history, tests running, holdout age, lock-in waves. 0 verdicts = the brains are guessing.
+{ const wk = (f) => readLines(f).filter((l) => NOW - Date.parse(l.at) < 7 * DAY);
+  const led = [...wk("data/machines/ledger.jsonl"), ...wk("data/traffic/ledger.jsonl")], wins = led.filter((l) => l.kind === "win").length, losses = led.filter((l) => l.kind === "loss").length;
+  const tw = Object.values(J("data/traffic/brain.json", {}).w ?? {}), bw = (J("data/brains/index.json", { brains: [] }).brains ?? []).map((b) => Object.values(J(`data/brains/${b.id}/brain.json`, {}).w ?? {})).flat();
+  const hooks = (J("data/ai/hooks.json", { experiments: [] }).experiments ?? []), ho = J("data/ai/holdout.json", null), waves = readLines("data/machines/waves.jsonl").filter((w) => NOW - Date.parse(w.at) < 30 * DAY);
+  const P = { day: iso(NOW).slice(0, 10), verdicts7: wins + losses, wins7: wins, losses7: losses, neurons: tw.length + bw.length, experienced: [...tw, ...bw].filter((w) => w.n > 0).length,
+    fromHistory: tw.filter((w) => /^history/.test(w.prior ?? "")).length, testsRunning: hooks.filter((e) => e.status === "running").length, testsWaiting: hooks.filter((e) => e.status === "paused").length,
+    holdoutDays: ho?.last?.days ?? null, pushLift: ho?.last?.pushLift ?? null, waves30: waves.length, wavesPaid: waves.filter((w) => w.verdict === "paid").length };
+  const PF = "data/machines/pulse.jsonl", rowsP = readLines(PF); if (rowsP.at(-1)?.day === P.day) rowsP[rowsP.length - 1] = P; else rowsP.push(P);
+  fs.writeFileSync(PF, rowsP.slice(-365).map((x) => JSON.stringify(x)).join("\n") + "\n");
+  const prevP = rowsP.at(-8);
+  next.push(`Learning pulse: ${P.verdicts7} verdicts this week (${wins} won, ${losses} lost)${prevP ? ` vs ${prevP.verdicts7} a week before` : ""} · ${P.experienced}/${P.neurons} neurons with real experience, ${P.fromHistory} pre-trained from history · ${P.testsRunning} tests running${P.testsWaiting ? ` (+${P.testsWaiting} waiting)` : ""}${P.pushLift != null ? ` · push lift ×${P.pushLift} (holdout)` : P.holdoutDays != null ? ` · holdout day ${Math.floor(P.holdoutDays)} of 7` : ""}${P.waves30 ? ` · ${P.waves30} waves in 30 d, ${P.wavesPaid} paid` : ""}`); }
 { const an = J("data/analyst/plan.json"); if (an?.headline && NOW - Date.parse(an.at) < 30 * 3600e3) next.unshift(`AI analyst: ${an.headline}`); }
 // THE TRAFFIC BRAIN talks back (two engines, one picture): its mode + what it is pushing lead the main briefing
 { const tb = J("data/traffic/ecosystem.json"); if (tb?.briefing && NOW - Date.parse(tb.at) < 3 * 3600e3) { next.unshift(`Traffic brain (${tb.modes?.[0]?.label ?? "on"}): ${tb.briefing.conclusion}`); for (const w of (tb.briefing.watch ?? []).slice(0, 1)) watch.push(`Traffic: ${w}`); } }
