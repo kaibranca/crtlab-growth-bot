@@ -1,5 +1,8 @@
 name: gsc-diag
-on: { workflow_dispatch: }
+on:
+  workflow_dispatch:
+    inputs:
+      inspect: { description: "URLs to inspect (0 = skip)", default: "160" }
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -9,6 +12,6 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: node scripts/gsc-diag.mjs
-        env: { GSC_SA_JSON: "${{ secrets.GSC_SA_JSON }}" }
+        env: { GSC_SA_JSON: "${{ secrets.GSC_SA_JSON }}", INSPECT: "${{ github.event.inputs.inspect || '160' }}" }
       - uses: actions/upload-artifact@v4
         with: { name: gsc-diag, path: gsc-diag.json, retention-days: 3 }

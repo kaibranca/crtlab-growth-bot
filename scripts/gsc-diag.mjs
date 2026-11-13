@@ -27,7 +27,7 @@ if (urls.every((u) => u.endsWith(".xml"))) { const all = []; for (const s of url
 const sec = {}; for (const u of urls) { const s = new URL(u).pathname.split("/")[1] || "(home)"; (sec[s] ??= []).push(u); }
 out.sitemapSections = Object.fromEntries(Object.entries(sec).map(([k, v]) => [k, v.length]).sort((a, b) => b[1] - a[1]));
 out.sitemapTotal = urls.length;
-const sample = Object.values(sec).flatMap((v) => v.filter((_, i) => i % Math.max(1, Math.floor(v.length / 4)) === 0).slice(0, 4)).slice(0, 160);
+const sample = Object.values(sec).flatMap((v) => v.filter((_, i) => i % Math.max(1, Math.floor(v.length / 4)) === 0).slice(0, 4)).slice(0, +(process.env.INSPECT ?? 160)); // INSPECT=0: sitemaps/trend/queries only (the inspection loop is slow)
 const insp = [];
 for (const u of sample) {
   const r = await (await fetch("https://searchconsole.googleapis.com/v1/urlInspection/index:inspect", { method: "POST", headers: H, body: JSON.stringify({ inspectionUrl: u, siteUrl: PROP }) })).json();
