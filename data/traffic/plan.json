@@ -1,7 +1,7 @@
 {
- "at": "2026-11-12T06:43:05.880Z",
+ "at": "2026-11-13T06:43:12.131Z",
  "score": {
-  "at": "2026-11-12T06:43:05.880Z",
+  "at": "2026-11-13T06:43:12.131Z",
   "queries": 24,
   "impr": 186,
   "clicks": 5,
@@ -28,15 +28,6 @@
    "pos": 9
   },
   {
-   "page": "/tools/nas100-lot-size-calculator",
-   "missed": 0.7,
-   "impr": 7,
-   "queries": [
-    "nas100 lot size calculator (#7)"
-   ],
-   "pos": 8
-  },
-  {
    "page": "/backtest",
    "missed": 0.7,
    "impr": 7,
@@ -44,6 +35,15 @@
     "free backtesting (#9)"
    ],
    "pos": 5
+  },
+  {
+   "page": "/tools/nas100-lot-size-calculator",
+   "missed": 0.7,
+   "impr": 7,
+   "queries": [
+    "nas100 lot size calculator (#7)"
+   ],
+   "pos": 8
   }
  ],
  "gaps": [
@@ -130,22 +130,22 @@
    "missed": 3.2
   },
   {
-   "q": "nas100 lot size calculator",
-   "impr": 7,
-   "clicks": 0,
-   "pos": 7,
-   "page": "/tools/nas100-lot-size-calculator",
-   "fit": 1.05,
-   "band": "page1-bottom",
-   "missed": 0.7
-  },
-  {
    "q": "free backtesting",
    "impr": 7,
    "clicks": 0,
    "pos": 9,
    "page": "/backtest",
    "fit": 1,
+   "band": "page1-bottom",
+   "missed": 0.7
+  },
+  {
+   "q": "nas100 lot size calculator",
+   "impr": 7,
+   "clicks": 0,
+   "pos": 7,
+   "page": "/tools/nas100-lot-size-calculator",
+   "fit": 1.05,
    "band": "page1-bottom",
    "missed": 0.7
   },
@@ -190,6 +190,26 @@
    "missed": 0
   },
   {
+   "q": "position lot size calculator",
+   "impr": 3,
+   "clicks": 0,
+   "pos": 9,
+   "page": "/tools/position-size-calculator",
+   "fit": 0.79,
+   "band": "page1-bottom",
+   "missed": 0.3
+  },
+  {
+   "q": "usdjpy lot size calculator",
+   "impr": 3,
+   "clicks": 0,
+   "pos": 7,
+   "page": "/tools/usdjpy-lot-size-calculator",
+   "fit": 1.05,
+   "band": "page1-bottom",
+   "missed": 0.3
+  },
+  {
    "q": "sizeposition",
    "impr": 3,
    "clicks": 0,
@@ -210,36 +230,6 @@
    "missed": 0.3
   },
   {
-   "q": "usdjpy lot size calculator",
-   "impr": 3,
-   "clicks": 0,
-   "pos": 7,
-   "page": "/tools/usdjpy-lot-size-calculator",
-   "fit": 1.05,
-   "band": "page1-bottom",
-   "missed": 0.3
-  },
-  {
-   "q": "position lot size calculator",
-   "impr": 3,
-   "clicks": 0,
-   "pos": 9,
-   "page": "/tools/position-size-calculator",
-   "fit": 0.79,
-   "band": "page1-bottom",
-   "missed": 0.3
-  },
-  {
-   "q": "gold backtesting to find edge",
-   "impr": 2,
-   "clicks": 1,
-   "pos": 3,
-   "page": "/backtest-gold",
-   "fit": 0.54,
-   "band": "top",
-   "missed": 0
-  },
-  {
    "q": "xauusd replay",
    "impr": 2,
    "clicks": 1,
@@ -250,24 +240,14 @@
    "missed": 0
   },
   {
-   "q": "lot size calculator xauusd",
+   "q": "gold backtesting to find edge",
    "impr": 2,
-   "clicks": 0,
-   "pos": 6,
-   "page": "/tools/xauusd-lot-size-calculator",
-   "fit": 1.05,
-   "band": "page1-bottom",
-   "missed": 0.2
-  },
-  {
-   "q": "position size calculator | lot size calculator | myfxbook",
-   "impr": 2,
-   "clicks": 0,
-   "pos": 8,
-   "page": "/tools/position-size-calculator",
-   "fit": 0.67,
-   "band": "page1-bottom",
-   "missed": 0.2
+   "clicks": 1,
+   "pos": 3,
+   "page": "/backtest-gold",
+   "fit": 0.54,
+   "band": "top",
+   "missed": 0
   },
   {
    "q": "gbpusd lot size calculator",
@@ -286,6 +266,46 @@
    "pos": 5,
    "page": null,
    "fit": 0.39,
+   "band": "page1-bottom",
+   "missed": 0.2
+  },
+  {
+   "q": "lot size calculator xauusd",
+   "impr": 2,
+   "clicks": 0,
+   "pos": 6,
+   "page": "/tools/xauusd-lot-size-calculator",
+   "fit": 1.05,
+   "band": "page1-bottom",
+   "missed": 0.2
+  },
+  {
+   "q": "xauusd lot size calculator",
+   "impr": 2,
+   "clicks": 0,
+   "pos": 8,
+   "page": "/tools/xauusd-lot-size-calculator",
+   "fit": 1.05,
+   "band": "page1-bottom",
+   "missed": 0.2
+  },
+  {
+   "q": "wie gross 1 lot grösse nas100 bitget cfd",
+   "impr": 2,
+   "clicks": 0,
+   "pos": 6,
+   "page": null,
+   "fit": 0.35,
+   "band": "page1-bottom",
+   "missed": 0.2
+  },
+  {
+   "q": "position size calculator | lot size calculator | myfxbook",
+   "impr": 2,
+   "clicks": 0,
+   "pos": 8,
+   "page": "/tools/position-size-calculator",
+   "fit": 0.67,
    "band": "page1-bottom",
    "missed": 0.2
   },
@@ -310,16 +330,6 @@
    "missed": 0.2
   },
   {
-   "q": "xauusd lot size calculator",
-   "impr": 2,
-   "clicks": 0,
-   "pos": 8,
-   "page": "/tools/xauusd-lot-size-calculator",
-   "fit": 1.05,
-   "band": "page1-bottom",
-   "missed": 0.2
-  },
-  {
    "q": "xauusd backtest free",
    "impr": 2,
    "clicks": 0,
@@ -327,16 +337,6 @@
    "page": "/backtest-gold",
    "fit": 1.04,
    "band": "top",
-   "missed": 0.2
-  },
-  {
-   "q": "wie gross 1 lot grösse nas100 bitget cfd",
-   "impr": 2,
-   "clicks": 0,
-   "pos": 6,
-   "page": null,
-   "fit": 0.35,
-   "band": "page1-bottom",
    "missed": 0.2
   }
  ],
@@ -349,37 +349,18 @@
   "/funded-trader-markets-challenge-simulator": 4,
   "/backtest": 5,
   "/tools/xauusd-lot-size-calculator": 7,
-  "/hub": 3,
   "/backtesting-software": 8,
+  "/hub": 3,
   "/backtest-sp500": 4,
   "/tools/btcusd-position-size-calculator": 5,
   "/trading-simulator": 8,
   "/tools/usdjpy-lot-size-calculator": 6,
   "/metatrader-strategy-tester-alternative": 3
  },
- "pagePos7": {
-  "/": 5,
-  "/backtest-gold": 4,
-  "/tools/sp500-lot-size-calculator": 4,
-  "/backtest-sp500": 4,
-  "/tools/position-size-calculator": 9,
-  "/tools/nas100-lot-size-calculator": 8,
-  "/funded-trader-markets-challenge-simulator": 4,
-  "/backtest": 5,
-  "/tools/xauusd-lot-size-calculator": 7,
-  "/hub": 3,
-  "/backtesting-software": 8,
-  "/tools/btcusd-position-size-calculator": 5,
-  "/trading-simulator": 8,
-  "/tools/usdjpy-lot-size-calculator": 6,
-  "/metatrader-strategy-tester-alternative": 3,
-  "/backtest-nas100": 4,
-  "/tools/gbpusd-lot-size-calculator": 6,
-  "/pipstone-capital-challenge-simulator": 9
- },
+ "pagePos7": {},
  "ghosts": [],
  "prev": {
-  "at": "2026-11-12T06:37:21.095Z",
+  "at": "2026-11-12T06:43:05.880Z",
   "queries": 24,
   "impr": 186,
   "clicks": 5,
