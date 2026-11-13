@@ -13,6 +13,7 @@
 //  5. DEMAND: Bing's keyword tool gives a free, SAMPLED count of searches (small numbers — a relative index, not a
 //     monthly volume) → ranks each /answers question and each gap against the others, so the next pages are chosen by
 //     demand, not guesswork (data/bing-keywords.json)
+import { worksMul, worksTier } from "./works-lib.mjs"; // 11-13 WORKS north star
 import fs from "node:fs";
 import { SITE, append, readLines, now, BRAND, NEVER, expected, liveMeta, rewrite } from "./lib.mjs";
 
@@ -68,8 +69,8 @@ for (const c of log.filter((x) => x.kind === "change" && x.source === "bing" && 
 
 // 2. FIX titles Bing shows but nobody clicks — only on pages with no override yet, and none changed in 28 days
 const recent = new Set(log.filter((x) => x.kind === "change" && stamp - new Date(x.at).getTime() < 28 * DAY).map((x) => x.path));
-const cands = pages.filter((p) => !NEVER.test(p.path) && !ov[p.path] && !recent.has(p.path) && p.impr >= 50 && p.pos <= 15 && p.ctr < expected(p.pos) * 0.6)
-  .sort((a, b) => b.impr * (expected(b.pos) - b.ctr) - a.impr * (expected(a.pos) - a.ctr)).slice(0, 5);
+const cands = pages.filter((p) => !NEVER.test(p.path) && worksTier(p.path) !== "DEAD" && !ov[p.path] && !recent.has(p.path) && p.impr >= 50 && p.pos <= 15 && p.ctr < expected(p.pos) * 0.6)
+  .sort((a, b) => worksMul(b.path) * b.impr * (expected(b.pos) - b.ctr) - worksMul(a.path) * a.impr * (expected(a.pos) - a.ctr)).slice(0, 5); // 11-13 WORKS first
 const changes = [];
 for (const p of cands) {
   const pq = sum(await call("GetPageQueryStats", `&page=${encodeURIComponent(SITE + p.path)}`)).filter((x) => !BRAND.test(x.k));

@@ -4,6 +4,7 @@
 //     description from the exact words people search, into site/lib/seo-overrides.json (max 8 pages a week)
 //  3. every change is measured 28 days later: CTR up → kept; CTR down >20% → reverted automatically
 //  4. searches CRTLAB shows up for with no page that answers them → data/gaps.json (what to build next)
+import { worksMul, worksTier } from "./works-lib.mjs"; // 11-13 WORKS north star
 import fs from "node:fs";
 import crypto from "node:crypto";
 import { append, readLines, now, BRAND, NEVER, expected, liveMeta, rewrite } from "./lib.mjs";
@@ -54,8 +55,8 @@ for (const c of log.filter((x) => x.kind === "change" && x.source !== "bing" && 
 }
 // 2. FIX titles
 const recent = new Set(log.filter((x) => x.kind === "change" && stamp - new Date(x.at).getTime() < 28 * 86400000).map((x) => x.path));
-const cands = [...pages.values()].filter((p) => !NEVER.test(p.path) && p.impr >= 100 && p.pos <= 15 && p.ctr < expected(p.pos) * 0.6 && !recent.has(p.path) && !p.path.startsWith("/api"))
-  .sort((a, b) => b.impr * (expected(b.pos) - b.ctr) - a.impr * (expected(a.pos) - a.ctr)).slice(0, 8);
+const cands = [...pages.values()].filter((p) => !NEVER.test(p.path) && worksTier(p.path) !== "DEAD" && p.impr >= 100 && p.pos <= 15 && p.ctr < expected(p.pos) * 0.6 && !recent.has(p.path) && !p.path.startsWith("/api"))
+  .sort((a, b) => worksMul(b.path) * b.impr * (expected(b.pos) - b.ctr) - worksMul(a.path) * a.impr * (expected(a.pos) - a.ctr)).slice(0, 8); // 11-13 WORKS: pages that bring accounts first
 const changes = [];
 for (const p of cands) {
   const cur = await liveMeta(p.path);
