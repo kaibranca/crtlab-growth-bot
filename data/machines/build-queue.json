@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T00:19:44.597Z",
+ "at": "2026-11-13T01:20:10.953Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -28,16 +28,6 @@
    "name": "4-week trend",
    "engine": "main",
    "what": "Teach 4-week trend to judge itself on its KPI (AI clicks / week)",
-   "why": "acts but never judges its outcome — it has a KPI it doesn't learn from",
-   "score": 3,
-   "buildPays": 0.5
-  },
-  {
-   "kind": "learn",
-   "machine": "yield",
-   "name": "Failure learning",
-   "engine": "main",
-   "what": "Teach Failure learning to judge itself on its KPI (AI clicks / week)",
    "why": "acts but never judges its outcome — it has a KPI it doesn't learn from",
    "score": 3,
    "buildPays": 0.5
@@ -112,7 +102,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 13s — phones 2.43s vs desktop 9.62s (44% of loads on phones); the server answers in 0.19s and candles in 0.08s (HIT) — the time is on the visitor's side. NETWORK, not device: US loads 0.97s at p90, the slow 10% are far/slow connections — IN 16s ×71, IR 38s ×16, PK 12s ×24. The lever is first-load weight (a lighter first chart bundle / fewer candles on slow links), a build session. A headless flood is on (US: 203 raw vs ~12.2, 2 stayed, GB: 86 raw vs ~6.5, 0 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: desktop/IN 20s ×50, desktop/IR 47s ×10, desktop/US 1.83s ×219, mobile/PK 16s ×13.",
+   "what": "Chart pages: the slowest 10% of real loads take 13s — phones 2.43s vs desktop 9.66s (44% of loads on phones); the server answers in 0.21s and candles in 0.05s (HIT) — the time is on the visitor's side. NETWORK, not device: US loads 0.96s at p90, the slow 10% are far/slow connections — IN 16s ×71, IR 38s ×16, PK 12s ×24, JP 8.2s ×15. The lever is first-load weight (a lighter first chart bundle / fewer candles on slow links), a build session. A headless flood is on (US: 201 raw vs ~12.4, 2 stayed, GB: 87 raw vs ~6.5, 0 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: desktop/IN 20s ×50, desktop/IR 47s ×10, desktop/US 1.81s ×218, mobile/PK 16s ×13.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
@@ -128,7 +118,7 @@
   },
   {
    "kind": "build",
-   "what": "AI accounts / week getting worse: 21 vs 30 last week (hooks) → a build session reads the machine's evidence and changes what it does [impact 1]",
+   "what": "AI accounts / week getting worse: 22 vs 30 last week (hooks) → a build session reads the machine's evidence and changes what it does [impact 1]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,
@@ -240,6 +230,16 @@
    "name": "Ledger",
    "engine": "main",
    "what": "Teach Ledger to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 1,
+   "buildPays": 0.5
+  },
+  {
+   "kind": "learn",
+   "machine": "brains",
+   "name": "Brains (money · data · security · content · retention · speed)",
+   "engine": "main",
+   "what": "Teach Brains (money · data · security · content · retention · speed) to judge itself on an outcome it can measure",
    "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
    "score": 1,
    "buildPays": 0.5

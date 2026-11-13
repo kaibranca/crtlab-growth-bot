@@ -1,12 +1,12 @@
 {
- "at": "2026-11-13T00:19:44.599Z",
+ "at": "2026-11-13T01:20:10.955Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
-  "iq": 79.9,
+  "iq": 80.8,
   "power": 261,
-  "dIQ": 5.6,
+  "dIQ": 6.5,
   "dPower": 156,
-  "iqPerUpgrade": 0.036,
+  "iqPerUpgrade": 0.042,
   "upgrades": {
    "judged": 0,
    "paid": 0,
@@ -16,21 +16,21 @@
    "unmeasured": 0,
    "next": "2026-11-19"
   },
-  "say": "Machines IQ 79.9 (+5.6 since 11 Nov) on 156 upgrades — 0.04 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.0/day — on pace for ~105 in 30 days.",
-  "experiments": "13 experiments live — next verdicts: Bing send yield 13 Nov · conversion bandit 14 Nov · executive focus: conversion 15 Nov · hook home-yesterday-charts-2026-11-12 17 Nov.",
+  "say": "Machines IQ 80.8 (+6.5 since 11 Nov) on 156 upgrades — 0.04 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.1/day — on pace for ~108 in 30 days.",
+  "experiments": "13 experiments live — next verdicts: conversion bandit 14 Nov · executive focus: conversion 15 Nov · hook home-yesterday-charts-2026-11-12 17 Nov · forecast self-calibration 17 Nov.",
   "pace": {
-   "perDay": 2.96,
-   "in30": 105.4
+   "perDay": 3.1,
+   "in30": 107.5
   }
  },
  "engines": {
   "main": {
-   "iq": 79.9,
+   "iq": 80.8,
    "iqWas": 74.3,
    "since": "2026-11-11",
    "level": "Novice",
    "members": 72,
-   "learners": 32,
+   "learners": 33,
    "brainVerdicts": 0,
    "curiosity": 1,
    "episode": null,
@@ -48,35 +48,35 @@
      "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
     },
     {
-     "id": "yield",
-     "name": "Failure learning",
+     "id": "truth",
+     "name": "Truth gate",
      "iq": 70,
-     "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+     "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
     }
    ],
    "strongest": [
+    {
+     "id": "yield",
+     "name": "Failure learning",
+     "iq": 130,
+     "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+    },
     {
      "id": "world",
      "name": "World model",
      "iq": 124,
      "limit": "collects evidence but hasn't reached a verdict yet"
-    },
-    {
-     "id": "traffic-brain",
-     "name": "Traffic brain ↗",
-     "iq": 114,
-     "limit": "learning on every front — more data is the only limit"
     }
    ],
-   "say": "My IQ is 79.9 (Novice, +5.6 since 11 Nov) — 32 of 72 parts learn on their own; weakest: Ledger, 4-week trend, Failure learning (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 80.8 (Novice, +6.5 since 11 Nov) — 33 of 72 parts learn on their own; weakest: Ledger, 4-week trend, Truth gate (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "traffic": {
-   "iq": 80.1,
+   "iq": 82,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Novice",
    "members": 32,
-   "learners": 20,
+   "learners": 21,
    "brainVerdicts": 0,
    "curiosity": 1,
    "episode": null,
@@ -102,19 +102,19 @@
    ],
    "strongest": [
     {
+     "id": "yield",
+     "name": "Failure learning",
+     "iq": 130,
+     "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+    },
+    {
      "id": "hooks",
      "name": "Hook tests",
      "iq": 113,
      "limit": "its outcome is falling (AI accounts / week -27%)"
-    },
-    {
-     "id": "ai",
-     "name": "AI referral machine",
-     "iq": 105,
-     "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 80.1 (Novice, +4.2 since 11 Nov) — 20 of 32 parts learn on their own; weakest: Truth gate, Search console, Bing webmaster (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 82.0 (Novice, +6.2 since 11 Nov) — 21 of 32 parts learn on their own; weakest: Truth gate, Search console, Bing webmaster (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "money": {
    "iq": 76.2,
@@ -124,7 +124,7 @@
    "members": 8,
    "learners": 2,
    "brainVerdicts": 0,
-   "curiosity": 1.1,
+   "curiosity": 1.21,
    "episode": {
     "since": "2026-11-13T00:19:44.576Z",
     "iq0": 76.2
@@ -163,7 +163,7 @@
      "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 76.2 (Novice, +0.2 since 11 Nov) — 2 of 8 parts learn on their own; weakest: /backtest-<market> @ land , direct @ land → account, Wall + checkout (acts but learns nothing from what happens next — no outcome to judge itself by); I'm stalling, so I explore ×1.1 harder."
+   "say": "My IQ is 76.2 (Novice, +0.2 since 11 Nov) — 2 of 8 parts learn on their own; weakest: /backtest-<market> @ land , direct @ land → account, Wall + checkout (acts but learns nothing from what happens next — no outcome to judge itself by); I'm stalling, so I explore ×1.21 harder."
   },
   "data": {
    "iq": 73.1,
@@ -311,7 +311,7 @@
    "members": 2,
    "learners": 2,
    "brainVerdicts": 0,
-   "curiosity": 1.1,
+   "curiosity": 1.21,
    "episode": {
     "since": "2026-11-13T00:19:44.577Z",
     "iq0": 88
@@ -331,7 +331,7 @@
      "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 88.0 (Capable, +0.3 since 11 Nov) — 2 of 2 parts learn on their own; I'm stalling, so I explore ×1.1 harder."
+   "say": "My IQ is 88.0 (Capable, +0.3 since 11 Nov) — 2 of 2 parts learn on their own; I'm stalling, so I explore ×1.21 harder."
   },
   "speed": {
    "iq": 70,
@@ -341,7 +341,7 @@
    "members": 3,
    "learners": 0,
    "brainVerdicts": 0,
-   "curiosity": 1.1,
+   "curiosity": 1.21,
    "episode": {
     "since": "2026-11-13T00:19:44.577Z",
     "iq0": 70
@@ -380,10 +380,10 @@
      "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
     }
    ],
-   "say": "My IQ is 70.0 (Blank, +0 since 11 Nov) — 0 of 3 parts learn on their own; weakest: Capacity, Load alert, Link check (acts but learns nothing from what happens next — no outcome to judge itself by); I'm stalling, so I explore ×1.1 harder."
+   "say": "My IQ is 70.0 (Blank, +0 since 11 Nov) — 0 of 3 parts learn on their own; weakest: Capacity, Load alert, Link check (acts but learns nothing from what happens next — no outcome to judge itself by); I'm stalling, so I explore ×1.21 harder."
   },
   "fixer": {
-   "iq": 98.1,
+   "iq": 98.3,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Capable",
@@ -407,7 +407,7 @@
      "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
     }
    ],
-   "say": "My IQ is 98.1 (Capable, +22.3 since 11 Nov) — 3 of 3 parts learn on their own."
+   "say": "My IQ is 98.3 (Capable, +22.6 since 11 Nov) — 3 of 3 parts learn on their own."
   }
  },
  "machines": {
@@ -455,7 +455,7 @@
   },
   "supervisor": {
    "name": "Supervisor",
-   "iq": 97,
+   "iq": 98,
    "iqWas": 70,
    "level": "Capable",
    "state": "ok",
@@ -463,7 +463,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 265,
+    "e": 290,
     "f": 0
    },
    "upgrades": {
@@ -519,9 +519,9 @@
    "state": "ok",
    "kpi": {
     "label": "AI-referred real visitors / week",
-    "now": 44,
+    "now": 45,
     "before": 47,
-    "change": -0.06
+    "change": -0.04
    },
    "made": {
     "v": 0,
@@ -560,7 +560,7 @@
   },
   "surge": {
    "name": "Surge detector",
-   "iq": 97,
+   "iq": 98,
    "iqWas": 93,
    "level": "Capable",
    "state": "ok",
@@ -573,7 +573,7 @@
    "made": {
     "v": 3,
     "k": 0,
-    "e": 134,
+    "e": 141,
     "f": 0
    },
    "upgrades": {
@@ -612,7 +612,7 @@
   },
   "sisters": {
    "name": "Sister spread",
-   "iq": 86,
+   "iq": 89,
    "iqWas": 79,
    "level": "Capable",
    "state": "ok",
@@ -625,7 +625,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 101,
+    "e": 136,
     "f": 0
    },
    "upgrades": {
@@ -711,9 +711,9 @@
   },
   "yield": {
    "name": "Failure learning",
-   "iq": 70,
+   "iq": 130,
    "iqWas": 70,
-   "level": "Blank",
+   "level": "Expert",
    "state": "ok",
    "kpi": {
     "label": "AI clicks / week",
@@ -721,14 +721,19 @@
     "before": 39,
     "change": 0
    },
-   "made": null,
+   "made": {
+    "v": 61,
+    "k": 0,
+    "e": 0,
+    "f": 0
+   },
    "upgrades": {
     "paid": 0,
     "hurt": 0,
     "flat": 0,
     "waiting": 0
    },
-   "limit": "acts but never judges its outcome — it has a KPI it doesn't learn from"
+   "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
   },
   "hooks": {
    "name": "Hook tests",
@@ -934,7 +939,7 @@
    "made": {
     "v": 0,
     "k": 6.03,
-    "e": 1745,
+    "e": 1770,
     "f": 0
    },
    "upgrades": {
@@ -1313,7 +1318,7 @@
    "state": "ok",
    "kpi": {
     "label": "attacks blocked / week",
-    "now": 5293,
+    "now": 5350,
     "before": 0,
     "change": null
    },
@@ -1536,7 +1541,7 @@
    "state": "ok",
    "kpi": {
     "label": "Railway $ / month pace (7 d)",
-    "now": 24.6,
+    "now": 24.3,
     "before": null,
     "change": null
    },
@@ -1588,9 +1593,9 @@
    "state": "ok",
    "kpi": {
     "label": "real visitors / week",
-    "now": 252,
-    "before": 263,
-    "change": -0.04
+    "now": 255,
+    "before": 262,
+    "change": -0.03
    },
    "made": {
     "v": 0,
@@ -1614,8 +1619,8 @@
    "state": "ok",
    "kpi": {
     "label": "guests → account %",
-    "now": 48.41,
-    "before": 44.87,
+    "now": 48.24,
+    "before": 44.66,
     "change": 0.08
    },
    "made": {
@@ -1642,7 +1647,7 @@
    "made": {
     "v": 0,
     "k": 7.47,
-    "e": 211,
+    "e": 210,
     "f": 0
    },
    "upgrades": {
