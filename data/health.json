@@ -1,10 +1,10 @@
 {
- "at": "2026-11-13T18:41:46.194Z",
+ "at": "2026-11-13T21:42:54.303Z",
  "checks": [
   {
    "name": "database size",
    "ok": true,
-   "note": "298 MB"
+   "note": "299 MB"
   },
   {
    "name": "signups flowing",
@@ -19,12 +19,12 @@
   {
    "name": "payments",
    "ok": true,
-   "note": "ok"
+   "note": "ok (1 customer card declined — Stripe retries)"
   },
   {
    "name": "nightly backup",
    "ok": true,
-   "note": "16h old · 34.1 MB"
+   "note": "19h old · 34.1 MB"
   },
   {
    "name": "market data fresh",
@@ -34,11 +34,11 @@
   {
    "name": "AI radar",
    "ok": true,
-   "note": "12h ago · asked 6/6"
+   "note": "15h ago · asked 6/6"
   }
  ],
  "db": {
-  "mb": 298,
+  "mb": 299,
   "tables": [
    [
     "user_events",
@@ -46,7 +46,7 @@
    ],
    [
     "ui_events",
-    66
+    67
    ],
    [
     "meter_identities",
@@ -72,24 +72,24 @@
  },
  "weight": {
   "home": {
-   "kb": 2608,
+   "kb": 2609,
    "scripts": 24,
-   "ttfbMs": 172
+   "ttfbMs": 149
   },
   "backtest": {
    "kb": 1449,
    "scripts": 13,
-   "ttfbMs": 172
+   "ttfbMs": 214
   },
   "chart app": {
-   "kb": 2608,
+   "kb": 2609,
    "scripts": 24,
-   "ttfbMs": 325
+   "ttfbMs": 334
   },
   "statistics": {
    "kb": 1213,
    "scripts": 14,
-   "ttfbMs": 153
+   "ttfbMs": 149
   }
  },
  "heavier": [],

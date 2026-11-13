@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-13T21:42:38.000Z",
+ "updated": "2026-11-13T21:43:01.976Z",
  "watchdog": {
   "up24h": 97.06,
   "up7d": 99.27,
@@ -476,28 +476,10 @@
  },
  "activity": [
   {
-   "at": "2026-11-13T21:40:52.850Z",
-   "job": "watchdog",
+   "at": "2026-11-13T21:42:54.303Z",
+   "job": "health",
    "ok": true,
-   "text": "18/18 checks pass · avg 257 ms"
-  },
-  {
-   "at": "2026-11-13T21:40:48.175Z",
-   "job": "shield",
-   "ok": true,
-   "text": "Cloudflare blocked 24 attack requests"
-  },
-  {
-   "at": "2026-11-13T21:40:44.639Z",
-   "job": "ai-machine",
-   "ok": true,
-   "text": "learned from 668 AI-read pages · read→click 1.9% · click→account 52% · 0 pages sent to Bing"
-  },
-  {
-   "at": "2026-11-13T21:40:26.223Z",
-   "job": "ai-crawl",
-   "ok": true,
-   "text": "335 crawler visits · Amazonbot 168 · OAI-SearchBot 152 · Bingbot 6 · ChatGPT-User 2"
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
   },
   {
    "at": "2026-11-13T21:23:07.298Z",
@@ -600,12 +582,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "156 crawler visits · Amazonbot 75 · OAI-SearchBot 50 · Bingbot 28 · Googlebot 2"
-  },
-  {
-   "at": "2026-11-13T18:41:46.194Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
   },
   {
    "at": "2026-11-13T18:18:14.596Z",
@@ -1063,13 +1039,13 @@
   ]
  },
  "health": {
-  "at": "2026-11-13T18:41:46.194Z",
+  "at": "2026-11-13T21:42:54.303Z",
   "alerts": [],
   "checks": [
    {
     "name": "database size",
     "ok": true,
-    "note": "298 MB"
+    "note": "299 MB"
    },
    {
     "name": "signups flowing",
@@ -1084,12 +1060,12 @@
    {
     "name": "payments",
     "ok": true,
-    "note": "ok"
+    "note": "ok (1 customer card declined — Stripe retries)"
    },
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "16h old · 34.1 MB"
+    "note": "19h old · 34.1 MB"
    },
    {
     "name": "market data fresh",
@@ -1099,11 +1075,11 @@
    {
     "name": "AI radar",
     "ok": true,
-    "note": "12h ago · asked 6/6"
+    "note": "15h ago · asked 6/6"
    }
   ],
   "db": {
-   "mb": 298,
+   "mb": 299,
    "tables": [
     [
      "user_events",
@@ -1111,7 +1087,7 @@
     ],
     [
      "ui_events",
-     66
+     67
     ],
     [
      "meter_identities",
@@ -1137,24 +1113,24 @@
   },
   "weight": {
    "home": {
-    "kb": 2608,
+    "kb": 2609,
     "scripts": 24,
-    "ttfbMs": 172
+    "ttfbMs": 149
    },
    "backtest": {
     "kb": 1449,
     "scripts": 13,
-    "ttfbMs": 172
+    "ttfbMs": 214
    },
    "chart app": {
-    "kb": 2608,
+    "kb": 2609,
     "scripts": 24,
-    "ttfbMs": 325
+    "ttfbMs": 334
    },
    "statistics": {
     "kb": 1213,
     "scripts": 14,
-    "ttfbMs": 153
+    "ttfbMs": 149
    }
   },
   "heavier": []
