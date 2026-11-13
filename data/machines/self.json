@@ -1,22 +1,22 @@
 {
- "at": "2026-11-13T13:20:09.131Z",
+ "at": "2026-11-13T14:20:36.455Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
   "iq": 81.3,
-  "power": 265,
+  "power": 266,
   "dIQ": 7,
-  "dPower": 160,
-  "iqPerUpgrade": 0.044,
+  "dPower": 161,
+  "iqPerUpgrade": 0.043,
   "upgrades": {
    "judged": 0,
    "paid": 0,
    "hurt": 0,
    "flat": 0,
-   "waiting": 38,
+   "waiting": 39,
    "unmeasured": 0,
    "next": "2026-11-19"
   },
-  "say": "Machines IQ 81.3 (+7 since 11 Nov) on 160 upgrades — 0.04 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.3/day — on pace for ~109 in 30 days.",
+  "say": "Machines IQ 81.3 (+7 since 11 Nov) on 161 upgrades — 0.04 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.3/day — on pace for ~109 in 30 days.",
   "experiments": "13 experiments live — next verdicts: conversion bandit 14 Nov · executive focus: conversion 15 Nov · hook home-yesterday-charts-2026-11-12 17 Nov · forecast self-calibration 17 Nov.",
   "pace": {
    "perDay": 3.26,
@@ -383,7 +383,7 @@
    "say": "My IQ is 70.0 (Blank, +0 since 11 Nov) — 0 of 3 parts learn on their own; weakest: Capacity, Load alert, Link check (acts but learns nothing from what happens next — no outcome to judge itself by); I'm stalling, so I explore ×1.6 harder."
   },
   "fixer": {
-   "iq": 101.8,
+   "iq": 102.1,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Strong",
@@ -397,7 +397,7 @@
     {
      "id": "supervisor",
      "name": "Supervisor",
-     "iq": 109,
+     "iq": 110,
      "limit": "collects evidence but hasn't reached a verdict yet"
     },
     {
@@ -407,7 +407,7 @@
      "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
     }
    ],
-   "say": "My IQ is 101.8 (Strong, +26.1 since 11 Nov) — 3 of 3 parts learn on their own."
+   "say": "My IQ is 102.1 (Strong, +26.3 since 11 Nov) — 3 of 3 parts learn on their own."
   }
  },
  "machines": {
@@ -455,7 +455,7 @@
   },
   "supervisor": {
    "name": "Supervisor",
-   "iq": 109,
+   "iq": 110,
    "iqWas": 70,
    "level": "Strong",
    "state": "ok",
@@ -463,14 +463,14 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 705,
+    "e": 725,
     "f": 0
    },
    "upgrades": {
     "paid": 0,
     "hurt": 0,
     "flat": 0,
-    "waiting": 2
+    "waiting": 3
    },
    "limit": "collects evidence but hasn't reached a verdict yet"
   },
@@ -520,8 +520,8 @@
    "kpi": {
     "label": "AI-referred real visitors / week",
     "now": 47,
-    "before": 48,
-    "change": -0.02
+    "before": 47,
+    "change": 0
    },
    "made": {
     "v": 0,
@@ -750,7 +750,7 @@
    "made": {
     "v": 2,
     "k": 0,
-    "e": 891,
+    "e": 941,
     "f": 0
    },
    "upgrades": {
@@ -1082,7 +1082,7 @@
    "made": {
     "v": 0,
     "k": 1,
-    "e": 5,
+    "e": 6,
     "f": 0
    },
    "upgrades": {
@@ -1281,7 +1281,7 @@
    "state": "ok",
    "kpi": {
     "label": "uptime 7 d %",
-    "now": 99.26,
+    "now": 99.27,
     "before": null,
     "change": null
    },
@@ -1318,7 +1318,7 @@
    "state": "ok",
    "kpi": {
     "label": "attacks blocked / week",
-    "now": 5975,
+    "now": 6005,
     "before": 0,
     "change": null
    },
@@ -1593,9 +1593,9 @@
    "state": "ok",
    "kpi": {
     "label": "real visitors / week",
-    "now": 255,
-    "before": 273,
-    "change": -0.07
+    "now": 257,
+    "before": 269,
+    "change": -0.04
    },
    "made": {
     "v": 0,
@@ -1619,9 +1619,9 @@
    "state": "ok",
    "kpi": {
     "label": "guests → account %",
-    "now": 46.67,
-    "before": 44.32,
-    "change": 0.05
+    "now": 46.69,
+    "before": 44.24,
+    "change": 0.06
    },
    "made": {
     "v": 0,
@@ -1647,7 +1647,7 @@
    "made": {
     "v": 0,
     "k": 7.47,
-    "e": 209,
+    "e": 208,
     "f": 0
    },
    "upgrades": {

@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T13:20:09.129Z",
+ "at": "2026-11-13T14:20:36.452Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -42,14 +42,6 @@
    "kind": "fix",
    "what": "AI accounts / week getting worse: 22 vs 30 last week (hooks)",
    "why": "a build session reads the machine's evidence and changes what it does",
-   "engine": "fixer",
-   "score": 4,
-   "buildPays": 0.5
-  },
-  {
-   "kind": "fix",
-   "what": "Device QA is late (last run 6.6 h ago, normal every 2 h)",
-   "why": "needs a build or a decision",
    "engine": "fixer",
    "score": 4,
    "buildPays": 0.5
@@ -134,7 +126,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 7.96s — phones 6.92s vs desktop 7.76s (67% of loads on phones); the server answers in 0.22s and candles in 0.04s (HIT) — the time is on the visitor's side. A headless flood is on (GB: 34 raw vs ~11.1, 1 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: mobile/US 5.48s ×390, mobile/JP 6.88s ×154, mobile/IN 6.58s ×135, mobile/BR 12s ×48. Needs a build session to profile one slow load.",
+   "what": "Chart pages: the slowest 10% of real loads take 7.93s — phones 6.93s vs desktop 7.51s (67% of loads on phones); the server answers in 0.53s and candles in 0.06s (HIT) — the time is on the visitor's side. Most slow-load time sits in: mobile/US 5.48s ×394, mobile/JP 6.88s ×156, mobile/IN 6.58s ×136, mobile/BR 12s ×48. Needs a build session to profile one slow load.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
@@ -150,7 +142,7 @@
   },
   {
    "kind": "build",
-   "what": "Bing shows CRTLAB for \"fundedtradermarkets trial\" with no page that fits → build the page the search wants (content brain's top gap) — a build session, no approval needed [impact 1.2]",
+   "what": "Chart pages: the slowest 10% of real loads take 7.93s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,
@@ -232,6 +224,16 @@
    "name": "News engine",
    "engine": "content",
    "what": "Teach News engine to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 1.5,
+   "buildPays": 0.5
+  },
+  {
+   "kind": "learn",
+   "machine": "recaps",
+   "name": "Daily recaps",
+   "engine": "content",
+   "what": "Teach Daily recaps to judge itself on an outcome it can measure",
    "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
    "score": 1.5,
    "buildPays": 0.5

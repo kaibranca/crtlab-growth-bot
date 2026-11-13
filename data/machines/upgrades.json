@@ -376,7 +376,10 @@
   "97cd83c3f7f3b6bd9a488f34d062910ee23591fd": 1,
   "be3dcd0821fb2c0cdb291d7a618608b30ad27c56": 1,
   "03683a82e6df070cedbbddbc654e0458027ef52d": 1,
-  "8b1e92999923db7593029018f83de55e2eb371df": 1
+  "8b1e92999923db7593029018f83de55e2eb371df": 1,
+  "7c06bdd1b995a84da6675c5e521e1adc05cf7d0e": 1,
+  "4e8f3196c00df6bfcb3830f6802ca9d91166d3fc": 1,
+  "49b599f2ed7cc14b398037ab7796be90d9f2d69f": 1
  },
  "open": [
   {
@@ -1474,6 +1477,16 @@
      "msg": "bing-submit: check Bing feeds and submit sitemap.xml if missing"
     }
    ]
+  },
+  {
+   "machine": "supervisor",
+   "day": "2026-11-13",
+   "commits": [
+    {
+     "sha": "49b599f2",
+     "msg": "supervisor: Device QA is event-driven (after deploys) — late only past its typed 24 h, not the learned 2 h of the old de"
+    }
+   ]
   }
  ],
  "judged": [],
@@ -1482,9 +1495,9 @@
   "paid": 0,
   "hurt": 0,
   "flat": 0,
-  "waiting": 38,
+  "waiting": 39,
   "unmeasured": 0,
   "next": "2026-11-19"
  },
- "at": "2026-11-13T13:20:04.311Z"
+ "at": "2026-11-13T14:20:31.812Z"
 }

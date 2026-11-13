@@ -1,132 +1,123 @@
 {
- "at": "2026-11-13T13:18:33.707Z",
+ "at": "2026-11-13T14:18:29.798Z",
  "selfCheck": {
   "devices": [
    {
     "dev": "desktop",
-    "raw24": 241,
-    "beat24": 0.515,
-    "beatNormal": 0.588,
-    "stay24": 0.091,
-    "stayNormal": 0.294
+    "raw24": 222,
+    "beat24": 0.514,
+    "beatNormal": 0.586,
+    "stay24": 0.104,
+    "stayNormal": 0.29
    },
    {
     "dev": "mobile",
-    "raw24": 27,
-    "beat24": 0.556,
+    "raw24": 26,
+    "beat24": 0.577,
     "beatNormal": 0.356,
-    "stay24": 0.481,
-    "stayNormal": 0.482
+    "stay24": 0.5,
+    "stayNormal": 0.478
    }
   ],
   "rawSurge": [
    {
     "dim": "source",
     "seg": "Direct",
-    "raw24": 249,
-    "rawNormal": 90.4,
-    "stayed24": 23,
-    "stayShare": 0.092
+    "raw24": 229,
+    "rawNormal": 92.1,
+    "stayed24": 24,
+    "stayShare": 0.105
    },
    {
     "dim": "landing",
     "seg": "home",
-    "raw24": 233,
-    "rawNormal": 79.1,
-    "stayed24": 16,
-    "stayShare": 0.069
+    "raw24": 213,
+    "rawNormal": 80.8,
+    "stayed24": 17,
+    "stayShare": 0.08
    },
    {
     "dim": "device",
     "seg": "desktop",
-    "raw24": 241,
-    "rawNormal": 93,
-    "stayed24": 22,
-    "stayShare": 0.091
+    "raw24": 222,
+    "rawNormal": 94.6,
+    "stayed24": 23,
+    "stayShare": 0.104
    },
    {
     "dim": "country",
     "seg": "US",
-    "raw24": 110,
-    "rawNormal": 21.4,
+    "raw24": 102,
+    "rawNormal": 22.1,
     "stayed24": 4,
-    "stayShare": 0.036
+    "stayShare": 0.039
    },
    {
     "dim": "country",
     "seg": "CA",
-    "raw24": 33,
-    "rawNormal": 4.5,
+    "raw24": 29,
+    "rawNormal": 4.8,
     "stayed24": 1,
-    "stayShare": 0.03
+    "stayShare": 0.034
    },
    {
     "dim": "country",
     "seg": "GB",
-    "raw24": 33,
-    "rawNormal": 11.1,
+    "raw24": 31,
+    "rawNormal": 11.3,
     "stayed24": 1,
-    "stayShare": 0.03
+    "stayShare": 0.032
    }
   ],
   "flood": [],
-  "verdict": "PEOPLE LEAVING: heartbeats fine, but the share who stay 30 s fell on desktop (0.091 vs 0.294)"
+  "verdict": "PEOPLE LEAVING: heartbeats fine, but the share who stay 30 s fell on desktop (0.104 vs 0.29)"
  },
  "wave": {
   "window": "3h",
   "visitors": {
-   "now": 12,
-   "normal": 5.9,
-   "ratio": 2.05,
-   "z": 1.7
+   "now": 9,
+   "normal": 6.5,
+   "ratio": 1.38,
+   "z": 0.7
   },
   "signups": {
    "now": 3,
    "normal": 2.6,
    "ratio": 1.17,
-   "z": 0.2
+   "z": 0.1
   },
   "riding": [
    {
     "dim": "source",
     "seg": "Direct",
-    "now": 10,
-    "normal": 3.4,
-    "ratio": 2.92,
-    "z": 2.4,
-    "gain": 6.6
+    "now": 8,
+    "normal": 3.9,
+    "ratio": 2.07,
+    "z": 1.8,
+    "gain": 4.1
    },
    {
     "dim": "landing",
     "seg": "home",
-    "now": 7,
-    "normal": 2.5,
-    "ratio": 2.8,
-    "z": 2.4,
-    "gain": 4.5
-   },
-   {
-    "dim": "landing",
-    "seg": "chart",
-    "now": 3,
-    "normal": 0.9,
-    "ratio": 3.23,
-    "z": 2.3,
-    "gain": 2.1
+    "now": 6,
+    "normal": 2.4,
+    "ratio": 2.47,
+    "z": 2,
+    "gain": 3.6
    }
   ]
  },
  "visitors": {
-  "now": 35,
+  "now": 36,
   "normal": 36.9,
-  "ratio": 0.95,
-  "z": -0.2
+  "ratio": 0.97,
+  "z": -0.1
  },
  "rawVisitors": {
-  "now": 268,
-  "normal": 112,
-  "ratio": 2.39,
-  "z": 1.2
+  "now": 248,
+  "normal": 113.6,
+  "ratio": 2.18,
+  "z": 1
  },
  "signups": {
   "now": 13,
@@ -136,34 +127,34 @@
  },
  "state": "normal",
  "why": [
-  "device desktop: 22 vs ~27.4/day",
-  "landing /backtest pages: 2 vs ~6.9/day",
+  "landing /backtest pages: 2 vs ~6.8/day",
+  "device desktop: 23 vs ~27.4/day",
   "source Google: 0 vs ~3.7/day",
-  "country IN: 4 vs ~5.8/day"
+  "country IN: 3 vs ~5.8/day"
  ],
  "gainers": [
-  "device mobile: 13 vs ~8.7/day",
-  "source AI answers: 10 vs ~6.5/day",
+  "device mobile: 13 vs ~8.6/day",
+  "source AI answers: 10 vs ~6.4/day",
   "landing other pages: 5 vs ~3.4/day"
  ],
  "segments": [
   {
-   "dim": "device",
-   "seg": "desktop",
-   "now": 22,
-   "normal": 27.4,
-   "ratio": 0.8,
-   "z": -0.6,
-   "gap": -5.4
-  },
-  {
    "dim": "landing",
    "seg": "/backtest pages",
    "now": 2,
-   "normal": 6.9,
+   "normal": 6.8,
    "ratio": 0.29,
-   "z": -1.3,
-   "gap": -4.9
+   "z": -1.6,
+   "gap": -4.8
+  },
+  {
+   "dim": "device",
+   "seg": "desktop",
+   "now": 23,
+   "normal": 27.4,
+   "ratio": 0.84,
+   "z": -0.5,
+   "gap": -4.4
   },
   {
    "dim": "source",
@@ -177,11 +168,11 @@
   {
    "dim": "country",
    "seg": "IN",
-   "now": 4,
+   "now": 3,
    "normal": 5.8,
-   "ratio": 0.69,
-   "z": -0.7,
-   "gap": -1.8
+   "ratio": 0.52,
+   "z": -1,
+   "gap": -2.8
   },
   {
    "dim": "country",
@@ -189,17 +180,8 @@
    "now": 1,
    "normal": 2.6,
    "ratio": 0.38,
-   "z": -1,
+   "z": -0.9,
    "gap": -1.6
-  },
-  {
-   "dim": "landing",
-   "seg": "home",
-   "now": 16,
-   "normal": 17.4,
-   "ratio": 0.92,
-   "z": -0.2,
-   "gap": -1.4
   },
   {
    "dim": "landing",
@@ -220,13 +202,22 @@
    "gap": -0.5
   },
   {
+   "dim": "landing",
+   "seg": "home",
+   "now": 17,
+   "normal": 17.4,
+   "ratio": 0.98,
+   "z": -0.1,
+   "gap": -0.4
+  },
+  {
    "dim": "source",
    "seg": "Direct",
-   "now": 23,
-   "normal": 23,
-   "ratio": 1,
-   "z": 0,
-   "gap": 0
+   "now": 24,
+   "normal": 23.1,
+   "ratio": 1.04,
+   "z": 0.2,
+   "gap": 0.9
   },
   {
    "dim": "country",
@@ -243,26 +234,26 @@
    "now": 5,
    "normal": 3.4,
    "ratio": 1.49,
-   "z": 1.2,
+   "z": 1.3,
    "gap": 1.6
   },
   {
    "dim": "source",
    "seg": "AI answers",
    "now": 10,
-   "normal": 6.5,
-   "ratio": 1.54,
-   "z": 1.6,
-   "gap": 3.5
+   "normal": 6.4,
+   "ratio": 1.56,
+   "z": 1.5,
+   "gap": 3.6
   },
   {
    "dim": "device",
    "seg": "mobile",
    "now": 13,
-   "normal": 8.7,
-   "ratio": 1.49,
+   "normal": 8.6,
+   "ratio": 1.5,
    "z": 1,
-   "gap": 4.3
+   "gap": 4.4
   }
  ]
 }
