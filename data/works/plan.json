@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T22:17:57.922Z",
+ "at": "2026-11-13T23:17:52.477Z",
  "northStar": {
   "metric": "accounts / week (worth: account 1, replayed +0.5, paid +10)",
   "now": 135,
@@ -9,20 +9,20 @@
  "base": {
   "last24": 15,
   "realVisitorShare": 0.61,
-  "botRowsDropped": 2843,
+  "botRowsDropped": 2846,
   "perDay": 20.4,
   "sd": 11.2,
   "floor": 9.2,
   "last7": 135,
   "normalWeek": 145.7,
   "trend": -0.07,
-  "today": 14,
+  "today": 15,
   "zeroDays28": 0,
   "bySource28": {
    "chatgpt": 136,
    "direct": 337,
    "google": 33,
-   "search": 16,
+   "search": 17,
    "other": 4
   }
  },
@@ -35,16 +35,16 @@
    "path": "/backtest",
    "fam": "/backtest",
    "acc28": 94,
-   "v28": 261,
+   "v28": 259,
    "rate": 29.89,
    "mult": 1.56
   },
   {
    "path": "/backtest-gold",
    "fam": "/backtest-<market>",
-   "acc28": 21,
-   "v28": 119,
-   "rate": 5.21,
+   "acc28": 22,
+   "v28": 120,
+   "rate": 5.46,
    "mult": 3.25
   },
   {
@@ -59,7 +59,7 @@
    "path": "/tools/crt-statistics",
    "fam": "/tools/<x>",
    "acc28": 5,
-   "v28": 26,
+   "v28": 25,
    "rate": 1.28,
    "mult": 3.25
   },
@@ -82,11 +82,11 @@
    "mult": 1.45
   },
   {
-   "path": "/blog/how-to-backtest-ict-concepts",
-   "fam": "/blog/<x>",
+   "path": "/multi-chart-backtesting",
+   "fam": "/<concept>-backtesting",
    "acc28": 1,
-   "v28": 1,
-   "conf": 0.09,
+   "v28": 2,
+   "conf": 0.17,
    "mult": 1.45
   }
  ],
@@ -95,7 +95,7 @@
    "fam": "/",
    "pages": 1,
    "landed": 1,
-   "visitors90": 3010,
+   "visitors90": 3012,
    "accounts90": 959,
    "accounts28": 295,
    "accounts7": 50,
@@ -136,17 +136,17 @@
    "fam": "/backtest-<market>",
    "pages": 20,
    "landed": 15,
-   "visitors90": 288,
-   "accounts90": 54,
-   "accounts28": 30,
-   "accounts7": 8,
+   "visitors90": 289,
+   "accounts90": 55,
+   "accounts28": 31,
+   "accounts7": 9,
    "paid90": 0,
-   "worthPerPageWeek": 0.366,
-   "mult": 1.91,
+   "worthPerPageWeek": 0.378,
+   "mult": 1.95,
    "tier": "WIN",
    "sources90": {
     "google": 25,
-    "search": 17,
+    "search": 18,
     "chatgpt": 8,
     "direct": 4
    },
@@ -448,7 +448,7 @@
   "/": 3,
   "/<concept>-backtesting": 1.44,
   "(in-app)": 2.04,
-  "/backtest-<market>": 1.91,
+  "/backtest-<market>": 1.95,
   "/backtest": 3,
   "/tools/<x>": 0.9,
   "(chart)": 2.44,
@@ -472,7 +472,7 @@
   "/tools/crt-statistics": 3.25,
   "/backtest-nas100": 1.56,
   "/liquidity-sweep-backtester": 1.45,
-  "/blog/how-to-backtest-ict-concepts": 1.45
+  "/multi-chart-backtesting": 1.45
  },
  "queue": [
   {
@@ -484,7 +484,7 @@
   {
    "rank": 2,
    "fam": "/backtest-<market>",
-   "why": "54 accounts from 20 pages in 90 d (0.366/page/wk, ×1.91 vs site)",
+   "why": "55 accounts from 20 pages in 90 d (0.378/page/wk, ×1.95 vs site)",
    "more": "rank the winners higher (titles, depth, internal links); new only for a market with replay demand and no page"
   },
   {
@@ -515,7 +515,7 @@
   {
    "path": "/backtest-gold",
    "fam": "/backtest-<market>",
-   "accounts28": 21
+   "accounts28": 22
   },
   {
    "path": "/footprint-chart-backtesting",
@@ -550,7 +550,7 @@
   "demand": [
    {
     "pair": "XAUUSD",
-    "users": 559
+    "users": 560
    },
    {
     "pair": "NAS100",
@@ -621,7 +621,7 @@
   },
   "wastedShare": 0.87,
   "aligned": false,
-  "at": "2026-11-13T22:17:57.922Z",
+  "at": "2026-11-13T23:17:52.477Z",
   "say": "87% of the last 7 days' Bing sends went to WEAK/DEAD families (192 of 220)"
  },
  "cycles": {

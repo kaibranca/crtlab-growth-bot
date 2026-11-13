@@ -1,56 +1,56 @@
 {
- "at": "2026-11-13T22:18:36.491Z",
+ "at": "2026-11-13T23:18:32.239Z",
  "selfCheck": {
   "devices": [
    {
     "dev": "desktop",
-    "raw24": 124,
-    "beat24": 0.556,
-    "beatNormal": 0.578,
-    "stay24": 0.226,
-    "stayNormal": 0.269
+    "raw24": 123,
+    "beat24": 0.561,
+    "beatNormal": 0.577,
+    "stay24": 0.236,
+    "stayNormal": 0.268
    },
    {
     "dev": "mobile",
-    "raw24": 32,
-    "beat24": 0.563,
-    "beatNormal": 0.348,
-    "stay24": 0.563,
-    "stayNormal": 0.472
+    "raw24": 31,
+    "beat24": 0.581,
+    "beatNormal": 0.347,
+    "stay24": 0.581,
+    "stayNormal": 0.47
    }
   ],
   "rawSurge": [
    {
     "dim": "source",
     "seg": "Direct",
-    "raw24": 138,
-    "rawNormal": 99.4,
+    "raw24": 135,
+    "rawNormal": 100.1,
     "stayed24": 34,
-    "stayShare": 0.246
+    "stayShare": 0.252
    },
    {
     "dim": "landing",
     "seg": "home",
-    "raw24": 122,
-    "rawNormal": 87.7,
+    "raw24": 117,
+    "rawNormal": 88.4,
     "stayed24": 27,
-    "stayShare": 0.221
+    "stayShare": 0.231
    },
    {
     "dim": "country",
     "seg": "US",
-    "raw24": 53,
-    "rawNormal": 25.9,
+    "raw24": 50,
+    "rawNormal": 26.4,
     "stayed24": 5,
-    "stayShare": 0.094
+    "stayShare": 0.1
    },
    {
     "dim": "device",
     "seg": "desktop",
-    "raw24": 124,
-    "rawNormal": 102.2,
-    "stayed24": 28,
-    "stayShare": 0.226
+    "raw24": 123,
+    "rawNormal": 102.8,
+    "stayed24": 29,
+    "stayShare": 0.236
    }
   ],
   "flood": [],
@@ -60,52 +60,42 @@
   "window": "3h",
   "visitors": {
    "now": 3,
-   "normal": 3.9,
-   "ratio": 0.78,
-   "z": -0.4
+   "normal": 3.6,
+   "ratio": 0.82,
+   "z": -0.3
   },
   "signups": {
-   "now": 4,
-   "normal": 1.7,
-   "ratio": 2.33,
-   "z": 1.8
+   "now": 2,
+   "normal": 1.8,
+   "ratio": 1.12,
+   "z": 0.2
   },
-  "riding": [
-   {
-    "dim": "source",
-    "seg": "Direct",
-    "now": 3,
-    "normal": 2.2,
-    "ratio": 1.35,
-    "z": 0.5,
-    "gain": 0.8
-   }
-  ]
+  "riding": []
  },
  "visitors": {
-  "now": 46,
+  "now": 47,
   "normal": 36.8,
-  "ratio": 1.25,
-  "z": 0.8
+  "ratio": 1.28,
+  "z": 0.9
  },
  "rawVisitors": {
-  "now": 156,
-  "normal": 121,
-  "ratio": 1.29,
+  "now": 154,
+  "normal": 121.6,
+  "ratio": 1.27,
   "z": 0.3
  },
  "signups": {
   "now": 15,
-  "normal": 16.1,
+  "normal": 16.2,
   "ratio": 0.93,
-  "z": -0.1
+  "z": -0.2
  },
  "state": "normal",
  "why": [
-  "landing /backtest pages: 3 vs ~6.7/day",
   "source Google: 1 vs ~3.7/day",
+  "landing /backtest pages: 4 vs ~6.7/day",
   "landing chart: 4 vs ~5.7/day",
-  "source Bing: 1 vs ~2.5/day"
+  "landing other pages: 3 vs ~3.6/day"
  ],
  "gainers": [
   "source Direct: 34 vs ~22.9/day",
@@ -114,21 +104,21 @@
  ],
  "segments": [
   {
-   "dim": "landing",
-   "seg": "/backtest pages",
-   "now": 3,
-   "normal": 6.7,
-   "ratio": 0.45,
-   "z": -0.9,
-   "gap": -3.7
-  },
-  {
    "dim": "source",
    "seg": "Google",
    "now": 1,
    "normal": 3.7,
    "ratio": 0.27,
-   "z": -1.1,
+   "z": -1.2,
+   "gap": -2.7
+  },
+  {
+   "dim": "landing",
+   "seg": "/backtest pages",
+   "now": 4,
+   "normal": 6.7,
+   "ratio": 0.6,
+   "z": -0.6,
    "gap": -2.7
   },
   {
@@ -137,17 +127,8 @@
    "now": 4,
    "normal": 5.7,
    "ratio": 0.7,
-   "z": -0.8,
-   "gap": -1.7
-  },
-  {
-   "dim": "source",
-   "seg": "Bing",
-   "now": 1,
-   "normal": 2.5,
-   "ratio": 0.4,
    "z": -0.7,
-   "gap": -1.5
+   "gap": -1.7
   },
   {
    "dim": "landing",
@@ -168,13 +149,13 @@
    "gap": -0.6
   },
   {
-   "dim": "device",
-   "seg": "desktop",
-   "now": 28,
-   "normal": 27.5,
-   "ratio": 1.02,
-   "z": 0,
-   "gap": 0.5
+   "dim": "source",
+   "seg": "Bing",
+   "now": 2,
+   "normal": 2.5,
+   "ratio": 0.8,
+   "z": -0.2,
+   "gap": -0.5
   },
   {
    "dim": "source",
@@ -183,6 +164,15 @@
    "normal": 6.5,
    "ratio": 1.23,
    "z": 0.6,
+   "gap": 1.5
+  },
+  {
+   "dim": "device",
+   "seg": "desktop",
+   "now": 29,
+   "normal": 27.5,
+   "ratio": 1.05,
+   "z": 0.1,
    "gap": 1.5
   },
   {
@@ -227,7 +217,7 @@
    "now": 34,
    "normal": 22.9,
    "ratio": 1.49,
-   "z": 1.4,
+   "z": 1.5,
    "gap": 11.1
   }
  ]

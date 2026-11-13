@@ -1,18 +1,18 @@
 {
  "modes": {
   "over-budget": {
-   "intensity": 1.05,
-   "episodes": 1,
+   "intensity": 1,
+   "episodes": 2,
    "wins": 1,
-   "losses": 0
+   "losses": 1
   }
  },
  "episode": {
   "mode": "over-budget",
   "since": "2026-11-11T22:03:41.628Z",
   "start": 23,
-  "segAt": "2026-11-12T22:35:44.829Z",
-  "segStart": 22
+  "segAt": "2026-11-13T23:20:08.880Z",
+  "segStart": 26
  },
  "born": "2026-11-11T22:03:41.628Z",
  "days": [
@@ -32,5 +32,14 @@
    "mode": "over-budget"
   }
  ],
- "w": {}
+ "w": {
+  "pull": {
+   "v": 0.625,
+   "n": 1
+  },
+  "cost-incident": {
+   "v": 0.719,
+   "n": 2
+  }
+ }
 }
