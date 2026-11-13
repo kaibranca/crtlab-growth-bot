@@ -36,10 +36,10 @@ const db = new pg.Client({ connectionString: process.env.ANALYTICS_DB_URL, ssl: 
 await db.connect();
 // A conversion counts only when it CREATED the account (user made within ±1 h of it) and only once per user (first row).
 // 11-13: 144 of 758 "converted" guest rows in 28 d were existing users logging in on a new device — not new accounts.
-// REAL visitors only (the ecosystem's one standard, humans.mjs): stayed 30 s+ or made an account — bot bursts and headless
+// REAL = ENGAGED visitors only (the ecosystem's one standard, humans.mjs, 11-13): replayed ≥ 1 candle or made an account — bots and headless
 // floods never count as exposure, so they can't push a page into focus or keep a dead family alive (values.json rule 7)
 const raw = (await db.query(`select g.id, split_part(g.landing_path,'?',1) p, coalesce(g.source,'') s, g.created_at t, g.converted_at c0,
-  (g.last_active - g.created_at > interval '30 seconds' or g.converted_at is not null) real,
+  (g.converted_at is not null or exists (select 1 from guest_meters m where m.device_key = g.device_key and m.candles_used > 0)) real,
   g.converted_user_id uid, u.created_at uc, coalesce(u.candles_used,0) used, coalesce(u.tier,'free') tier
   from guest_presence g left join users u on u.id::text = g.converted_user_id::text
   where g.created_at > now() - interval '120 days' and g.landing_path is not null`)).rows;

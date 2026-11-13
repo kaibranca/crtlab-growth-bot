@@ -23,9 +23,9 @@ try {
     when landing_path ~ '^/[a-z0-9]+$' then 'chart' else 'other pages' end`;
   const { rows } = await db.query(`select floor(extract(epoch from (now() - created_at)) / 86400)::int d, ${seg} src, ${land} lp,
       coalesce(country, '?') cc, coalesce(device, '?') dev,
-      -- REAL visitors only (11-11): stayed 30 s+ or made an account. One-hit bot bursts (102 "direct desktop homepage
-      -- visitors" on 11-05, 19 of them real) inflated the baseline and put the engine in Recovery for bots that left.
-      count(*) filter (where last_active - created_at > interval '30 seconds' or converted_at is not null)::int n,
+      -- REAL = ENGAGED visitors (11-13, Kai: "bots sometimes stay 30 s — count people who DO something"): replayed ≥ 1 candle
+      -- (guest_meters, per device) or made an account. Was "stayed 30 s+" (11-11): 188 guests / 28 d sat 30 s+ and did nothing.
+      count(*) filter (where converted_at is not null or exists (select 1 from guest_meters m where m.device_key = guest_presence.device_key and m.candles_used > 0))::int n,
       count(*)::int raw, count(*) filter (where converted_at is not null)::int acc,
       count(*) filter (where last_active > created_at + interval '2 seconds')::int beat
     from guest_presence where created_at > now() - interval '15 days' and country is distinct from 'SG'
@@ -36,7 +36,7 @@ try {
   let wv = { rows: [] }, wsu = { rows: [] };
   try {
   wv = await db.query(`select floor(extract(epoch from (now() - created_at)) / 86400)::int d, ${seg} src, ${land} lp,
-      count(*) filter (where last_active - created_at > interval '30 seconds' or converted_at is not null)::int n, count(*) filter (where converted_at is not null)::int acc
+      count(*) filter (where converted_at is not null or exists (select 1 from guest_meters m where m.device_key = guest_presence.device_key and m.candles_used > 0))::int n, count(*) filter (where converted_at is not null)::int acc
     from guest_presence where created_at > now() - interval '15 days' and country is distinct from 'SG'
       and mod(extract(epoch from (now() - created_at))::bigint, 86400) < 10800 group by 1, 2, 3`);
   wsu = await db.query(`select floor(extract(epoch from (now() - created_at)) / 86400)::int d, count(*)::int n from users

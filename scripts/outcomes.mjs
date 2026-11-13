@@ -21,8 +21,8 @@ if (process.env.ANALYTICS_DB_URL) {
   try {
     await db.connect();
     const { rows } = await db.query(`select (created_at > now() - interval '7 days') wk,
-        count(*) filter (where last_active - created_at > interval '30 seconds' or converted_at is not null)::int real,
-        count(*) filter (where (last_active - created_at > interval '30 seconds' or converted_at is not null) and (referrer ilike '%chatgpt%' or utm_source ilike '%chatgpt%' or referrer ilike '%perplexity%' or referrer ilike '%copilot%' or referrer ilike '%gemini%'))::int ai,
+        count(*) filter (where converted_at is not null or exists (select 1 from guest_meters m where m.device_key = guest_presence.device_key and m.candles_used > 0))::int real,
+        count(*) filter (where (converted_at is not null or exists (select 1 from guest_meters m where m.device_key = guest_presence.device_key and m.candles_used > 0)) and (referrer ilike '%chatgpt%' or utm_source ilike '%chatgpt%' or referrer ilike '%perplexity%' or referrer ilike '%copilot%' or referrer ilike '%gemini%'))::int ai,
         count(*) filter (where converted_at is not null)::int acc
       from guest_presence where created_at > now() - interval '14 days' and country is distinct from 'SG' group by 1`);
     const su = await db.query(`select (created_at > now() - interval '7 days') wk, count(*)::int n from users where created_at > now() - interval '14 days' group by 1`);
@@ -51,7 +51,7 @@ if (process.env.ANALYTICS_DB_URL) {
     // how many made an account and how many really replayed (≥ 10 min in their first 7 days). The AI machine weights a
     // family's Bing value by it — pages whose visitors become real users get pushed, not just pages that get read.
     try { const lq = await db.query(`with g as (select coalesce(nullif(split_part(landing_path, '?', 1), ''), '/') lp, converted_user_id u, created_at from guest_presence
-          where created_at between now() - interval '35 days' and now() - interval '7 days' and country is distinct from 'SG' and (last_active - created_at > interval '30 seconds' or converted_at is not null)),
+          where created_at between now() - interval '35 days' and now() - interval '7 days' and country is distinct from 'SG' and (converted_at is not null or exists (select 1 from guest_meters m where m.device_key = guest_presence.device_key and m.candles_used > 0))),
         e as (select g.lp, g.u, coalesce((select sum(seconds) from user_events ev where ev.user_id = g.u and ev.type in ('replay', 'backtest') and ev.created_at < g.created_at + interval '7 days'), 0) secs from g)
         select lp, count(*)::int guests, count(u)::int accounts, count(*) filter (where secs >= 600)::int engaged from e group by 1 order by 2 desc limit 400`);
       const T = lq.rows.reduce((t, r) => ({ g: t.g + r.guests, e: t.e + r.engaged, a: t.a + r.accounts }), { g: 0, e: 0, a: 0 });
