@@ -43,11 +43,19 @@ const lines = [
     ? `  BUDGET: a confirmed win in the last 14 days — raising the radar to $5/month (RADAR_BUDGET) now doubles how fast it learns.`
     : `  BUDGET: keep $2.50/month — no confirmed win yet, so more money would only watch the scoreboard more closely.`] : []),
 ];
-const text = lines.join("\n");
+// 11-13 NORTH STAR leads the weekly email: new accounts vs a normal week (WORKS), what it pushes, what it froze, whether the
+// machines' effort is aimed right, the cycle verdicts — then the AI engine detail below
+const WK = (() => { try { return JSON.parse(fs.readFileSync("data/works/plan.json", "utf8")); } catch { return null; } })();
+const nsLines = WK ? [`THE NORTH STAR — new accounts`, `  This week ${WK.northStar.now} vs ~${Math.round(WK.northStar.normal)} normal (${WK.northStar.trend >= 0 ? "+" : ""}${Math.round(WK.northStar.trend * 100)}%) · base ${WK.base.perDay}/day`,
+  `  Pushing (WORKS focus, effort ${WK.effort}/10): ${(WK.focus ?? []).map((f) => `${f.path} (${f.acc28} acc / 28 d)`).join(", ")}`,
+  `  Frozen (dead page types): ${Object.keys(WK.bin ?? {}).join(", ") || "none"}`,
+  `  Aim: ${WK.audit?.say ?? "—"}${WK.audit && !WK.audit.aligned ? " — MISALIGNED" : ""}`,
+  `  Cycles: ${(WK.cycles?.judged ?? []).map((c) => `${c.day} ${c.verdict} ×${c.lift}`).join(", ") || "first verdicts pending"}`, ``] : [];
+const text = [...nsLines, ...lines].join("\n");
 console.log(text);
 const day = new Date().getUTCDay();
 if ((day === 1 || process.env.FORCE) && process.env.RESEND_API_KEY && process.env.ALERT_TO) {
   const e = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: process.env.ALERT_FROM || "CRTLAB bot <hello@crtlab.pro>", to: process.env.ALERT_TO, subject: `CRTLAB AI engine: ${now.accounts} accounts from AI this week (${ch(now.accounts, prev.accounts)})`, text }) });
+    body: JSON.stringify({ from: process.env.ALERT_FROM || "CRTLAB bot <hello@crtlab.pro>", to: process.env.ALERT_TO, subject: WK ? `CRTLAB week: ${WK.northStar.now} new accounts (normal ~${Math.round(WK.northStar.normal)}) · ${now.accounts} from AI` : `CRTLAB AI engine: ${now.accounts} accounts from AI this week (${ch(now.accounts, prev.accounts)})`, text }) });
   console.log("emailed", e.status);
 }
