@@ -1,6 +1,6 @@
 {
- "at": "2026-11-12T23:59:57.952Z",
- "say": "13 experiments live — next verdicts: Bing send yield 13 Nov · conversion bandit 14 Nov · executive focus: conversion 15 Nov · forecast self-calibration 16 Nov.",
+ "at": "2026-11-13T00:19:44.598Z",
+ "say": "13 experiments live — next verdicts: Bing send yield 13 Nov · conversion bandit 14 Nov · executive focus: conversion 15 Nov · hook home-yesterday-charts-2026-11-12 17 Nov.",
  "experiments": [
   {
    "name": "Bing send yield (hit = live read in 3 d)",
@@ -24,23 +24,23 @@
    "read": "click rate at start 0.00848"
   },
   {
-   "name": "forecast self-calibration (trend α)",
-   "owner": "world",
-   "status": "grading",
-   "next": "2026-11-16",
-   "read": "0 forecasts graded"
-  },
-  {
    "name": "hook home-yesterday-charts-2026-11-12",
    "owner": "hooks",
    "status": "running",
    "next": "2026-11-17",
-   "read": "0/39 vs 1/34 (P 0.153)"
+   "read": "0/50 vs 1/34 (P 0.122)"
+  },
+  {
+   "name": "forecast self-calibration (trend α)",
+   "owner": "world",
+   "status": "grading",
+   "next": "2026-11-17",
+   "read": "0 forecasts graded"
   },
   {
    "name": "comeback email (63 sent / 17 held)",
    "owner": "retention",
-   "status": "paused (email budget)",
+   "status": "running",
    "next": "2026-11-19",
    "read": null
   },
@@ -56,42 +56,42 @@
    "owner": "ai",
    "status": "running",
    "next": "2026-12-02",
-   "read": "0 blocks"
+   "read": "1 blocks"
   },
   {
    "name": "tuner ai.resendDays 7 vs 10",
    "owner": "bing",
    "status": "running",
    "next": "2026-12-02",
-   "read": "0 blocks"
+   "read": "1 blocks"
   },
   {
    "name": "tuner ai.riseBoost 2.5 vs 3.2",
    "owner": "rising",
    "status": "running",
    "next": "2026-12-02",
-   "read": "0 blocks"
+   "read": "1 blocks"
   },
   {
    "name": "tuner ai.sisterBoost 2 vs 2.6",
    "owner": "sisters",
    "status": "running",
    "next": "2026-12-02",
-   "read": "0 blocks"
+   "read": "1 blocks"
   },
   {
    "name": "tuner ai.qualityWeight 0.5 vs 1",
    "owner": "ai",
    "status": "running",
    "next": "2026-12-02",
-   "read": "0 blocks"
+   "read": "1 blocks"
   },
   {
    "name": "holdout 5% of pages never pushed",
    "owner": "holdout",
    "status": "running",
    "next": null,
-   "read": "provisional ×0.51"
+   "read": "provisional ×0.53"
   }
  ]
 }
