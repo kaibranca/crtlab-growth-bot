@@ -9,7 +9,7 @@
   "43417626955": true
  },
  "day": "2026-11-13",
- "at": "2026-11-13T13:10:23.830Z",
+ "at": "2026-11-13T13:20:01.439Z",
  "actions": [
   {
    "at": "2026-11-12T12:03:51.703Z",
@@ -59,12 +59,30 @@
  ],
  "tasks": [
   {
+   "what": "Lost peak: chatgpt → /backtest 5 clicks/wk vs 126 at its best (week to 2026-10-25) — −58 accounts/wk",
+   "evidence": "data/machines/peaks.json",
+   "fix": "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked",
+   "impact": 5
+  },
+  {
+   "what": "Lost peak: google → / 4 clicks/wk vs 30 at its best (week to 2026-09-03) — −6 accounts/wk",
+   "evidence": "data/machines/peaks.json",
+   "fix": "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked",
+   "impact": 2
+  },
+  {
+   "what": "Lost peak: bing → / 0 clicks/wk vs 16 at its best (week to 2026-09-02) — −1 accounts/wk",
+   "evidence": "data/machines/peaks.json",
+   "fix": "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked",
+   "impact": 1
+  },
+  {
    "what": "AI accounts / week getting worse: 22 vs 30 last week (hooks)",
    "evidence": "supervisor",
    "fix": "needs a build or a decision"
   },
   {
-   "what": "Device QA is late (last run 6.5 h ago, normal every 2 h)",
+   "what": "Device QA is late (last run 6.6 h ago, normal every 2 h)",
    "evidence": "supervisor",
    "fix": "needs a build or a decision"
   },

@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T13:10:30.068Z",
+ "at": "2026-11-13T13:20:09.129Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -16,6 +16,30 @@
   },
   {
    "kind": "fix",
+   "what": "Lost peak: chatgpt → /backtest 5 clicks/wk vs 126 at its best (week to 2026-10-25) — −58 accounts/wk",
+   "why": "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked",
+   "engine": "fixer",
+   "score": 4,
+   "buildPays": 0.5
+  },
+  {
+   "kind": "fix",
+   "what": "Lost peak: google → / 4 clicks/wk vs 30 at its best (week to 2026-09-03) — −6 accounts/wk",
+   "why": "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked",
+   "engine": "fixer",
+   "score": 4,
+   "buildPays": 0.5
+  },
+  {
+   "kind": "fix",
+   "what": "Lost peak: bing → / 0 clicks/wk vs 16 at its best (week to 2026-09-02) — −1 accounts/wk",
+   "why": "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked",
+   "engine": "fixer",
+   "score": 4,
+   "buildPays": 0.5
+  },
+  {
+   "kind": "fix",
    "what": "AI accounts / week getting worse: 22 vs 30 last week (hooks)",
    "why": "a build session reads the machine's evidence and changes what it does",
    "engine": "fixer",
@@ -24,7 +48,7 @@
   },
   {
    "kind": "fix",
-   "what": "Device QA is late (last run 6.5 h ago, normal every 2 h)",
+   "what": "Device QA is late (last run 6.6 h ago, normal every 2 h)",
    "why": "needs a build or a decision",
    "engine": "fixer",
    "score": 4,
@@ -110,7 +134,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 12s — phones 6.21s vs desktop 8.18s (65% of loads on phones); the server answers in 0.21s and candles in 0.07s (HIT) — the time is on the visitor's side. Desktops are slower than phones, so it is not phone CPU — something desktop loads (more candles, panels, a far country) is the lead. A headless flood is on (CA: 35 raw vs ~4.4, 1 stayed, GB: 39 raw vs ~10.8, 1 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: mobile/US 5.37s ×371, mobile/JP 6.88s ×140, mobile/IN 6.58s ×119, mobile/BR 12s ×45. Needs a build session to profile one slow load.",
+   "what": "Chart pages: the slowest 10% of real loads take 7.96s — phones 6.92s vs desktop 7.76s (67% of loads on phones); the server answers in 0.22s and candles in 0.04s (HIT) — the time is on the visitor's side. A headless flood is on (GB: 34 raw vs ~11.1, 1 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: mobile/US 5.48s ×390, mobile/JP 6.88s ×154, mobile/IN 6.58s ×135, mobile/BR 12s ×48. Needs a build session to profile one slow load.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
@@ -210,36 +234,6 @@
    "what": "Teach News engine to judge itself on an outcome it can measure",
    "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
    "score": 1.5,
-   "buildPays": 0.5
-  },
-  {
-   "kind": "learn",
-   "machine": "recaps",
-   "name": "Daily recaps",
-   "engine": "content",
-   "what": "Teach Daily recaps to judge itself on an outcome it can measure",
-   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
-   "score": 1.5,
-   "buildPays": 0.5
-  },
-  {
-   "kind": "learn",
-   "machine": "livenews",
-   "name": "Same-day news",
-   "engine": "content",
-   "what": "Teach Same-day news to judge itself on an outcome it can measure",
-   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
-   "score": 1.5,
-   "buildPays": 0.5
-  },
-  {
-   "kind": "learn",
-   "machine": "ledger",
-   "name": "Ledger",
-   "engine": "main",
-   "what": "Teach Ledger to judge itself on an outcome it can measure",
-   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
-   "score": 1,
    "buildPays": 0.5
   }
  ]

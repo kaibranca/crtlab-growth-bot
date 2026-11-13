@@ -1,0 +1,112 @@
+{
+ "at": "2026-11-13T13:20:01.411Z",
+ "note": "best 7 days of the last 75 vs the last 7, per source × landing family (AI/search clicks from data/ai/clicks.json). lost = ≤ 35 % of peak for ≥ 14 days, peak ≥ 15 clicks/wk, ranked by accounts lost per week.",
+ "lost": [
+  {
+   "src": "chatgpt",
+   "page": "/backtest",
+   "peak": 126,
+   "peakAccounts": 63,
+   "peakWeekEnd": "2026-10-25",
+   "now": 5,
+   "nowAccounts": 5,
+   "ratio": 0.04,
+   "downDays": 14,
+   "lostPerWeek": 121,
+   "lostAccountsPerWeek": 58
+  },
+  {
+   "src": "google",
+   "page": "/",
+   "peak": 30,
+   "peakAccounts": 9,
+   "peakWeekEnd": "2026-09-03",
+   "now": 4,
+   "nowAccounts": 3,
+   "ratio": 0.13,
+   "downDays": 68,
+   "lostPerWeek": 26,
+   "lostAccountsPerWeek": 6
+  },
+  {
+   "src": "bing",
+   "page": "/",
+   "peak": 16,
+   "peakAccounts": 1,
+   "peakWeekEnd": "2026-09-02",
+   "now": 0,
+   "nowAccounts": 0,
+   "ratio": 0,
+   "downDays": 68,
+   "lostPerWeek": 16,
+   "lostAccountsPerWeek": 1
+  }
+ ],
+ "sources": [
+  {
+   "src": "chatgpt",
+   "page": "ALL",
+   "peak": 162,
+   "peakAccounts": 80,
+   "peakWeekEnd": "2026-10-25",
+   "now": 42,
+   "nowAccounts": 14,
+   "ratio": 0.26,
+   "downDays": 13,
+   "lostPerWeek": 120,
+   "lostAccountsPerWeek": 66
+  },
+  {
+   "src": "google",
+   "page": "ALL",
+   "peak": 39,
+   "peakAccounts": 19,
+   "peakWeekEnd": "2026-10-17",
+   "now": 15,
+   "nowAccounts": 9,
+   "ratio": 0.38,
+   "downDays": 16,
+   "lostPerWeek": 24,
+   "lostAccountsPerWeek": 10
+  },
+  {
+   "src": "bing",
+   "page": "ALL",
+   "peak": 24,
+   "peakAccounts": 5,
+   "peakWeekEnd": "2026-11-04",
+   "now": 13,
+   "nowAccounts": 6,
+   "ratio": 0.54,
+   "downDays": 3,
+   "lostPerWeek": 11,
+   "lostAccountsPerWeek": -1
+  },
+  {
+   "src": "copilot",
+   "page": "ALL",
+   "peak": 2,
+   "peakAccounts": 0,
+   "peakWeekEnd": "2026-10-19",
+   "now": 0,
+   "nowAccounts": 0,
+   "ratio": 0,
+   "downDays": 18,
+   "lostPerWeek": 2,
+   "lostAccountsPerWeek": 0
+  },
+  {
+   "src": "perplexity",
+   "page": "ALL",
+   "peak": 1,
+   "peakAccounts": 0,
+   "peakWeekEnd": "2026-09-17",
+   "now": 1,
+   "nowAccounts": 1,
+   "ratio": 1,
+   "downDays": -1,
+   "lostPerWeek": 0,
+   "lostAccountsPerWeek": -1
+  }
+ ]
+}
