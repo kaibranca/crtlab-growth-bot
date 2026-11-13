@@ -167,11 +167,11 @@ if (heapNote && /→ cap|back to 768/.test(heapNote)) actions.push(heapNote); //
   const L = state.levers ?? [], web = L.filter((x) => x.svc === "web" && x.kind !== "limit");
   const ready = web.length && web.every((x) => x.verdict ? x.verdict !== "reverted" : x.liveAt && NOW - Date.parse(x.liveAt) > DAY);
   const capOn = L.some((x) => x.kind === "limit" && x.svc === "web" && (!x.verdict || x.verdict === "helped" || x.verdict === "no effect"));
-  const rss = (HC.samples ?? []).filter((x) => NOW - Date.parse(x.at) < DAY && x.cap <= 600).map((x) => x.rss ?? 0);
+  const rss = (HC.samples ?? []).filter((x) => NOW - Date.parse(x.at) < DAY).map((x) => x.rss ?? 0);
   const webRow = rows.find((r) => r.svc === "web");
   if (ready && !capOn && !LOCKED && hr >= 3 && hr < 5 && rss.length >= 12 && webRow) {
-    const gb = Math.max(0.6, Math.ceil((Math.max(...rss) * 1.5) / 100) / 10);
-    if (webRow.memGB > gb * 0.9) {
+    const gb = Math.max(0.6, Math.ceil((Math.max(...rss) * 1.3) / 100) / 10); // 1.3× (was 1.5× → 1.1 GB, above the ~1.0 GB it bills, so it never saved anything)
+    if (webRow.memGB > gb * 0.8) {
       try {
         const sid = svcs.find((x) => x.name === "web").id;
         await gql(`mutation { serviceInstanceLimitsUpdate(input: { environmentId: "${ENV}", serviceId: "${sid}", memoryGB: ${gb} }) }`);
