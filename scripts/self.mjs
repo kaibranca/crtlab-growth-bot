@@ -107,6 +107,9 @@ for (const [id, m] of Object.entries(machines)) {
 for (const t of J("data/machines/fixer.json", {})?.tasks ?? []) { const c = classifyNeed(t.what); if (c.who !== "build" || c.done) continue; queue.push({ kind: "fix", what: t.what, why: c.steps ?? t.fix, engine: "fixer", score: 4 }); }
 const ADMIN = Object.keys(ENG).filter((e) => e !== "main" && e !== "traffic").flatMap((e) => (J(`data/brains/${e}/ecosystem.json`, {})?.briefing?.notes ?? []).filter((n) => /^BUILD|build/i.test(n)).slice(0, 2).map((n) => ({ kind: "build", what: n.replace(/^Admin:\s*/, "").replace(/^BUILD \d+ \([^)]*\)\.?\s*/, ""), why: `${e} brain asks for it`, engine: e, score: 3 })));
 queue.push(...ADMIN);
+// 11-13 WORKS → MORE: the north-star jobs lead the builder's queue (score 6 > every machine item): rank the pages that bring
+// accounts higher, and add a page only where people already replay a market with no page. Judged by works.mjs cycles.
+{ const WM = J("data/works/plan.json", null)?.more; for (const j of [...(WM?.newJobs ?? []), ...(WM?.rankJobs ?? [])].slice(0, 4)) queue.push({ kind: j.kind === "new" ? "build" : "rank", what: j.kind === "new" ? `MORE: build ${j.page} (same template as the winning backtest-<market> pages, real market data)` : `MORE: lift ${j.page} into Google's top 3`, why: j.why, engine: "main", score: 6, works: true }); }
 // THE BUILDER LEARNS HOW TO UPGRADE: every judged upgrade (upgrades.json) is evidence about where building pays. Per engine,
 // paid-rate Beta(1 + paid, 1 + hurt) with flats as half-misses → the queue's engine weight × (0.5 + rate): engines whose
 // upgrades keep paying rise, ones whose upgrades hurt sink. Starts neutral (×1) until verdicts exist (from 11-19).

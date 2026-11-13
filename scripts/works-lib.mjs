@@ -14,7 +14,7 @@ export const family = (p) => {
   if (/^\/backtest-/.test(p)) return "/backtest-<market>";
   if (/-challenge-simulator$/.test(p)) return "/<firm>-challenge-simulator";
   if (/^\/(auth|app|analytics|hub|login|signup|account|backtester\/)/.test(p)) return "(in-app)";
-  if (/^\/[a-z0-9]{3,6}$/.test(p) && !NOTMKT.test(p)) return "/<market>";
+  if (/^\/[a-z0-9]{3,6}$/.test(p) && !NOTMKT.test(p)) return "(chart)"; // /xauusd = the chart app itself (canonical "/"), not a page to push — 11-13
   if (/^\/tools\//.test(p)) return "/tools/<x>";
   if (/^\/(recap|statistics|answers|blog|learn|reference|indicators?)\//.test(p)) return `/${p.split("/")[1]}/<x>`;
   if (/^\/[a-z0-9]+-(fair-value-gaps|order-blocks|crt|previous-day-high-low|asian-range|footprint-chart|volume-profile)$/.test(p)) return "/<market>-<concept>";

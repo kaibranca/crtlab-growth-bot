@@ -341,15 +341,23 @@ const HELD = (p) => p !== "/" && fnv(HO.salt + p) < HO.pct;
 // ── 3. submit to Bing, most valuable first ────────────────────────────────────────────────────────────────────────────
 const SUB = "data/ai/submitted.json", RESEND_D = KNOB("ai.resendDays", 7, { ladder: [3, 5, 7, 10, 14], owner: "bing", what: "days before an unchanged page is re-sent to Bing (where the limited quota goes)" }); // tuner: days before an unchanged page is re-sent
 const sub = fs.existsSync(SUB) ? JSON.parse(fs.readFileSync(SUB, "utf8")) : {};
+const WFOCUS = new Map([...(worksPlan()?.focus ?? []).map((x) => [x.path, "focus"]), ...(worksPlan()?.explore ?? []).map((x) => [x.path, "explore"])].reverse()); // focus wins a tie
 const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > RESEND_D * DAY, evDue = ev && NOW - last > 2 * DAY;
   const rcmP = RECT.has(p) && NOW - last > 3 * DAY, fcP = FCJ.has(p) && NOW - last > 2 * DAY, old = bingOld(p) && NOW - last > DAY, lockP = LOCK.on && (LOCK.targets ?? []).includes(p) && lockPays(p) && NOW - last > 3 * 3.6e6, hotP = (surgePage.has(p) && NOW - last > 6 * 3.6e6) || lockP, riseP = risePage.has(p) && NOW - last > 2 * DAY, recP = recovery.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
   return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * qualityMul(x.fam) * weekMul(x.fam) * trendMul(x.fam) * wFam(p) * worksMul(p), conf: x.conf, fam: x.fam, why: lockP ? "LOCK-IN" : hotP ? "SURGE" : rcmP ? `RECOMMEND ${RECT.get(p)}` : fcP ? `FORECAST ${FCJ.get(p)}` : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+}).map((q) => { // 11-13 WORKS: what brings ACCOUNTS outranks what is surging in reads. Focus pages re-sent every 3 d,
+  // explore pages every 5 d; a DEAD family keeps its why but loses every urgency (a spike of reads on 0-account pages
+  // must never take the quota from the pages that convert).
+  const wf = WFOCUS.get(q.p), last = sub[q.p] ? Date.parse(sub[q.p]) : 0, dead = worksTier(q.p) === "DEAD";
+  if (wf && !dead && NOW - last > (wf === "focus" ? 3 : 5) * DAY) return { ...q, why: wf === "focus" ? "WORKS focus" : "WORKS explore", dead };
+  return { ...q, dead };
 }).filter((q) => q.why && !SKIP.test(q.p) && !HELD(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
-const urgent = (q) => (q.why === "LOCK-IN" ? 4 : q.why.startsWith("FORECAST") || q.why.startsWith("RECOMMEND") ? 2 : q.why === "SURGE" || q.why === "RADAR won" ? 3 : q.why === "RISING" || q.why.startsWith("SISTER") ? 2 : q.why === "RECOVERY" ? 1 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
+const urgent = (q) => (q.dead ? 0 : worksTier(q.p) === "WEAK" && !String(q.why).startsWith("WORKS") ? Math.min(1, urgentRaw(q)) : urgentRaw(q));
+const urgentRaw = (q) => (q.dead ? 0 : q.why === "WORKS focus" ? 5 : q.why === "WORKS explore" ? 3 : q.why === "LOCK-IN" ? 4 : q.why.startsWith("FORECAST") || q.why.startsWith("RECOMMEND") ? 2 : q.why === "SURGE" || q.why === "RADAR won" ? 3 : q.why === "RISING" || q.why.startsWith("SISTER") ? 2 : q.why === "RECOVERY" ? 1 : q.why.startsWith("release") ? 2 : q.why.startsWith("Bing has") ? 1 : 0);
 const rank = (a, b) => urgent(b) - urgent(a) || b.value - a.value;
 const exploit = [...queue].sort(rank);
 const seenFam = new Set(), explore = [];

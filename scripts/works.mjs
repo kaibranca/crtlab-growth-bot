@@ -40,12 +40,17 @@ const raw = (await db.query(`select g.id, split_part(g.landing_path,'?',1) p, co
   g.converted_user_id uid, u.created_at uc, coalesce(u.candles_used,0) used, coalesce(u.tier,'free') tier
   from guest_presence g left join users u on u.id::text = g.converted_user_id::text
   where g.created_at > now() - interval '120 days' and g.landing_path is not null`)).rows;
+// replay DEMAND per market (distinct users, 30 d) — what people actually use, for the MORE stage
+const demand = (await db.query(`select upper(pair) pair, count(distinct user_id)::int users from user_events
+  where created_at > now() - interval '30 days' and pair ~ '^[A-Z0-9]{3,8}$' and type not like 'IND:%' group by 1 order by 2 desc limit 40`).catch(() => ({ rows: [] }))).rows;
 const firstOf = new Map(); // uid → earliest converting row
 for (const r of raw) if (r.c0 && r.uid && (!firstOf.has(r.uid) || new Date(r.c0) < new Date(firstOf.get(r.uid).c0))) firstOf.set(r.uid, r);
 const rows = raw.map((r) => ({ ...r, c: r.c0 && r.uc && firstOf.get(r.uid) === r && Math.abs(new Date(r.uc) - new Date(r.c0)) < 3600e3 ? r.c0 : null }));
 await db.end();
 // how many pages EXIST per family (the sitemap) — exposure, so a family of 2,110 pages with 12 visitors reads as dead, not small
-const SITEMAP = await fetch("https://crtlab.pro/sitemap.xml", { headers: { "user-agent": "crtlab-growth-bot works" } }).then((r) => r.text()).catch(() => "");
+// both sitemaps: /sitemap.xml (live families) + /sitemap-archive.xml (frozen DEAD families, site lib/works.ts, 11-13)
+const sm = (u) => fetch(u, { headers: { "user-agent": "crtlab-growth-bot works" } }).then((r) => (r.ok ? r.text() : "")).catch(() => "");
+const SITEMAP = (await sm("https://crtlab.pro/sitemap.xml")) + (await sm("https://crtlab.pro/sitemap-archive.xml"));
 const mapPaths = [...SITEMAP.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => { try { return new URL(m[1]).pathname.replace(/\/$/, "") || "/"; } catch { return null; } }).filter(Boolean);
 
 // ── page families: one rule, in works-lib.mjs (every machine uses the same one) ─────────────────────────────────────────
@@ -74,7 +79,7 @@ const base = { perDay: +mean.toFixed(1), sd: +sd.toFixed(1), floor: +Math.max(0,
 
 // ── RANK: Gamma–Poisson posteriors of worth per week (28-day window, page shrunk to family, family to site) ────────────
 const K_FAM = 2, K_PAGE = 2; // prior strength in weeks of evidence
-const POOL = [...fams.values()].filter((F) => F.key !== "/" && F.key !== "(in-app)" && F.key !== "/backtest"); // one-page giants would set the bar
+const POOL = [...fams.values()].filter((F) => !["/", "(in-app)", "(chart)", "/backtest"].includes(F.key)); // one-page giants would set the bar
 const siteRate = POOL.reduce((a, F) => a + (F.worth.w28 ?? 0), 0) / Math.max(1, POOL.reduce((a, F) => a + F.pages.size, 0)) / 4;
 for (const F of fams.values()) {
   const n = F.pages.size; F.a = (F.worth.w28 ?? 0) + K_FAM * siteRate * n; F.b = 4 * n + K_FAM * n; // per page-week
@@ -97,7 +102,7 @@ const L = (kind, what, key) => append(LEDGER, { at: new Date().toISOString(), ke
 // pages) that can't even draw 20 visitors (made, never found). Revive on 2 accounts in 14 d (checked on the 28-d window).
 const recent = (F) => rows.filter((r) => r.c && family(r.p) === F.key && NOW - new Date(r.c).getTime() < 14 * DAY).length;
 for (const F of fams.values()) {
-  if (F.key === "/" || F.key === "(in-app)") continue;
+  if (F.key === "/" || F.key === "(in-app)" || F.key === "(chart)") continue;
   const n = F.pages.size, v90 = F.v.w90 ?? 0, w90 = F.worth.w90 ?? 0, inBin = !!S.bin[F.key];
   // dead = real exposure and nothing for it: (≥ 5 pages, ≥ 20 visitors, 0 worth) OR (≥ 30 pages that together made ≤ 1 account
   // per 30 pages in 90 d — made at scale, never converted)
@@ -132,7 +137,8 @@ if (flip && S.cycleDay !== iso(NOW)) { S.flips++; L("lesson", `3 losing cycles i
 
 // ── FOCUS + EXPLORE by Thompson sampling (sizes grow with effort) ───────────────────────────────────────────────────────
 const E = S.effort, nFocus = 3 + E, nExplore = Math.max(2, Math.round((flip ? 0.6 : 0.2 + 0.02 * E) * nFocus));
-const live = [...pages.values()].filter((P) => P.fam !== "(in-app)" && P.key !== "/" && !S.bin[P.fam] && (P.v.w90 ?? 0) >= 1);
+const APP = new Set(["(in-app)", "(chart)"]); // the app itself: people already in, not pages to push
+const live = [...pages.values()].filter((P) => !APP.has(P.fam) && P.key !== "/" && !S.bin[P.fam] && (P.v.w90 ?? 0) >= 1);
 const ranked = live.map((P) => ({ P, s: draw(P) })).sort((a, b) => b.s - a.s);
 const focus = (flip ? [] : ranked.filter((x) => (x.P.v.w28 ?? 0) >= 10).slice(0, nFocus)).map((x) => x.P); // ≥ 10 visitors: evidence, not luck
 const unc = live.filter((P) => !focus.includes(P)).map((P) => ({ P, s: draw(P) * (1 + (1 - P.conf)) })).sort((a, b) => b.s - a.s);
@@ -156,9 +162,23 @@ if (S.cycleDay !== iso(NOW)) { S.cycleDay = iso(NOW); append(CYC, { at: new Date
 
 // BUILD QUEUE — what to make MORE of. The winning families, with the evidence, and what "more" means there. Builders (a
 // Claude session, the factory) take from the top; binned families never get new pages.
-const famRows = [...fams.values()].filter((F) => F.key !== "(in-app)").map((F) => ({ fam: F.key, pages: F.pages.size, landed: F.landed ?? 0, visitors90: F.v.w90 ?? 0, accounts90: F.acc.w90 ?? 0, accounts28: F.acc.w28 ?? 0, accounts7: F.acc.w7 ?? 0, paid90: F.paid, worthPerPageWeek: +F.rate.toFixed(3), mult: famMult[F.key], tier: tiers[F.key], sources90: F.src, bin: S.bin[F.key] ?? null })).sort((a, b) => b.worthPerPageWeek - a.worthPerPageWeek);
-const MORE = { "/<market>": "push reach to the market pages that win (internal links from every read page, Bing); a new one only for a market people replay", "/backtest-<market>": "rank the winners higher (titles, depth, internal links); new only for a market with replay demand and no page", "/<concept>-backtesting": "concepts that convert → their best market version first", "/backtest": "the AI-recommended page: protect it, link to it, measure it", "/tools/<x>": "tools that convert: link them from the market pages" };
+const famRows = [...fams.values()].filter((F) => F.key !== "(in-app)" && F.key !== "(chart)").map((F) => ({ fam: F.key, pages: F.pages.size, landed: F.landed ?? 0, visitors90: F.v.w90 ?? 0, accounts90: F.acc.w90 ?? 0, accounts28: F.acc.w28 ?? 0, accounts7: F.acc.w7 ?? 0, paid90: F.paid, worthPerPageWeek: +F.rate.toFixed(3), mult: famMult[F.key], tier: tiers[F.key], sources90: F.src, bin: S.bin[F.key] ?? null })).sort((a, b) => b.worthPerPageWeek - a.worthPerPageWeek);
+const MORE = { "/backtest-<market>": "rank the winners higher (titles, depth, internal links); new only for a market with replay demand and no page", "/<concept>-backtesting": "concepts that convert → their best market version first", "/backtest": "the AI-recommended page: protect it, link to it, measure it", "/tools/<x>": "tools that convert: link them from the market pages" };
 const queue = famRows.filter((r) => !r.bin && r.accounts90 >= 3 && r.fam !== "/").slice(0, 6).map((r, i) => ({ rank: i + 1, fam: r.fam, why: `${r.accounts90} accounts from ${r.pages} pages in 90 d (${r.worthPerPageWeek}/page/wk, ×${r.mult} vs site)`, more: MORE[r.fam] ?? "make the next page of this type where real demand exists; judged 14 d after it ships" }));
+// ── MORE (11-13): what to make more of — only where the family WINS and real demand exists, never in a DEAD family ──────
+//   rank jobs  winner-family pages Google already shows (impressions) but below the top 3 → titles / depth / internal links
+//   new pages  a market people replay (≥ 10 users / 30 d) with no backtest-<market> page; capped 2 / week (no spam)
+const GP = J("data/google/plan.json", {}), mapSet = new Set(mapPaths);
+// brand searches ("crtlab") already land on the home page — a rank job only counts NON-brand impressions (Google topQueries)
+const BRANDQ = /crt\s*-?\s*labs?|crtlab/i, nb = {}; for (const q of GP.topQueries ?? []) if (!BRANDQ.test(q.q)) nb[q.p] = (nb[q.p] ?? 0) + q.impr;
+const rankJobs = [...(Array.isArray(GP.rank) ? GP.rank : [])].map((r) => ({ ...r, impr: nb[r.page] ?? Math.round(r.impr * ((r.queries ?? []).filter((q) => !BRANDQ.test(q)).length / Math.max(1, (r.queries ?? []).length)) * 0.5) })).filter((r) => r.page && r.impr >= 20 && r.pos > 3 && ["WIN", "OK"].includes(tiers[family(r.page)]))
+  .filter((r, i, a) => a.findIndex((x) => x.page === r.page) === i).sort((a, b) => b.impr * (1 / Math.max(1, a.pos)) - a.impr * (1 / Math.max(1, b.pos))).slice(0, 4)
+  .map((r) => ({ kind: "rank", page: r.page, why: `Google shows it ~${r.impr}× / 28 d for non-brand searches at position ${r.pos} (${tiers[family(r.page)]} family) — top 3 gets ~3× the clicks` }));
+const SLUG = { XAUUSD: "gold", XAGUSD: "silver", USOIL: "oil", BTCUSD: "bitcoin", ETHUSD: "ethereum", SOLUSD: "solana", GER40: "dax" };
+const weekNew = readLines(CYC).filter((c) => NOW - Date.parse(c.at) < 7 * DAY).flatMap((c) => c.queued ?? []).length;
+const newJobs = tiers["/backtest-<market>"] === "WIN" || tiers["/backtest-<market>"] === "OK" ? demand.filter((d) => d.users >= 10).map((d) => ({ d, slug: `/backtest-${SLUG[d.pair] ?? d.pair.toLowerCase()}` }))
+  .filter((x) => !mapSet.has(x.slug)).slice(0, Math.max(0, 2 - weekNew)).map((x) => ({ kind: "new", page: x.slug, why: `${x.d.users} people replayed ${x.d.pair} in 30 d and it has no backtest page; the family converts (${famRows.find((f) => f.fam === "/backtest-<market>")?.accounts90} accounts / 90 d)` })) : [];
+const more = { rankJobs, newJobs, demand: demand.slice(0, 15), note: newJobs.length ? null : "every market with real replay demand already has its page — the lever is REACH for the winners (rank jobs, links, Bing), not more pages" };
 const promote = focus.slice(0, 6).map((P) => ({ path: P.key, fam: P.fam, accounts28: P.acc.w28 ?? 0 }));
 
 const plan = {
@@ -167,7 +187,7 @@ const plan = {
   base, effort: E, wins: S.wins, losses: S.losses, flip,
   focus: focus.map((P) => ({ path: P.key, fam: P.fam, acc28: P.acc.w28 ?? 0, v28: P.v.w28 ?? 0, rate: +P.rate.toFixed(2), mult: pageMult[P.key] })),
   explore: explore.map((P) => ({ path: P.key, fam: P.fam, acc28: P.acc.w28 ?? 0, v28: P.v.w28 ?? 0, conf: P.conf, mult: pageMult[P.key] })),
-  families: famRows, bin: S.bin, tiers, famMult, pageMult, queue, promote,
+  families: famRows, bin: S.bin, tiers, famMult, pageMult, queue, promote, more,
   cycles: { total: readLines(CYC).length, judged: readLines(CYC).filter((c) => c.verdict).slice(-5).map((c) => ({ day: c.day, verdict: c.verdict, lift: c.judged?.lift })) },
   say: `Base ${base.perDay} accounts/day (floor ${base.floor}); this week ${last7} vs normal ${base.normalWeek}. Effort ${E}/10. Focus: ${focus.slice(0, 4).map((P) => P.key).join(", ")}. Bin: ${Object.keys(S.bin).join(", ") || "none"}.`,
 };

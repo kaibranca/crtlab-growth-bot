@@ -11,12 +11,15 @@
 import fs from "node:fs";
 import { readLines, append } from "./lib.mjs";
 import { splitNeeds } from "./needs.mjs";
+import { worksPlan, worksTier } from "./works-lib.mjs";
 
 const NOW = Date.now(), H = 3.6e6, DAY = 24 * H, iso = (t) => new Date(t).toISOString().slice(0, 10);
 const J = (f, d = null) => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return d; } };
 const lastAt = (f) => { const l = readLines(f).slice(-1)[0]; return l?.at ? Date.parse(l.at) : null; };
 const atOf = (f) => { const j = J(f), t = j?.at ?? j?.last?.at ?? j?.changed; return t ? Date.parse(t) : null; }; // last.at = holdout.json (11-12: it read "never")
 const month = iso(NOW).slice(0, 7);
+// 11-13 WORKS: every target list (lock-in, surge, dip) = the north-star focus first, then the rest minus DEAD families
+const WK_TARGETS = (rest, n) => [...new Set([...(worksPlan()?.focus ?? []).map((x) => x.path), ...rest.filter((p) => worksTier(p) !== "DEAD")])].slice(0, n);
 
 // ── 1. THE REGISTRY: every machine and branch, what it does, what it feeds ────────────────────────────────────────────
 // group: core · traffic · content · people · guard. parent = the machine it is a branch of. t() = its last run.
@@ -195,7 +198,7 @@ if (mode !== old.mode) {
   const signNow = HU?.signups?.now ?? 0, minH = 6;
   let L = { ...L0, bars };
   if (trig.length && !L0.on) { L = { on: true, since: new Date().toISOString(), kind: trig[0].kind, triggers: trig.map((t) => t.kind), why: trig.map((t) => t.why).join(" · "), bars,
-      startSignups24: signNow, normalSignups24: HU?.signups?.normal ?? null, peak: W?.visitors?.ratio ?? null, targets: [...new Set([...(trig.find((t) => t.pages)?.pages ?? []), ...(ai.surges ?? []).filter((x) => x.kind === "page").map((x) => x.key), ...(old.targets ?? [])])].slice(0, 12), emailed: false };
+      startSignups24: signNow, normalSignups24: HU?.signups?.normal ?? null, peak: W?.visitors?.ratio ?? null, targets: WK_TARGETS([...(trig.find((t) => t.pages)?.pages ?? []), ...(ai.surges ?? []).filter((x) => x.kind === "page").map((x) => x.key), ...(old.targets ?? [])], 12), emailed: false };
     append("data/machines/ledger.jsonl", { at: L.since, key: `lockin|${L.since}`, machine: "core", kind: "lesson", what: `LOCK-IN on (${L.kind}): ${L.why}` }); }
   else if (L0.on) { L.peak = Math.max(L0.peak ?? 0, W?.visitors?.ratio ?? 0); L.why = trig.length ? trig.map((t) => t.why).join(" · ") : L0.why; L.quiet = trig.length ? 0 : (L0.quiet ?? 0) + 1;
     // ends after 6 h minimum and 2 quiet hours; judged on sign-ups in the 24 h since it began vs the normal day
@@ -217,7 +220,9 @@ if (mode !== old.mode) {
 
 const modeOut = { mode, since: mode === old.mode ? old.since : new Date().toISOString(), why, z, r24, normal: Math.round(mu), pageSurges, params: P,
   startMu: mode === old.mode ? old.startMu ?? Math.round(mu) : Math.round(mu), startR24: mode === old.mode ? old.startR24 ?? r24 : r24,
-  targets: mode === "surge" ? (ai.surges ?? []).filter((s) => s.kind === "page").slice(0, 8).map((s) => s.key) : mode === "dip" ? (ai.winners ?? []).slice(0, P.recoveryN).map((w) => w.p) : [] };
+  // 11-13 WORKS: surge = the WORKS focus first (what brings accounts), then the surging pages that aren't DEAD; dip = recovery
+  // re-sends what brings ACCOUNTS (works focus), then the AI winners
+  targets: mode === "surge" ? WK_TARGETS((ai.surges ?? []).filter((s) => s.kind === "page").map((s) => s.key), 8) : mode === "dip" ? WK_TARGETS((ai.winners ?? []).map((w) => w.p), P.recoveryN) : [] };
 fs.mkdirSync("data/machines", { recursive: true });
 fs.writeFileSync("data/machines/mode.json", JSON.stringify(modeOut, null, 1));
 

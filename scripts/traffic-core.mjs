@@ -17,6 +17,7 @@
 //   data/traffic/ecosystem.json — the same shape as the engine core's, so /machine draws it (Main ⇄ Traffic switch).
 // GATES: max 14 alive branches, ≤4 new per run, boost within [1.2, 2.2], kill switch TRAFFIC_BRAIN=off.
 // ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+import { worksPlan, worksTier } from "./works-lib.mjs"; // 11-13 WORKS north star
 import fs from "node:fs";
 import { splitNeeds } from "./needs.mjs";
 
@@ -277,6 +278,7 @@ const LOCK = J("data/machines/lockin.json", { on: false }); // lock-in: build mo
 if (LOCK.on) say("modes", `LOCK-IN (${LOCK.kind}): ${LOCK.why} — building up to 6 branches, boosts up to 2.6`, "hot");
 const build = (o) => { if (built >= (LOCK.on ? 6 : 4) || alive().length >= (LOCK.on ? 18 : 14)) return false;
   if (o.path !== false && HELD(o.target)) return false;
+  if (o.path !== false && worksTier(o.target) === "DEAD") { say(o.owner, `refused a branch on ${o.target}: DEAD family (WORKS — real exposure, 0 accounts)`, "bad"); return false; }
   if (o.path !== false && !isReal(o.target)) { say(o.owner, `refused a branch on ${o.target}: not a real page (sitemap)`, "bad"); return false; } const id = `${o.kind}-${o.target}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 52);
   if (blocked(id) || !(fire(o.neuron) || nSigns(o.target) >= 3)) return false;
   B.branches.push({ id, born: iso(NOW), state: "alive", boost: o.path === false ? null : boost(o.target, o.owner), signs: [...(signs.get(o.target) ?? signs.get(famKey(o.target)) ?? [])], ...o }); built++;
@@ -287,6 +289,8 @@ for (const [c, v] of breakout) for (const [p] of v.top.slice(0, 2)) if (p !== "/
 for (const e of soon.slice(0, 3)) { const fam = e.fam.startsWith("/") ? e.fam : `/news/${e.fam}`; const L = brain.lessons[`event:${e.fam}`];
   if (L && L.n >= 2 && L.lift < 1.05) continue; // learned: this release never moves reads — skip it
   build({ kind: "event", owner: "events", fam: e.fam, target: fam, neuron: "event→prepush", base: r1(readsOf(fam, NOW - 7 * DAY, NOW) / 7), why: `${e.title} at ${iso(e.t).slice(11, 16)} UTC${L ? ` (past lift ×${L.lift})` : ""}` }); }
+// 11-13 WORKS: the north-star focus (pages that bring ACCOUNTS) gets branches first — more in a lock-in
+for (const x of (worksPlan()?.focus ?? []).slice(0, LOCK.on ? 3 : 2)) build({ kind: "works", owner: "convergence", target: x.path, neuron: "works→bing", base: r1(readsOf(x.path, NOW - 8 * DAY, NOW - DAY) / 7), why: `WORKS focus: ${x.acc28} accounts from ${x.v28} visitors in 28 d` });
 // lock-in: the wave's pages get branches before anything else
 for (const p of (LOCK.on ? LOCK.targets ?? [] : []).slice(0, 3)) build({ kind: "surge", owner: "convergence", target: p, neuron: "lockin→bing", base: r1(readsOf(p, NOW - 8 * DAY, NOW - DAY) / 7), why: `LOCK-IN ${LOCK.kind} wave: ${String(LOCK.why).slice(0, 80)}` });
 // surges the AI machine saw

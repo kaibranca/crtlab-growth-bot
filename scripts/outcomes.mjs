@@ -68,7 +68,9 @@ if (process.env.ANALYTICS_DB_URL) {
 const ais = readLines("data/ai/score.jsonl");
 out["lead-content"] = k("AI page reads / week", win(ais, "reads", 7, 0), win(ais, "reads", 14, 7));
 out["bing"] = k("AI clicks / week", win(ais, "clicks", 7, 0), win(ais, "clicks", 14, 7));
-out["surge"] = out["rising"] = out["sisters"] = out["curator"] = out["yield"] = out["trend"] = out["lift"] = out["weekly"] = out["bing"];
+// 11-13 values rule 1: the push machines are judged on the NORTH STAR (new accounts / week), not on AI clicks — a push that
+// raises reads or clicks but not accounts has not won. AI clicks stay visible as the bing machine's leading signal.
+out["surge"] = out["rising"] = out["sisters"] = out["curator"] = out["yield"] = out["trend"] = out["lift"] = out["weekly"] = out["works"] ?? out["bing"];
 out["hooks"] = k("AI accounts / week", win(ais, "accounts", 7, 0), win(ais, "accounts", 14, 7));
 const inx = readLines("data/indexnow.jsonl");
 out["indexnow"] = k("pages submitted / week", win(inx, "submitted", 7, 0), win(inx, "submitted", 14, 7));
