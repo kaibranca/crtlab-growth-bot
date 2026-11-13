@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T04:41:04.158Z",
+ "at": "2026-11-13T05:20:04.567Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -18,6 +18,14 @@
    "kind": "fix",
    "what": "AI accounts / week getting worse: 22 vs 30 last week (hooks)",
    "why": "a build session reads the machine's evidence and changes what it does",
+   "engine": "fixer",
+   "score": 4,
+   "buildPays": 0.5
+  },
+  {
+   "kind": "fix",
+   "what": "Device QA is late (last run 4 h ago, normal every 1.3 h)",
+   "why": "needs a build or a decision",
    "engine": "fixer",
    "score": 4,
    "buildPays": 0.5
@@ -102,15 +110,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 14s — phones 4.05s vs desktop 9.38s (46% of loads on phones); the server answers in 0.29s and candles in 0.04s (HIT) — the time is on the visitor's side. NETWORK, not device: US loads 1.96s at p90, the slow 10% are far/slow connections — IN 16s ×75, IR 40s ×14, PK 13s ×21, CA 10s ×11. The lever is first-load weight (a lighter first chart bundle / fewer candles on slow links), a build session. A headless flood is on (US: 182 raw vs ~15.4, 5 stayed, GB: 64 raw vs ~8.6, 0 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: desktop/IN 21s ×49, mobile/US 2.58s ×342, desktop/IR 47s ×10, desktop/US 1.83s ×242.",
-   "why": "speed brain asks for it",
-   "engine": "speed",
-   "score": 3,
-   "buildPays": 0.5
-  },
-  {
-   "kind": "build",
-   "what": "Bing shows CRTLAB for \"fundedtradermarkets trial\" with no page that fits → build the page the search wants (content brain's top gap) — a build session, no approval needed [impact 1.2]",
+   "what": "Chart pages: the slowest 10% of real loads take 14s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,
@@ -118,7 +118,7 @@
   },
   {
    "kind": "build",
-   "what": "hourly failed → needs a look in a build session [impact 1]",
+   "what": "Bing shows CRTLAB for \"fundedtradermarkets trial\" with no page that fits → build the page the search wants (content brain's top gap) — a build session, no approval needed [impact 1.2]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,

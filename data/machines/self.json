@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T04:41:04.160Z",
+ "at": "2026-11-13T05:20:04.570Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
   "iq": 81.2,
@@ -383,7 +383,7 @@
    "say": "My IQ is 70.0 (Blank, +0 since 11 Nov) — 0 of 3 parts learn on their own; weakest: Capacity, Load alert, Link check (acts but learns nothing from what happens next — no outcome to judge itself by); I'm stalling, so I explore ×1.6 harder."
   },
   "fixer": {
-   "iq": 99.6,
+   "iq": 99.8,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Capable",
@@ -401,13 +401,13 @@
      "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
     },
     {
-     "id": "fixer",
-     "name": "Fixer machine",
+     "id": "supervisor",
+     "name": "Supervisor",
      "iq": 102,
-     "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+     "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 99.6 (Capable, +23.8 since 11 Nov) — 3 of 3 parts learn on their own."
+   "say": "My IQ is 99.8 (Capable, +24.1 since 11 Nov) — 3 of 3 parts learn on their own."
   }
  },
  "machines": {
@@ -455,7 +455,7 @@
   },
   "supervisor": {
    "name": "Supervisor",
-   "iq": 101,
+   "iq": 102,
    "iqWas": 70,
    "level": "Strong",
    "state": "ok",
@@ -463,7 +463,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 385,
+    "e": 405,
     "f": 0
    },
    "upgrades": {
@@ -519,9 +519,9 @@
    "state": "ok",
    "kpi": {
     "label": "AI-referred real visitors / week",
-    "now": 47,
+    "now": 48,
     "before": 47,
-    "change": 0
+    "change": 0.02
    },
    "made": {
     "v": 0,
@@ -573,7 +573,7 @@
    "made": {
     "v": 3,
     "k": 0,
-    "e": 147,
+    "e": 150,
     "f": 0
    },
    "upgrades": {
@@ -939,7 +939,7 @@
    "made": {
     "v": 0,
     "k": 6.03,
-    "e": 1807,
+    "e": 1808,
     "f": 0
    },
    "upgrades": {
@@ -1593,8 +1593,8 @@
    "state": "ok",
    "kpi": {
     "label": "real visitors / week",
-    "now": 255,
-    "before": 267,
+    "now": 256,
+    "before": 266,
     "change": -0.04
    },
    "made": {
@@ -1619,8 +1619,8 @@
    "state": "ok",
    "kpi": {
     "label": "guests → account %",
-    "now": 47.06,
-    "before": 45.32,
+    "now": 46.88,
+    "before": 45.11,
     "change": 0.04
    },
    "made": {
