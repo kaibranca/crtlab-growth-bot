@@ -1,78 +1,101 @@
 {
- "at": "2026-11-11T20:00:46.592Z",
+ "at": "2026-11-13T06:43:34.026Z",
  "model": "openai:gpt-4.1-mini",
- "headline": "Focus AI traffic on /backtest and leverage surge on position-size-calculator",
+ "headline": "Focus AI traffic on /backtest pages; cut zero-click economic calendar pages",
  "findings": [
   {
-   "claim": "AI reads are high on / but clicks are very low at 3 from 499 reads",
+   "claim": "AI reads many economic calendar pages but they get zero clicks, wasting AI attention",
    "numbers": [
-    499,
-    3
+    55,
+    42,
+    37,
+    27,
+    23,
+    23
    ],
-   "so": "machines should push more clicks from / to backtest pages"
+   "so": "Stop sending AI traffic to economic calendar pages with zero clicks"
   },
   {
-   "claim": "/backtest page has highest accounts 48 and clicks 7.29 from 218 reads",
+   "claim": "/backtest family pages have high AI reads and clicks and good account conversion",
    "numbers": [
-    48,
-    7.29,
-    218
+    261,
+    8.66,
+    45
    ],
-   "so": "machines should direct AI traffic primarily to /backtest"
+   "so": "Focus AI traffic on /backtest family pages to improve AI click-through and signups"
   },
   {
-   "claim": "source:chatgpt visitors convert at 0.57 rate, below overall 0.58",
+   "claim": "AI accounts per week dropped from 30 to 22 despite stable AI clicks at 39/week",
    "numbers": [
-    0.57,
-    0.58
+    22,
+    30,
+    39
    ],
-   "so": "machines should improve chatgpt visitor conversion by focusing on better landing pages"
+   "so": "Investigate and fix the drop in AI accounts despite stable AI clicks"
   },
   {
-   "claim": "AI clicks stable at 39 per week but AI accounts dropped from 31 to 14",
+   "claim": "Direct and /backtest-<market> landing pages lose many potential accounts at land → account stage",
    "numbers": [
-    39,
-    31,
-    14
+    54,
+    215,
+    62,
+    0.4,
+    0.6,
+    0.54
    ],
-   "so": "machines should increase AI click-to-account conversion by focusing on proven pages"
+   "so": "Improve conversion on direct and /backtest-<market> landing pages to reduce account loss"
   },
   {
-   "claim": "Surging page /tools/position-size-calculator has 47 reads in 24h vs normal 0.5",
+   "claim": "ChatGPT signups have 12% replay rate, below Google signups at 22%, indicating lower quality",
    "numbers": [
-    47,
-    0.5
+    12,
+    22
    ],
-   "so": "machines should leverage surge on /tools/position-size-calculator to convert AI readers to accounts"
+   "so": "Target AI traffic to pages with higher replay rates to improve quality"
   }
  ],
  "proposals": [
   {
-   "target": "/backtest",
-   "why": "winner: 48 accounts, 7.29 clicks, 218 reads",
+   "target": "/footprint-chart-backtesting",
+   "why": "winner: 4.51 accounts, 6.77 clicks, 0.75 reads proven to convert well",
    "explore": false,
-   "evidence": "winner: 48 accounts, 7.29 clicks, 218 reads"
-  },
-  {
-   "target": "/tools/position-size-calculator",
-   "why": "surging: 47 reads in 24 h vs ~0.5",
-   "explore": true,
-   "evidence": "surging: 47 reads in 24 h vs ~0.5"
+   "evidence": "winner: 4.51 accounts, 6.77 clicks, 0.75 reads"
   }
  ],
- "rejected": 0,
+ "knobs": [
+  {
+   "id": "ai.exploreShare",
+   "value": 0.2,
+   "why": "current champion 0.15, challenger 0.2 under test with no verdict yet to improve AI click rate (rate0 0.00848)",
+   "at": "2026-11-13T06:43:34.026Z"
+  }
+ ],
+ "rejected": 1,
  "record": {
-  "proposed": 0,
-  "alive": 0,
+  "proposed": 2,
+  "alive": 2,
   "kept": 0,
   "retired": 0,
-  "history": []
+  "history": [
+   {
+    "target": "/backtest",
+    "verdict": "measuring",
+    "ratio": null,
+    "why": "AI analyst: winner: 48 accounts, 7.29 clicks, 218 reads"
+   },
+   {
+    "target": "/tools/position-size-calculator",
+    "verdict": "measuring",
+    "ratio": null,
+    "why": "AI analyst: surging: 47 reads in 24 h vs ~0.5"
+   }
+  ]
  },
  "candidates": 30,
  "usage": {
-  "prompt_tokens": 3403,
-  "completion_tokens": 328,
-  "total_tokens": 3731,
+  "prompt_tokens": 8544,
+  "completion_tokens": 411,
+  "total_tokens": 8955,
   "prompt_tokens_details": {
    "cached_tokens": 0,
    "audio_tokens": 0
