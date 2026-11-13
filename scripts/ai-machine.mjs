@@ -19,6 +19,7 @@
 //   4. VERDICTS any change logged in data/ai/changes.jsonl ({at, path|family, what}) is judged 7 and 14 days later against the
 //              same pages' prior rate: kept or flagged. That is how it learns what WORKS, not just what is read.
 // Studies and new page types are never auto-published (Kai's rule): the plan proposes, Kai approves.
+import { worksMul, worksTier, worksPlan } from "./works-lib.mjs"; // 11-13 WORKS: every Bing send weighted by real ACCOUNTS (focus ↑, DEAD ×0.3)
 import fs from "node:fs";
 import { SITE, readLines, append, month, knob } from "./lib.mjs";
 
@@ -344,7 +345,7 @@ const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > RESEND_D * DAY, evDue = ev && NOW - last > 2 * DAY;
   const rcmP = RECT.has(p) && NOW - last > 3 * DAY, fcP = FCJ.has(p) && NOW - last > 2 * DAY, old = bingOld(p) && NOW - last > DAY, lockP = LOCK.on && (LOCK.targets ?? []).includes(p) && lockPays(p) && NOW - last > 3 * 3.6e6, hotP = (surgePage.has(p) && NOW - last > 6 * 3.6e6) || lockP, riseP = risePage.has(p) && NOW - last > 2 * DAY, recP = recovery.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
-  return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * qualityMul(x.fam) * weekMul(x.fam) * trendMul(x.fam) * wFam(p), conf: x.conf, fam: x.fam, why: lockP ? "LOCK-IN" : hotP ? "SURGE" : rcmP ? `RECOMMEND ${RECT.get(p)}` : fcP ? `FORECAST ${FCJ.get(p)}` : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+  return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * qualityMul(x.fam) * weekMul(x.fam) * trendMul(x.fam) * wFam(p) * worksMul(p), conf: x.conf, fam: x.fam, why: lockP ? "LOCK-IN" : hotP ? "SURGE" : rcmP ? `RECOMMEND ${RECT.get(p)}` : fcP ? `FORECAST ${FCJ.get(p)}` : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).filter((q) => q.why && !SKIP.test(q.p) && !HELD(q.p));
 // EXPLOIT ~85%: releases due first, then by learned value. EXPLORE ~15%: pages the machine knows least about, spread over
 // families, so families it has never seen read still get their chance and the estimates keep improving (no local optimum).
@@ -573,11 +574,13 @@ fs.writeFileSync("data/ai/plan.json", JSON.stringify(plan, null, 1));
 
 // ── 5b. CURATOR → llms.txt "Right now" (site lib/aiCurated.ts renders it; paths + reason codes only, no text) ──────────
 // surging pages first, then pages whose release is due in the next 3 days, then the pages that send the most accounts.
-{ const picks = [], seen = new Set(), add = (path, why, date) => { if (seen.has(path) || !lastmod.has(path) || picks.length >= 12) return; seen.add(path); picks.push(date ? { path, why, date } : { path, why }); };
+{ const picks = [], seen = new Set(), add = (path, why, date) => { if (seen.has(path) || !lastmod.has(path) || picks.length >= 12 || worksTier(path) === "DEAD") return; /* 11-13 WORKS: dead families never listed */ seen.add(path); picks.push(date ? { path, why, date } : { path, why }); };
   // 11-12: ORDER FOLLOWS THE EXECUTIVE — conversion-bound → the pages that send accounts / that people click lead (learned
   // ×3.1 / ×3.9 sign weights); otherwise TRUE surges (world model, growth-adjusted) lead. Picks are logged daily so the world
   // model credits "listed in llms.txt" like any other action.
   const EXC = (() => { try { return JSON.parse(fs.readFileSync("data/machines/executive.json", "utf8")).constraint; } catch { return null; } })();
+  // 11-13 WORKS FIRST: the pages that bring real ACCOUNTS (all sources, deduped) lead llms.txt — the north star, not reads
+  for (const x of (worksPlan()?.focus ?? []).slice(0, 4)) add(x.path, "winner");
   if (EXC === "conversion") { for (const x of plan.winners.slice(0, 4)) add(x.p, "winner"); }
   for (const p of WSG ? [...WSG] : surges.filter((y) => y.kind === "page").map((y) => y.key)) if (picks.length < (EXC === "conversion" ? 7 : 4)) add(p, "surge");
   if (!WSG) for (const x of rising) if (picks.length < 6) add(x.key, "surge"); // the site renders surge|release|winner only

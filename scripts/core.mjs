@@ -92,7 +92,7 @@ const selfDir = "data/machines/self";
 for (const f of fs.existsSync(selfDir) ? fs.readdirSync(selfDir).filter((x) => x.endsWith(".json")) : []) {
   const m = J(`${selfDir}/${f}`); if (m?.id && !REG.some((r) => r.id === m.id)) REG.push({ ...m, t: () => (m.out ? atOf(m.out) ?? lastAt(m.out) : null) });
 }
-const covered = new Set(["ai", "behaviour", "radar", "mentions", "mobile", "machines", "reels", "events", "recaps", "cost", "leak", "world", "google"]);
+const covered = new Set(["ai", "behaviour", "radar", "mentions", "mobile", "machines", "reels", "events", "recaps", "cost", "leak", "world", "google", "works"]); // works: self-registered (11-13)
 for (const d of fs.readdirSync("data", { withFileTypes: true }).filter((x) => x.isDirectory() && !covered.has(x.name)))
   if (fs.existsSync(`data/${d.name}/plan.json`)) REG.push({ id: d.name, name: d.name, group: "core", does: "Discovered: writes a plan the core has not been told about yet", every: 24, t: () => atOf(`data/${d.name}/plan.json`), discovered: true });
 

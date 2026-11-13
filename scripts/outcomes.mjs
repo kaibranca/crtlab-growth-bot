@@ -62,6 +62,8 @@ if (process.env.ANALYTICS_DB_URL) {
   } catch (e) { console.log("outcomes: db", String(e).slice(0, 80)); } finally { await db.end().catch(() => {}); }
 }
 
+// ── 11-13 NORTH STAR: the WORKS engine's deduped new accounts / week (this week vs the normal of the 3 weeks before) ──
+{ const WK = J("data/works/plan.json", null); if (WK?.northStar) out["works"] = k("new accounts / week (north star)", WK.northStar.now, WK.northStar.normal); }
 // ── content: what AI reads and clicks (the AI machine's own daily score) ──
 const ais = readLines("data/ai/score.jsonl");
 out["lead-content"] = k("AI page reads / week", win(ais, "reads", 7, 0), win(ais, "reads", 14, 7));

@@ -50,6 +50,11 @@ E.knobs = constraint === "conversion" ? { banditExplore: +(0.15 + 0.1 * k).toFix
 // machines push the pages, the earned mentions on its trusted sources are Kai's (reported, never a knob)
 const RC = J("data/radar/recommend.json", null);
 E.recommendation = RC ? { namedRate: RC.namedRate, citedRate: RC.citedRate, asked: RC.asked, trusted: (RC.trustedTop ?? []).slice(0, 5).map((x) => x.d) } : null;
+// 11-13 NORTH STAR (data/machines/values.json): the WORKS engine's accounts/week is what the whole system is judged on; the
+// funnel constraint above only says WHERE to push. Every focus period also records the north star at its start and end.
+const WK = J("data/works/plan.json", null);
+E.northStar = WK?.northStar ? { ...WK.northStar, effort: WK.effort, focus: (WK.focus ?? []).slice(0, 4).map((x) => x.path), dead: Object.keys(WK.bin ?? {}) } : null;
+const cur = E.history.at(-1); if (cur && cur.ns0 == null && E.northStar) cur.ns0 = E.northStar.now; if (last?.ended && last.ns1 == null && E.northStar) last.ns1 = E.northStar.now;
 Object.assign(E, { at: new Date().toISOString(), constraint, why, rates: Object.fromEntries(Object.entries(rate).map(([a, v]) => [a, v == null ? null : +(+v).toFixed(5)])), gaps: Object.fromEntries(Object.entries(gaps).map(([a, v]) => [a, +v.toFixed(1)])) });
 fs.writeFileSync(OUT, JSON.stringify(E, null, 1));
 console.log(`executive: constraint = ${constraint} (${why}) · knobs ${JSON.stringify(E.knobs)} · strength ×${E.strength}`);
