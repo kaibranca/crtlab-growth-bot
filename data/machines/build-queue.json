@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T06:20:41.178Z",
+ "at": "2026-11-13T07:20:08.640Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -18,14 +18,6 @@
    "kind": "fix",
    "what": "AI accounts / week getting worse: 22 vs 30 last week (hooks)",
    "why": "a build session reads the machine's evidence and changes what it does",
-   "engine": "fixer",
-   "score": 4,
-   "buildPays": 0.5
-  },
-  {
-   "kind": "fix",
-   "what": "Device QA is late (last run 5 h ago, normal every 1.3 h)",
-   "why": "needs a build or a decision",
    "engine": "fixer",
    "score": 4,
    "buildPays": 0.5
@@ -110,7 +102,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 14s — phones 5.01s vs desktop 9.34s (48% of loads on phones); the server answers in 0.27s and candles in 0.08s (HIT) — the time is on the visitor's side. Desktops are slower than phones, so it is not phone CPU — something desktop loads (more candles, panels, a far country) is the lead. A headless flood is on (US: 177 raw vs ~16.1, 4 stayed, GB: 62 raw vs ~8.9, 0 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: mobile/US 3.44s ×355, desktop/IN 20s ×51, desktop/IR 47s ×10, desktop/US 1.83s ×248. Needs a build session to profile one slow load.",
+   "what": "Chart pages: the slowest 10% of real loads take 13s — phones 4.96s vs desktop 9.35s (51% of loads on phones); the server answers in 0.24s and candles in 0.03s (HIT) — the time is on the visitor's side. Desktops are slower than phones, so it is not phone CPU — something desktop loads (more candles, panels, a far country) is the lead. A headless flood is on (US: 170 raw vs ~17, 4 stayed, GB: 58 raw vs ~9.3, 0 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: mobile/US 3.67s ×371, desktop/IN 20s ×49, desktop/IR 47s ×10, desktop/US 1.83s ×247. Needs a build session to profile one slow load.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
@@ -238,6 +230,16 @@
    "name": "Ledger",
    "engine": "main",
    "what": "Teach Ledger to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 1,
+   "buildPays": 0.5
+  },
+  {
+   "kind": "learn",
+   "machine": "brains",
+   "name": "Brains (money · data · security · content · retention · speed)",
+   "engine": "main",
+   "what": "Teach Brains (money · data · security · content · retention · speed) to judge itself on an outcome it can measure",
    "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
    "score": 1,
    "buildPays": 0.5

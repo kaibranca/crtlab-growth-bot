@@ -1,12 +1,12 @@
 {
- "at": "2026-11-13T06:20:41.179Z",
+ "at": "2026-11-13T07:20:08.643Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
-  "iq": 81.2,
+  "iq": 81.3,
   "power": 261,
-  "dIQ": 6.9,
+  "dIQ": 7,
   "dPower": 156,
-  "iqPerUpgrade": 0.044,
+  "iqPerUpgrade": 0.045,
   "upgrades": {
    "judged": 0,
    "paid": 0,
@@ -16,16 +16,16 @@
    "unmeasured": 0,
    "next": "2026-11-19"
   },
-  "say": "Machines IQ 81.2 (+6.9 since 11 Nov) on 156 upgrades — 0.04 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.3/day — on pace for ~110 in 30 days.",
+  "say": "Machines IQ 81.3 (+7 since 11 Nov) on 156 upgrades — 0.04 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.3/day — on pace for ~110 in 30 days.",
   "experiments": "13 experiments live — next verdicts: conversion bandit 14 Nov · executive focus: conversion 15 Nov · hook home-yesterday-charts-2026-11-12 17 Nov · forecast self-calibration 17 Nov.",
   "pace": {
-   "perDay": 3.3,
-   "in30": 109.7
+   "perDay": 3.31,
+   "in30": 109.9
   }
  },
  "engines": {
   "main": {
-   "iq": 81.2,
+   "iq": 81.3,
    "iqWas": 74.3,
    "since": "2026-11-11",
    "level": "Novice",
@@ -68,10 +68,10 @@
      "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 81.2 (Novice, +6.9 since 11 Nov) — 33 of 71 parts learn on their own; weakest: Ledger, 4-week trend, Truth gate (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 81.3 (Novice, +7 since 11 Nov) — 33 of 71 parts learn on their own; weakest: Ledger, 4-week trend, Truth gate (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "traffic": {
-   "iq": 82,
+   "iq": 82.1,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Novice",
@@ -114,7 +114,7 @@
      "limit": "its outcome is falling (AI accounts / week -27%)"
     }
    ],
-   "say": "My IQ is 82.0 (Novice, +6.2 since 11 Nov) — 21 of 32 parts learn on their own; weakest: Truth gate, Search console, Bing webmaster (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 82.1 (Novice, +6.3 since 11 Nov) — 21 of 32 parts learn on their own; weakest: Truth gate, Search console, Bing webmaster (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "money": {
    "iq": 76.2,
@@ -383,10 +383,10 @@
    "say": "My IQ is 70.0 (Blank, +0 since 11 Nov) — 0 of 3 parts learn on their own; weakest: Capacity, Load alert, Link check (acts but learns nothing from what happens next — no outcome to judge itself by); I'm stalling, so I explore ×1.6 harder."
   },
   "fixer": {
-   "iq": 99.8,
+   "iq": 100.3,
    "iqWas": 75.8,
    "since": "2026-11-11",
-   "level": "Capable",
+   "level": "Strong",
    "members": 3,
    "learners": 3,
    "brainVerdicts": 4,
@@ -395,19 +395,19 @@
    "weakest": [],
    "strongest": [
     {
+     "id": "supervisor",
+     "name": "Supervisor",
+     "iq": 104,
+     "limit": "collects evidence but hasn't reached a verdict yet"
+    },
+    {
      "id": "mistakes",
      "name": "Mistakes watch",
      "iq": 102,
      "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
-    },
-    {
-     "id": "supervisor",
-     "name": "Supervisor",
-     "iq": 102,
-     "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 99.8 (Capable, +24.1 since 11 Nov) — 3 of 3 parts learn on their own."
+   "say": "My IQ is 100.3 (Strong, +24.6 since 11 Nov) — 3 of 3 parts learn on their own."
   }
  },
  "machines": {
@@ -455,7 +455,7 @@
   },
   "supervisor": {
    "name": "Supervisor",
-   "iq": 102,
+   "iq": 104,
    "iqWas": 70,
    "level": "Strong",
    "state": "ok",
@@ -463,7 +463,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 425,
+    "e": 490,
     "f": 0
    },
    "upgrades": {
@@ -519,9 +519,9 @@
    "state": "ok",
    "kpi": {
     "label": "AI-referred real visitors / week",
-    "now": 48,
+    "now": 49,
     "before": 47,
-    "change": 0.02
+    "change": 0.04
    },
    "made": {
     "v": 0,
@@ -573,7 +573,7 @@
    "made": {
     "v": 3,
     "k": 0,
-    "e": 151,
+    "e": 153,
     "f": 0
    },
    "upgrades": {
@@ -868,7 +868,7 @@
   },
   "radar": {
    "name": "AI radar",
-   "iq": 77,
+   "iq": 78,
    "iqWas": 74,
    "level": "Novice",
    "state": "ok",
@@ -876,7 +876,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 29,
+    "e": 35,
     "f": 0
    },
    "upgrades": {
@@ -895,9 +895,9 @@
    "state": "ok",
    "kpi": {
     "label": "pages submitted / week",
-    "now": 2927,
-    "before": 349,
-    "change": 7.39
+    "now": 2900,
+    "before": 376,
+    "change": 6.71
    },
    "made": {
     "v": 0,
@@ -939,7 +939,7 @@
    "made": {
     "v": 0,
     "k": 6.03,
-    "e": 1809,
+    "e": 1810,
     "f": 0
    },
    "upgrades": {
@@ -1082,7 +1082,7 @@
    "made": {
     "v": 0,
     "k": 1,
-    "e": 4,
+    "e": 5,
     "f": 0
    },
    "upgrades": {
@@ -1095,7 +1095,7 @@
   },
   "recommend": {
    "name": "Recommendation engine",
-   "iq": 77,
+   "iq": 78,
    "iqWas": 70,
    "level": "Novice",
    "state": "ok",
@@ -1103,7 +1103,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 29,
+    "e": 35,
     "f": 0
    },
    "upgrades": {
@@ -1230,7 +1230,7 @@
    "made": {
     "v": 12,
     "k": 1,
-    "e": 230,
+    "e": 240,
     "f": 0
    },
    "upgrades": {
@@ -1318,7 +1318,7 @@
    "state": "ok",
    "kpi": {
     "label": "attacks blocked / week",
-    "now": 5453,
+    "now": 5457,
     "before": 0,
     "change": null
    },
@@ -1593,9 +1593,9 @@
    "state": "ok",
    "kpi": {
     "label": "real visitors / week",
-    "now": 256,
-    "before": 266,
-    "change": -0.04
+    "now": 258,
+    "before": 263,
+    "change": -0.02
    },
    "made": {
     "v": 0,
@@ -1619,14 +1619,14 @@
    "state": "ok",
    "kpi": {
     "label": "guests → account %",
-    "now": 46.88,
-    "before": 45.11,
+    "now": 46.9,
+    "before": 45.25,
     "change": 0.04
    },
    "made": {
     "v": 0,
     "k": 0,
-    "e": 79,
+    "e": 80,
     "f": 0
    },
    "upgrades": {
@@ -1647,7 +1647,7 @@
    "made": {
     "v": 0,
     "k": 7.47,
-    "e": 210,
+    "e": 209,
     "f": 0
    },
    "upgrades": {

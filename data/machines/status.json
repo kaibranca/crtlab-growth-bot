@@ -1,6 +1,6 @@
 {
- "at": "2026-11-13T06:20:36.678Z",
- "ok": 64,
+ "at": "2026-11-13T07:20:02.978Z",
+ "ok": 65,
  "total": 65,
  "hurting": [
   {
@@ -17,8 +17,8 @@
    "name": "AI referral machine",
    "state": "ok",
    "lastRunH": 0,
-   "everyH": 0.9,
-   "learnedH": 0.92,
+   "everyH": 1,
+   "learnedH": 1,
    "kpi": {
     "label": "AI clicks / week",
     "now": 43,
@@ -31,8 +31,8 @@
    "name": "AI → accounts",
    "state": "ok",
    "lastRunH": 0,
-   "everyH": 0.9,
-   "learnedH": 0.92,
+   "everyH": 1,
+   "learnedH": 1,
    "kpi": {
     "label": "AI accounts / week",
     "now": 25,
@@ -45,15 +45,15 @@
    "name": "Eyes (Bing index + Cloudflare)",
    "state": "ok",
    "lastRunH": 0,
-   "everyH": 0.9,
-   "learnedH": 0.92,
+   "everyH": 1,
+   "learnedH": 1,
    "kpi": null
   },
   {
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 3,
+   "lastRunH": 4,
    "everyH": 6,
    "learnedH": null,
    "kpi": {
@@ -66,7 +66,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 22.2,
+   "lastRunH": 23.2,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -78,7 +78,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 23.6,
+   "lastRunH": 0.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": null
@@ -87,28 +87,28 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 23.6,
+   "lastRunH": 0.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
     "label": "share of AI answers",
-    "now": 0.009
+    "now": 0.007
    }
   },
   {
    "id": "devices",
    "name": "Device QA",
-   "state": "late",
-   "lastRunH": 5,
-   "everyH": 1.3,
-   "learnedH": 1.25,
+   "state": "ok",
+   "lastRunH": 0.6,
+   "everyH": 2,
+   "learnedH": 2,
    "kpi": null
   },
   {
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 23.6,
+   "lastRunH": 0.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -120,9 +120,9 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 2.6,
-   "everyH": 1,
-   "learnedH": null,
+   "lastRunH": 0.6,
+   "everyH": 3,
+   "learnedH": 3,
    "kpi": null
   },
   {
@@ -130,15 +130,15 @@
    "name": "Shield",
    "state": "ok",
    "lastRunH": 0,
-   "everyH": 0.9,
-   "learnedH": 0.92,
+   "everyH": 1,
+   "learnedH": 1,
    "kpi": null
   },
   {
    "id": "indexnow",
    "name": "IndexNow",
    "state": "ok",
-   "lastRunH": 6.3,
+   "lastRunH": 7.3,
    "everyH": 24,
    "learnedH": null,
    "kpi": null
@@ -350,7 +350,7 @@
    "id": "traffic-brain",
    "name": "Traffic brain ↗",
    "state": "ok",
-   "lastRunH": 0.7,
+   "lastRunH": 1,
    "everyH": 1,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -365,7 +365,7 @@
    "id": "brains",
    "name": "Brains (money · data · security · content · retention · speed)",
    "state": "ok",
-   "lastRunH": 0.7,
+   "lastRunH": 1,
    "everyH": 1,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -380,7 +380,7 @@
    "id": "seo",
    "name": "Search console",
    "state": "ok",
-   "lastRunH": 87.7,
+   "lastRunH": 88.7,
    "everyH": 168,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -410,7 +410,7 @@
    "id": "executive",
    "name": "Executive",
    "state": "ok",
-   "lastRunH": 6.7,
+   "lastRunH": 7.8,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -425,7 +425,7 @@
    "id": "memory",
    "name": "Long-term memory",
    "state": "ok",
-   "lastRunH": 6.7,
+   "lastRunH": 7.7,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -515,7 +515,7 @@
    "id": "google",
    "name": "Google machine",
    "state": "ok",
-   "lastRunH": 22.6,
+   "lastRunH": 23.6,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -545,7 +545,7 @@
    "id": "news",
    "name": "News engine",
    "state": "ok",
-   "lastRunH": 21.3,
+   "lastRunH": 22.3,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -560,7 +560,7 @@
    "id": "recaps",
    "name": "Daily recaps",
    "state": "ok",
-   "lastRunH": 21.3,
+   "lastRunH": 22.3,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -575,7 +575,7 @@
    "id": "linkcheck",
    "name": "Link check",
    "state": "ok",
-   "lastRunH": 87.7,
+   "lastRunH": 88.7,
    "everyH": 168,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -590,7 +590,7 @@
    "id": "social",
    "name": "Reels",
    "state": "ok",
-   "lastRunH": 20.6,
+   "lastRunH": 21.6,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -628,7 +628,7 @@
    "id": "security",
    "name": "Login + key watch",
    "state": "ok",
-   "lastRunH": 1.6,
+   "lastRunH": 2.6,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -643,7 +643,7 @@
    "id": "datapull",
    "name": "Data pull",
    "state": "ok",
-   "lastRunH": 1.6,
+   "lastRunH": 2.6,
    "everyH": 24,
    "kpi": {
     "label": "trading days behind",
@@ -658,7 +658,7 @@
    "id": "backup",
    "name": "Nightly backup",
    "state": "ok",
-   "lastRunH": 1.6,
+   "lastRunH": 2.6,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -673,7 +673,7 @@
    "id": "calendar",
    "name": "Economic calendar",
    "state": "ok",
-   "lastRunH": 2,
+   "lastRunH": 3,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -688,7 +688,7 @@
    "id": "indicators",
    "name": "Indicator pages",
    "state": "ok",
-   "lastRunH": 3,
+   "lastRunH": 4,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -718,7 +718,7 @@
    "id": "gaps",
    "name": "Search gaps",
    "state": "ok",
-   "lastRunH": 87.7,
+   "lastRunH": 88.7,
    "everyH": 168,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -733,7 +733,7 @@
    "id": "bingseo",
    "name": "Bing webmaster",
    "state": "ok",
-   "lastRunH": 87.7,
+   "lastRunH": 88.7,
    "everyH": 168,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -769,7 +769,7 @@
    "id": "wall",
    "name": "Wall + checkout",
    "state": "ok",
-   "lastRunH": 22.7,
+   "lastRunH": 23.7,
    "everyH": 24,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -784,7 +784,7 @@
    "id": "restore",
    "name": "Restore test",
    "state": "ok",
-   "lastRunH": 113.3,
+   "lastRunH": 114.4,
    "everyH": 168,
    "kpi": {
     "label": "days its output changed (7 d)",
@@ -803,7 +803,7 @@
    "everyH": 1,
    "kpi": {
     "label": "Railway $ / month pace (7 d)",
-    "now": 24.3,
+    "now": 24.6,
     "before": null,
     "change": null,
     "lowerBetter": true,
@@ -844,7 +844,7 @@
    "id": "leak",
    "name": "Conversion leak",
    "state": "ok",
-   "lastRunH": 22.7,
+   "lastRunH": 23.7,
    "everyH": 24,
    "kpi": {
     "label": "guests → account %",
@@ -867,7 +867,7 @@
    "id": "analyst",
    "name": "analyst",
    "state": "ok",
-   "lastRunH": 33.3,
+   "lastRunH": 34.3,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -876,7 +876,7 @@
    "id": "traffic",
    "name": "traffic",
    "state": "ok",
-   "lastRunH": 22.6,
+   "lastRunH": 23.6,
    "everyH": 24,
    "kpi": null,
    "from": "core"
@@ -921,12 +921,6 @@
   },
   {
    "move": "climbing",
-   "what": "/news/ppi-claims-2026-09-10",
-   "why": "58 reads in 3 days vs ~0.9",
-   "z": 60.2
-  },
-  {
-   "move": "climbing",
    "what": "/news/claims/gold",
    "why": "52 reads in 3 days vs ~0.9",
    "z": 53.9
@@ -952,6 +946,12 @@
   {
    "move": "climbing",
    "what": "/tools/position-size-calculator",
+   "why": "48 reads in 3 days vs ~0.9",
+   "z": 49.6
+  },
+  {
+   "move": "climbing",
+   "what": "/topstep-challenge-simulator",
    "why": "48 reads in 3 days vs ~0.9",
    "z": 49.6
   }
@@ -1170,7 +1170,6 @@
  ],
  "fix": [
   "AI accounts / week getting worse: 22 vs 30 last week (hooks)",
-  "Device QA is late (last run 5 h ago, normal every 1.3 h)",
   "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones"
  ],
  "mistakes": []

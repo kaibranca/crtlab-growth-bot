@@ -1,9 +1,9 @@
 {
- "at": "2026-11-13T06:18:10.852Z",
- "asked": 29,
+ "at": "2026-11-13T07:18:01.081Z",
+ "asked": 35,
  "namedRate": 0,
  "citedRate": 0,
- "sov": 0.009,
+ "sov": 0.007,
  "clusters": {
   "free": {
    "asked": 7,
@@ -98,7 +98,7 @@
    ]
   },
   "news": {
-   "asked": 6,
+   "asked": 7,
    "namedRate": 0,
    "citedRate": 0,
    "namedInstead": [],
@@ -117,6 +117,14 @@
     },
     {
      "d": "apnews.com",
+     "n": 2
+    },
+    {
+     "d": "en.wikipedia.org",
+     "n": 2
+    },
+    {
+     "d": "data.imf.org",
      "n": 2
     }
    ],
@@ -140,6 +148,10 @@
     {
      "page": "/news/cpi/eurusd",
      "q": "How does EURUSD react to CPI?"
+    },
+    {
+     "page": "/news/claims/gold",
+     "q": "How does gold react to CLAIMS?"
     }
    ]
   },
@@ -271,6 +283,58 @@
      "q": "What time does gold make its high or low of the day?"
     }
    ]
+  },
+  "gold": {
+   "asked": 5,
+   "namedRate": 0,
+   "citedRate": 0,
+   "namedInstead": [
+    "vectorbt",
+    "TradingView",
+    "Python",
+    "backtrader",
+    "pandas"
+   ],
+   "trusted": [
+    {
+     "d": "tradingview.com",
+     "n": 2
+    },
+    {
+     "d": "fxreplay.com",
+     "n": 2
+    },
+    {
+     "d": "desktop.forextester.com",
+     "n": 2
+    },
+    {
+     "d": "metatrader5.com",
+     "n": 2
+    }
+   ],
+   "lostTargets": [
+    {
+     "page": "/backtest-nas100",
+     "q": "How to backtest NAS100 strategies"
+    },
+    {
+     "page": "/backtest-gold",
+     "q": "Best way to backtest gold XAUUSD"
+    },
+    {
+     "page": "/backtest-bitcoin",
+     "q": "How to backtest crypto strategies on Bitcoin"
+    },
+    {
+     "page": "/new-york-session-backtester",
+     "q": "How to backtest a New York open strategy on indices"
+    },
+    {
+     "page": "/london-session-backtester",
+     "q": "Where can I backtest the London session on forex?"
+    }
+   ]
   }
  },
  "targets": [
@@ -329,6 +393,12 @@
    "weight": 1
   },
   {
+   "page": "/news/claims/gold",
+   "cluster": "news",
+   "q": "How does gold react to CLAIMS?",
+   "weight": 1
+  },
+  {
    "page": "/prop-firm-backtesting",
    "cluster": "prop",
    "q": "Best way to prepare for a funded trader challenge",
@@ -357,12 +427,6 @@
    "cluster": "replay",
    "q": "Free candle by candle replay for forex and gold",
    "weight": 1
-  },
-  {
-   "page": "/tools/previous-day-high-low-statistics",
-   "cluster": "stats",
-   "q": "How often is the previous day high or low taken?",
-   "weight": 1
   }
  ],
  "intensity": {},
@@ -390,12 +454,16 @@
   "stats": {
    "at": "2026-11-12T07:02:56.952Z",
    "namedRate": 0
+  },
+  "gold": {
+   "at": "2026-11-13T07:18:01.081Z",
+   "namedRate": 0
   }
  },
  "trustedTop": [
   {
    "d": "tradingview.com",
-   "n": 24
+   "n": 26
   },
   {
    "d": "quantconnect.com",
@@ -414,6 +482,10 @@
    "n": 6
   },
   {
+   "d": "metatrader5.com",
+   "n": 4
+  },
+  {
    "d": "federalreserve.gov",
    "n": 4
   },
@@ -427,10 +499,6 @@
   },
   {
    "d": "cdn.quantconnect.com",
-   "n": 2
-  },
-  {
-   "d": "metatrader5.com",
    "n": 2
   }
  ]
