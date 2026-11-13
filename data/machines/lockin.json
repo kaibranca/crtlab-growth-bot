@@ -1,34 +1,15 @@
 {
- "on": true,
- "since": "2026-11-13T03:24:51.595Z",
- "kind": "spike",
- "triggers": [
-  "spike"
- ],
- "why": "people asking AI about CRTLAB pages: 636 in 24 h vs ~318 (×2.0)",
+ "on": false,
  "bars": {
   "people": 2,
   "signups": 2.5,
   "ai": 2,
-  "spike": 1.5
+  "spike": 1.75
  },
- "startSignups24": 17,
- "normalSignups24": 15.6,
- "peak": 2.07,
- "targets": [
-  "/",
-  "/backtest",
-  "/backtest-gold",
-  "/backtesting-software",
-  "/crt-strategy-backtester",
-  "/market-replay-software",
-  "/daily-market-data",
-  "/best-backtesting-software",
-  "/multi-chart-backtesting",
-  "/news/claims/gold",
-  "/news/ppi/nasdaq",
-  "/topstep-challenge-simulator"
- ],
- "emailed": true,
- "quiet": 1
+ "last": {
+  "since": "2026-11-13T03:24:51.595Z",
+  "kind": "spike",
+  "verdict": "false alarm",
+  "ratio": 0.83
+ }
 }

@@ -29,7 +29,7 @@
    "set": "MALLOC_ARENA_MAX=2",
    "live": true,
    "beforeGB": 1.093,
-   "afterGB": 1.08,
+   "afterGB": 1.093,
    "verdict": "judging"
   },
   {
@@ -38,17 +38,17 @@
    "set": "WEB_NODE_OPTIONS=--max-old-space-size=512",
    "live": true,
    "beforeGB": 1.109,
-   "afterGB": 1.08,
+   "afterGB": 1.093,
    "verdict": "judging"
   }
  ],
  "heap": {
   "cap": 512,
   "stopped": false,
-  "samples": 88,
+  "samples": 89,
   "note": "heap peak 315 MB → cap 512 MB is right"
  },
- "at": "2026-11-13T18:18:29.727Z",
+ "at": "2026-11-13T19:18:23.810Z",
  "status": "over budget",
  "budget": 10,
  "weekPace": 25.5,
@@ -56,20 +56,20 @@
  "deploys": {
   "Postgres": 0,
   "data": 4,
-  "web": 13,
+  "web": 14,
   "ops": 0
  },
- "dayCost": 0.86,
+ "dayCost": 0.87,
  "avgDayCost": 0.85,
- "monthPace": 25.8,
+ "monthPace": 26.1,
  "services": [
   {
    "svc": "web",
-   "memGB": 0.88,
-   "normalGB": 0.83,
-   "dayCost": 0.55,
+   "memGB": 0.96,
+   "normalGB": 0.84,
+   "dayCost": 0.56,
    "avgDayCost": 0.48,
-   "monthPace": 16.64
+   "monthPace": 16.89
   },
   {
    "svc": "Postgres",
@@ -77,7 +77,7 @@
    "normalGB": 0.4,
    "dayCost": 0.17,
    "avgDayCost": 0.15,
-   "monthPace": 5.09
+   "monthPace": 5.1
   },
   {
    "svc": "data",
@@ -85,7 +85,7 @@
    "normalGB": 0.23,
    "dayCost": 0.14,
    "avgDayCost": 0.22,
-   "monthPace": 4.28
+   "monthPace": 4.27
   },
   {
    "svc": "ops",
@@ -100,8 +100,8 @@
   {
    "svc": "web",
    "kind": "too many deploys",
-   "n": 13,
-   "why": "13 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
+   "n": 14,
+   "why": "14 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
   }
  ],
  "actions": [

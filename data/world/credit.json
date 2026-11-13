@@ -1,94 +1,110 @@
 {
- "at": "2026-11-12T22:35:38.591Z",
+ "at": "2026-11-13T19:19:46.917Z",
  "curve": {
-  "days": 11,
+  "days": 12,
   "reads": {
-   "perDay": 24.3,
-   "doublingDays": 3.2,
-   "now": 577.6,
-   "in7": 1603,
-   "in30": 3760
+   "perDay": 22.2,
+   "doublingDays": 3.5,
+   "now": 630.4,
+   "in7": 1616,
+   "in30": 3546
   },
   "clicks": {
-   "perDay": -1.7,
+   "perDay": 0.1,
    "doublingDays": null,
-   "now": 4.9,
-   "in7": 4,
-   "in30": 4
+   "now": 5.6,
+   "in7": 6,
+   "in30": 6
   },
   "accounts": {
-   "perDay": -9.6,
+   "perDay": -7.1,
    "doublingDays": null,
-   "now": 2,
+   "now": 2.2,
    "in7": 1,
    "in30": 1
   },
-  "gap": 26
+  "gap": 22.1
  },
- "days": 11,
- "pageDays": 1449,
- "fitError": 0.907,
+ "days": 12,
+ "pageDays": 2061,
+ "fitError": 0.86,
  "trendAlpha": 1,
  "skill": null,
  "graded": 0,
- "siteTrendTomorrow": 1.62,
- "releaseLift": 2.71,
+ "siteTrendTomorrow": 1.54,
+ "releaseLift": 2.85,
  "credit": {
   "llms-listed": {
-   "units": 28,
-   "days": 2,
-   "lift": 1.17,
+   "units": 42,
+   "days": 3,
+   "lift": 1.38,
    "ci": [
-    0.87,
-    1.59
+    1.02,
+    1.85
    ],
-   "clicksPerFetchDiff": 0.0604,
+   "clicksPerFetchDiff": 0.1234,
    "verdict": "no clear effect yet"
   },
   "indexnow-send": {
-   "units": 101,
-   "days": 4,
-   "lift": 0.87,
+   "units": 183,
+   "days": 5,
+   "lift": 0.94,
    "ci": [
-    0.74,
-    1.02
+    0.84,
+    1.06
    ],
-   "clicksPerFetchDiff": 0.0077,
+   "clicksPerFetchDiff": 0.02,
    "verdict": "no clear effect yet"
   },
   "bing-send": {
-   "units": 41,
-   "days": 1,
-   "lift": 0.89,
+   "units": 133,
+   "days": 2,
+   "lift": 1.03,
    "ci": [
-    0.66,
+    0.87,
     1.21
    ],
-   "clicksPerFetchDiff": 0.0009,
+   "clicksPerFetchDiff": 0.0249,
    "verdict": "no clear effect yet",
    "byFamily": {
+    "/<page>": {
+     "units": 9,
+     "lift": 0.84,
+     "weight": 0.962
+    },
+    "/news/<x>": {
+     "units": 26,
+     "lift": 1.1,
+     "weight": 1.045
+    },
     "/economic-calendar/<x>": {
-     "units": 25,
-     "lift": 1,
-     "weight": 1
+     "units": 53,
+     "lift": 0.99,
+     "weight": 0.993
     },
     "/news/<x/y>": {
-     "units": 8,
-     "lift": 0.54,
-     "weight": 0.903
+     "units": 39,
+     "lift": 1.18,
+     "weight": 1.103
     }
    }
   },
   "brain-boost": {
-   "units": 0,
+   "units": 4,
    "lift": null,
    "note": "not enough treated page-days yet",
    "byFamily": {}
   },
   "sister-spread": {
-   "units": 0,
-   "lift": null,
-   "note": "not enough treated page-days yet"
+   "units": 23,
+   "days": 1,
+   "lift": 1.1,
+   "ci": [
+    0.8,
+    1.56
+   ],
+   "clicksPerFetchDiff": 0.154,
+   "verdict": "no clear effect yet"
   },
   "lock-in": {
    "units": 0,
@@ -96,8 +112,8 @@
    "note": "not enough treated page-days yet"
   },
   "held-out (not pushed)": {
-   "units": 41,
-   "lift": 1.16
+   "units": 66,
+   "lift": 1.13
   }
  },
  "verdicts": 0
