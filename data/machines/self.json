@@ -1,12 +1,12 @@
 {
- "at": "2026-11-13T11:20:03.213Z",
+ "at": "2026-11-13T11:45:16.845Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
-  "iq": 81.2,
+  "iq": 81.3,
   "power": 261,
-  "dIQ": 6.9,
+  "dIQ": 7,
   "dPower": 156,
-  "iqPerUpgrade": 0.044,
+  "iqPerUpgrade": 0.045,
   "upgrades": {
    "judged": 0,
    "paid": 0,
@@ -16,16 +16,16 @@
    "unmeasured": 0,
    "next": "2026-11-19"
   },
-  "say": "Machines IQ 81.2 (+6.9 since 11 Nov) on 156 upgrades — 0.04 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.3/day — on pace for ~110 in 30 days.",
+  "say": "Machines IQ 81.3 (+7 since 11 Nov) on 156 upgrades — 0.04 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.3/day — on pace for ~110 in 30 days.",
   "experiments": "13 experiments live — next verdicts: conversion bandit 14 Nov · executive focus: conversion 15 Nov · hook home-yesterday-charts-2026-11-12 17 Nov · forecast self-calibration 17 Nov.",
   "pace": {
-   "perDay": 3.29,
-   "in30": 109.5
+   "perDay": 3.3,
+   "in30": 109.7
   }
  },
  "engines": {
   "main": {
-   "iq": 81.2,
+   "iq": 81.3,
    "iqWas": 74.3,
    "since": "2026-11-11",
    "level": "Novice",
@@ -68,7 +68,7 @@
      "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 81.2 (Novice, +6.9 since 11 Nov) — 33 of 72 parts learn on their own; weakest: Ledger, 4-week trend, Truth gate (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 81.3 (Novice, +7 since 11 Nov) — 33 of 72 parts learn on their own; weakest: Ledger, 4-week trend, Truth gate (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "traffic": {
    "iq": 82.2,
@@ -383,7 +383,7 @@
    "say": "My IQ is 70.0 (Blank, +0 since 11 Nov) — 0 of 3 parts learn on their own; weakest: Capacity, Load alert, Link check (acts but learns nothing from what happens next — no outcome to judge itself by); I'm stalling, so I explore ×1.6 harder."
   },
   "fixer": {
-   "iq": 101.3,
+   "iq": 101.6,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Strong",
@@ -403,11 +403,11 @@
     {
      "id": "mistakes",
      "name": "Mistakes watch",
-     "iq": 102,
+     "iq": 103,
      "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
     }
    ],
-   "say": "My IQ is 101.3 (Strong, +25.6 since 11 Nov) — 3 of 3 parts learn on their own."
+   "say": "My IQ is 101.6 (Strong, +25.8 since 11 Nov) — 3 of 3 parts learn on their own."
   }
  },
  "machines": {
@@ -463,7 +463,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 640,
+    "e": 660,
     "f": 0
    },
    "upgrades": {
@@ -476,13 +476,13 @@
   },
   "mistakes": {
    "name": "Mistakes watch",
-   "iq": 102,
+   "iq": 103,
    "iqWas": 93,
    "level": "Strong",
    "state": "ok",
    "kpi": null,
    "made": {
-    "v": 8,
+    "v": 9,
     "k": 0,
     "e": 0,
     "f": 0
@@ -519,9 +519,9 @@
    "state": "ok",
    "kpi": {
     "label": "AI-referred real visitors / week",
-    "now": 48,
-    "before": 48,
-    "change": 0
+    "now": 47,
+    "before": 49,
+    "change": -0.04
    },
    "made": {
     "v": 0,
@@ -1318,7 +1318,7 @@
    "state": "ok",
    "kpi": {
     "label": "attacks blocked / week",
-    "now": 5707,
+    "now": 5837,
     "before": 0,
     "change": null
    },
@@ -1593,9 +1593,9 @@
    "state": "ok",
    "kpi": {
     "label": "real visitors / week",
-    "now": 255,
-    "before": 269,
-    "change": -0.05
+    "now": 254,
+    "before": 270,
+    "change": -0.06
    },
    "made": {
     "v": 0,
@@ -1619,9 +1619,9 @@
    "state": "ok",
    "kpi": {
     "label": "guests → account %",
-    "now": 46.67,
-    "before": 45.35,
-    "change": 0.03
+    "now": 46.46,
+    "before": 45.56,
+    "change": 0.02
    },
    "made": {
     "v": 0,

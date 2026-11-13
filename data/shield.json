@@ -1,13 +1,13 @@
 {
  "banRuleId": "54629d81b62341afbbea345d5012063d",
- "at": "2026-11-13T11:18:05.692Z",
+ "at": "2026-11-13T11:43:06.671Z",
  "lastHour": {
-  "crawlersChallenged": 116,
-  "blocked": 1,
-  "ips": 1,
-  "banned": 0,
+  "crawlersChallenged": 68,
+  "blocked": 130,
+  "ips": 2,
+  "banned": 1,
   "unbanned": 0,
-  "listSize": 30,
+  "listSize": 31,
   "mode": "medium"
  },
  "history": [
@@ -1020,6 +1020,11 @@
    "at": "2026-11-13T11:18:05.692Z",
    "blocked": 1,
    "banned": 0
+  },
+  {
+   "at": "2026-11-13T11:43:06.671Z",
+   "blocked": 130,
+   "banned": 1
   }
  ],
  "bannedHashes": [
@@ -1052,7 +1057,8 @@
   "7f5c4d48fd06",
   "667ba4913fd9",
   "fbe5149f89a6",
-  "d9c5aa718557"
+  "d9c5aa718557",
+  "e0df6bcfaf43"
  ],
  "floodRule": {
   "id": "24a2d4af18f843f1a86340aeb2f581a4",
@@ -1274,17 +1280,24 @@
     "solved": 0,
     "homeRaw24": 284,
     "homeNormal": 74.8
+   },
+   {
+    "at": "2026-11-13T11:43:06.671Z",
+    "issued": 0,
+    "solved": 0,
+    "homeRaw24": 271,
+    "homeNormal": 75.9
    }
   ],
   "read": {
-   "hrsSince": 20.8,
+   "hrsSince": 21.2,
    "aiHomeClicksBefore48h": 1,
    "aiHomeClicksSince": 0,
    "issued": 109,
    "solved": 48,
    "solveShare": 0.44,
-   "homeRaw24": 284,
-   "homeNormal": 74.8
+   "homeRaw24": 271,
+   "homeNormal": 75.9
   }
  }
 }

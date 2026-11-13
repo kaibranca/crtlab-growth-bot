@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T11:20:03.211Z",
+ "at": "2026-11-13T11:45:16.842Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -11,6 +11,14 @@
    "engine": "traffic",
    "what": "Hook tests (IQ 113) learns, but its outcome falls — find what it's missing",
    "why": "its outcome is falling (AI accounts / week -27%)",
+   "score": 4,
+   "buildPays": 0.5
+  },
+  {
+   "kind": "fix",
+   "what": "daily-data failed",
+   "why": "a real error: a re-run would repeat it — fix the cause (see the log line)",
+   "engine": "fixer",
    "score": 4,
    "buildPays": 0.5
   },
@@ -102,7 +110,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 12s — phones 6.08s vs desktop 9.43s (61% of loads on phones); the server answers in 0.15s and candles in 0.18s (EXPIRED) — the time is on the visitor's side. Desktops are slower than phones, so it is not phone CPU — something desktop loads (more candles, panels, a far country) is the lead. A headless flood is on (CA: 45 raw vs ~3.6, 1 stayed, GB: 41 raw vs ~10.5, 0 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: mobile/US 5.18s ×336, desktop/IN 20s ×38, mobile/JP 6.88s ×111, mobile/IN 7.51s ×91. Needs a build session to profile one slow load.",
+   "what": "Chart pages: the slowest 10% of real loads take 12s — phones 5.98s vs desktop 8.75s (62% of loads on phones); the server answers in 0.19s and candles in 0.02s (HIT) — the time is on the visitor's side. Desktops are slower than phones, so it is not phone CPU — something desktop loads (more candles, panels, a far country) is the lead. A headless flood is on (CA: 41 raw vs ~3.9, 1 stayed, GB: 40 raw vs ~10.6, 1 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: mobile/US 5.24s ×349, mobile/JP 6.88s ×124, mobile/IN 7.51s ×95, desktop/IN 14s ×37. Needs a build session to profile one slow load.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
@@ -110,7 +118,7 @@
   },
   {
    "kind": "build",
-   "what": "Bing shows CRTLAB for \"fundedtradermarkets trial\" with no page that fits → build the page the search wants (content brain's top gap) — a build session, no approval needed [impact 1.2]",
+   "what": "Only 24% of the people who signed up 8–14 days ago came back this week → decide a first-session change (golden actions from the behaviour machine) [impact 1.5]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,
@@ -118,7 +126,7 @@
   },
   {
    "kind": "build",
-   "what": "AI accounts / week getting worse: 22 vs 30 last week (hooks) → a build session reads the machine's evidence and changes what it does [impact 1]",
+   "what": "Bing shows CRTLAB for \"fundedtradermarkets trial\" with no page that fits → build the page the search wants (content brain's top gap) — a build session, no approval needed [impact 1.2]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,
@@ -230,16 +238,6 @@
    "name": "Ledger",
    "engine": "main",
    "what": "Teach Ledger to judge itself on an outcome it can measure",
-   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
-   "score": 1,
-   "buildPays": 0.5
-  },
-  {
-   "kind": "learn",
-   "machine": "brains",
-   "name": "Brains (money · data · security · content · retention · speed)",
-   "engine": "main",
-   "what": "Teach Brains (money · data · security · content · retention · speed) to judge itself on an outcome it can measure",
    "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
    "score": 1,
    "buildPays": 0.5

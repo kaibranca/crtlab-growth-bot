@@ -5,10 +5,11 @@
   "43095119609": true,
   "43209752996": true,
   "43235675503": true,
-  "43358542167": true
+  "43358542167": true,
+  "43417626955": true
  },
  "day": "2026-11-13",
- "at": "2026-11-13T11:19:54.454Z",
+ "at": "2026-11-13T11:45:11.294Z",
  "actions": [
   {
    "at": "2026-11-12T12:03:51.703Z",
@@ -57,6 +58,12 @@
   }
  ],
  "tasks": [
+  {
+   "what": "daily-data failed",
+   "evidence": "us30      LEFT AS SHIPPED — gates failed: us30",
+   "fix": "a real error: a re-run would repeat it — fix the cause (see the log line)",
+   "url": "https://github.com/kaibranca/crtlab-backtester/actions/runs/43417626955"
+  },
   {
    "what": "AI accounts / week getting worse: 22 vs 30 last week (hooks)",
    "evidence": "supervisor",
