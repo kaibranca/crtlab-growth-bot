@@ -1,5 +1,5 @@
 {
- "at": "2026-11-12T23:19:51.764Z",
+ "at": "2026-11-12T23:59:57.950Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -122,7 +122,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 13s — phones 2.42s vs desktop 10s (43% of loads on phones); the server answers in 0.23s and candles in 0.08s (HIT) — the time is on the visitor's side. NETWORK, not device: US loads 0.94s at p90, the slow 10% are far/slow connections — IN 16s ×68, IR 38s ×16, PK 12s ×24. The lever is first-load weight (a lighter first chart bundle / fewer candles on slow links), a build session. A headless flood is on (US: 213 raw vs ~10.9, 2 stayed, GB: 88 raw vs ~6.2, 0 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: desktop/IN 21s ×48, desktop/IR 47s ×10, desktop/US 1.83s ×197, mobile/PK 16s ×13.",
+   "what": "Chart pages: the slowest 10% of real loads take 13s — phones 2.45s vs desktop 9.81s (44% of loads on phones); the server answers in 0.19s and candles in 0.04s (HIT) — the time is on the visitor's side. NETWORK, not device: US loads 0.95s at p90, the slow 10% are far/slow connections — IN 16s ×71, IR 38s ×16, PK 12s ×24. The lever is first-load weight (a lighter first chart bundle / fewer candles on slow links), a build session. A headless flood is on (US: 210 raw vs ~11.6, 2 stayed, GB: 86 raw vs ~6.4, 0 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: desktop/IN 20s ×50, desktop/IR 47s ×10, desktop/US 1.83s ×207, mobile/PK 16s ×13.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
