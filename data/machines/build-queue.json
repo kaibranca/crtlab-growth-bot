@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T21:19:58.439Z",
+ "at": "2026-11-13T21:24:53.249Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -126,7 +126,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 8.47s — phones 6.79s vs desktop 6.81s (76% of loads on phones); the server answers in 0.39s and candles in 0.11s (HIT) — the time is on the visitor's side. Most slow-load time sits in: mobile/US 5.48s ×541, mobile/JP 6.83s ×261, mobile/IN 6.32s ×206, mobile/BR 12s ×71. Needs a build session to profile one slow load.",
+   "what": "Chart pages: the slowest 10% of real loads take 8.37s — phones 6.85s vs desktop 7.57s (77% of loads on phones); the server answers in 0.21s and candles in 0.03s (HIT) — the time is on the visitor's side. Most slow-load time sits in: mobile/US 5.68s ×539, mobile/JP 6.76s ×279, mobile/IN 6.21s ×214, mobile/BR 12s ×77. Needs a build session to profile one slow load.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
@@ -134,7 +134,7 @@
   },
   {
    "kind": "build",
-   "what": "Only 24% of the people who signed up 8–14 days ago came back this week → decide a first-session change (golden actions from the behaviour machine) [impact 1.5]",
+   "what": "Chart pages: the slowest 10% of real loads take 8.37s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,
@@ -142,7 +142,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 8.47s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
+   "what": "Bing shows CRTLAB for \"fundedtradermarkets trial\" with no page that fits → build the page the search wants (content brain's top gap) — a build session, no approval needed [impact 1.2]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,

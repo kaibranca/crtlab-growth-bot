@@ -13,7 +13,8 @@
    "target": "/tools/position-size-calculator",
    "neuron": "surge→bing",
    "base": 0.5,
-   "why": "47 reads in 24 h vs ~0.5"
+   "why": "47 reads in 24 h vs ~0.5",
+   "early": "strong"
   },
   {
    "id": "surge-economic-calendar-us-core-ppi-mom",
@@ -29,7 +30,8 @@
    "target": "/economic-calendar/us-core-ppi-mom",
    "neuron": "surge→bing",
    "base": 0.5,
-   "why": "9 reads in 24 h vs ~0.5"
+   "why": "9 reads in 24 h vs ~0.5",
+   "early": "strong"
   },
   {
    "id": "stall-economic-calendar-us-core-inflation-rate-mom",
@@ -46,7 +48,8 @@
    "base": 0,
    "path": false,
    "test": "cal-replay-last-1",
-   "why": "41 AI reads in 7 d, 0 clicks — hook test replay-last running on /economic-calendar/<event>"
+   "why": "41 AI reads in 7 d, 0 clicks — hook test replay-last running on /economic-calendar/<event>",
+   "early": "weak"
   },
   {
    "id": "surge-backtest",
@@ -65,7 +68,8 @@
    "target": "/backtest",
    "neuron": "convergence→bing",
    "base": 589,
-   "why": "5 signs at once: chatgpt reading + perplexity reading + apple reading + AI answer gap + converts"
+   "why": "5 signs at once: chatgpt reading + perplexity reading + apple reading + AI answer gap + converts",
+   "early": "strong"
   },
   {
    "id": "surge-tools-crt-statistics",

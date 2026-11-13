@@ -1,15 +1,33 @@
 {
- "on": false,
+ "on": true,
+ "since": "2026-11-13T21:24:53.353Z",
+ "kind": "spike",
+ "triggers": [
+  "spike"
+ ],
+ "why": "edge sentinel: 16 people-fetches in 15 min vs ~2.6 normal",
  "bars": {
   "people": 2,
   "signups": 2.5,
   "ai": 2,
   "spike": 1.75
  },
- "last": {
-  "since": "2026-11-13T03:24:51.595Z",
-  "kind": "spike",
-  "verdict": "false alarm",
-  "ratio": 0.83
- }
+ "startSignups24": 16,
+ "normalSignups24": 16,
+ "peak": 1.48,
+ "targets": [
+  "/backtest",
+  "/backtesting-software",
+  "/crt-strategy-backtester",
+  "/market-replay-software",
+  "/daily-market-data",
+  "/best-backtesting-software",
+  "/features",
+  "/",
+  "/news/ppi-retail-sales-claims-2026-10-15",
+  "/news/ppi-claims-2026-09-10",
+  "/news/ppi/gold",
+  "/backtest-stocks"
+ ],
+ "emailed": true
 }
