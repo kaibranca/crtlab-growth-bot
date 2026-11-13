@@ -5,22 +5,30 @@
    "kind": "cost",
    "target": "data cache bloat",
    "born": "2026-11-11T01:24:35.078Z",
-   "state": "alive",
+   "state": "retired",
    "base": 3.09,
    "why": "Railway counts 3.09 GB but the server itself uses 0.19 GB — file cache from the data swap",
    "better": "lower",
-   "days": 2
+   "days": 2,
+   "judged": "2026-11-13T02:20:07.906Z",
+   "now": 0.34,
+   "verdict": "solved",
+   "retired": "2026-11-13T02:20:07.906Z"
   },
   {
    "id": "cost-web-memory-growth",
    "kind": "cost",
    "target": "web memory growth",
    "born": "2026-11-11T01:24:35.079Z",
-   "state": "alive",
+   "state": "retired",
    "base": 1.69,
    "why": "memory 1.69 GB vs ~0.71 GB normal",
    "better": "lower",
-   "days": 2
+   "days": 2,
+   "judged": "2026-11-13T02:20:07.906Z",
+   "now": 0.57,
+   "verdict": "solved",
+   "retired": "2026-11-13T02:20:07.906Z"
   },
   {
    "id": "leak-page-backtest-market-land-account",
