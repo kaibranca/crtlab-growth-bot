@@ -395,7 +395,15 @@
   "9711bb67b5e8ea80b4026566d31a95e368f1bff7": 1,
   "0c39b1f089b4cc6c6f0e1580427b3e349dd00e03": 1,
   "af7726328b0b95adbd566ab78b2717be9986eb56": 1,
-  "66dd027c2294460d5c9db8baec5d83e8f683ccde": 1
+  "66dd027c2294460d5c9db8baec5d83e8f683ccde": 1,
+  "96283ec39c185bc6b62e9aae32d2f4bb5a68b97b": 1,
+  "12c2271eb16814d9ff3a585f500a1d529d018314": 1,
+  "2572e9aa5c258b73ff4436cd865da1ebc151d5c2": 1,
+  "dedc7a6c45177d9a52f772dd239579047a722054": 1,
+  "c1b6eafbfbc571109f0edf6bcff3472745923666": 1,
+  "e8a6de8d4f69c9732884a8aa7c14816b7aaaaf9d": 1,
+  "9a254c7cbe7509b24aa4d94638c44ce246bc1892": 1,
+  "088d7d56dd84dc235b2767474842b247d4eb2184": 1
  },
  "open": [
   {
@@ -1495,6 +1503,10 @@
     {
      "sha": "be3dcd08",
      "msg": "bing-submit: check Bing feeds and submit sitemap.xml if missing"
+    },
+    {
+     "sha": "c1b6eafb",
+     "msg": "title rewriters (Google + Bing): never spend a rewrite on a DEAD family; WORKS winners first"
     }
    ]
   },
@@ -1507,6 +1519,108 @@
      "msg": "supervisor: Device QA is event-driven (after deploys) — late only past its typed 24 h, not the learned 2 h of the old de"
     }
    ]
+  },
+  {
+   "machine": "brains",
+   "day": "2026-11-13",
+   "commits": [
+    {
+     "sha": "2572e9aa",
+     "msg": "content brain judged on the north star (accounts from content pages, WORKS) — was AI clicks on the news factory (0 accou"
+    }
+   ]
+  },
+  {
+   "machine": "google",
+   "day": "2026-11-13",
+   "commits": [
+    {
+     "sha": "c1b6eafb",
+     "msg": "title rewriters (Google + Bing): never spend a rewrite on a DEAD family; WORKS winners first"
+    }
+   ]
+  },
+  {
+   "machine": "ai",
+   "day": "2026-11-13",
+   "commits": [
+    {
+     "sha": "e8a6de8d",
+     "msg": "WORKS steers the whole ecosystem: modes, lock-in, traffic brain, Bing urgency, push KPIs, MORE stage"
+    },
+    {
+     "sha": "9a254c7c",
+     "msg": "WORKS engine — the ecosystem's north star is new ACCOUNTS (deduped), not reads"
+    }
+   ]
+  },
+  {
+   "machine": "core",
+   "day": "2026-11-13",
+   "commits": [
+    {
+     "sha": "e8a6de8d",
+     "msg": "WORKS steers the whole ecosystem: modes, lock-in, traffic brain, Bing urgency, push KPIs, MORE stage"
+    },
+    {
+     "sha": "9a254c7c",
+     "msg": "WORKS engine — the ecosystem's north star is new ACCOUNTS (deduped), not reads"
+    }
+   ]
+  },
+  {
+   "machine": "outcomes",
+   "day": "2026-11-13",
+   "commits": [
+    {
+     "sha": "e8a6de8d",
+     "msg": "WORKS steers the whole ecosystem: modes, lock-in, traffic brain, Bing urgency, push KPIs, MORE stage"
+    },
+    {
+     "sha": "9a254c7c",
+     "msg": "WORKS engine — the ecosystem's north star is new ACCOUNTS (deduped), not reads"
+    }
+   ]
+  },
+  {
+   "machine": "traffic-brain",
+   "day": "2026-11-13",
+   "commits": [
+    {
+     "sha": "e8a6de8d",
+     "msg": "WORKS steers the whole ecosystem: modes, lock-in, traffic brain, Bing urgency, push KPIs, MORE stage"
+    }
+   ]
+  },
+  {
+   "machine": "analyst",
+   "day": "2026-11-13",
+   "commits": [
+    {
+     "sha": "9a254c7c",
+     "msg": "WORKS engine — the ecosystem's north star is new ACCOUNTS (deduped), not reads"
+    }
+   ]
+  },
+  {
+   "machine": "executive",
+   "day": "2026-11-13",
+   "commits": [
+    {
+     "sha": "9a254c7c",
+     "msg": "WORKS engine — the ecosystem's north star is new ACCOUNTS (deduped), not reads"
+    }
+   ]
+  },
+  {
+   "machine": "cost",
+   "day": "2026-11-13",
+   "commits": [
+    {
+     "sha": "088d7d56",
+     "msg": "cost: web memory cap can actually fire — RSS filter required heap cap ≤600 (real 738, so 0 samples ever) and 1.5× sized "
+    }
+   ]
   }
  ],
  "judged": [],
@@ -1515,9 +1629,9 @@
   "paid": 0,
   "hurt": 0,
   "flat": 0,
-  "waiting": 39,
+  "waiting": 48,
   "unmeasured": 0,
   "next": "2026-11-19"
  },
- "at": "2026-11-13T21:24:49.205Z"
+ "at": "2026-11-13T21:42:28.747Z"
 }

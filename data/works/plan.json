@@ -1,0 +1,630 @@
+{
+ "at": "2026-11-13T21:40:31.389Z",
+ "northStar": {
+  "metric": "accounts / week (worth: account 1, replayed +0.5, paid +10)",
+  "now": 135,
+  "normal": 145.7,
+  "trend": -0.07
+ },
+ "base": {
+  "perDay": 20.4,
+  "sd": 11.2,
+  "floor": 9.2,
+  "last7": 135,
+  "normalWeek": 145.7,
+  "trend": -0.07,
+  "today": 13,
+  "zeroDays28": 0,
+  "bySource28": {
+   "chatgpt": 137,
+   "direct": 336,
+   "google": 33,
+   "search": 16,
+   "other": 4
+  }
+ },
+ "effort": 3,
+ "wins": 0,
+ "losses": 0,
+ "flip": false,
+ "focus": [
+  {
+   "path": "/backtest",
+   "fam": "/backtest",
+   "acc28": 95,
+   "v28": 305,
+   "rate": 30.22,
+   "mult": 1.56
+  },
+  {
+   "path": "/backtest-gold",
+   "fam": "/backtest-<market>",
+   "acc28": 21,
+   "v28": 132,
+   "rate": 5.21,
+   "mult": 3.25
+  },
+  {
+   "path": "/tools/crt-statistics",
+   "fam": "/tools/<x>",
+   "acc28": 5,
+   "v28": 36,
+   "rate": 1.28,
+   "mult": 3.25
+  },
+  {
+   "path": "/footprint-chart-backtesting",
+   "fam": "/<concept>-backtesting",
+   "acc28": 7,
+   "v28": 12,
+   "rate": 1.48,
+   "mult": 3.25
+  },
+  {
+   "path": "/crt-strategy-backtester",
+   "fam": "/<concept>-backtesting",
+   "acc28": 2,
+   "v28": 13,
+   "rate": 0.48,
+   "mult": 2.01
+  },
+  {
+   "path": "/backtest-nas100",
+   "fam": "/backtest-<market>",
+   "acc28": 1,
+   "v28": 16,
+   "rate": 0.29,
+   "mult": 1.56
+  }
+ ],
+ "explore": [
+  {
+   "path": "/liquidity-sweep-backtester",
+   "fam": "/<concept>-backtesting",
+   "acc28": 1,
+   "v28": 1,
+   "conf": 0.09,
+   "mult": 1.45
+  },
+  {
+   "path": "/order-flow-backtesting",
+   "fam": "/<concept>-backtesting",
+   "acc28": 2,
+   "v28": 3,
+   "conf": 0.23,
+   "mult": 1.45
+  }
+ ],
+ "families": [
+  {
+   "fam": "/",
+   "pages": 1,
+   "landed": 1,
+   "visitors90": 5313,
+   "accounts90": 958,
+   "accounts28": 294,
+   "accounts7": 49,
+   "paid90": 7,
+   "worthPerPageWeek": 74.17,
+   "mult": 3,
+   "tier": "WIN",
+   "sources90": {
+    "direct": 889,
+    "google": 33,
+    "search": 9,
+    "chatgpt": 25,
+    "other": 2
+   },
+   "bin": null
+  },
+  {
+   "fam": "/backtest",
+   "pages": 1,
+   "landed": 1,
+   "visitors90": 528,
+   "accounts90": 160,
+   "accounts28": 95,
+   "accounts7": 5,
+   "paid90": 0,
+   "worthPerPageWeek": 22.67,
+   "mult": 3,
+   "tier": "WIN",
+   "sources90": {
+    "chatgpt": 123,
+    "direct": 32,
+    "other": 3,
+    "search": 2
+   },
+   "bin": null
+  },
+  {
+   "fam": "/backtest-<market>",
+   "pages": 20,
+   "landed": 17,
+   "visitors90": 340,
+   "accounts90": 54,
+   "accounts28": 30,
+   "accounts7": 8,
+   "paid90": 0,
+   "worthPerPageWeek": 0.366,
+   "mult": 1.91,
+   "tier": "WIN",
+   "sources90": {
+    "google": 25,
+    "search": 17,
+    "chatgpt": 8,
+    "direct": 4
+   },
+   "bin": null
+  },
+  {
+   "fam": "/<concept>-backtesting",
+   "pages": 38,
+   "landed": 32,
+   "visitors90": 325,
+   "accounts90": 53,
+   "accounts28": 26,
+   "accounts7": 5,
+   "paid90": 1,
+   "worthPerPageWeek": 0.203,
+   "mult": 1.42,
+   "tier": "OK",
+   "sources90": {
+    "direct": 16,
+    "google": 11,
+    "chatgpt": 22,
+    "search": 3,
+    "other": 1
+   },
+   "bin": null
+  },
+  {
+   "fam": "/tools/<x>",
+   "pages": 30,
+   "landed": 14,
+   "visitors90": 127,
+   "accounts90": 14,
+   "accounts28": 10,
+   "accounts7": 1,
+   "paid90": 0,
+   "worthPerPageWeek": 0.081,
+   "mult": 0.9,
+   "tier": "OK",
+   "sources90": {
+    "search": 2,
+    "google": 1,
+    "chatgpt": 9,
+    "direct": 2
+   },
+   "bin": null
+  },
+  {
+   "fam": "/<page>",
+   "pages": 28,
+   "landed": 12,
+   "visitors90": 31,
+   "accounts90": 3,
+   "accounts28": 2,
+   "accounts7": 0,
+   "paid90": 0,
+   "worthPerPageWeek": 0.018,
+   "mult": 0.43,
+   "tier": "WEAK",
+   "sources90": {
+    "google": 2,
+    "search": 1
+   },
+   "bin": null
+  },
+  {
+   "fam": "/blog/<x>",
+   "pages": 16,
+   "landed": 4,
+   "visitors90": 10,
+   "accounts90": 1,
+   "accounts28": 1,
+   "accounts7": 0,
+   "paid90": 0,
+   "worthPerPageWeek": 0.014,
+   "mult": 0.4,
+   "tier": "WEAK",
+   "sources90": {
+    "chatgpt": 1
+   },
+   "bin": null
+  },
+  {
+   "fam": "/<market>-<concept>",
+   "pages": 73,
+   "landed": 5,
+   "visitors90": 11,
+   "accounts90": 2,
+   "accounts28": 2,
+   "accounts7": 2,
+   "paid90": 0,
+   "worthPerPageWeek": 0.01,
+   "mult": 0.4,
+   "tier": "WEAK",
+   "sources90": {
+    "chatgpt": 1,
+    "search": 1
+   },
+   "bin": null
+  },
+  {
+   "fam": "/news/<release>/<market>",
+   "pages": 129,
+   "landed": 9,
+   "visitors90": 28,
+   "accounts90": 2,
+   "accounts28": 2,
+   "accounts7": 2,
+   "paid90": 0,
+   "worthPerPageWeek": 0.007,
+   "mult": 0.4,
+   "tier": "WEAK",
+   "sources90": {
+    "chatgpt": 2
+   },
+   "bin": null
+  },
+  {
+   "fam": "/reference/<x>",
+   "pages": 6,
+   "landed": 3,
+   "visitors90": 6,
+   "accounts90": 1,
+   "accounts28": 0,
+   "accounts7": 0,
+   "paid90": 0,
+   "worthPerPageWeek": 0.003,
+   "mult": 0.4,
+   "tier": "WEAK",
+   "sources90": {
+    "chatgpt": 1
+   },
+   "bin": null
+  },
+  {
+   "fam": "/statistics/<x>",
+   "pages": 13,
+   "landed": 4,
+   "visitors90": 9,
+   "accounts90": 0,
+   "accounts28": 0,
+   "accounts7": 0,
+   "paid90": 0,
+   "worthPerPageWeek": 0.003,
+   "mult": 0.4,
+   "tier": "WEAK",
+   "sources90": {},
+   "bin": null
+  },
+  {
+   "fam": "/<firm>-challenge-simulator",
+   "pages": 100,
+   "landed": 3,
+   "visitors90": 7,
+   "accounts90": 0,
+   "accounts28": 0,
+   "accounts7": 0,
+   "paid90": 0,
+   "worthPerPageWeek": 0.003,
+   "mult": 0.3,
+   "tier": "DEAD",
+   "sources90": {},
+   "bin": {
+    "since": "2026-11-13",
+    "why": "100 landing pages, 7 visitors, 0 worth in 90 d"
+   }
+  },
+  {
+   "fam": "/news/<release>",
+   "pages": 1982,
+   "landed": 9,
+   "visitors90": 12,
+   "accounts90": 0,
+   "accounts28": 0,
+   "accounts7": 0,
+   "paid90": 0,
+   "worthPerPageWeek": 0.003,
+   "mult": 0.3,
+   "tier": "DEAD",
+   "sources90": {},
+   "bin": {
+    "since": "2026-11-13",
+    "why": "1982 landing pages, 12 visitors, 0 worth in 90 d"
+   }
+  },
+  {
+   "fam": "/answers/<x>",
+   "pages": 17,
+   "landed": 2,
+   "visitors90": 3,
+   "accounts90": 0,
+   "accounts28": 0,
+   "accounts7": 0,
+   "paid90": 0,
+   "worthPerPageWeek": 0.003,
+   "mult": 0.3,
+   "tier": "DEAD",
+   "sources90": {},
+   "bin": {
+    "since": "2026-11-13",
+    "why": "17 pages in the sitemap, 3 landing visitors and 0 worth in 90 d; Google indexed 0%"
+   }
+  },
+  {
+   "fam": "/economic-calendar/<x>",
+   "pages": 357,
+   "landed": 3,
+   "visitors90": 4,
+   "accounts90": 0,
+   "accounts28": 0,
+   "accounts7": 0,
+   "paid90": 0,
+   "worthPerPageWeek": 0.003,
+   "mult": 0.3,
+   "tier": "DEAD",
+   "sources90": {},
+   "bin": {
+    "since": "2026-11-13",
+    "why": "357 landing pages, 4 visitors, 0 worth in 90 d"
+   }
+  },
+  {
+   "fam": "/recap/<x>",
+   "pages": 36,
+   "landed": 0,
+   "visitors90": 0,
+   "accounts90": 0,
+   "accounts28": 0,
+   "accounts7": 0,
+   "paid90": 0,
+   "worthPerPageWeek": 0.003,
+   "mult": 0.3,
+   "tier": "DEAD",
+   "sources90": {},
+   "bin": {
+    "since": "2026-11-13",
+    "why": "36 landing pages, 0 visitors, 0 worth in 90 d"
+   }
+  },
+  {
+   "fam": "/learn/<x>",
+   "pages": 1,
+   "landed": 0,
+   "visitors90": 0,
+   "accounts90": 0,
+   "accounts28": 0,
+   "accounts7": 0,
+   "paid90": 0,
+   "worthPerPageWeek": 0.003,
+   "mult": 0.4,
+   "tier": "WEAK",
+   "sources90": {},
+   "bin": null
+  }
+ ],
+ "bin": {
+  "/<firm>-challenge-simulator": {
+   "since": "2026-11-13",
+   "why": "100 landing pages, 7 visitors, 0 worth in 90 d"
+  },
+  "/news/<release>": {
+   "since": "2026-11-13",
+   "why": "1982 landing pages, 12 visitors, 0 worth in 90 d"
+  },
+  "/economic-calendar/<x>": {
+   "since": "2026-11-13",
+   "why": "357 landing pages, 4 visitors, 0 worth in 90 d"
+  },
+  "/recap/<x>": {
+   "since": "2026-11-13",
+   "why": "36 landing pages, 0 visitors, 0 worth in 90 d"
+  },
+  "/answers/<x>": {
+   "since": "2026-11-13",
+   "why": "17 pages in the sitemap, 3 landing visitors and 0 worth in 90 d; Google indexed 0%"
+  }
+ },
+ "tiers": {
+  "(in-app)": "WIN",
+  "/": "WIN",
+  "/<concept>-backtesting": "OK",
+  "/backtest-<market>": "WIN",
+  "(chart)": "WIN",
+  "/<page>": "WEAK",
+  "/backtest": "WIN",
+  "/tools/<x>": "OK",
+  "/reference/<x>": "WEAK",
+  "/blog/<x>": "WEAK",
+  "/statistics/<x>": "WEAK",
+  "/<market>-<concept>": "WEAK",
+  "/<firm>-challenge-simulator": "DEAD",
+  "/news/<release>": "DEAD",
+  "/answers/<x>": "DEAD",
+  "/news/<release>/<market>": "WEAK",
+  "/economic-calendar/<x>": "DEAD",
+  "/recap/<x>": "DEAD",
+  "/learn/<x>": "WEAK"
+ },
+ "famMult": {
+  "(in-app)": 1.97,
+  "/": 3,
+  "/<concept>-backtesting": 1.42,
+  "/backtest-<market>": 1.91,
+  "(chart)": 2.24,
+  "/<page>": 0.43,
+  "/backtest": 3,
+  "/tools/<x>": 0.9,
+  "/reference/<x>": 0.4,
+  "/blog/<x>": 0.4,
+  "/statistics/<x>": 0.4,
+  "/<market>-<concept>": 0.4,
+  "/<firm>-challenge-simulator": 0.3,
+  "/news/<release>": 0.3,
+  "/answers/<x>": 0.3,
+  "/news/<release>/<market>": 0.4,
+  "/economic-calendar/<x>": 0.3,
+  "/recap/<x>": 0.3,
+  "/learn/<x>": 0.4
+ },
+ "pageMult": {
+  "/backtest": 1.56,
+  "/backtest-gold": 3.25,
+  "/tools/crt-statistics": 3.25,
+  "/footprint-chart-backtesting": 3.25,
+  "/crt-strategy-backtester": 2.01,
+  "/backtest-nas100": 1.56,
+  "/liquidity-sweep-backtester": 1.45,
+  "/order-flow-backtesting": 1.45
+ },
+ "queue": [
+  {
+   "rank": 1,
+   "fam": "/backtest",
+   "why": "160 accounts from 1 pages in 90 d (22.67/page/wk, ×3 vs site)",
+   "more": "the AI-recommended page: protect it, link to it, measure it"
+  },
+  {
+   "rank": 2,
+   "fam": "/backtest-<market>",
+   "why": "54 accounts from 20 pages in 90 d (0.366/page/wk, ×1.91 vs site)",
+   "more": "rank the winners higher (titles, depth, internal links); new only for a market with replay demand and no page"
+  },
+  {
+   "rank": 3,
+   "fam": "/<concept>-backtesting",
+   "why": "53 accounts from 38 pages in 90 d (0.203/page/wk, ×1.42 vs site)",
+   "more": "concepts that convert → their best market version first"
+  },
+  {
+   "rank": 4,
+   "fam": "/tools/<x>",
+   "why": "14 accounts from 30 pages in 90 d (0.081/page/wk, ×0.9 vs site)",
+   "more": "tools that convert: link them from the market pages"
+  },
+  {
+   "rank": 5,
+   "fam": "/<page>",
+   "why": "3 accounts from 28 pages in 90 d (0.018/page/wk, ×0.43 vs site)",
+   "more": "make the next page of this type where real demand exists; judged 14 d after it ships"
+  }
+ ],
+ "promote": [
+  {
+   "path": "/backtest",
+   "fam": "/backtest",
+   "accounts28": 95
+  },
+  {
+   "path": "/backtest-gold",
+   "fam": "/backtest-<market>",
+   "accounts28": 21
+  },
+  {
+   "path": "/tools/crt-statistics",
+   "fam": "/tools/<x>",
+   "accounts28": 5
+  },
+  {
+   "path": "/footprint-chart-backtesting",
+   "fam": "/<concept>-backtesting",
+   "accounts28": 7
+  },
+  {
+   "path": "/crt-strategy-backtester",
+   "fam": "/<concept>-backtesting",
+   "accounts28": 2
+  },
+  {
+   "path": "/backtest-nas100",
+   "fam": "/backtest-<market>",
+   "accounts28": 1
+  }
+ ],
+ "more": {
+  "rankJobs": [
+   {
+    "kind": "rank",
+    "page": "/backtest-nas100",
+    "why": "Google shows it ~21× / 28 d for non-brand searches at position 5.2 (WIN family) — top 3 gets ~3× the clicks"
+   },
+   {
+    "kind": "rank",
+    "page": "/backtesting-software",
+    "why": "Google shows it ~21× / 28 d for non-brand searches at position 3.8 (OK family) — top 3 gets ~3× the clicks"
+   }
+  ],
+  "newJobs": [],
+  "demand": [
+   {
+    "pair": "XAUUSD",
+    "users": 559
+   },
+   {
+    "pair": "NAS100",
+    "users": 287
+   },
+   {
+    "pair": "EURUSD",
+    "users": 108
+   },
+   {
+    "pair": "BTCUSD",
+    "users": 67
+   },
+   {
+    "pair": "SP500",
+    "users": 30
+   },
+   {
+    "pair": "GBPUSD",
+    "users": 27
+   },
+   {
+    "pair": "USDJPY",
+    "users": 23
+   },
+   {
+    "pair": "US30",
+    "users": 22
+   },
+   {
+    "pair": "ETHUSD",
+    "users": 18
+   },
+   {
+    "pair": "AUDUSD",
+    "users": 13
+   },
+   {
+    "pair": "GER40",
+    "users": 11
+   },
+   {
+    "pair": "XAGUSD",
+    "users": 10
+   },
+   {
+    "pair": "SOLUSD",
+    "users": 9
+   },
+   {
+    "pair": "XRPUSD",
+    "users": 7
+   },
+   {
+    "pair": "NVDA",
+    "users": 7
+   }
+  ],
+  "note": "every market with real replay demand already has its page — the lever is REACH for the winners (rank jobs, links, Bing), not more pages"
+ },
+ "cycles": {
+  "total": 1,
+  "judged": []
+ },
+ "say": "Base 20.4 accounts/day (floor 9.2); this week 135 vs normal 145.7. Effort 3/10. Focus: /backtest, /backtest-gold, /tools/crt-statistics, /footprint-chart-backtesting. Bin: /<firm>-challenge-simulator, /news/<release>, /economic-calendar/<x>, /recap/<x>, /answers/<x>."
+}

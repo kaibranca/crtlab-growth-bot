@@ -1,12 +1,16 @@
 {
- "at": "2026-11-13T21:22:59.989Z",
+ "at": "2026-11-13T21:40:44.639Z",
  "picks": [
   {
    "path": "/backtest",
    "why": "winner"
   },
   {
-   "path": "/",
+   "path": "/backtest-gold",
+   "why": "winner"
+  },
+  {
+   "path": "/tools/crt-statistics",
    "why": "winner"
   },
   {
@@ -14,29 +18,16 @@
    "why": "winner"
   },
   {
-   "path": "/news/ppi",
-   "why": "surge"
-  },
-  {
-   "path": "/economic-calendar/us-ppi-mom",
-   "why": "surge"
-  },
-  {
-   "path": "/news/ppi-claims-2026-06-11",
-   "why": "surge"
-  },
-  {
-   "path": "/news/ppi-claims-2026-08-13",
-   "why": "surge"
-  },
-  {
-   "path": "/news/cpi",
+   "path": "/",
    "why": "winner"
   },
   {
    "path": "/news/ppi/gold",
-   "why": "release",
-   "date": "2026-11-13"
+   "why": "surge"
+  },
+  {
+   "path": "/news/claims/gold",
+   "why": "surge"
   },
   {
    "path": "/news/ppi/nasdaq",
@@ -52,6 +43,15 @@
    "path": "/news/ppi/sp500",
    "why": "release",
    "date": "2026-11-13"
+  },
+  {
+   "path": "/news/ppi/bitcoin",
+   "why": "release",
+   "date": "2026-11-13"
+  },
+  {
+   "path": "/order-flow-backtesting",
+   "why": "winner"
   }
  ]
 }

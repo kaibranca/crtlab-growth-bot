@@ -1,22 +1,22 @@
 {
- "at": "2026-11-13T21:24:53.252Z",
+ "at": "2026-11-13T21:42:32.206Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
   "iq": 82.1,
-  "power": 268,
+  "power": 275,
   "dIQ": 7.8,
-  "dPower": 163,
-  "iqPerUpgrade": 0.048,
+  "dPower": 170,
+  "iqPerUpgrade": 0.046,
   "upgrades": {
    "judged": 0,
    "paid": 0,
    "hurt": 0,
    "flat": 0,
-   "waiting": 39,
+   "waiting": 48,
    "unmeasured": 0,
    "next": "2026-11-19"
   },
-  "say": "Machines IQ 82.1 (+7.8 since 11 Nov) on 163 upgrades — 0.05 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.1/day — on pace for ~109 in 30 days.",
+  "say": "Machines IQ 82.1 (+7.8 since 11 Nov) on 170 upgrades — 0.05 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.1/day — on pace for ~109 in 30 days.",
   "experiments": "13 experiments live — next verdicts: conversion bandit 14 Nov · executive focus: conversion 15 Nov · hook home-yesterday-charts-2026-11-12 17 Nov · forecast self-calibration 17 Nov.",
   "pace": {
    "perDay": 3.13,
@@ -413,13 +413,13 @@
  "machines": {
   "core": {
    "name": "Engine core",
-   "iq": 112,
+   "iq": 113,
    "iqWas": 96,
    "level": "Strong",
    "state": "ok",
    "kpi": null,
    "made": {
-    "v": 18,
+    "v": 19,
     "k": 0,
     "e": 0,
     "f": 0
@@ -428,7 +428,7 @@
     "paid": 0,
     "hurt": 0,
     "flat": 0,
-    "waiting": 2
+    "waiting": 3
    },
    "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
   },
@@ -533,7 +533,7 @@
     "paid": 0,
     "hurt": 0,
     "flat": 0,
-    "waiting": 2
+    "waiting": 3
    },
    "limit": "collects evidence but hasn't reached a verdict yet"
   },
@@ -565,10 +565,10 @@
    "level": "Capable",
    "state": "ok",
    "kpi": {
-    "label": "AI clicks / week",
-    "now": 39,
-    "before": 39,
-    "change": 0
+    "label": "new accounts / week (north star)",
+    "now": 135,
+    "before": 145.7,
+    "change": -0.07
    },
    "made": {
     "v": 3,
@@ -591,10 +591,10 @@
    "level": "Novice",
    "state": "ok",
    "kpi": {
-    "label": "AI clicks / week",
-    "now": 39,
-    "before": 39,
-    "change": 0
+    "label": "new accounts / week (north star)",
+    "now": 135,
+    "before": 145.7,
+    "change": -0.07
    },
    "made": {
     "v": 0,
@@ -617,10 +617,10 @@
    "level": "Capable",
    "state": "ok",
    "kpi": {
-    "label": "AI clicks / week",
-    "now": 39,
-    "before": 39,
-    "change": 0
+    "label": "new accounts / week (north star)",
+    "now": 135,
+    "before": 145.7,
+    "change": -0.07
    },
    "made": {
     "v": 0,
@@ -643,10 +643,10 @@
    "level": "Capable",
    "state": "ok",
    "kpi": {
-    "label": "AI clicks / week",
-    "now": 39,
-    "before": 39,
-    "change": 0
+    "label": "new accounts / week (north star)",
+    "now": 135,
+    "before": 145.7,
+    "change": -0.07
    },
    "made": {
     "v": 2,
@@ -669,10 +669,10 @@
    "level": "Capable",
    "state": "ok",
    "kpi": {
-    "label": "AI clicks / week",
-    "now": 39,
-    "before": 39,
-    "change": 0
+    "label": "new accounts / week (north star)",
+    "now": 135,
+    "before": 145.7,
+    "change": -0.07
    },
    "made": {
     "v": 0,
@@ -695,10 +695,10 @@
    "level": "Blank",
    "state": "ok",
    "kpi": {
-    "label": "AI clicks / week",
-    "now": 39,
-    "before": 39,
-    "change": 0
+    "label": "new accounts / week (north star)",
+    "now": 135,
+    "before": 145.7,
+    "change": -0.07
    },
    "made": null,
    "upgrades": {
@@ -716,10 +716,10 @@
    "level": "Expert",
    "state": "ok",
    "kpi": {
-    "label": "AI clicks / week",
-    "now": 39,
-    "before": 39,
-    "change": 0
+    "label": "new accounts / week (north star)",
+    "now": 135,
+    "before": 145.7,
+    "change": -0.07
    },
    "made": {
     "v": 61,
@@ -794,10 +794,10 @@
    "level": "Novice",
    "state": "ok",
    "kpi": {
-    "label": "AI clicks / week",
-    "now": 39,
-    "before": 39,
-    "change": 0
+    "label": "new accounts / week (north star)",
+    "now": 135,
+    "before": 145.7,
+    "change": -0.07
    },
    "made": {
     "v": 0,
@@ -846,7 +846,7 @@
     "paid": 0,
     "hurt": 0,
     "flat": 0,
-    "waiting": 2
+    "waiting": 3
    },
    "limit": "learning on every front — more data is the only limit"
   },
@@ -862,7 +862,7 @@
     "paid": 0,
     "hurt": 0,
     "flat": 0,
-    "waiting": 2
+    "waiting": 3
    },
    "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
   },
@@ -962,7 +962,7 @@
     "paid": 0,
     "hurt": 0,
     "flat": 0,
-    "waiting": 1
+    "waiting": 2
    },
    "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
   },
@@ -1094,7 +1094,7 @@
     "paid": 0,
     "hurt": 0,
     "flat": 0,
-    "waiting": 0
+    "waiting": 1
    },
    "limit": "collects evidence but hasn't reached a verdict yet"
   },
@@ -1286,7 +1286,7 @@
    "state": "ok",
    "kpi": {
     "label": "uptime 7 d %",
-    "now": 99.26,
+    "now": 99.27,
     "before": null,
     "change": null
    },
@@ -1323,7 +1323,7 @@
    "state": "ok",
    "kpi": {
     "label": "attacks blocked / week",
-    "now": 6061,
+    "now": 6085,
     "before": 0,
     "change": null
    },
@@ -1560,7 +1560,7 @@
     "paid": 0,
     "hurt": 0,
     "flat": 0,
-    "waiting": 2
+    "waiting": 3
    },
    "limit": "learning on every front — more data is the only limit"
   },
@@ -1598,9 +1598,9 @@
    "state": "ok",
    "kpi": {
     "label": "real visitors / week",
-    "now": 261,
+    "now": 263,
     "before": 274,
-    "change": -0.05
+    "change": -0.04
    },
    "made": {
     "v": 0,
@@ -1624,7 +1624,7 @@
    "state": "ok",
    "kpi": {
     "label": "guests → account %",
-    "now": 47.51,
+    "now": 47.53,
     "before": 42.34,
     "change": 0.12
    },
@@ -1659,7 +1659,7 @@
     "paid": 0,
     "hurt": 0,
     "flat": 0,
-    "waiting": 2
+    "waiting": 3
    },
    "limit": "collects evidence but hasn't reached a verdict yet"
   },
@@ -1680,7 +1680,7 @@
     "paid": 0,
     "hurt": 0,
     "flat": 0,
-    "waiting": 2
+    "waiting": 3
    },
    "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
   },
