@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-13T03:24:56.160Z",
+ "updated": "2026-11-13T03:41:56.768Z",
  "watchdog": {
   "up24h": 95.35,
   "up7d": 99.26,
@@ -475,6 +475,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-13T03:41:46.975Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
+  },
+  {
    "at": "2026-11-13T03:23:09.216Z",
    "job": "watchdog",
    "ok": false,
@@ -569,12 +575,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "30 crawler visits · Amazonbot 9 · Bingbot 7 · ChatGPT-User 7 · PerplexityBot 6"
-  },
-  {
-   "at": "2026-11-13T00:41:46.959Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
   },
   {
    "at": "2026-11-13T00:18:05.027Z",
@@ -1062,13 +1062,13 @@
   ]
  },
  "health": {
-  "at": "2026-11-13T00:41:46.959Z",
+  "at": "2026-11-13T03:41:46.975Z",
   "alerts": [],
   "checks": [
    {
     "name": "database size",
     "ok": true,
-    "note": "292 MB"
+    "note": "294 MB"
    },
    {
     "name": "signups flowing",
@@ -1088,7 +1088,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "22h old · 33.4 MB"
+    "note": "1h old · 34.1 MB"
    },
    {
     "name": "market data fresh",
@@ -1098,11 +1098,11 @@
    {
     "name": "AI radar",
     "ok": true,
-    "note": "18h ago · asked 4/4"
+    "note": "21h ago · asked 4/4"
    }
   ],
   "db": {
-   "mb": 292,
+   "mb": 294,
    "tables": [
     [
      "user_events",
@@ -1114,7 +1114,7 @@
     ],
     [
      "meter_identities",
-     59
+     60
     ],
     [
      "user_stores",
@@ -1127,8 +1127,8 @@
    ]
   },
   "backup": {
-   "at": "2026-11-12T03:04:14.973Z",
-   "mb": 33.4,
+   "at": "2026-11-13T03:02:03.824Z",
+   "mb": 34.1,
    "count": 30
   },
   "data": {
@@ -1136,24 +1136,24 @@
   },
   "weight": {
    "home": {
-    "kb": 2609,
+    "kb": 2608,
     "scripts": 24,
-    "ttfbMs": 172
+    "ttfbMs": 225
    },
    "backtest": {
     "kb": 1449,
     "scripts": 13,
-    "ttfbMs": 202
+    "ttfbMs": 265
    },
    "chart app": {
-    "kb": 2609,
+    "kb": 2608,
     "scripts": 24,
-    "ttfbMs": 315
+    "ttfbMs": 563
    },
    "statistics": {
     "kb": 1213,
     "scripts": 14,
-    "ttfbMs": 149
+    "ttfbMs": 228
    }
   },
   "heavier": []
