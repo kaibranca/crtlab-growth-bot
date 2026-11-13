@@ -1,12 +1,12 @@
 {
- "at": "2026-11-13T07:20:08.643Z",
+ "at": "2026-11-13T08:20:22.071Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
-  "iq": 81.3,
+  "iq": 81.2,
   "power": 261,
-  "dIQ": 7,
+  "dIQ": 6.9,
   "dPower": 156,
-  "iqPerUpgrade": 0.045,
+  "iqPerUpgrade": 0.044,
   "upgrades": {
    "judged": 0,
    "paid": 0,
@@ -16,20 +16,20 @@
    "unmeasured": 0,
    "next": "2026-11-19"
   },
-  "say": "Machines IQ 81.3 (+7 since 11 Nov) on 156 upgrades — 0.04 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.3/day — on pace for ~110 in 30 days.",
+  "say": "Machines IQ 81.2 (+6.9 since 11 Nov) on 156 upgrades — 0.04 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.3/day — on pace for ~110 in 30 days.",
   "experiments": "13 experiments live — next verdicts: conversion bandit 14 Nov · executive focus: conversion 15 Nov · hook home-yesterday-charts-2026-11-12 17 Nov · forecast self-calibration 17 Nov.",
   "pace": {
-   "perDay": 3.31,
-   "in30": 109.9
+   "perDay": 3.3,
+   "in30": 109.7
   }
  },
  "engines": {
   "main": {
-   "iq": 81.3,
+   "iq": 81.2,
    "iqWas": 74.3,
    "since": "2026-11-11",
    "level": "Novice",
-   "members": 71,
+   "members": 72,
    "learners": 33,
    "brainVerdicts": 0,
    "curiosity": 1,
@@ -68,10 +68,10 @@
      "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 81.3 (Novice, +7 since 11 Nov) — 33 of 71 parts learn on their own; weakest: Ledger, 4-week trend, Truth gate (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 81.2 (Novice, +6.9 since 11 Nov) — 33 of 72 parts learn on their own; weakest: Ledger, 4-week trend, Truth gate (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "traffic": {
-   "iq": 82.1,
+   "iq": 82.2,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Novice",
@@ -114,7 +114,7 @@
      "limit": "its outcome is falling (AI accounts / week -27%)"
     }
    ],
-   "say": "My IQ is 82.1 (Novice, +6.3 since 11 Nov) — 21 of 32 parts learn on their own; weakest: Truth gate, Search console, Bing webmaster (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 82.2 (Novice, +6.4 since 11 Nov) — 21 of 32 parts learn on their own; weakest: Truth gate, Search console, Bing webmaster (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "money": {
    "iq": 76.2,
@@ -383,7 +383,7 @@
    "say": "My IQ is 70.0 (Blank, +0 since 11 Nov) — 0 of 3 parts learn on their own; weakest: Capacity, Load alert, Link check (acts but learns nothing from what happens next — no outcome to judge itself by); I'm stalling, so I explore ×1.6 harder."
   },
   "fixer": {
-   "iq": 100.3,
+   "iq": 100.8,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Strong",
@@ -397,7 +397,7 @@
     {
      "id": "supervisor",
      "name": "Supervisor",
-     "iq": 104,
+     "iq": 106,
      "limit": "collects evidence but hasn't reached a verdict yet"
     },
     {
@@ -407,7 +407,7 @@
      "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
     }
    ],
-   "say": "My IQ is 100.3 (Strong, +24.6 since 11 Nov) — 3 of 3 parts learn on their own."
+   "say": "My IQ is 100.8 (Strong, +25.1 since 11 Nov) — 3 of 3 parts learn on their own."
   }
  },
  "machines": {
@@ -455,7 +455,7 @@
   },
   "supervisor": {
    "name": "Supervisor",
-   "iq": 104,
+   "iq": 106,
    "iqWas": 70,
    "level": "Strong",
    "state": "ok",
@@ -463,7 +463,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 490,
+    "e": 540,
     "f": 0
    },
    "upgrades": {
@@ -750,7 +750,7 @@
    "made": {
     "v": 2,
     "k": 0,
-    "e": 833,
+    "e": 842,
     "f": 0
    },
    "upgrades": {
@@ -895,9 +895,9 @@
    "state": "ok",
    "kpi": {
     "label": "pages submitted / week",
-    "now": 2900,
+    "now": 2944,
     "before": 376,
-    "change": 6.71
+    "change": 6.83
    },
    "made": {
     "v": 0,
@@ -1318,7 +1318,7 @@
    "state": "ok",
    "kpi": {
     "label": "attacks blocked / week",
-    "now": 5457,
+    "now": 5458,
     "before": 0,
     "change": null
    },
@@ -1593,9 +1593,9 @@
    "state": "ok",
    "kpi": {
     "label": "real visitors / week",
-    "now": 258,
-    "before": 263,
-    "change": -0.02
+    "now": 256,
+    "before": 265,
+    "change": -0.03
    },
    "made": {
     "v": 0,
@@ -1619,9 +1619,9 @@
    "state": "ok",
    "kpi": {
     "label": "guests → account %",
-    "now": 46.9,
-    "before": 45.25,
-    "change": 0.04
+    "now": 46.48,
+    "before": 45.66,
+    "change": 0.02
    },
    "made": {
     "v": 0,
@@ -1660,13 +1660,13 @@
   },
   "analyst": {
    "name": "analyst",
-   "iq": 86,
+   "iq": 90,
    "iqWas": 86,
    "level": "Capable",
    "state": "ok",
    "kpi": null,
    "made": {
-    "v": 2,
+    "v": 3,
     "k": 0,
     "e": 0,
     "f": 0
@@ -1793,6 +1793,22 @@
   },
   "focus-economic-calendar-us-ppi-mom": {
    "name": "Focus /economic-calendar/us-ppi-mom",
+   "iq": 70,
+   "iqWas": 70,
+   "level": "Blank",
+   "state": "ok",
+   "kpi": null,
+   "made": null,
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+  },
+  "focus-footprint-chart-backtesting": {
+   "name": "Focus /footprint-chart-backtesting",
    "iq": 70,
    "iqWas": 70,
    "level": "Blank",
