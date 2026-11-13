@@ -3,6 +3,12 @@
 The machines say what would make them smarter; a builder (a Claude session, or the daily builder routine) builds ONE thing;
 the machines judge whether it paid. That closes the loop: **power → IQ → better build queue → power**.
 
+## 0 · The north star (11-13) — read first
+- `data/machines/values.json` — the core rules. The whole system is judged on NEW ACCOUNTS (deduped), never reads.
+- `data/works/plan.json` — what works: base accounts/day, families WIN / OK / WEAK / DEAD, focus + explore, MORE jobs,
+  daily cycles + verdicts, effort. Never build in a DEAD family; `works: true` items in the queue come first.
+- Shared rule for every script: `scripts/works-lib.mjs` (`family`, `worksMul`, `worksTier`, `canBuild`).
+
 ## 1 · Read (cheap, files only)
 - `data/machines/build-queue.json` — ranked items (top first). Take the highest item you can FINISH this run.
 - `data/machines/self.json` — every machine's IQ, level, limit, KPI, upgrade verdicts; every engine's IQ and curiosity.
