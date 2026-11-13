@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T11:45:16.842Z",
+ "at": "2026-11-13T12:20:05.079Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -9,16 +9,8 @@
    "machine": "hooks",
    "name": "Hook tests",
    "engine": "traffic",
-   "what": "Hook tests (IQ 113) learns, but its outcome falls — find what it's missing",
+   "what": "Hook tests (IQ 114) learns, but its outcome falls — find what it's missing",
    "why": "its outcome is falling (AI accounts / week -27%)",
-   "score": 4,
-   "buildPays": 0.5
-  },
-  {
-   "kind": "fix",
-   "what": "daily-data failed",
-   "why": "a real error: a re-run would repeat it — fix the cause (see the log line)",
-   "engine": "fixer",
    "score": 4,
    "buildPays": 0.5
   },
@@ -26,6 +18,14 @@
    "kind": "fix",
    "what": "AI accounts / week getting worse: 22 vs 30 last week (hooks)",
    "why": "a build session reads the machine's evidence and changes what it does",
+   "engine": "fixer",
+   "score": 4,
+   "buildPays": 0.5
+  },
+  {
+   "kind": "fix",
+   "what": "Device QA is late (last run 5.6 h ago, normal every 2 h)",
+   "why": "needs a build or a decision",
    "engine": "fixer",
    "score": 4,
    "buildPays": 0.5
@@ -110,7 +110,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 12s — phones 5.98s vs desktop 8.75s (62% of loads on phones); the server answers in 0.19s and candles in 0.02s (HIT) — the time is on the visitor's side. Desktops are slower than phones, so it is not phone CPU — something desktop loads (more candles, panels, a far country) is the lead. A headless flood is on (CA: 41 raw vs ~3.9, 1 stayed, GB: 40 raw vs ~10.6, 1 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: mobile/US 5.24s ×349, mobile/JP 6.88s ×124, mobile/IN 7.51s ×95, desktop/IN 14s ×37. Needs a build session to profile one slow load.",
+   "what": "Chart pages: the slowest 10% of real loads take 12s — phones 6.12s vs desktop 8.19s (63% of loads on phones); the server answers in 0.23s and candles in 0.04s (HIT) — the time is on the visitor's side. Desktops are slower than phones, so it is not phone CPU — something desktop loads (more candles, panels, a far country) is the lead. A headless flood is on (CA: 39 raw vs ~4.1, 1 stayed, GB: 38 raw vs ~10.8, 1 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: mobile/US 5.25s ×357, mobile/JP 6.88s ×132, mobile/IN 6.12s ×112, desktop/IN 14s ×37. Needs a build session to profile one slow load.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
