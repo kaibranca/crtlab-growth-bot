@@ -1,5 +1,5 @@
 {
- "at": "2026-11-12T06:41:18.873Z",
+ "at": "2026-11-13T06:41:34.590Z",
  "note": "Questions where CRTLAB is usually NOT recommended: who wins, with what claim, and the CRTLAB page that should win. Build list for Claude sessions (new pages need Kai's OK).",
  "gaps": [
   {
@@ -7,7 +7,7 @@
    "q": "What is the best free backtesting software?",
    "cluster": "free",
    "ourPage": "/best-backtesting-software",
-   "value": 26.12,
+   "value": 26.08,
    "p": 0.01,
    "winners": [
     {
@@ -43,7 +43,7 @@
    "q": "Is there a free backtesting tool for day trading?",
    "cluster": "free",
    "ourPage": "/backtest",
-   "value": 26.12,
+   "value": 26.08,
    "p": 0.01,
    "winners": [
     {
@@ -77,7 +77,7 @@
    "q": "Best free website to backtest trading strategies",
    "cluster": "free",
    "ourPage": "/backtest",
-   "value": 26.12,
+   "value": 26.08,
    "p": 0.01,
    "winners": [
     {
@@ -105,7 +105,7 @@
    "q": "How can I backtest a trading strategy for free without coding?",
    "cluster": "free",
    "ourPage": "/backtest",
-   "value": 26.12,
+   "value": 26.08,
    "p": 0.01,
    "winners": [
     {
@@ -133,7 +133,7 @@
    "q": "Free alternative to paid backtesting software for forex",
    "cluster": "free",
    "ourPage": "/backtest",
-   "value": 26.12,
+   "value": 26.08,
    "p": 0.01,
    "winners": [
     {
@@ -175,7 +175,7 @@
    "q": "What is the best backtesting software for beginners?",
    "cluster": "free",
    "ourPage": "/backtest",
-   "value": 26.12,
+   "value": 26.08,
    "p": 0.01,
    "winners": [
     {
@@ -210,7 +210,7 @@
    "q": "Where can I backtest manually for free with replay?",
    "cluster": "free",
    "ourPage": "/backtest",
-   "value": 26.12,
+   "value": 26.08,
    "p": 0.01,
    "winners": [
     {
@@ -433,6 +433,21 @@
    "p": 0.01,
    "winners": [],
    "winningDomains": [],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "how-does-gold-react-to-claims",
+   "q": "How does gold react to CLAIMS?",
+   "cluster": "news",
+   "ourPage": "/news/claims/gold",
+   "value": 3.32,
+   "p": 0.01,
+   "winners": [],
+   "winningDomains": [
+    "en.wikipedia.org",
+    "data.imf.org"
+   ],
    "diag": "not found",
    "fix": "indexing: push our page to Bing"
   },
@@ -756,6 +771,196 @@
    "value": 2.83,
    "p": 0.01,
    "winners": [],
+   "winningDomains": [],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "best-way-to-backtest-gold-xauusd",
+   "q": "Best way to backtest gold XAUUSD",
+   "cluster": "gold",
+   "ourPage": "/backtest-gold",
+   "value": 2.45,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "Python",
+     "r": 1,
+     "why": "General programming environment for custom backtests",
+     "$": ""
+    },
+    {
+     "n": "pandas",
+     "r": 2,
+     "why": "Data handling/processing for market and trade simulation",
+     "$": ""
+    },
+    {
+     "n": "backtesting.py",
+     "r": 3,
+     "why": "Python library to implement and run strategy backtests",
+     "$": ""
+    },
+    {
+     "n": "vectorbt",
+     "r": 4,
+     "why": "Vectorized Python backtesting and analysis toolkit",
+     "$": ""
+    }
+   ],
+   "winningDomains": [],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "how-to-backtest-nas100-strategies",
+   "q": "How to backtest NAS100 strategies",
+   "cluster": "gold",
+   "ourPage": "/backtest-nas100",
+   "value": 2.45,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "TradingView",
+     "r": 1,
+     "why": "Used for quick strategy prototyping",
+     "$": ""
+    },
+    {
+     "n": "Python",
+     "r": 2,
+     "why": "Flexible testing with backtrader/vectorbt",
+     "$": ""
+    },
+    {
+     "n": "backtrader",
+     "r": 3,
+     "why": "Mentioned as a Python backtesting option",
+     "$": ""
+    },
+    {
+     "n": "vectorbt",
+     "r": 4,
+     "why": "Mentioned as a Python backtesting option",
+     "$": ""
+    }
+   ],
+   "winningDomains": [],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "where-can-i-backtest-the-london-session-on-forex",
+   "q": "Where can I backtest the London session on forex?",
+   "cluster": "gold",
+   "ourPage": "/london-session-backtester",
+   "value": 2.45,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "TradingView Bar Replay",
+     "r": 1,
+     "why": "Manual backtesting on historical charts; sessions can be marked via indicator",
+     "$": "free plan / paid (not specified in answe"
+    },
+    {
+     "n": "FX Replay",
+     "r": 2,
+     "why": "Manual forex backtesting; jump to sessions; session analytics; data back to 2003",
+     "$": "paid (not specified in answer)"
+    },
+    {
+     "n": "Forex Tester",
+     "r": 3,
+     "why": "Dedicated forex simulator with session-time shifting incl. London/N.Y. close",
+     "$": "paid (not specified in answer)"
+    },
+    {
+     "n": "MetaTrader 5 Strategy Tester",
+     "r": 4,
+     "why": "Automated EA/backtest on historical data; multi-currency testing",
+     "$": "free (platform), paid broker/EA not spec"
+    }
+   ],
+   "winningDomains": [
+    "tradingview.com",
+    "fxreplay.com",
+    "desktop.forextester.com",
+    "metatrader5.com"
+   ],
+   "diag": "found, not chosen",
+   "fix": "content: winners say \"Manual backtesting on historical charts; sessions can be marked via indicator\" / \"Manual forex backtesting; jump to sessions; session analytics; data back to 2003\" — our page must answer that"
+  },
+  {
+   "id": "how-to-backtest-a-new-york-open-strategy-on-indices",
+   "q": "How to backtest a New York open strategy on indices",
+   "cluster": "gold",
+   "ourPage": "/new-york-session-backtester",
+   "value": 2.45,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "Python",
+     "r": 1,
+     "why": "Run strategy logic with data and backtesting libraries.",
+     "$": ""
+    },
+    {
+     "n": "pandas",
+     "r": 2,
+     "why": "Used for data handling and indicators in backtests.",
+     "$": ""
+    },
+    {
+     "n": "backtrader",
+     "r": 3,
+     "why": "Backtesting framework for trading strategies in Python.",
+     "$": ""
+    },
+    {
+     "n": "vectorbt",
+     "r": 4,
+     "why": "Vectorized backtesting for faster strategy testing.",
+     "$": ""
+    }
+   ],
+   "winningDomains": [],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
+   "id": "how-to-backtest-crypto-strategies-on-bitcoin",
+   "q": "How to backtest crypto strategies on Bitcoin",
+   "cluster": "gold",
+   "ourPage": "/backtest-bitcoin",
+   "value": 2.45,
+   "p": 0.01,
+   "winners": [
+    {
+     "n": "Python (pandas)",
+     "r": 1,
+     "why": "Python/pandas outline for loading BTC CSV and computing MAs",
+     "$": ""
+    },
+    {
+     "n": "Backtrader",
+     "r": 2,
+     "why": "Named as a popular backtesting framework option",
+     "$": ""
+    },
+    {
+     "n": "vectorbt",
+     "r": 3,
+     "why": "Named as a popular vectorized backtesting option",
+     "$": ""
+    },
+    {
+     "n": "Zipline",
+     "r": 4,
+     "why": "Named as a traditional backtesting setup option",
+     "$": ""
+    }
+   ],
    "winningDomains": [],
    "diag": "not found",
    "fix": "indexing: push our page to Bing"

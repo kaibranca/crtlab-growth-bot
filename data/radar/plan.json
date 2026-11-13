@@ -1,66 +1,66 @@
 {
- "at": "2026-11-12T06:41:18.874Z",
+ "at": "2026-11-13T06:41:34.591Z",
  "model": "gpt-5.4-mini",
- "sov": 0.009,
+ "sov": 0.007,
  "clusters": {
   "free": {
-   "share": 0.007278641499345541,
+   "share": 0.006543497053174305,
    "cited": 0,
    "first": 0,
-   "n": 6.5,
-   "value": 26.12
+   "n": 6.2,
+   "value": 26.08
   },
   "replay": {
-   "share": 0.009100367942537152,
+   "share": 0.008132820582378401,
    "cited": 0,
    "first": 0,
-   "n": 4,
+   "n": 3.8,
    "value": 2.83
   },
   "ict": {
-   "share": 0.015166139154060789,
+   "share": 0.013291810881952942,
    "cited": 0,
    "first": 0,
    "n": 0,
    "value": 2.24
   },
   "prop": {
-   "share": 0.009278943069856454,
+   "share": 0.008287602760336243,
    "cited": 0,
    "first": 0,
-   "n": 3.8,
+   "n": 3.6,
    "value": 3.16
   },
   "flow": {
-   "share": 0.009279798345404246,
+   "share": 0.008288343649105604,
    "cited": 0,
    "first": 0,
-   "n": 3.8,
+   "n": 3.6,
    "value": 5.66
   },
   "gold": {
-   "share": 0.015166139154060789,
+   "share": 0.0072500475847618396,
    "cited": 0,
    "first": 0,
-   "n": 0,
+   "n": 5,
    "value": 2.45
   },
   "news": {
-   "share": 0.007676273291271481,
+   "share": 0.006343785583841604,
    "cited": 0,
    "first": 0,
-   "n": 5.9,
+   "n": 6.6,
    "value": 3.32
   },
   "stats": {
-   "share": 0.009099666911980622,
+   "share": 0.008132212601744914,
    "cited": 0,
    "first": 0,
-   "n": 4,
+   "n": 3.8,
    "value": 2.83
   },
   "data": {
-   "share": 0.015166139154060789,
+   "share": 0.013291810881952942,
    "cited": 0,
    "first": 0,
    "n": 0,
@@ -96,7 +96,8 @@
      "Serious systematic backtesting; free tier includes backtest/research nodes",
      "Free tier includes one free backtest node and free research node",
      "More technical: code strategies with LEAN engine; strong research workflow",
-     "Python/C# algorithmic backtesting; mentions free tier with limits."
+     "Python/C# algorithmic backtesting; mentions free tier with limits.",
+     "Cloud algorithm/backtesting platform for systematic trading."
     ]
    },
    {
@@ -129,7 +130,8 @@
     "share": 0.14,
     "freeShare": 0,
     "reasons": [
-     "Step through bars and manually trade in replay mode."
+     "Step through bars and manually trade in replay mode.",
+     "Manual backtesting on historical charts; sessions can be marked via indicator"
     ]
    },
    {
@@ -144,7 +146,8 @@
      "Beginner-friendly for futures: charting, strategy backtesting, sim trading",
      "Limited amount of Market Replay data free to download.",
      "Free trading simulator for practice; footprint via Volumetric Bars/Order Flow+.",
-     "Realistic tick-by-tick Market Replay with order-flow tools for futures/day trading"
+     "Realistic tick-by-tick Market Replay with order-flow tools for futures/day trading",
+     "Platform to implement and backtest trading strategies."
     ]
    },
    {
@@ -244,7 +247,8 @@
      "Beginner-friendly for futures: charting, strategy backtesting, sim trading",
      "Limited amount of Market Replay data free to download.",
      "Free trading simulator for practice; footprint via Volumetric Bars/Order Flow+.",
-     "Realistic tick-by-tick Market Replay with order-flow tools for futures/day trading"
+     "Realistic tick-by-tick Market Replay with order-flow tools for futures/day trading",
+     "Platform to implement and backtest trading strategies."
     ]
    },
    {
@@ -402,7 +406,8 @@
      "Beginner-friendly for futures: charting, strategy backtesting, sim trading",
      "Limited amount of Market Replay data free to download.",
      "Free trading simulator for practice; footprint via Volumetric Bars/Order Flow+.",
-     "Realistic tick-by-tick Market Replay with order-flow tools for futures/day trading"
+     "Realistic tick-by-tick Market Replay with order-flow tools for futures/day trading",
+     "Platform to implement and backtest trading strategies."
     ]
    },
    {
@@ -484,6 +489,112 @@
     "freeShare": 0,
     "reasons": [
      "Reports example FVG statistics like 81%–96% fills and NAS100 87% in 24h."
+    ]
+   }
+  ],
+  "gold": [
+   {
+    "name": "Python",
+    "n": 3,
+    "first": 2,
+    "free": 0,
+    "share": 0.6,
+    "freeShare": 0,
+    "reasons": [
+     "Flexible testing with backtrader/vectorbt",
+     "General programming environment for custom backtests",
+     "Run strategy logic with data and backtesting libraries."
+    ]
+   },
+   {
+    "name": "TradingView",
+    "n": 3,
+    "first": 1,
+    "free": 0,
+    "share": 0.6,
+    "freeShare": 0,
+    "reasons": [
+     "Easiest chart-based strategy testing via Strategy Report",
+     "Best for chart-based/manual testing using Bar Replay and Pine Script",
+     "Beginners: Strategy Tester in charts; Pine Script; tests on historical data",
+     "Bar replay available on free plan; intraday history limited.",
+     "Use Strategy Tester on charts; use existing strategies/indicators for no-code testing.",
+     "Bar Replay exists but won’t work with native Volume Footprint"
+    ]
+   },
+   {
+    "name": "Python (pandas)",
+    "n": 1,
+    "first": 1,
+    "free": 0,
+    "share": 0.2,
+    "freeShare": 0,
+    "reasons": [
+     "Python/pandas outline for loading BTC CSV and computing MAs"
+    ]
+   },
+   {
+    "name": "TradingView Bar Replay",
+    "n": 1,
+    "first": 1,
+    "free": 1,
+    "share": 0.2,
+    "freeShare": 1,
+    "reasons": [
+     "Step through bars and manually trade in replay mode.",
+     "Manual backtesting on historical charts; sessions can be marked via indicator"
+    ]
+   },
+   {
+    "name": "vectorbt",
+    "n": 4,
+    "first": 0,
+    "free": 0,
+    "share": 0.8,
+    "freeShare": 0,
+    "reasons": [
+     "Mentioned as a Python backtesting option",
+     "Vectorized Python backtesting and analysis toolkit",
+     "Named as a popular vectorized backtesting option",
+     "Vectorized backtesting for faster strategy testing."
+    ]
+   },
+   {
+    "name": "backtrader",
+    "n": 3,
+    "first": 0,
+    "free": 0,
+    "share": 0.6,
+    "freeShare": 0,
+    "reasons": [
+     "Free/open-source backtesting; user supplies data and workflow.",
+     "Mentioned as a Python backtesting option",
+     "Named as a popular backtesting framework option",
+     "Backtesting framework for trading strategies in Python."
+    ]
+   },
+   {
+    "name": "pandas",
+    "n": 2,
+    "first": 0,
+    "free": 0,
+    "share": 0.4,
+    "freeShare": 0,
+    "reasons": [
+     "Data handling/processing for market and trade simulation",
+     "Used for data handling and indicators in backtests."
+    ]
+   },
+   {
+    "name": "MetaTrader 5 Strategy Tester",
+    "n": 2,
+    "first": 0,
+    "free": 1,
+    "share": 0.4,
+    "freeShare": 0.5,
+    "reasons": [
+     "Built-in MT5 module for historical strategy testing",
+     "Automated EA/backtest on historical data; multi-currency testing"
     ]
    }
   ]
@@ -614,7 +725,7 @@
  ],
  "wrong": [],
  "events": [],
- "boost": 14,
+ "boost": 15,
  "kinds": {
   "unseen": 2.5,
   "unchosen": 1.2,
@@ -622,7 +733,7 @@
   "won": 3
  },
  "verdicts": [],
- "questions": 47,
- "monthCost": 0.54,
+ "questions": 48,
+ "monthCost": 0.64,
  "budget": 2.5
 }
