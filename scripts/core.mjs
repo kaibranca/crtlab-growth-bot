@@ -548,7 +548,15 @@ const prevEco = J("data/machines/ecosystem.json"), bKey = [mode, ...good.slice(0
 // SELF (scripts/self.mjs): the Core reads itself — its own IQ, level, weakest parts, curiosity — and says it first
 const SELFJ = J("data/machines/self.json", null), SELFL = (e) => [SELFJ?.engines?.[e]?.say, e === "main" ? SELFJ?.whole?.say : null, e === "main" ? SELFJ?.whole?.experiments : null].filter(Boolean);
 const conclusion = conclusionNS ?? conclusionReads;
-const briefing = { key: bKey, changed: prevEco?.briefing?.key === bKey ? prevEco.briefing.changed : new Date().toISOString(), headline: WB ? nsLine.replace(/\.$/, "") : modeOut.why, good: good.slice(0, 10), watch: watch.slice(0, 6), notes: NW.notes.slice(0, 8), next: [...SELFL("main"), ...next].slice(0, 7), conclusion };
+// 11-13 NEXT = what WORKS does next and when it is judged (decisions Kai can act on), before the machines' self-talk
+const worksNext = (() => { if (!WKP) return []; const o = [], j = [...(WKP.more?.newJobs ?? []), ...(WKP.more?.rankJobs ?? [])][0];
+  const open = readLines("data/works/cycles.jsonl").filter((c) => !c.verdict), first = open[0];
+  if (first) o.push(`First WORKS verdict ${new Date(Date.parse(first.at) + 7 * DAY).toISOString().slice(5, 10)}: did the focus pages beat untouched ones? Win → effort up, loss → it re-aims.`);
+  if (j) o.push(j.kind === "new" ? `Build next: ${j.page} — ${j.why}.` : `Lift next: ${j.page} — ${j.why}.`);
+  else if (WKP.more?.note) o.push(`More pages won't help yet: ${WKP.more.note}.`);
+  if (WKP.audit && !WKP.audit.aligned) o.push(`Watch the wasted share fall: ${WKP.audit.say} — under 34% = the machines are aimed right.`);
+  return o; })();
+const briefing = { key: bKey, changed: prevEco?.briefing?.key === bKey ? prevEco.briefing.changed : new Date().toISOString(), headline: WB ? nsLine.replace(/\.$/, "") : modeOut.why, good: good.slice(0, 10), watch: watch.slice(0, 6), notes: NW.notes.slice(0, 8), next: [...worksNext, ...SELFL("main"), ...next].slice(0, 8), conclusion };
 
 // ── 6. WIDGETS: the live numbers the page shows as tiles (all from files the machines already wrote)
 const today = iso(NOW), runsToday = readLines("data/ai/runs.jsonl").filter((r) => r.at.slice(0, 10) === today);
