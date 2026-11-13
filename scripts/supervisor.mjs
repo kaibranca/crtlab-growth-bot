@@ -28,7 +28,9 @@ const MACHINES = [
   { id: "factory", name: "Reaction factory", every: 24, t: (() => { const r = last("data/recap-runs.jsonl"); return at(r); })(), kpi: () => ({ label: "reaction pages", now: (J("data/events/react/index.json", []) ?? []).length }) },
   { id: "behaviour", name: "Behaviour machine", every: 24, t: at(J("data/behaviour/plan.json")) },
   { id: "radar", name: "AI radar", every: 24, t: at(J("data/radar/plan.json")), kpi: () => { const r = J("data/radar/plan.json"); return r && { label: "share of AI answers", now: r.sov?.all ?? r.sov ?? null }; } },
-  { id: "devices", name: "Device QA", every: 24, t: at(J("data/mobile/report.json")) },
+  // event: runs only after a site deploy (deploy-watch GUARD) — deploys are 3 windows a day since 11-11, so its learned gap (from
+  // the old 16 deploys/day) is not a schedule; it is late only past its typed 24 h (11-13 false "late 5.6 h vs every 2 h")
+  { id: "devices", name: "Device QA", every: 24, event: true, t: at(J("data/mobile/report.json")) },
   { id: "mentions", name: "Mentions machine", every: 24, t: at(J("data/mentions/plan.json")), kpi: () => { const s = readLines("data/mentions/score.jsonl"); const x = s.slice(-1)[0]; return x && { label: "word-of-mouth visitors / week", now: x.wom7 }; } },
   { id: "health", name: "Health + watchdog", every: 1, t: at(J("data/health.json")) },
   { id: "shield", name: "Shield", every: 1, t: at(J("data/shield.json")) },
@@ -44,7 +46,7 @@ const status = MACHINES.map((m) => {
   const r = (RH[m.id] ??= { gaps: [] });
   if (m.t && r.last && m.t > r.last) { const g = (m.t - r.last) / H; if (g >= 0.25 && g < 168) { r.gaps.push(+g.toFixed(2)); r.gaps = r.gaps.slice(-30); } }
   if (m.t) r.last = Math.max(r.last ?? 0, m.t);
-  const learned = r.gaps.length >= 4 ? q(r.gaps, 0.5) : null, every = learned ?? m.every;
+  const learned = r.gaps.length >= 4 ? q(r.gaps, 0.5) : null, every = m.event ? Math.max(learned ?? 0, m.every) : learned ?? m.every;
   r.learned = learned; r.typed = m.every;
   const age = m.t ? (NOW - m.t) / H : null, slack = Math.max(2, every * 0.5, learned ? q(r.gaps, 0.9) - learned : 0);
   const state = age == null ? "waiting" : age <= every + slack ? "ok" : age <= every * 3 + slack ? "late" : "STOPPED";
