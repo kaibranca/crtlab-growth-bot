@@ -1,36 +1,36 @@
 {
- "at": "2026-11-13T21:42:32.206Z",
+ "at": "2026-11-13T22:15:51.502Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
-  "iq": 82.1,
-  "power": 275,
-  "dIQ": 7.8,
-  "dPower": 170,
-  "iqPerUpgrade": 0.046,
+  "iq": 82.2,
+  "power": 281,
+  "dIQ": 7.9,
+  "dPower": 176,
+  "iqPerUpgrade": 0.045,
   "upgrades": {
    "judged": 0,
    "paid": 0,
    "hurt": 0,
    "flat": 0,
-   "waiting": 48,
+   "waiting": 49,
    "unmeasured": 0,
    "next": "2026-11-19"
   },
-  "say": "Machines IQ 82.1 (+7.8 since 11 Nov) on 170 upgrades — 0.05 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.1/day — on pace for ~109 in 30 days.",
+  "say": "Machines IQ 82.2 (+7.9 since 11 Nov) on 176 upgrades — 0.04 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.1/day — on pace for ~109 in 30 days.",
   "experiments": "13 experiments live — next verdicts: conversion bandit 14 Nov · executive focus: conversion 15 Nov · hook home-yesterday-charts-2026-11-12 17 Nov · forecast self-calibration 17 Nov.",
   "pace": {
    "perDay": 3.13,
-   "in30": 109
+   "in30": 109.2
   }
  },
  "engines": {
   "main": {
-   "iq": 82.1,
+   "iq": 82.2,
    "iqWas": 74.3,
    "since": "2026-11-11",
    "level": "Novice",
-   "members": 72,
-   "learners": 34,
+   "members": 73,
+   "learners": 35,
    "brainVerdicts": 0,
    "curiosity": 1,
    "episode": null,
@@ -68,10 +68,10 @@
      "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 82.1 (Novice, +7.8 since 11 Nov) — 34 of 72 parts learn on their own; weakest: Ledger, 4-week trend, Truth gate (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 82.2 (Novice, +7.9 since 11 Nov) — 35 of 73 parts learn on their own; weakest: Ledger, 4-week trend, Truth gate (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "traffic": {
-   "iq": 83.2,
+   "iq": 82.8,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Novice",
@@ -114,7 +114,7 @@
      "limit": "its outcome is falling (AI accounts / week -27%)"
     }
    ],
-   "say": "My IQ is 83.2 (Novice, +7.4 since 11 Nov) — 21 of 32 parts learn on their own; weakest: Truth gate, Search console, Bing webmaster (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 82.8 (Novice, +6.9 since 11 Nov) — 21 of 32 parts learn on their own; weakest: Truth gate, Search console, Bing webmaster (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "money": {
    "iq": 76.2,
@@ -463,7 +463,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 930,
+    "e": 935,
     "f": 0
    },
    "upgrades": {
@@ -539,7 +539,7 @@
   },
   "eyes": {
    "name": "Eyes",
-   "iq": 78,
+   "iq": 79,
    "iqWas": 78,
    "level": "Novice",
    "state": "ok",
@@ -547,7 +547,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 38,
+    "e": 43,
     "f": 0
    },
    "upgrades": {
@@ -750,7 +750,7 @@
    "made": {
     "v": 2,
     "k": 0,
-    "e": 968,
+    "e": 973,
     "f": 0
    },
    "upgrades": {
@@ -1005,15 +1005,15 @@
   },
   "holdout": {
    "name": "Holdout",
-   "iq": 89,
+   "iq": 74,
    "iqWas": 70,
-   "level": "Capable",
+   "level": "Novice",
    "state": "ok",
    "kpi": null,
    "made": {
     "v": 0,
     "k": 0,
-    "e": 140,
+    "e": 17,
     "f": 0
    },
    "upgrades": {
@@ -1267,7 +1267,7 @@
    "iq": 70,
    "iqWas": 70,
    "level": "Blank",
-   "state": "ok",
+   "state": "late",
    "kpi": null,
    "made": null,
    "upgrades": {
@@ -1323,7 +1323,7 @@
    "state": "ok",
    "kpi": {
     "label": "attacks blocked / week",
-    "now": 6085,
+    "now": 6149,
     "before": 0,
     "change": null
    },
@@ -1599,7 +1599,7 @@
    "kpi": {
     "label": "real visitors / week",
     "now": 263,
-    "before": 274,
+    "before": 273,
     "change": -0.04
    },
    "made": {
@@ -1612,7 +1612,7 @@
     "paid": 0,
     "hurt": 0,
     "flat": 0,
-    "waiting": 2
+    "waiting": 3
    },
    "limit": "collects evidence but hasn't reached a verdict yet"
   },
@@ -1625,7 +1625,7 @@
    "kpi": {
     "label": "guests → account %",
     "now": 47.53,
-    "before": 42.34,
+    "before": 42.49,
     "change": 0.12
    },
    "made": {
@@ -1662,6 +1662,32 @@
     "waiting": 3
    },
    "limit": "collects evidence but hasn't reached a verdict yet"
+  },
+  "works": {
+   "name": "WORKS engine (north star)",
+   "iq": 98,
+   "iqWas": 70,
+   "level": "Capable",
+   "state": "ok",
+   "kpi": {
+    "label": "new accounts / week (north star)",
+    "now": 135,
+    "before": 145.7,
+    "change": -0.07
+   },
+   "made": {
+    "v": 6,
+    "k": 0,
+    "e": 0,
+    "f": 0
+   },
+   "upgrades": {
+    "paid": 0,
+    "hurt": 0,
+    "flat": 0,
+    "waiting": 0
+   },
+   "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
   },
   "analyst": {
    "name": "analyst",

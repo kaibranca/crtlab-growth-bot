@@ -1,9 +1,18 @@
 {
- "at": "2026-11-13T21:42:32.203Z",
+ "at": "2026-11-13T22:15:51.500Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
  "items": [
+  {
+   "kind": "fix",
+   "what": "MISALIGNED machines: 87% of the last 7 days' Bing sends went to WEAK/DEAD families (192 of 220)",
+   "why": "find which machine still pushes WEAK/DEAD pages and steer it with works-lib (values.json rule 2)",
+   "engine": "main",
+   "score": 7,
+   "works": true,
+   "buildPays": 0.5
+  },
   {
    "kind": "rank",
    "what": "MORE: lift /backtest-nas100 into Google's top 3",
@@ -20,6 +29,16 @@
    "engine": "main",
    "score": 6,
    "works": true,
+   "buildPays": 0.5
+  },
+  {
+   "kind": "fix",
+   "machine": "holdout",
+   "name": "Holdout",
+   "engine": "main",
+   "what": "Holdout lost 15 IQ since 12 Nov (89 → 74)",
+   "why": "learning doesn't vanish — an input it learns from broke (file missing, read failing, reset state)",
+   "score": 5,
    "buildPays": 0.5
   },
   {
@@ -144,7 +163,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 8.36s — phones 6.86s vs desktop 7.55s (77% of loads on phones); the server answers in 0.17s and candles in 0.04s (HIT) — the time is on the visitor's side. Most slow-load time sits in: mobile/US 5.68s ×539, mobile/JP 6.76s ×279, mobile/IN 6.21s ×214, mobile/BR 12s ×79. Needs a build session to profile one slow load.",
+   "what": "Chart pages: the slowest 10% of real loads take 8.26s — phones 6.83s vs desktop 7.49s (77% of loads on phones); the server answers in 0.24s and candles in 0.35s (EXPIRED) — the time is on the visitor's side. Most slow-load time sits in: mobile/US 5.64s ×540, mobile/JP 6.76s ×283, mobile/IN 6.21s ×217, mobile/BR 11s ×81. Needs a build session to profile one slow load.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
@@ -152,7 +171,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 8.36s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
+   "what": "Chart pages: the slowest 10% of real loads take 8.26s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,
@@ -214,26 +233,6 @@
    "what": "Teach Search gaps to judge itself on an outcome it can measure",
    "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
    "score": 2,
-   "buildPays": 0.5
-  },
-  {
-   "kind": "learn",
-   "machine": "bingseo",
-   "name": "Bing webmaster",
-   "engine": "traffic",
-   "what": "Teach Bing webmaster to judge itself on an outcome it can measure",
-   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
-   "score": 2,
-   "buildPays": 0.5
-  },
-  {
-   "kind": "learn",
-   "machine": "factory",
-   "name": "Reaction factory",
-   "engine": "content",
-   "what": "Teach Reaction factory to judge itself on an outcome it can measure",
-   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
-   "score": 1.5,
    "buildPays": 0.5
   }
  ]

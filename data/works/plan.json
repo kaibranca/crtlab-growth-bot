@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T21:40:31.389Z",
+ "at": "2026-11-13T22:13:49.210Z",
  "northStar": {
   "metric": "accounts / week (worth: account 1, replayed +0.5, paid +10)",
   "now": 135,
@@ -7,17 +7,20 @@
   "trend": -0.07
  },
  "base": {
+  "last24": 15,
+  "realVisitorShare": 0.61,
+  "botRowsDropped": 2843,
   "perDay": 20.4,
   "sd": 11.2,
   "floor": 9.2,
   "last7": 135,
   "normalWeek": 145.7,
   "trend": -0.07,
-  "today": 13,
+  "today": 14,
   "zeroDays28": 0,
   "bySource28": {
-   "chatgpt": 137,
-   "direct": 336,
+   "chatgpt": 136,
+   "direct": 337,
    "google": 33,
    "search": 16,
    "other": 4
@@ -31,16 +34,16 @@
   {
    "path": "/backtest",
    "fam": "/backtest",
-   "acc28": 95,
-   "v28": 305,
-   "rate": 30.22,
+   "acc28": 94,
+   "v28": 261,
+   "rate": 29.89,
    "mult": 1.56
   },
   {
    "path": "/backtest-gold",
    "fam": "/backtest-<market>",
    "acc28": 21,
-   "v28": 132,
+   "v28": 119,
    "rate": 5.21,
    "mult": 3.25
   },
@@ -48,7 +51,7 @@
    "path": "/tools/crt-statistics",
    "fam": "/tools/<x>",
    "acc28": 5,
-   "v28": 36,
+   "v28": 26,
    "rate": 1.28,
    "mult": 3.25
   },
@@ -56,23 +59,15 @@
    "path": "/footprint-chart-backtesting",
    "fam": "/<concept>-backtesting",
    "acc28": 7,
-   "v28": 12,
-   "rate": 1.48,
+   "v28": 11,
+   "rate": 1.49,
    "mult": 3.25
-  },
-  {
-   "path": "/crt-strategy-backtester",
-   "fam": "/<concept>-backtesting",
-   "acc28": 2,
-   "v28": 13,
-   "rate": 0.48,
-   "mult": 2.01
   },
   {
    "path": "/backtest-nas100",
    "fam": "/backtest-<market>",
    "acc28": 1,
-   "v28": 16,
+   "v28": 15,
    "rate": 0.29,
    "mult": 1.56
   }
@@ -100,16 +95,16 @@
    "fam": "/",
    "pages": 1,
    "landed": 1,
-   "visitors90": 5313,
-   "accounts90": 958,
-   "accounts28": 294,
-   "accounts7": 49,
+   "visitors90": 3010,
+   "accounts90": 959,
+   "accounts28": 295,
+   "accounts7": 50,
    "paid90": 7,
-   "worthPerPageWeek": 74.17,
+   "worthPerPageWeek": 74.337,
    "mult": 3,
    "tier": "WIN",
    "sources90": {
-    "direct": 889,
+    "direct": 890,
     "google": 33,
     "search": 9,
     "chatgpt": 25,
@@ -121,12 +116,12 @@
    "fam": "/backtest",
    "pages": 1,
    "landed": 1,
-   "visitors90": 528,
+   "visitors90": 452,
    "accounts90": 160,
-   "accounts28": 95,
+   "accounts28": 94,
    "accounts7": 5,
    "paid90": 0,
-   "worthPerPageWeek": 22.67,
+   "worthPerPageWeek": 22.42,
    "mult": 3,
    "tier": "WIN",
    "sources90": {
@@ -140,8 +135,8 @@
   {
    "fam": "/backtest-<market>",
    "pages": 20,
-   "landed": 17,
-   "visitors90": 340,
+   "landed": 15,
+   "visitors90": 288,
    "accounts90": 54,
    "accounts28": 30,
    "accounts7": 8,
@@ -159,15 +154,15 @@
   },
   {
    "fam": "/<concept>-backtesting",
-   "pages": 38,
-   "landed": 32,
-   "visitors90": 325,
+   "pages": 37,
+   "landed": 31,
+   "visitors90": 194,
    "accounts90": 53,
    "accounts28": 26,
    "accounts7": 5,
    "paid90": 1,
-   "worthPerPageWeek": 0.203,
-   "mult": 1.42,
+   "worthPerPageWeek": 0.208,
+   "mult": 1.44,
    "tier": "OK",
    "sources90": {
     "direct": 16,
@@ -181,8 +176,8 @@
   {
    "fam": "/tools/<x>",
    "pages": 30,
-   "landed": 14,
-   "visitors90": 127,
+   "landed": 12,
+   "visitors90": 77,
    "accounts90": 14,
    "accounts28": 10,
    "accounts7": 1,
@@ -200,15 +195,15 @@
   },
   {
    "fam": "/<page>",
-   "pages": 28,
-   "landed": 12,
-   "visitors90": 31,
+   "pages": 26,
+   "landed": 9,
+   "visitors90": 18,
    "accounts90": 3,
    "accounts28": 2,
    "accounts7": 0,
    "paid90": 0,
-   "worthPerPageWeek": 0.018,
-   "mult": 0.43,
+   "worthPerPageWeek": 0.019,
+   "mult": 0.44,
    "tier": "WEAK",
    "sources90": {
     "google": 2,
@@ -220,7 +215,7 @@
    "fam": "/blog/<x>",
    "pages": 16,
    "landed": 4,
-   "visitors90": 10,
+   "visitors90": 6,
    "accounts90": 1,
    "accounts28": 1,
    "accounts7": 0,
@@ -236,8 +231,8 @@
   {
    "fam": "/<market>-<concept>",
    "pages": 73,
-   "landed": 5,
-   "visitors90": 11,
+   "landed": 4,
+   "visitors90": 7,
    "accounts90": 2,
    "accounts28": 2,
    "accounts7": 2,
@@ -255,7 +250,7 @@
    "fam": "/news/<release>/<market>",
    "pages": 129,
    "landed": 9,
-   "visitors90": 28,
+   "visitors90": 20,
    "accounts90": 2,
    "accounts28": 2,
    "accounts7": 2,
@@ -271,8 +266,8 @@
   {
    "fam": "/reference/<x>",
    "pages": 6,
-   "landed": 3,
-   "visitors90": 6,
+   "landed": 2,
+   "visitors90": 4,
    "accounts90": 1,
    "accounts28": 0,
    "accounts7": 0,
@@ -289,7 +284,7 @@
    "fam": "/statistics/<x>",
    "pages": 13,
    "landed": 4,
-   "visitors90": 9,
+   "visitors90": 8,
    "accounts90": 0,
    "accounts28": 0,
    "accounts7": 0,
@@ -301,46 +296,10 @@
    "bin": null
   },
   {
-   "fam": "/<firm>-challenge-simulator",
-   "pages": 100,
-   "landed": 3,
-   "visitors90": 7,
-   "accounts90": 0,
-   "accounts28": 0,
-   "accounts7": 0,
-   "paid90": 0,
-   "worthPerPageWeek": 0.003,
-   "mult": 0.3,
-   "tier": "DEAD",
-   "sources90": {},
-   "bin": {
-    "since": "2026-11-13",
-    "why": "100 landing pages, 7 visitors, 0 worth in 90 d"
-   }
-  },
-  {
-   "fam": "/news/<release>",
-   "pages": 1982,
-   "landed": 9,
-   "visitors90": 12,
-   "accounts90": 0,
-   "accounts28": 0,
-   "accounts7": 0,
-   "paid90": 0,
-   "worthPerPageWeek": 0.003,
-   "mult": 0.3,
-   "tier": "DEAD",
-   "sources90": {},
-   "bin": {
-    "since": "2026-11-13",
-    "why": "1982 landing pages, 12 visitors, 0 worth in 90 d"
-   }
-  },
-  {
    "fam": "/answers/<x>",
    "pages": 17,
    "landed": 2,
-   "visitors90": 3,
+   "visitors90": 2,
    "accounts90": 0,
    "accounts28": 0,
    "accounts7": 0,
@@ -355,10 +314,46 @@
    }
   },
   {
+   "fam": "/news/<release>",
+   "pages": 1982,
+   "landed": 5,
+   "visitors90": 7,
+   "accounts90": 0,
+   "accounts28": 0,
+   "accounts7": 0,
+   "paid90": 0,
+   "worthPerPageWeek": 0.003,
+   "mult": 0.3,
+   "tier": "DEAD",
+   "sources90": {},
+   "bin": {
+    "since": "2026-11-13",
+    "why": "1982 landing pages, 12 visitors, 0 worth in 90 d"
+   }
+  },
+  {
+   "fam": "/<firm>-challenge-simulator",
+   "pages": 100,
+   "landed": 2,
+   "visitors90": 3,
+   "accounts90": 0,
+   "accounts28": 0,
+   "accounts7": 0,
+   "paid90": 0,
+   "worthPerPageWeek": 0.003,
+   "mult": 0.3,
+   "tier": "DEAD",
+   "sources90": {},
+   "bin": {
+    "since": "2026-11-13",
+    "why": "100 landing pages, 7 visitors, 0 worth in 90 d"
+   }
+  },
+  {
    "fam": "/economic-calendar/<x>",
    "pages": 357,
-   "landed": 3,
-   "visitors90": 4,
+   "landed": 2,
+   "visitors90": 3,
    "accounts90": 0,
    "accounts28": 0,
    "accounts7": 0,
@@ -371,6 +366,21 @@
     "since": "2026-11-13",
     "why": "357 landing pages, 4 visitors, 0 worth in 90 d"
    }
+  },
+  {
+   "fam": "/learn/<x>",
+   "pages": 1,
+   "landed": 0,
+   "visitors90": 0,
+   "accounts90": 0,
+   "accounts28": 0,
+   "accounts7": 0,
+   "paid90": 0,
+   "worthPerPageWeek": 0.003,
+   "mult": 0.4,
+   "tier": "WEAK",
+   "sources90": {},
+   "bin": null
   },
   {
    "fam": "/recap/<x>",
@@ -389,21 +399,6 @@
     "since": "2026-11-13",
     "why": "36 landing pages, 0 visitors, 0 worth in 90 d"
    }
-  },
-  {
-   "fam": "/learn/<x>",
-   "pages": 1,
-   "landed": 0,
-   "visitors90": 0,
-   "accounts90": 0,
-   "accounts28": 0,
-   "accounts7": 0,
-   "paid90": 0,
-   "worthPerPageWeek": 0.003,
-   "mult": 0.4,
-   "tier": "WEAK",
-   "sources90": {},
-   "bin": null
   }
  ],
  "bin": {
@@ -429,53 +424,52 @@
   }
  },
  "tiers": {
-  "(in-app)": "WIN",
   "/": "WIN",
   "/<concept>-backtesting": "OK",
+  "(in-app)": "WIN",
   "/backtest-<market>": "WIN",
-  "(chart)": "WIN",
-  "/<page>": "WEAK",
   "/backtest": "WIN",
   "/tools/<x>": "OK",
+  "(chart)": "WIN",
   "/reference/<x>": "WEAK",
   "/blog/<x>": "WEAK",
+  "/<page>": "WEAK",
   "/statistics/<x>": "WEAK",
   "/<market>-<concept>": "WEAK",
-  "/<firm>-challenge-simulator": "DEAD",
-  "/news/<release>": "DEAD",
   "/answers/<x>": "DEAD",
   "/news/<release>/<market>": "WEAK",
+  "/news/<release>": "DEAD",
+  "/<firm>-challenge-simulator": "DEAD",
   "/economic-calendar/<x>": "DEAD",
-  "/recap/<x>": "DEAD",
-  "/learn/<x>": "WEAK"
+  "/learn/<x>": "WEAK",
+  "/recap/<x>": "DEAD"
  },
  "famMult": {
-  "(in-app)": 1.97,
   "/": 3,
-  "/<concept>-backtesting": 1.42,
+  "/<concept>-backtesting": 1.44,
+  "(in-app)": 2.04,
   "/backtest-<market>": 1.91,
-  "(chart)": 2.24,
-  "/<page>": 0.43,
   "/backtest": 3,
   "/tools/<x>": 0.9,
+  "(chart)": 2.44,
   "/reference/<x>": 0.4,
   "/blog/<x>": 0.4,
+  "/<page>": 0.44,
   "/statistics/<x>": 0.4,
   "/<market>-<concept>": 0.4,
-  "/<firm>-challenge-simulator": 0.3,
-  "/news/<release>": 0.3,
   "/answers/<x>": 0.3,
   "/news/<release>/<market>": 0.4,
+  "/news/<release>": 0.3,
+  "/<firm>-challenge-simulator": 0.3,
   "/economic-calendar/<x>": 0.3,
-  "/recap/<x>": 0.3,
-  "/learn/<x>": 0.4
+  "/learn/<x>": 0.4,
+  "/recap/<x>": 0.3
  },
  "pageMult": {
   "/backtest": 1.56,
   "/backtest-gold": 3.25,
   "/tools/crt-statistics": 3.25,
   "/footprint-chart-backtesting": 3.25,
-  "/crt-strategy-backtester": 2.01,
   "/backtest-nas100": 1.56,
   "/liquidity-sweep-backtester": 1.45,
   "/order-flow-backtesting": 1.45
@@ -484,7 +478,7 @@
   {
    "rank": 1,
    "fam": "/backtest",
-   "why": "160 accounts from 1 pages in 90 d (22.67/page/wk, ×3 vs site)",
+   "why": "160 accounts from 1 pages in 90 d (22.42/page/wk, ×3 vs site)",
    "more": "the AI-recommended page: protect it, link to it, measure it"
   },
   {
@@ -496,7 +490,7 @@
   {
    "rank": 3,
    "fam": "/<concept>-backtesting",
-   "why": "53 accounts from 38 pages in 90 d (0.203/page/wk, ×1.42 vs site)",
+   "why": "53 accounts from 37 pages in 90 d (0.208/page/wk, ×1.44 vs site)",
    "more": "concepts that convert → their best market version first"
   },
   {
@@ -508,7 +502,7 @@
   {
    "rank": 5,
    "fam": "/<page>",
-   "why": "3 accounts from 28 pages in 90 d (0.018/page/wk, ×0.43 vs site)",
+   "why": "3 accounts from 26 pages in 90 d (0.019/page/wk, ×0.44 vs site)",
    "more": "make the next page of this type where real demand exists; judged 14 d after it ships"
   }
  ],
@@ -516,7 +510,7 @@
   {
    "path": "/backtest",
    "fam": "/backtest",
-   "accounts28": 95
+   "accounts28": 94
   },
   {
    "path": "/backtest-gold",
@@ -532,11 +526,6 @@
    "path": "/footprint-chart-backtesting",
    "fam": "/<concept>-backtesting",
    "accounts28": 7
-  },
-  {
-   "path": "/crt-strategy-backtester",
-   "fam": "/<concept>-backtesting",
-   "accounts28": 2
   },
   {
    "path": "/backtest-nas100",
@@ -565,7 +554,7 @@
    },
    {
     "pair": "NAS100",
-    "users": 287
+    "users": 288
    },
    {
     "pair": "EURUSD",
@@ -622,9 +611,22 @@
   ],
   "note": "every market with real replay demand already has its page — the lever is REACH for the winners (rank jobs, links, Bing), not more pages"
  },
+ "audit": {
+  "bingSends7": {
+   "WIN": 9,
+   "OK": 19,
+   "WEAK": 87,
+   "DEAD": 105,
+   "other": 0
+  },
+  "wastedShare": 0.87,
+  "aligned": false,
+  "at": "2026-11-13T22:13:49.210Z",
+  "say": "87% of the last 7 days' Bing sends went to WEAK/DEAD families (192 of 220)"
+ },
  "cycles": {
   "total": 1,
   "judged": []
  },
- "say": "Base 20.4 accounts/day (floor 9.2); this week 135 vs normal 145.7. Effort 3/10. Focus: /backtest, /backtest-gold, /tools/crt-statistics, /footprint-chart-backtesting. Bin: /<firm>-challenge-simulator, /news/<release>, /economic-calendar/<x>, /recap/<x>, /answers/<x>."
+ "say": "Base 20.4 accounts/day (floor 9.2); this week 135 vs normal 145.7. Effort 3/10. Focus: /backtest, /backtest-gold, /tools/crt-statistics, /footprint-chart-backtesting. Bin: /<firm>-challenge-simulator, /news/<release>, /economic-calendar/<x>, /recap/<x>, /answers/<x>. Audit: 87% of the last 7 days' Bing sends went to WEAK/DEAD families (192 of 220)."
 }
