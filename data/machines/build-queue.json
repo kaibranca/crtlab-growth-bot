@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T09:25:28.960Z",
+ "at": "2026-11-13T10:20:00.693Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -102,7 +102,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 12s — phones 6.2s vs desktop 9.18s (59% of loads on phones); the server answers in 0.15s and candles in 0.04s (HIT) — the time is on the visitor's side. Desktops are slower than phones, so it is not phone CPU — something desktop loads (more candles, panels, a far country) is the lead. A headless flood is on (US: 137 raw vs ~19.4, 4 stayed, CA: 47 raw vs ~3.5, 1 stayed, GB: 46 raw vs ~10.1, 0 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: mobile/US 5.18s ×312, desktop/IN 21s ×39, mobile/JP 6.76s ×92, mobile/IN 7.92s ×78. Needs a build session to profile one slow load.",
+   "what": "Chart pages: the slowest 10% of real loads take 12s — phones 6.15s vs desktop 9.18s (59% of loads on phones); the server answers in 0.23s and candles in 0.05s (HIT) — the time is on the visitor's side. Desktops are slower than phones, so it is not phone CPU — something desktop loads (more candles, panels, a far country) is the lead. A headless flood is on (US: 137 raw vs ~19.4, 4 stayed, CA: 47 raw vs ~3.5, 1 stayed, GB: 46 raw vs ~10.1, 0 stayed) — its loads pollute the desktop number; trust phones until it stops. Most slow-load time sits in: mobile/US 5.18s ×315, desktop/IN 21s ×39, mobile/JP 6.76s ×93, mobile/IN 7.51s ×81. Needs a build session to profile one slow load.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
