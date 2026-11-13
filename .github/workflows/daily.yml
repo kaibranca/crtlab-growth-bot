@@ -47,6 +47,11 @@ jobs:
         timeout-minutes: 4
         run: node scripts/google.mjs
         env: { GSC_SA_JSON: "${{ secrets.GSC_SA_JSON }}" }
+      - name: Expiry watch — domain, TLS, GitHub/Cloudflare/Meta tokens (Fixer task < 45 d, one email at 30 d and 7 d)
+        continue-on-error: true
+        timeout-minutes: 2
+        run: node scripts/expiry.mjs
+        env: { GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}", CF_API_TOKEN: "${{ secrets.CF_API_TOKEN }}", CF_ACCOUNT_ID: "${{ secrets.CF_ACCOUNT_ID }}", META_PAGE_TOKEN: "${{ secrets.META_PAGE_TOKEN }}", META_APP_ID: "${{ secrets.META_APP_ID }}", META_APP_SECRET: "${{ secrets.META_APP_SECRET }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
       - name: Sitemap → Google (re-submit daily; records what Google read)
         continue-on-error: true
         timeout-minutes: 2

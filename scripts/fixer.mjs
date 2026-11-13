@@ -83,6 +83,8 @@ for (const [k, v] of Object.entries(state.verify ?? {})) { if (NOW - Date.parse(
   actions.push({ at: new Date().toISOString(), what: `checked: ${v.playbook} on ${v.id} ${fixed ? "worked" : "did not work"}`, ok: fixed }); delete state.verify[k]; }
 
 // 2b. IDLE machines (core activity fingerprint): running but their output has not changed — a lever to add or a machine to retire
+// EXPIRY WATCH (11-13): anything with a date that runs out within 45 days (domain, TLS, tokens) — before it breaks, not after
+for (const x of (J("data/machines/expiry.json", {}).soon ?? [])) tasks.push({ what: `${x.name} ${x.daysLeft <= 0 ? "EXPIRED / INVALID" : `expires ${x.expires} (${x.daysLeft} days)`}`, evidence: "data/machines/expiry.json", fix: x.fix, impact: x.daysLeft <= 7 ? 5 : 3 });
 // LOST PEAKS (11-13): a source × landing that once worked and has been ≤ 35 % of its best week for 14+ days — biggest first
 for (const r of (J("data/machines/peaks.json", {}).lost ?? []).slice(0, 3)) tasks.push({ what: `Lost peak: ${r.src} → ${r.page} ${r.now} clicks/wk vs ${r.peak} at its best (week to ${r.peakWeekEnd}) — −${r.lostAccountsPerWeek} accounts/wk`, evidence: "data/machines/peaks.json", fix: "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked", impact: Math.min(5, 1 + Math.round(r.lostAccountsPerWeek / 10)) });
 for (const x of (J("data/machines/activity.json", {}).idle ?? []).slice(0, 5)) tasks.push({ what: `${x.name} idle: its output has not changed for ${x.quietDays} days`, evidence: x.files.join(", "), fix: "a build session: give it a lever that changes something, or retire it" });

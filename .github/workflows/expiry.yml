@@ -1,0 +1,19 @@
+name: expiry
+# manual run of the expiry watch (it runs daily inside daily.yml); commits its data like the other machines
+on: { workflow_dispatch: {} }
+concurrency: { group: data, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Expiry watch — domain, TLS, GitHub/Cloudflare/Meta tokens (Fixer task < 45 d, one email at 30 d and 7 d)
+        continue-on-error: true
+        timeout-minutes: 2
+        run: node scripts/expiry.mjs
+        env: { GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}", CF_API_TOKEN: "${{ secrets.CF_API_TOKEN }}", CF_ACCOUNT_ID: "${{ secrets.CF_ACCOUNT_ID }}", META_PAGE_TOKEN: "${{ secrets.META_PAGE_TOKEN }}", META_APP_ID: "${{ secrets.META_APP_ID }}", META_APP_SECRET: "${{ secrets.META_APP_SECRET }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
+      - run: bash scripts/push.sh "expiry $(date -u +%FT%H:%M)"
