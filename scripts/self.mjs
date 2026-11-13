@@ -109,6 +109,7 @@ const ADMIN = Object.keys(ENG).filter((e) => e !== "main" && e !== "traffic").fl
 queue.push(...ADMIN);
 // 11-13 WORKS → MORE: the north-star jobs lead the builder's queue (score 6 > every machine item): rank the pages that bring
 // accounts higher, and add a page only where people already replay a market with no page. Judged by works.mjs cycles.
+{ const AU = J("data/works/plan.json", null)?.audit; if (AU && !AU.aligned) queue.push({ kind: "fix", what: `MISALIGNED machines: ${AU.say}`, why: "find which machine still pushes WEAK/DEAD pages and steer it with works-lib (values.json rule 2)", engine: "main", score: 7, works: true }); }
 { const WM = J("data/works/plan.json", null)?.more; for (const j of [...(WM?.newJobs ?? []), ...(WM?.rankJobs ?? [])].slice(0, 4)) queue.push({ kind: j.kind === "new" ? "build" : "rank", what: j.kind === "new" ? `MORE: build ${j.page} (same template as the winning backtest-<market> pages, real market data)` : `MORE: lift ${j.page} into Google's top 3`, why: j.why, engine: "main", score: 6, works: true }); }
 // THE BUILDER LEARNS HOW TO UPGRADE: every judged upgrade (upgrades.json) is evidence about where building pays. Per engine,
 // paid-rate Beta(1 + paid, 1 + hurt) with flats as half-misses → the queue's engine weight × (0.5 + rate): engines whose

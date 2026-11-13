@@ -179,6 +179,15 @@ const weekNew = readLines(CYC).filter((c) => NOW - Date.parse(c.at) < 7 * DAY).f
 const newJobs = tiers["/backtest-<market>"] === "WIN" || tiers["/backtest-<market>"] === "OK" ? demand.filter((d) => d.users >= 10).map((d) => ({ d, slug: `/backtest-${SLUG[d.pair] ?? d.pair.toLowerCase()}` }))
   .filter((x) => !mapSet.has(x.slug)).slice(0, Math.max(0, 2 - weekNew)).map((x) => ({ kind: "new", page: x.slug, why: `${x.d.users} people replayed ${x.d.pair} in 30 d and it has no backtest page; the family converts (${famRows.find((f) => f.fam === "/backtest-<market>")?.accounts90} accounts / 90 d)` })) : [];
 const more = { rankJobs, newJobs, demand: demand.slice(0, 15), note: newJobs.length ? null : "every market with real replay demand already has its page — the lever is REACH for the winners (rank jobs, links, Bing), not more pages" };
+// ── ALIGNMENT AUDIT (11-13, Kai: "why couldn't you figure out the machines were wrong?") — the review that would have caught
+// it, run every hour: where did the machines' EFFORT actually go (Bing sends, 7 d) vs where ACCOUNTS come from? More than a
+// third of the effort on WEAK/DEAD families = misaligned → ledger loss once a day + a build-queue item, until it's fixed.
+const SUBM = J("data/ai/submitted.json", {}), eff = { WIN: 0, OK: 0, WEAK: 0, DEAD: 0, other: 0 };
+for (const [p, t] of Object.entries(SUBM)) if (NOW - Date.parse(t) < 7 * DAY) eff[tiers[family(p)] ?? "other"]++;
+const effTot = Object.values(eff).reduce((a, b) => a + b, 0), wasted = effTot ? (eff.WEAK + eff.DEAD) / effTot : 0;
+const audit = { bingSends7: eff, wastedShare: +wasted.toFixed(2), aligned: wasted <= 0.34, at: new Date().toISOString(),
+  say: effTot ? `${Math.round(wasted * 100)}% of the last 7 days' Bing sends went to WEAK/DEAD families (${eff.WEAK + eff.DEAD} of ${effTot})` : "no sends in 7 d" };
+if (!audit.aligned && S.auditDay !== iso(NOW)) { S.auditDay = iso(NOW); L("loss", `MISALIGNED: ${audit.say} — effort is going where accounts don't come from`, `audit|${iso(NOW)}`); }
 const promote = focus.slice(0, 6).map((P) => ({ path: P.key, fam: P.fam, accounts28: P.acc.w28 ?? 0 }));
 
 const plan = {
@@ -187,9 +196,9 @@ const plan = {
   base, effort: E, wins: S.wins, losses: S.losses, flip,
   focus: focus.map((P) => ({ path: P.key, fam: P.fam, acc28: P.acc.w28 ?? 0, v28: P.v.w28 ?? 0, rate: +P.rate.toFixed(2), mult: pageMult[P.key] })),
   explore: explore.map((P) => ({ path: P.key, fam: P.fam, acc28: P.acc.w28 ?? 0, v28: P.v.w28 ?? 0, conf: P.conf, mult: pageMult[P.key] })),
-  families: famRows, bin: S.bin, tiers, famMult, pageMult, queue, promote, more,
+  families: famRows, bin: S.bin, tiers, famMult, pageMult, queue, promote, more, audit,
   cycles: { total: readLines(CYC).length, judged: readLines(CYC).filter((c) => c.verdict).slice(-5).map((c) => ({ day: c.day, verdict: c.verdict, lift: c.judged?.lift })) },
-  say: `Base ${base.perDay} accounts/day (floor ${base.floor}); this week ${last7} vs normal ${base.normalWeek}. Effort ${E}/10. Focus: ${focus.slice(0, 4).map((P) => P.key).join(", ")}. Bin: ${Object.keys(S.bin).join(", ") || "none"}.`,
+  say: `Base ${base.perDay} accounts/day (floor ${base.floor}); this week ${last7} vs normal ${base.normalWeek}. Effort ${E}/10. Focus: ${focus.slice(0, 4).map((P) => P.key).join(", ")}. Bin: ${Object.keys(S.bin).join(", ") || "none"}. Audit: ${audit.say}.`,
 };
 fs.writeFileSync(OUT, JSON.stringify(plan, null, 1));
 fs.writeFileSync(ST, JSON.stringify(S, null, 1));
