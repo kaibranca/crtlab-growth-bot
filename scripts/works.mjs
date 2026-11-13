@@ -36,16 +36,20 @@ const db = new pg.Client({ connectionString: process.env.ANALYTICS_DB_URL, ssl: 
 await db.connect();
 // A conversion counts only when it CREATED the account (user made within ±1 h of it) and only once per user (first row).
 // 11-13: 144 of 758 "converted" guest rows in 28 d were existing users logging in on a new device — not new accounts.
+// REAL visitors only (the ecosystem's one standard, humans.mjs): stayed 30 s+ or made an account — bot bursts and headless
+// floods never count as exposure, so they can't push a page into focus or keep a dead family alive (values.json rule 7)
 const raw = (await db.query(`select g.id, split_part(g.landing_path,'?',1) p, coalesce(g.source,'') s, g.created_at t, g.converted_at c0,
+  (g.last_active - g.created_at > interval '30 seconds' or g.converted_at is not null) real,
   g.converted_user_id uid, u.created_at uc, coalesce(u.candles_used,0) used, coalesce(u.tier,'free') tier
   from guest_presence g left join users u on u.id::text = g.converted_user_id::text
   where g.created_at > now() - interval '120 days' and g.landing_path is not null`)).rows;
 // replay DEMAND per market (distinct users, 30 d) — what people actually use, for the MORE stage
 const demand = (await db.query(`select upper(pair) pair, count(distinct user_id)::int users from user_events
   where created_at > now() - interval '30 days' and pair ~ '^[A-Z0-9]{3,8}$' and type not like 'IND:%' group by 1 order by 2 desc limit 40`).catch(() => ({ rows: [] }))).rows;
+const botRows = raw.filter((r) => !r.real).length;
 const firstOf = new Map(); // uid → earliest converting row
 for (const r of raw) if (r.c0 && r.uid && (!firstOf.has(r.uid) || new Date(r.c0) < new Date(firstOf.get(r.uid).c0))) firstOf.set(r.uid, r);
-const rows = raw.map((r) => ({ ...r, c: r.c0 && r.uc && firstOf.get(r.uid) === r && Math.abs(new Date(r.uc) - new Date(r.c0)) < 3600e3 ? r.c0 : null }));
+const rows = raw.filter((r) => r.real).map((r) => ({ ...r, c: r.c0 && r.uc && firstOf.get(r.uid) === r && Math.abs(new Date(r.uc) - new Date(r.c0)) < 3600e3 ? r.c0 : null }));
 await db.end();
 // how many pages EXIST per family (the sitemap) — exposure, so a family of 2,110 pages with 12 visitors reads as dead, not small
 // both sitemaps: /sitemap.xml (live families) + /sitemap-archive.xml (frozen DEAD families, site lib/works.ts, 11-13)
@@ -75,7 +79,7 @@ for (const p of mapPaths) { const f = family(p); T(fams, f, { pages: new Set() }
 const days28 = [...Array(28)].map((_, i) => byDay.get(iso(NOW - (i + 1) * DAY)) ?? 0);
 const mean = days28.reduce((a, b) => a + b, 0) / 28, sd = Math.sqrt(days28.reduce((a, b) => a + (b - mean) ** 2, 0) / 27);
 const last7 = days28.slice(0, 7).reduce((a, b) => a + b, 0), prev21 = days28.slice(7).reduce((a, b) => a + b, 0) / 3;
-const base = { perDay: +mean.toFixed(1), sd: +sd.toFixed(1), floor: +Math.max(0, mean - sd).toFixed(1), last7, normalWeek: +prev21.toFixed(1), trend: prev21 ? +(last7 / prev21 - 1).toFixed(2) : null, today: byDay.get(iso(NOW)) ?? 0, zeroDays28: days28.filter((x) => !x).length, bySource28: bySrc };
+const base = { realVisitorShare: +((raw.length - botRows) / Math.max(1, raw.length)).toFixed(2), botRowsDropped: botRows, perDay: +mean.toFixed(1), sd: +sd.toFixed(1), floor: +Math.max(0, mean - sd).toFixed(1), last7, normalWeek: +prev21.toFixed(1), trend: prev21 ? +(last7 / prev21 - 1).toFixed(2) : null, today: byDay.get(iso(NOW)) ?? 0, zeroDays28: days28.filter((x) => !x).length, bySource28: bySrc };
 
 // ── RANK: Gamma–Poisson posteriors of worth per week (28-day window, page shrunk to family, family to site) ────────────
 const K_FAM = 2, K_PAGE = 2; // prior strength in weeks of evidence
