@@ -1,12 +1,12 @@
 {
- "at": "2026-11-13T15:20:30.614Z",
+ "at": "2026-11-13T16:20:35.834Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
-  "iq": 81.3,
+  "iq": 81.5,
   "power": 268,
-  "dIQ": 7,
+  "dIQ": 7.2,
   "dPower": 163,
-  "iqPerUpgrade": 0.043,
+  "iqPerUpgrade": 0.044,
   "upgrades": {
    "judged": 0,
    "paid": 0,
@@ -16,21 +16,21 @@
    "unmeasured": 0,
    "next": "2026-11-19"
   },
-  "say": "Machines IQ 81.3 (+7 since 11 Nov) on 163 upgrades — 0.04 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.2/day — on pace for ~109 in 30 days.",
+  "say": "Machines IQ 81.5 (+7.2 since 11 Nov) on 163 upgrades — 0.04 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.2/day — on pace for ~109 in 30 days.",
   "experiments": "13 experiments live — next verdicts: conversion bandit 14 Nov · executive focus: conversion 15 Nov · hook home-yesterday-charts-2026-11-12 17 Nov · forecast self-calibration 17 Nov.",
   "pace": {
-   "perDay": 3.19,
-   "in30": 108.8
+   "perDay": 3.2,
+   "in30": 109.1
   }
  },
  "engines": {
   "main": {
-   "iq": 81.3,
+   "iq": 81.5,
    "iqWas": 74.3,
    "since": "2026-11-11",
    "level": "Novice",
    "members": 72,
-   "learners": 33,
+   "learners": 34,
    "brainVerdicts": 0,
    "curiosity": 1,
    "episode": null,
@@ -68,7 +68,7 @@
      "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 81.3 (Novice, +7 since 11 Nov) — 33 of 72 parts learn on their own; weakest: Ledger, 4-week trend, Truth gate (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 81.5 (Novice, +7.2 since 11 Nov) — 34 of 72 parts learn on their own; weakest: Ledger, 4-week trend, Truth gate (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "traffic": {
    "iq": 82.3,
@@ -110,7 +110,7 @@
     {
      "id": "hooks",
      "name": "Hook tests",
-     "iq": 114,
+     "iq": 115,
      "limit": "its outcome is falling (AI accounts / week -27%)"
     }
    ],
@@ -166,7 +166,7 @@
    "say": "My IQ is 76.2 (Novice, +0.2 since 11 Nov) — 2 of 8 parts learn on their own; weakest: /backtest-<market> @ land , direct @ land → account, Wall + checkout (acts but learns nothing from what happens next — no outcome to judge itself by); I'm stalling, so I explore ×1.6 harder."
   },
   "data": {
-   "iq": 73.9,
+   "iq": 74,
    "iqWas": 71.3,
    "since": "2026-11-11",
    "level": "Novice",
@@ -199,7 +199,7 @@
     {
      "id": "cost",
      "name": "Cost machine",
-     "iq": 101,
+     "iq": 102,
      "limit": "learning on every front — more data is the only limit"
     },
     {
@@ -209,7 +209,7 @@
      "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
     }
    ],
-   "say": "My IQ is 73.9 (Novice, +2.6 since 11 Nov) — 1 of 7 parts learn on their own; weakest: Data pull, Nightly backup, Restore test (acts but never judges its outcome — it has a KPI it doesn't learn from)."
+   "say": "My IQ is 74.0 (Novice, +2.8 since 11 Nov) — 1 of 7 parts learn on their own; weakest: Data pull, Nightly backup, Restore test (acts but never judges its outcome — it has a KPI it doesn't learn from)."
   },
   "security": {
    "iq": 73.2,
@@ -463,7 +463,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 785,
+    "e": 815,
     "f": 0
    },
    "upgrades": {
@@ -664,7 +664,7 @@
   },
   "weekly": {
    "name": "Weekly cycle",
-   "iq": 88,
+   "iq": 89,
    "iqWas": 85,
    "level": "Capable",
    "state": "ok",
@@ -677,7 +677,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 126,
+    "e": 140,
     "f": 0
    },
    "upgrades": {
@@ -737,9 +737,9 @@
   },
   "hooks": {
    "name": "Hook tests",
-   "iq": 114,
+   "iq": 115,
    "iqWas": 110,
-   "level": "Strong",
+   "level": "Expert",
    "state": "ok",
    "kpi": {
     "label": "AI accounts / week",
@@ -750,7 +750,7 @@
    "made": {
     "v": 2,
     "k": 0,
-    "e": 941,
+    "e": 959,
     "f": 0
    },
    "upgrades": {
@@ -895,9 +895,9 @@
    "state": "ok",
    "kpi": {
     "label": "pages submitted / week",
-    "now": 2935,
+    "now": 2939,
     "before": 403,
-    "change": 6.28
+    "change": 6.29
    },
    "made": {
     "v": 0,
@@ -1058,19 +1058,24 @@
   },
   "deployjudge": {
    "name": "Deploy judge",
-   "iq": 70,
+   "iq": 80,
    "iqWas": 70,
-   "level": "Blank",
+   "level": "Novice",
    "state": "ok",
    "kpi": null,
-   "made": null,
+   "made": {
+    "v": 1,
+    "k": 0,
+    "e": 0,
+    "f": 0
+   },
    "upgrades": {
     "paid": 0,
     "hurt": 0,
     "flat": 0,
     "waiting": 1
    },
-   "limit": "acts but learns nothing from what happens next — no outcome to judge itself by"
+   "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
   },
   "google": {
    "name": "Google machine",
@@ -1281,7 +1286,7 @@
    "state": "ok",
    "kpi": {
     "label": "uptime 7 d %",
-    "now": 99.26,
+    "now": 99.27,
     "before": null,
     "change": null
    },
@@ -1318,7 +1323,7 @@
    "state": "ok",
    "kpi": {
     "label": "attacks blocked / week",
-    "now": 6047,
+    "now": 6050,
     "before": 0,
     "change": null
    },
@@ -1535,7 +1540,7 @@
   },
   "cost": {
    "name": "Cost machine",
-   "iq": 101,
+   "iq": 102,
    "iqWas": 80,
    "level": "Strong",
    "state": "ok",
@@ -1546,7 +1551,7 @@
     "change": null
    },
    "made": {
-    "v": 7,
+    "v": 8,
     "k": 0.42,
     "e": 0,
     "f": 0
@@ -1594,7 +1599,7 @@
    "kpi": {
     "label": "real visitors / week",
     "now": 258,
-    "before": 271,
+    "before": 272,
     "change": -0.05
    },
    "made": {
@@ -1619,9 +1624,9 @@
    "state": "ok",
    "kpi": {
     "label": "guests → account %",
-    "now": 46.51,
-    "before": 43.91,
-    "change": 0.06
+    "now": 46.9,
+    "before": 43.75,
+    "change": 0.07
    },
    "made": {
     "v": 0,

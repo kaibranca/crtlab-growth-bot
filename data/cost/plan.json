@@ -13,6 +13,13 @@
    "msg": "Daily data releases at 07:00:00 UTC: job sets activateAt when ready before 06:59 and waits",
    "dMB": 106,
    "perMonth": 1.06
+  },
+  {
+   "svc": "data",
+   "commit": "8b83aba4",
+   "msg": "daily data: exchange holiday calendar — pull never waits for / claims a closed day; site d",
+   "dMB": 166,
+   "perMonth": 1.66
   }
  ],
  "levers": [
@@ -22,7 +29,7 @@
    "set": "MALLOC_ARENA_MAX=2",
    "live": true,
    "beforeGB": 1.093,
-   "afterGB": null,
+   "afterGB": 1.084,
    "verdict": "judging"
   },
   {
@@ -31,17 +38,17 @@
    "set": "WEB_NODE_OPTIONS=--max-old-space-size=512",
    "live": true,
    "beforeGB": 1.109,
-   "afterGB": null,
+   "afterGB": 1.084,
    "verdict": "judging"
   }
  ],
  "heap": {
   "cap": 512,
   "stopped": false,
-  "samples": 85,
+  "samples": 86,
   "note": "heap peak 315 MB → cap 512 MB is right"
  },
- "at": "2026-11-13T15:18:30.894Z",
+ "at": "2026-11-13T16:18:28.566Z",
  "status": "over budget",
  "budget": 10,
  "weekPace": 25.2,
@@ -49,36 +56,36 @@
  "deploys": {
   "Postgres": 0,
   "data": 4,
-  "web": 14,
-  "ops": 1
+  "web": 13,
+  "ops": 0
  },
- "dayCost": 0.84,
+ "dayCost": 0.85,
  "avgDayCost": 0.84,
- "monthPace": 25.2,
+ "monthPace": 25.5,
  "services": [
   {
    "svc": "web",
-   "memGB": 0.74,
+   "memGB": 0.77,
    "normalGB": 0.83,
-   "dayCost": 0.53,
+   "dayCost": 0.54,
    "avgDayCost": 0.47,
-   "monthPace": 15.96
+   "monthPace": 16.15
   },
   {
    "svc": "Postgres",
-   "memGB": 0.51,
+   "memGB": 0.49,
    "normalGB": 0.39,
    "dayCost": 0.17,
    "avgDayCost": 0.15,
-   "monthPace": 5.04
+   "monthPace": 5.06
   },
   {
    "svc": "data",
    "memGB": 0.24,
-   "normalGB": 0.22,
+   "normalGB": 0.23,
    "dayCost": 0.14,
    "avgDayCost": 0.22,
-   "monthPace": 4.29
+   "monthPace": 4.28
   },
   {
    "svc": "ops",
@@ -93,8 +100,8 @@
   {
    "svc": "web",
    "kind": "too many deploys",
-   "n": 14,
-   "why": "14 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
+   "n": 13,
+   "why": "13 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
   }
  ],
  "actions": [

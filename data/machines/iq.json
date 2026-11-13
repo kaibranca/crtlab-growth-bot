@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T15:20:30.502Z",
+ "at": "2026-11-13T16:20:35.725Z",
  "hi": {
   "core": 17,
   "fix:core": 0,
@@ -91,7 +91,7 @@
   "fix:wall": 0,
   "restore": 0,
   "fix:restore": 0,
-  "cost": 7,
+  "cost": 8,
   "fix:cost": 0,
   "leak": 0,
   "fix:leak": 0,
@@ -135,7 +135,7 @@
   "fix:lockin": 0,
   "selfcheck": 0,
   "fix:selfcheck": 0,
-  "deployjudge": 0,
+  "deployjudge": 1,
   "fix:deployjudge": 0,
   "google": 0,
   "fix:google": 0,
@@ -161,9 +161,9 @@
   "rising": 84,
   "sisters": 90,
   "lift": 95,
-  "weekly": 88,
+  "weekly": 89,
   "yield": 130,
-  "hooks": 114,
+  "hooks": 115,
   "bing": 79,
   "curator": 76,
   "traffic-brain": 114,
@@ -172,13 +172,14 @@
   "world": 124,
   "memory": 99,
   "holdout": 89,
+  "deployjudge": 80,
   "google": 81,
   "recommend": 78,
   "social": 80,
   "mentions": 74,
   "behaviour": 112,
   "shield": 86,
-  "cost": 101,
+  "cost": 102,
   "fixer": 102,
   "humans": 82,
   "leak": 84,
@@ -201,7 +202,7 @@
   "supervisor": {
    "v": 0,
    "k": 0,
-   "e": 785,
+   "e": 815,
    "f": 0
   },
   "mistakes": {
@@ -249,7 +250,7 @@
   "weekly": {
    "v": 0,
    "k": 0,
-   "e": 126,
+   "e": 140,
    "f": 0
   },
   "yield": {
@@ -261,7 +262,7 @@
   "hooks": {
    "v": 2,
    "k": 0,
-   "e": 941,
+   "e": 959,
    "f": 0
   },
   "bing": {
@@ -312,6 +313,12 @@
    "e": 140,
    "f": 0
   },
+  "deployjudge": {
+   "v": 1,
+   "k": 0,
+   "e": 0,
+   "f": 0
+  },
   "google": {
    "v": 0,
    "k": 1,
@@ -349,7 +356,7 @@
    "f": 0
   },
   "cost": {
-   "v": 7,
+   "v": 8,
    "k": 0.42,
    "e": 0,
    "f": 0
@@ -697,15 +704,15 @@
   },
   {
    "t": "2026-11-13T15",
-   "iq": 81.3,
+   "iq": 81.5,
    "parts": {
     "knows": 29.2,
     "facts": 38,
-    "judged": 142,
-    "evidence": 5713,
+    "judged": 144,
+    "evidence": 5775,
     "fixed": 8,
     "machines": 72,
-    "learners": 33
+    "learners": 34
    },
    "ours": 268,
    "selfPower": 0,
