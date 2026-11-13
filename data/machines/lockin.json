@@ -1,15 +1,33 @@
 {
- "on": false,
+ "on": true,
+ "since": "2026-11-13T03:24:51.595Z",
+ "kind": "spike",
+ "triggers": [
+  "spike"
+ ],
+ "why": "edge sentinel: 22 people-fetches in 15 min vs ~3.2 normal",
  "bars": {
   "people": 2,
   "signups": 2.5,
   "ai": 2,
   "spike": 1.5
  },
- "last": {
-  "since": "2026-11-12T16:35:45.963Z",
-  "kind": "spike",
-  "verdict": "flat",
-  "ratio": 1.08
- }
+ "startSignups24": 17,
+ "normalSignups24": 15.6,
+ "peak": 1.37,
+ "targets": [
+  "/",
+  "/backtest",
+  "/backtest-gold",
+  "/backtesting-software",
+  "/crt-strategy-backtester",
+  "/market-replay-software",
+  "/daily-market-data",
+  "/best-backtesting-software",
+  "/multi-chart-backtesting",
+  "/news/claims/gold",
+  "/news/ppi/nasdaq",
+  "/topstep-challenge-simulator"
+ ],
+ "emailed": true
 }
