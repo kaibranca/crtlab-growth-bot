@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T19:19:52.302Z",
+ "at": "2026-11-13T20:20:02.834Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -126,7 +126,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 9s — phones 7.09s vs desktop 9.62s (74% of loads on phones); the server answers in 0.86s and candles in 0.33s (EXPIRED) — the time is on the visitor's side. Desktops are slower than phones, so it is not phone CPU — something desktop loads (more candles, panels, a far country) is the lead. Most slow-load time sits in: mobile/US 5.78s ×496, mobile/JP 6.88s ×237, mobile/IN 6.58s ×182, mobile/BR 12s ×66. Needs a build session to profile one slow load.",
+   "what": "Chart pages: the slowest 10% of real loads take 8.73s — phones 6.95s vs desktop 7.49s (76% of loads on phones); the server answers in 0.16s and candles in 0.19s (EXPIRED) — the time is on the visitor's side. Most slow-load time sits in: mobile/US 5.62s ×519, mobile/JP 6.83s ×252, mobile/IN 6.5s ×191, mobile/BR 12s ×68. Needs a build session to profile one slow load.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
@@ -134,7 +134,7 @@
   },
   {
    "kind": "build",
-   "what": "Only 24% of the people who signed up 8–14 days ago came back this week → decide a first-session change (golden actions from the behaviour machine) [impact 1.5]",
+   "what": "Only 23% of the people who signed up 8–14 days ago came back this week → decide a first-session change (golden actions from the behaviour machine) [impact 1.5]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,
@@ -142,7 +142,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 9s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
+   "what": "Chart pages: the slowest 10% of real loads take 8.73s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,

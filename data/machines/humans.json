@@ -1,21 +1,21 @@
 {
- "at": "2026-11-13T19:18:25.465Z",
+ "at": "2026-11-13T20:18:23.112Z",
  "selfCheck": {
   "devices": [
    {
     "dev": "desktop",
-    "raw24": 151,
-    "beat24": 0.51,
-    "beatNormal": 0.583,
-    "stay24": 0.185,
-    "stayNormal": 0.274
+    "raw24": 142,
+    "beat24": 0.549,
+    "beatNormal": 0.58,
+    "stay24": 0.211,
+    "stayNormal": 0.272
    },
    {
     "dev": "mobile",
-    "raw24": 30,
-    "beat24": 0.567,
+    "raw24": 31,
+    "beat24": 0.548,
     "beatNormal": 0.349,
-    "stay24": 0.567,
+    "stay24": 0.548,
     "stayNormal": 0.474
    }
   ],
@@ -23,34 +23,34 @@
    {
     "dim": "source",
     "seg": "Direct",
-    "raw24": 163,
-    "rawNormal": 97.4,
-    "stayed24": 32,
-    "stayShare": 0.196
+    "raw24": 155,
+    "rawNormal": 98.1,
+    "stayed24": 34,
+    "stayShare": 0.219
    },
    {
     "dim": "landing",
     "seg": "home",
-    "raw24": 143,
-    "rawNormal": 86.1,
-    "stayed24": 26,
-    "stayShare": 0.182
+    "raw24": 137,
+    "rawNormal": 86.6,
+    "stayed24": 27,
+    "stayShare": 0.197
    },
    {
     "dim": "device",
     "seg": "desktop",
-    "raw24": 151,
-    "rawNormal": 100.3,
-    "stayed24": 28,
-    "stayShare": 0.185
+    "raw24": 142,
+    "rawNormal": 100.9,
+    "stayed24": 30,
+    "stayShare": 0.211
    },
    {
     "dim": "country",
     "seg": "US",
-    "raw24": 67,
-    "rawNormal": 25,
+    "raw24": 61,
+    "rawNormal": 25.4,
     "stayed24": 5,
-    "stayShare": 0.075
+    "stayShare": 0.082
    }
   ],
   "flood": [],
@@ -59,55 +59,55 @@
  "wave": {
   "window": "3h",
   "visitors": {
-   "now": 10,
-   "normal": 6.2,
-   "ratio": 1.61,
-   "z": 1
+   "now": 12,
+   "normal": 5.2,
+   "ratio": 2.3,
+   "z": 2.4
   },
   "signups": {
-   "now": 2,
-   "normal": 2.7,
-   "ratio": 0.74,
-   "z": -0.4
+   "now": 5,
+   "normal": 2.5,
+   "ratio": 2,
+   "z": 1.4
   },
   "riding": [
    {
-    "dim": "landing",
-    "seg": "home",
-    "now": 7,
-    "normal": 3.3,
-    "ratio": 2.13,
-    "z": 1.3,
-    "gain": 3.7
-   },
-   {
     "dim": "source",
     "seg": "Direct",
-    "now": 7,
-    "normal": 3.8,
-    "ratio": 1.85,
-    "z": 1.1,
-    "gain": 3.2
+    "now": 9,
+    "normal": 3.6,
+    "ratio": 2.52,
+    "z": 2.1,
+    "gain": 5.4
+   },
+   {
+    "dim": "landing",
+    "seg": "home",
+    "now": 8,
+    "normal": 3,
+    "ratio": 2.67,
+    "z": 2.2,
+    "gain": 5
    }
   ]
  },
  "visitors": {
-  "now": 45,
+  "now": 47,
   "normal": 36.7,
-  "ratio": 1.23,
-  "z": 0.6
+  "ratio": 1.28,
+  "z": 0.8
  },
  "rawVisitors": {
-  "now": 181,
-  "normal": 119,
-  "ratio": 1.52,
-  "z": 0.5
+  "now": 173,
+  "normal": 119.6,
+  "ratio": 1.45,
+  "z": 0.4
  },
  "signups": {
-  "now": 13,
+  "now": 16,
   "normal": 16,
-  "ratio": 0.81,
-  "z": -0.3
+  "ratio": 1,
+  "z": 0
  },
  "state": "normal",
  "why": [
@@ -117,8 +117,8 @@
   "landing chart: 5 vs ~5.7/day"
  ],
  "gainers": [
-  "source Direct: 32 vs ~22.9/day",
-  "landing home: 26 vs ~17.2/day",
+  "source Direct: 34 vs ~22.9/day",
+  "landing home: 27 vs ~17.2/day",
   "device mobile: 17 vs ~8.4/day"
  ],
  "segments": [
@@ -146,7 +146,7 @@
    "now": 1,
    "normal": 2.5,
    "ratio": 0.4,
-   "z": -0.6,
+   "z": -0.7,
    "gap": -1.5
   },
   {
@@ -164,7 +164,7 @@
    "now": 2,
    "normal": 2.6,
    "ratio": 0.78,
-   "z": -0.2,
+   "z": -0.3,
    "gap": -0.6
   },
   {
@@ -177,22 +177,13 @@
    "gap": -0.5
   },
   {
-   "dim": "device",
-   "seg": "desktop",
-   "now": 28,
-   "normal": 27.4,
-   "ratio": 1.02,
-   "z": 0,
-   "gap": 0.6
-  },
-  {
    "dim": "country",
    "seg": "IN",
-   "now": 7,
+   "now": 8,
    "normal": 5.6,
-   "ratio": 1.26,
-   "z": 0.5,
-   "gap": 1.4
+   "ratio": 1.44,
+   "z": 0.8,
+   "gap": 2.4
   },
   {
    "dim": "country",
@@ -214,6 +205,15 @@
   },
   {
    "dim": "device",
+   "seg": "desktop",
+   "now": 30,
+   "normal": 27.4,
+   "ratio": 1.09,
+   "z": 0.2,
+   "gap": 2.6
+  },
+  {
+   "dim": "device",
    "seg": "mobile",
    "now": 17,
    "normal": 8.4,
@@ -224,20 +224,20 @@
   {
    "dim": "landing",
    "seg": "home",
-   "now": 26,
+   "now": 27,
    "normal": 17.2,
-   "ratio": 1.51,
-   "z": 1.3,
-   "gap": 8.8
+   "ratio": 1.57,
+   "z": 1.5,
+   "gap": 9.8
   },
   {
    "dim": "source",
    "seg": "Direct",
-   "now": 32,
+   "now": 34,
    "normal": 22.9,
-   "ratio": 1.4,
-   "z": 1.1,
-   "gap": 9.1
+   "ratio": 1.49,
+   "z": 1.3,
+   "gap": 11.1
   }
  ]
 }

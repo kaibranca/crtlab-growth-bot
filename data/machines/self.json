@@ -1,12 +1,12 @@
 {
- "at": "2026-11-13T19:19:52.305Z",
+ "at": "2026-11-13T20:20:02.837Z",
  "note": "Each machine and engine reading itself (IQ, level, limit, KPI, upgrades); engines' curiosity knobs. Read by core, traffic-core, brains, ai-machine, bandit.",
  "whole": {
-  "iq": 81.8,
+  "iq": 82,
   "power": 268,
-  "dIQ": 7.5,
+  "dIQ": 7.7,
   "dPower": 163,
-  "iqPerUpgrade": 0.046,
+  "iqPerUpgrade": 0.047,
   "upgrades": {
    "judged": 0,
    "paid": 0,
@@ -16,16 +16,16 @@
    "unmeasured": 0,
    "next": "2026-11-19"
   },
-  "say": "Machines IQ 81.8 (+7.5 since 11 Nov) on 163 upgrades — 0.05 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.2/day — on pace for ~109 in 30 days.",
+  "say": "Machines IQ 82 (+7.7 since 11 Nov) on 163 upgrades — 0.05 IQ per upgrade. Upgrades get their first verdicts 19 Nov. IQ is climbing +3.2/day — on pace for ~109 in 30 days.",
   "experiments": "13 experiments live — next verdicts: conversion bandit 14 Nov · executive focus: conversion 15 Nov · hook home-yesterday-charts-2026-11-12 17 Nov · forecast self-calibration 17 Nov.",
   "pace": {
-   "perDay": 3.16,
-   "in30": 109
+   "perDay": 3.17,
+   "in30": 109.4
   }
  },
  "engines": {
   "main": {
-   "iq": 81.8,
+   "iq": 82,
    "iqWas": 74.3,
    "since": "2026-11-11",
    "level": "Novice",
@@ -58,20 +58,20 @@
     {
      "id": "yield",
      "name": "Failure learning",
-     "iq": 130,
-     "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+     "iq": 131,
+     "limit": "learning on every front — more data is the only limit"
     },
     {
      "id": "world",
      "name": "World model",
-     "iq": 128,
+     "iq": 129,
      "limit": "collects evidence but hasn't reached a verdict yet"
     }
    ],
-   "say": "My IQ is 81.8 (Novice, +7.5 since 11 Nov) — 34 of 72 parts learn on their own; weakest: Ledger, 4-week trend, Truth gate (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 82.0 (Novice, +7.7 since 11 Nov) — 34 of 72 parts learn on their own; weakest: Ledger, 4-week trend, Truth gate (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "traffic": {
-   "iq": 83,
+   "iq": 83.2,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Novice",
@@ -104,8 +104,8 @@
     {
      "id": "yield",
      "name": "Failure learning",
-     "iq": 130,
-     "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+     "iq": 131,
+     "limit": "learning on every front — more data is the only limit"
     },
     {
      "id": "hooks",
@@ -114,7 +114,7 @@
      "limit": "its outcome is falling (AI accounts / week -27%)"
     }
    ],
-   "say": "My IQ is 83.0 (Novice, +7.2 since 11 Nov) — 21 of 32 parts learn on their own; weakest: Truth gate, Search console, Bing webmaster (acts but learns nothing from what happens next — no outcome to judge itself by)."
+   "say": "My IQ is 83.2 (Novice, +7.4 since 11 Nov) — 21 of 32 parts learn on their own; weakest: Truth gate, Search console, Bing webmaster (acts but learns nothing from what happens next — no outcome to judge itself by)."
   },
   "money": {
    "iq": 76.2,
@@ -383,7 +383,7 @@
    "say": "My IQ is 70.0 (Blank, +0 since 11 Nov) — 0 of 3 parts learn on their own; weakest: Capacity, Load alert, Link check (acts but learns nothing from what happens next — no outcome to judge itself by); I'm stalling, so I explore ×1.6 harder."
   },
   "fixer": {
-   "iq": 102.6,
+   "iq": 102.8,
    "iqWas": 75.8,
    "since": "2026-11-11",
    "level": "Strong",
@@ -397,7 +397,7 @@
     {
      "id": "supervisor",
      "name": "Supervisor",
-     "iq": 112,
+     "iq": 113,
      "limit": "collects evidence but hasn't reached a verdict yet"
     },
     {
@@ -407,7 +407,7 @@
      "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
     }
    ],
-   "say": "My IQ is 102.6 (Strong, +26.8 since 11 Nov) — 3 of 3 parts learn on their own."
+   "say": "My IQ is 102.8 (Strong, +27.1 since 11 Nov) — 3 of 3 parts learn on their own."
   }
  },
  "machines": {
@@ -419,7 +419,7 @@
    "state": "ok",
    "kpi": null,
    "made": {
-    "v": 17,
+    "v": 18,
     "k": 0,
     "e": 0,
     "f": 0
@@ -455,7 +455,7 @@
   },
   "supervisor": {
    "name": "Supervisor",
-   "iq": 112,
+   "iq": 113,
    "iqWas": 70,
    "level": "Strong",
    "state": "ok",
@@ -463,7 +463,7 @@
    "made": {
     "v": 0,
     "k": 0,
-    "e": 880,
+    "e": 905,
     "f": 0
    },
    "upgrades": {
@@ -711,7 +711,7 @@
   },
   "yield": {
    "name": "Failure learning",
-   "iq": 130,
+   "iq": 131,
    "iqWas": 70,
    "level": "Expert",
    "state": "ok",
@@ -723,7 +723,7 @@
    },
    "made": {
     "v": 61,
-    "k": 0,
+    "k": 7.16,
     "e": 0,
     "f": 0
    },
@@ -733,7 +733,7 @@
     "flat": 0,
     "waiting": 0
    },
-   "limit": "judges, but on little evidence — verdicts rest on a handful of cases"
+   "limit": "learning on every front — more data is the only limit"
   },
   "hooks": {
    "name": "Hook tests",
@@ -750,7 +750,7 @@
    "made": {
     "v": 2,
     "k": 0,
-    "e": 963,
+    "e": 968,
     "f": 0
    },
    "upgrades": {
@@ -831,14 +831,14 @@
   },
   "traffic-brain": {
    "name": "Traffic brain ↗",
-   "iq": 114,
+   "iq": 115,
    "iqWas": 93,
-   "level": "Strong",
+   "level": "Expert",
    "state": "ok",
    "kpi": null,
    "made": {
     "v": 15,
-    "k": 5.54,
+    "k": 5.93,
     "e": 4,
     "f": 0
    },
@@ -931,14 +931,14 @@
   },
   "world": {
    "name": "World model",
-   "iq": 128,
+   "iq": 129,
    "iqWas": 70,
    "level": "Expert",
    "state": "ok",
    "kpi": null,
    "made": {
     "v": 0,
-    "k": 6.03,
+    "k": 8.46,
     "e": 2422,
     "f": 0
    },
@@ -968,14 +968,14 @@
   },
   "memory": {
    "name": "Long-term memory",
-   "iq": 99,
+   "iq": 105,
    "iqWas": 70,
-   "level": "Capable",
+   "level": "Strong",
    "state": "ok",
    "kpi": null,
    "made": {
     "v": 0,
-    "k": 6.7,
+    "k": 10.17,
     "e": 0,
     "f": 0
    },
@@ -1323,7 +1323,7 @@
    "state": "ok",
    "kpi": {
     "label": "attacks blocked / week",
-    "now": 6056,
+    "now": 6057,
     "before": 0,
     "change": null
    },
@@ -1552,7 +1552,7 @@
    },
    "made": {
     "v": 8,
-    "k": 0.42,
+    "k": 0.45,
     "e": 0,
     "f": 0
    },
@@ -1598,9 +1598,9 @@
    "state": "ok",
    "kpi": {
     "label": "real visitors / week",
-    "now": 265,
-    "before": 270,
-    "change": -0.02
+    "now": 263,
+    "before": 273,
+    "change": -0.04
    },
    "made": {
     "v": 0,
@@ -1624,9 +1624,9 @@
    "state": "ok",
    "kpi": {
     "label": "guests → account %",
-    "now": 46.79,
-    "before": 42.59,
-    "change": 0.1
+    "now": 47.53,
+    "before": 42.12,
+    "change": 0.13
    },
    "made": {
     "v": 0,
@@ -1651,7 +1651,7 @@
    "kpi": null,
    "made": {
     "v": 0,
-    "k": 7.47,
+    "k": 7.87,
     "e": 207,
     "f": 0
    },

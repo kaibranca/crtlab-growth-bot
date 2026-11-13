@@ -29,7 +29,7 @@
    "set": "MALLOC_ARENA_MAX=2",
    "live": true,
    "beforeGB": 1.093,
-   "afterGB": 1.093,
+   "afterGB": 1.087,
    "verdict": "judging"
   },
   {
@@ -38,17 +38,17 @@
    "set": "WEB_NODE_OPTIONS=--max-old-space-size=512",
    "live": true,
    "beforeGB": 1.109,
-   "afterGB": 1.093,
+   "afterGB": 1.087,
    "verdict": "judging"
   }
  ],
  "heap": {
   "cap": 512,
   "stopped": false,
-  "samples": 89,
+  "samples": 90,
   "note": "heap peak 315 MB → cap 512 MB is right"
  },
- "at": "2026-11-13T19:18:23.810Z",
+ "at": "2026-11-13T20:18:21.462Z",
  "status": "over budget",
  "budget": 10,
  "weekPace": 25.5,
@@ -56,20 +56,20 @@
  "deploys": {
   "Postgres": 0,
   "data": 4,
-  "web": 14,
+  "web": 13,
   "ops": 0
  },
- "dayCost": 0.87,
+ "dayCost": 0.86,
  "avgDayCost": 0.85,
- "monthPace": 26.1,
+ "monthPace": 25.8,
  "services": [
   {
    "svc": "web",
-   "memGB": 0.96,
+   "memGB": 0.71,
    "normalGB": 0.84,
-   "dayCost": 0.56,
+   "dayCost": 0.55,
    "avgDayCost": 0.48,
-   "monthPace": 16.89
+   "monthPace": 16.51
   },
   {
    "svc": "Postgres",
@@ -77,15 +77,15 @@
    "normalGB": 0.4,
    "dayCost": 0.17,
    "avgDayCost": 0.15,
-   "monthPace": 5.1
+   "monthPace": 5.08
   },
   {
    "svc": "data",
-   "memGB": 0.24,
+   "memGB": 0.22,
    "normalGB": 0.23,
    "dayCost": 0.14,
    "avgDayCost": 0.22,
-   "monthPace": 4.27
+   "monthPace": 4.25
   },
   {
    "svc": "ops",
@@ -100,12 +100,11 @@
   {
    "svc": "web",
    "kind": "too many deploys",
-   "n": 14,
-   "why": "14 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
+   "n": 13,
+   "why": "13 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
   }
  ],
  "actions": [
-  "lock-in: hands off (no restart / redeploy while a wave is on)",
   "heap peak 315 MB → cap 512 MB is right"
  ],
  "fixes": [
