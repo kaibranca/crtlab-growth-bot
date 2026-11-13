@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T22:13:49.210Z",
+ "at": "2026-11-13T22:17:57.922Z",
  "northStar": {
   "metric": "accounts / week (worth: account 1, replayed +0.5, paid +10)",
   "now": 135,
@@ -48,19 +48,19 @@
    "mult": 3.25
   },
   {
-   "path": "/tools/crt-statistics",
-   "fam": "/tools/<x>",
-   "acc28": 5,
-   "v28": 26,
-   "rate": 1.28,
-   "mult": 3.25
-  },
-  {
    "path": "/footprint-chart-backtesting",
    "fam": "/<concept>-backtesting",
    "acc28": 7,
    "v28": 11,
    "rate": 1.49,
+   "mult": 3.25
+  },
+  {
+   "path": "/tools/crt-statistics",
+   "fam": "/tools/<x>",
+   "acc28": 5,
+   "v28": 26,
+   "rate": 1.28,
    "mult": 3.25
   },
   {
@@ -82,11 +82,11 @@
    "mult": 1.45
   },
   {
-   "path": "/order-flow-backtesting",
-   "fam": "/<concept>-backtesting",
-   "acc28": 2,
-   "v28": 3,
-   "conf": 0.23,
+   "path": "/blog/how-to-backtest-ict-concepts",
+   "fam": "/blog/<x>",
+   "acc28": 1,
+   "v28": 1,
+   "conf": 0.09,
    "mult": 1.45
   }
  ],
@@ -468,11 +468,11 @@
  "pageMult": {
   "/backtest": 1.56,
   "/backtest-gold": 3.25,
-  "/tools/crt-statistics": 3.25,
   "/footprint-chart-backtesting": 3.25,
+  "/tools/crt-statistics": 3.25,
   "/backtest-nas100": 1.56,
   "/liquidity-sweep-backtester": 1.45,
-  "/order-flow-backtesting": 1.45
+  "/blog/how-to-backtest-ict-concepts": 1.45
  },
  "queue": [
   {
@@ -518,14 +518,14 @@
    "accounts28": 21
   },
   {
-   "path": "/tools/crt-statistics",
-   "fam": "/tools/<x>",
-   "accounts28": 5
-  },
-  {
    "path": "/footprint-chart-backtesting",
    "fam": "/<concept>-backtesting",
    "accounts28": 7
+  },
+  {
+   "path": "/tools/crt-statistics",
+   "fam": "/tools/<x>",
+   "accounts28": 5
   },
   {
    "path": "/backtest-nas100",
@@ -621,12 +621,12 @@
   },
   "wastedShare": 0.87,
   "aligned": false,
-  "at": "2026-11-13T22:13:49.210Z",
+  "at": "2026-11-13T22:17:57.922Z",
   "say": "87% of the last 7 days' Bing sends went to WEAK/DEAD families (192 of 220)"
  },
  "cycles": {
   "total": 1,
   "judged": []
  },
- "say": "Base 20.4 accounts/day (floor 9.2); this week 135 vs normal 145.7. Effort 3/10. Focus: /backtest, /backtest-gold, /tools/crt-statistics, /footprint-chart-backtesting. Bin: /<firm>-challenge-simulator, /news/<release>, /economic-calendar/<x>, /recap/<x>, /answers/<x>. Audit: 87% of the last 7 days' Bing sends went to WEAK/DEAD families (192 of 220)."
+ "say": "Base 20.4 accounts/day (floor 9.2); this week 135 vs normal 145.7. Effort 3/10. Focus: /backtest, /backtest-gold, /footprint-chart-backtesting, /tools/crt-statistics. Bin: /<firm>-challenge-simulator, /news/<release>, /economic-calendar/<x>, /recap/<x>, /answers/<x>. Audit: 87% of the last 7 days' Bing sends went to WEAK/DEAD families (192 of 220)."
 }
