@@ -38,10 +38,10 @@
  "heap": {
   "cap": 512,
   "stopped": false,
-  "samples": 65,
+  "samples": 66,
   "note": "heap peak 313 MB → cap 512 MB is right"
  },
- "at": "2026-11-13T02:18:28.396Z",
+ "at": "2026-11-13T03:18:27.632Z",
  "status": "over budget",
  "budget": 10,
  "weekPace": 24.3,
@@ -49,7 +49,7 @@
  "deploys": {
   "Postgres": 0,
   "data": 2,
-  "web": 13,
+  "web": 12,
   "ops": 1
  },
  "dayCost": 0.73,
@@ -62,7 +62,7 @@
    "normalGB": 0.77,
    "dayCost": 0.47,
    "avgDayCost": 0.45,
-   "monthPace": 13.95
+   "monthPace": 14.08
   },
   {
    "svc": "Postgres",
@@ -70,15 +70,15 @@
    "normalGB": 0.39,
    "dayCost": 0.16,
    "avgDayCost": 0.15,
-   "monthPace": 4.88
+   "monthPace": 4.89
   },
   {
    "svc": "data",
-   "memGB": 0.34,
+   "memGB": 0.35,
    "normalGB": 0.21,
    "dayCost": 0.1,
    "avgDayCost": 0.21,
-   "monthPace": 3.06
+   "monthPace": 3.13
   },
   {
    "svc": "ops",
@@ -93,8 +93,8 @@
   {
    "svc": "web",
    "kind": "too many deploys",
-   "n": 13,
-   "why": "13 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
+   "n": 12,
+   "why": "12 web deploys in 24 h (windows allow ~4) — every deploy bills two servers; something is bypassing the windows (pushes to live, or the trigger moved back to rebuild-integration)"
   }
  ],
  "actions": [
