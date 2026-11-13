@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T15:15:08.541Z",
+ "at": "2026-11-13T15:20:30.612Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -126,7 +126,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 9.33s — phones 7.08s vs desktop 7.57s (69% of loads on phones); the server answers in 0.27s and candles in 0.23s (EXPIRED) — the time is on the visitor's side. Most slow-load time sits in: mobile/US 5.8s ×419, mobile/JP 6.88s ×174, mobile/IN 6.5s ×146, mobile/BR 12s ×48. Needs a build session to profile one slow load.",
+   "what": "Chart pages: the slowest 10% of real loads take 8.12s — phones 7.13s vs desktop 8.24s (70% of loads on phones); the server answers in 0.35s and candles in 0.49s (EXPIRED) — the time is on the visitor's side. Most slow-load time sits in: mobile/US 5.78s ×444, mobile/JP 6.88s ×191, mobile/IN 6.69s ×156, mobile/BR 12s ×49. Needs a build session to profile one slow load.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
@@ -142,7 +142,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 9.33s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
+   "what": "Chart pages: the slowest 10% of real loads take 8.12s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,
