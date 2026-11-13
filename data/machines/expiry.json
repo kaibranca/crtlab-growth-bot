@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-13T14:55:32.623Z",
+ "items": [
+  {
+   "id": "domain",
+   "name": "crtlab.pro domain (Porkbun)",
+   "expires": "2027-07-07",
+   "daysLeft": 236,
+   "note": "",
+   "fix": "renew at Porkbun / turn auto-renew on"
+  },
+  {
+   "id": "tls",
+   "name": "TLS certificate (Cloudflare, auto-renews)",
+   "expires": "2027-01-19",
+   "daysLeft": 67,
+   "note": "",
+   "fix": "Cloudflare SSL/TLS → Edge Certificates: check renewal"
+  },
+  {
+   "id": "gh-token",
+   "name": "GitHub token (GH_WATCH_TOKEN)",
+   "expires": "2027-11-08",
+   "daysLeft": 360,
+   "note": "",
+   "fix": "regenerate the token on GitHub → set secret GH_WATCH_TOKEN"
+  },
+  {
+   "id": "cf-token",
+   "name": "Cloudflare API token",
+   "expires": null,
+   "daysLeft": null,
+   "note": "no expiry",
+   "fix": "roll the token → secrets CF_API_TOKEN + worker crtlab-cron"
+  },
+  {
+   "id": "meta-token",
+   "name": "Meta page token (IG/FB reels)",
+   "expires": null,
+   "daysLeft": null,
+   "note": "never expires",
+   "fix": "re-issue a long-lived page token → secret META_PAGE_TOKEN"
+  },
+  {
+   "id": "meta-data",
+   "name": "Meta data access (IG/FB reels)",
+   "expires": "2027-02-06",
+   "daysLeft": 85,
+   "note": "renews each time the token is used by the app owner",
+   "fix": "open the app in Meta for Developers / re-auth once"
+  }
+ ],
+ "soon": [],
+ "mailed": {}
+}
