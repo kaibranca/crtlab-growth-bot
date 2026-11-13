@@ -68,7 +68,7 @@ jobs:
         env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}" }
       - name: Supervisor + engine core (every machine watched, mistakes, mode surge/dip, the /machine web)
         continue-on-error: true
-        run: node scripts/supervisor.mjs; node scripts/fixer.mjs; node scripts/world.mjs; node scripts/executive.mjs; node scripts/upgrades.mjs; node scripts/tuner.mjs; node scripts/iq.mjs; node scripts/self.mjs; node scripts/core.mjs; node scripts/traffic-core.mjs
+        run: node scripts/supervisor.mjs; node scripts/peaks.mjs; node scripts/fixer.mjs; node scripts/world.mjs; node scripts/executive.mjs; node scripts/upgrades.mjs; node scripts/tuner.mjs; node scripts/iq.mjs; node scripts/self.mjs; node scripts/core.mjs; node scripts/traffic-core.mjs
         env: { RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", GH_TOKEN: "${{ github.token }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}", SPIKE: "${{ inputs.spike }}" }
       - name: The other brains — money, data, security, content, retention, speed (they read each other + the engines)
         continue-on-error: true
