@@ -472,9 +472,15 @@ const pct = (x) => `${x >= 0 ? "+" : ""}${Math.round(x * 100)}%`;
 // Written the way Kai talks: short, plain, most important first. Every line is a number the machines measured.
 const good = [], next = []; let watch = [];
 const xN = r24 / Math.max(1, mu);
-if (xN >= 1.5) good.push(`ChatGPT and co. are reading CRTLAB ${xN.toFixed(1)}× more than normal — ${r24} reads in 24 h vs ~${Math.round(mu)} a day.`);
-for (const x of (ai.surges ?? []).filter((y) => y.kind === "page").slice(0, 4)) good.push(`${x.key} is flying: ${x.last24h} reads today vs ~${x.normal} normally.`);
-for (const x of (ai.rising ?? []).slice(0, 3)) good.push(`${x.key} is climbing: ${x.last3d} reads in 3 days, normally ~${x.normal3d}.`);
+// 11-13 NORTH STAR FIRST: good news = accounts; reads only as context, and never about a DEAD family (WORKS)
+{ const W0 = J("data/works/plan.json", null);
+  if (W0?.northStar && W0.northStar.normal && W0.northStar.now >= W0.northStar.normal * 1.15) good.push(`New accounts are up: ${W0.northStar.now} this week vs ~${Math.round(W0.northStar.normal)} normal.`);
+  if (W0?.northStar && W0.northStar.normal && W0.northStar.now <= W0.northStar.normal * 0.8) watch.push(`New accounts are down: ${W0.northStar.now} this week vs ~${Math.round(W0.northStar.normal)} normal — WORKS is pushing ${(W0.focus ?? []).slice(0, 2).map((f) => f.path).join(", ")}.`);
+  for (const f of (W0?.focus ?? []).filter((x) => x.acc28 >= 5).slice(0, 2)) good.push(`${f.path} brought ${f.acc28} accounts in 28 days — it's in the WORKS focus, getting the push.`);
+  for (const c of (W0?.cycles?.judged ?? []).filter((x) => x.verdict === "win").slice(-1)) good.push(`WORKS cycle ${c.day} won (×${c.lift} vs untouched pages) — effort up.`); }
+if (xN >= 1.5) good.push(`AI is reading CRTLAB ${xN.toFixed(1)}× normal (${r24} reads in 24 h) — reads, not accounts yet; the winners get the push.`);
+for (const x of (ai.surges ?? []).filter((y) => y.kind === "page" && worksTier(y.key) !== "DEAD").slice(0, 2)) good.push(`${x.key} is being read a lot: ${x.last24h} reads today vs ~${x.normal}.`);
+for (const x of (ai.rising ?? []).filter((y) => worksTier(y.key) !== "DEAD").slice(0, 2)) good.push(`${x.key} is climbing in reads: ${x.last3d} in 3 days, normally ~${x.normal3d}.`);
 for (const st of sup?.status ?? []) if (st.kpi?.change != null && st.kpi.change >= 0.15 && st.kpi.before >= 5) good.push(`${st.kpi.label} up ${pct(st.kpi.change)} on last week (${st.kpi.now}).`);
 for (const l of readLines("data/machines/ledger.jsonl").filter((x) => x.kind === "win" && NOW - Date.parse(x.at) < DAY).slice(-2)) good.push(`Win: ${l.what}.`);
 for (const f of men?.fresh ?? []) good.push(`Someone mentioned CRTLAB: ${f.where}.`);
@@ -525,13 +531,24 @@ for (const b of (spawned.branches ?? []).filter((x) => x.state === "alive").slic
 const topSurge = (ai.surges ?? []).find((y) => y.kind === "page");
 // 11-12: only what needs Kai is "needs you"; observations + build work go to notes (Kai: "they keep piling up")
 const NW = splitNeeds(watch), allWatch = watch; watch = NW.watch;
-const conclusion = mode === "surge" ? `Big day, Kai. AI is reading us ${xN.toFixed(1)}× normal${topSurge ? `, led by ${topSurge.key}` : ""}, and I've got every machine pushing it.${watch.length ? ` ${watch.length === 1 ? "One thing needs" : `${watch.length} things need`} you.` : " Nothing needs you."}`
+// 11-13 NORTH STAR VOICE (Kai: "everything good or bad still reads from reads"): the Core judges the day by NEW ACCOUNTS vs
+// the base (WORKS), says what it is pushing and why; reads are context only ("AI is reading us 2× — pushing the winners").
+const WKP = J("data/works/plan.json", null), WB = WKP?.base;
+const nsDay = WB ? (WB.last24 >= WB.perDay * 1.25 ? "good" : WB.last24 <= WB.perDay * 0.75 ? "quiet" : "steady") : null;
+const nsLine = WB ? `${WB.last24} new accounts in the last 24 h vs ~${Math.round(WB.perDay)} normal${WKP.northStar ? ` · ${WKP.northStar.now} this week vs ~${Math.round(WKP.northStar.normal)}` : ""}.` : "";
+const nsPush = WKP?.focus?.length ? ` Pushing what brings accounts: ${WKP.focus.slice(0, 3).map((f) => f.path).join(", ")} (effort ${WKP.effort}/10).` : "";
+const nsReads = mode === "surge" ? ` AI is reading us ${xN.toFixed(1)}× normal — that only counts if it turns into accounts, so the winners get it, not the dead pages.` : mode === "dip" ? " AI reads are under normal; the winners go to Bing first." : "";
+const nsAudit = WKP?.audit && !WKP.audit.aligned ? ` Heads-up: ${WKP.audit.say}.` : "";
+const nsNeeds = watch.length ? ` ${watch.length === 1 ? "One thing needs" : `${watch.length} things need`} you.` : " Nothing needs you.";
+const conclusionNS = WB ? `${nsDay === "good" ? "Good day" : nsDay === "quiet" ? "Quiet day" : "Steady"}, Kai. ${nsLine}${nsPush}${nsReads}${nsAudit}${nsNeeds}` : null;
+const conclusionReads = mode === "surge" ? `Big day, Kai. AI is reading us ${xN.toFixed(1)}× normal${topSurge ? `, led by ${topSurge.key}` : ""}, and I've got every machine pushing it.${watch.length ? ` ${watch.length === 1 ? "One thing needs" : `${watch.length} things need`} you.` : " Nothing needs you."}`
   : mode === "dip" ? `Quiet one, Kai. Reads are under normal, so I switched to recovery and I'm pushing the pages that already work.${watch.length ? " Have a look below." : ""}`
   : `All steady, Kai. ${nodes.filter((n) => n.state === "ok").length} of ${nodes.length} machines running and learning.${watch.length ? ` ${watch.length === 1 ? "One thing to look at." : `${watch.length} things to look at.`}` : " Nothing needs you."}`;
 const prevEco = J("data/machines/ecosystem.json"), bKey = [mode, ...good.slice(0, 3), ...watch.slice(0, 2)].join("|").replace(/\d+/g, "#");
 // SELF (scripts/self.mjs): the Core reads itself — its own IQ, level, weakest parts, curiosity — and says it first
 const SELFJ = J("data/machines/self.json", null), SELFL = (e) => [SELFJ?.engines?.[e]?.say, e === "main" ? SELFJ?.whole?.say : null, e === "main" ? SELFJ?.whole?.experiments : null].filter(Boolean);
-const briefing = { key: bKey, changed: prevEco?.briefing?.key === bKey ? prevEco.briefing.changed : new Date().toISOString(), headline: modeOut.why, good: good.slice(0, 10), watch: watch.slice(0, 6), notes: NW.notes.slice(0, 8), next: [...SELFL("main"), ...next].slice(0, 7), conclusion };
+const conclusion = conclusionNS ?? conclusionReads;
+const briefing = { key: bKey, changed: prevEco?.briefing?.key === bKey ? prevEco.briefing.changed : new Date().toISOString(), headline: WB ? nsLine.replace(/\.$/, "") : modeOut.why, good: good.slice(0, 10), watch: watch.slice(0, 6), notes: NW.notes.slice(0, 8), next: [...SELFL("main"), ...next].slice(0, 7), conclusion };
 
 // ── 6. WIDGETS: the live numbers the page shows as tiles (all from files the machines already wrote)
 const today = iso(NOW), runsToday = readLines("data/ai/runs.jsonl").filter((r) => r.at.slice(0, 10) === today);
@@ -541,6 +558,9 @@ const shw = J("data/shield.json"), radw = J("data/radar/plan.json"), menw = read
 const readsHourly = Array.from({ length: 24 }, () => 0);
 for (const w of crawl) { const age = NOW - Date.parse(w.to); if (age < 0 || age >= DAY) continue; const h = 23 - Math.floor(age / H); let n = 0; for (const [b, v] of Object.entries(w.bots)) if (LIVE.test(b)) n += v.hits ?? 0; readsHourly[h] += n; }
 const widgets = {
+  // 11-13 NORTH STAR tiles first (WORKS): new accounts 24 h / 7 d vs normal, effort, focus, dead families, misaligned effort
+  acc24: WB?.last24 ?? null, accNormal24: WB ? Math.round(WB.perDay) : null, acc7: WKP?.northStar?.now ?? null, accNormal7: WKP?.northStar ? Math.round(WKP.northStar.normal) : null,
+  effort: WKP?.effort ?? null, focus: (WKP?.focus ?? []).slice(0, 3).map((f) => f.path), deadFamilies: Object.keys(WKP?.bin ?? {}).length, wastedShare: WKP?.audit?.wastedShare ?? null,
   readsHourly,
   aiReads24: r24, aiReadsNormal: Math.round(mu), aiReadsZ: z,
   aiClicks7: sum(sc7, "clicks"), aiClicksPrev: sum(scPrev, "clicks"), aiAccounts7: sum(sc7, "accounts"), aiAccountsPrev: sum(scPrev, "accounts"),

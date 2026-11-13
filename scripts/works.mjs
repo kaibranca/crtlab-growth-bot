@@ -79,7 +79,8 @@ for (const p of mapPaths) { const f = family(p); T(fams, f, { pages: new Set() }
 const days28 = [...Array(28)].map((_, i) => byDay.get(iso(NOW - (i + 1) * DAY)) ?? 0);
 const mean = days28.reduce((a, b) => a + b, 0) / 28, sd = Math.sqrt(days28.reduce((a, b) => a + (b - mean) ** 2, 0) / 27);
 const last7 = days28.slice(0, 7).reduce((a, b) => a + b, 0), prev21 = days28.slice(7).reduce((a, b) => a + b, 0) / 3;
-const base = { realVisitorShare: +((raw.length - botRows) / Math.max(1, raw.length)).toFixed(2), botRowsDropped: botRows, perDay: +mean.toFixed(1), sd: +sd.toFixed(1), floor: +Math.max(0, mean - sd).toFixed(1), last7, normalWeek: +prev21.toFixed(1), trend: prev21 ? +(last7 / prev21 - 1).toFixed(2) : null, today: byDay.get(iso(NOW)) ?? 0, zeroDays28: days28.filter((x) => !x).length, bySource28: bySrc };
+const acc24 = rows.filter((r) => r.c && NOW - new Date(r.c).getTime() < DAY).length; // rolling 24 h (the page's headline number)
+const base = { last24: acc24, realVisitorShare: +((raw.length - botRows) / Math.max(1, raw.length)).toFixed(2), botRowsDropped: botRows, perDay: +mean.toFixed(1), sd: +sd.toFixed(1), floor: +Math.max(0, mean - sd).toFixed(1), last7, normalWeek: +prev21.toFixed(1), trend: prev21 ? +(last7 / prev21 - 1).toFixed(2) : null, today: byDay.get(iso(NOW)) ?? 0, zeroDays28: days28.filter((x) => !x).length, bySource28: bySrc };
 
 // ── RANK: Gamma–Poisson posteriors of worth per week (28-day window, page shrunk to family, family to site) ────────────
 const K_FAM = 2, K_PAGE = 2; // prior strength in weeks of evidence
