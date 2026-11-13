@@ -211,8 +211,12 @@ const BRAINS = [
       return { reactPages: react?.pages ?? null, reactReads: r1(react?.reads), reactClicks: r1(react?.clicks), gaps: (tplan.gaps ?? []).length, topGap: tplan.gaps?.[0]?.q ?? null,
         // GOOGLE (11-12 google machine): how much of the site Google knows, and why it skips the rest
         googleShown: G?.totals?.pagesShown ?? null, googleOf: G?.totals?.sitemapPages ?? null, googleIndexedPct: G?.totals?.inspected ? Math.round((G.totals.indexed / G.totals.inspected) * 100) : null,
-        googleTopReason: G?.reasons?.[0] ? `${G.reasons[0].reason} (${G.reasons[0].n} of ${G.totals.inspected} checked)` : null, googleNonBrandClicks: nonBrand.reduce((a, x) => a + x.clicks, 0) || (G ? 0 : null) }; },
-    outcome: (s) => ({ label: "AI clicks on factory pages (decayed)", v: s.reactClicks ?? 0, higher: true }),
+        googleTopReason: G?.reasons?.[0] ? `${G.reasons[0].reason} (${G.reasons[0].n} of ${G.totals.inspected} checked)` : null, googleNonBrandClicks: nonBrand.reduce((a, x) => a + x.clicks, 0) || (G ? 0 : null),
+        // 11-13 WORKS north star: new accounts in 7 d that LANDED on a content page (every family but home), + the dead count
+        worksContentAcc7: (() => { const W = J("data/works/plan.json", null); return W ? (W.families ?? []).filter((f) => f.fam !== "/").reduce((a, f) => a + (f.accounts7 ?? 0), 0) : null; })(),
+        deadFamilies: Object.keys(J("data/works/plan.json", null)?.bin ?? {}).length }; },
+    // 11-13: was "AI clicks on factory pages" — it rewarded the news factory, whose 2,110 pages brought 0 accounts in 90 d
+    outcome: (s) => ({ label: "new accounts / 7 d from content pages (WORKS)", v: s.worksContentAcc7 ?? s.reactClicks ?? 0, higher: true }),
     signals: () => (tplan.gaps ?? []).slice(0, 3).map((g) => ({ key: "gap", target: g.q, v: 0, higher: true, days: 14, why: `Bing shows us for it (${g.impr} impressions, #${g.pos}) with no page` })),
     measureOf: (b) => ((tplan.demand ?? []).find((d) => d.q === b.target)?.page ? 1 : 0),
     modes: (s) => [s.gaps >= 5 && { id: "gaps", label: "Gaps", level: "info", why: `${s.gaps} searches Bing shows us for with no page (top: "${s.topGap}")` }].filter(Boolean),
