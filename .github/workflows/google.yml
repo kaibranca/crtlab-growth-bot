@@ -11,6 +11,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
+      - run: node scripts/gsc-sitemap.mjs
+        continue-on-error: true
+        env: { GSC_SA_JSON: "${{ secrets.GSC_SA_JSON }}" }
       - run: node scripts/google.mjs
         timeout-minutes: 4
         env: { GSC_SA_JSON: "${{ secrets.GSC_SA_JSON }}" }

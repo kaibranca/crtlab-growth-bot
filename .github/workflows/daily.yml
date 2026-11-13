@@ -47,6 +47,11 @@ jobs:
         timeout-minutes: 4
         run: node scripts/google.mjs
         env: { GSC_SA_JSON: "${{ secrets.GSC_SA_JSON }}" }
+      - name: Sitemap → Google (re-submit daily; records what Google read)
+        continue-on-error: true
+        timeout-minutes: 2
+        run: node scripts/gsc-sitemap.mjs
+        env: { GSC_SA_JSON: "${{ secrets.GSC_SA_JSON }}" }
       - name: Traffic engine — demand miner, rank pusher, ghost catcher (Bing Webmaster + crawl history + guest landing paths)
         continue-on-error: true
         run: npm i pg@8 --no-save --no-package-lock --silent && node scripts/traffic.mjs
