@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T02:17:58.321Z",
+ "at": "2026-11-14T03:17:54.838Z",
  "northStar": {
   "metric": "accounts / week (worth: account 1, replayed +0.5, paid +10)",
   "now": 138,
@@ -7,9 +7,179 @@
   "trend": -0.02
  },
  "base": {
+  "weekly": [
+   {
+    "t": "2026-10-03",
+    "v": 140
+   },
+   {
+    "t": "2026-10-04",
+    "v": 130
+   },
+   {
+    "t": "2026-10-05",
+    "v": 118
+   },
+   {
+    "t": "2026-10-06",
+    "v": 112
+   },
+   {
+    "t": "2026-10-07",
+    "v": 119
+   },
+   {
+    "t": "2026-10-08",
+    "v": 126
+   },
+   {
+    "t": "2026-10-09",
+    "v": 132
+   },
+   {
+    "t": "2026-10-10",
+    "v": 145
+   },
+   {
+    "t": "2026-10-11",
+    "v": 149
+   },
+   {
+    "t": "2026-10-12",
+    "v": 159
+   },
+   {
+    "t": "2026-10-13",
+    "v": 162
+   },
+   {
+    "t": "2026-10-14",
+    "v": 159
+   },
+   {
+    "t": "2026-10-15",
+    "v": 160
+   },
+   {
+    "t": "2026-10-16",
+    "v": 166
+   },
+   {
+    "t": "2026-10-17",
+    "v": 171
+   },
+   {
+    "t": "2026-10-18",
+    "v": 176
+   },
+   {
+    "t": "2026-10-19",
+    "v": 171
+   },
+   {
+    "t": "2026-10-20",
+    "v": 176
+   },
+   {
+    "t": "2026-10-21",
+    "v": 180
+   },
+   {
+    "t": "2026-10-22",
+    "v": 189
+   },
+   {
+    "t": "2026-10-23",
+    "v": 197
+   },
+   {
+    "t": "2026-10-24",
+    "v": 198
+   },
+   {
+    "t": "2026-10-25",
+    "v": 208
+   },
+   {
+    "t": "2026-10-26",
+    "v": 211
+   },
+   {
+    "t": "2026-10-27",
+    "v": 203
+   },
+   {
+    "t": "2026-10-28",
+    "v": 194
+   },
+   {
+    "t": "2026-10-29",
+    "v": 168
+   },
+   {
+    "t": "2026-10-30",
+    "v": 140
+   },
+   {
+    "t": "2026-10-31",
+    "v": 108
+   },
+   {
+    "t": "2026-11-01",
+    "v": 83
+   },
+   {
+    "t": "2026-11-02",
+    "v": 87
+   },
+   {
+    "t": "2026-11-03",
+    "v": 78
+   },
+   {
+    "t": "2026-11-04",
+    "v": 77
+   },
+   {
+    "t": "2026-11-05",
+    "v": 80
+   },
+   {
+    "t": "2026-11-06",
+    "v": 86
+   },
+   {
+    "t": "2026-11-07",
+    "v": 110
+   },
+   {
+    "t": "2026-11-08",
+    "v": 126
+   },
+   {
+    "t": "2026-11-09",
+    "v": 120
+   },
+   {
+    "t": "2026-11-10",
+    "v": 133
+   },
+   {
+    "t": "2026-11-11",
+    "v": 130
+   },
+   {
+    "t": "2026-11-12",
+    "v": 135
+   },
+   {
+    "t": "2026-11-13",
+    "v": 138
+   }
+  ],
   "last24": 14,
   "realVisitorShare": 0.61,
-  "botRowsDropped": 2851,
+  "botRowsDropped": 2850,
   "perDay": 20,
   "sd": 11.2,
   "floor": 8.8,
@@ -48,19 +218,19 @@
    "mult": 3.25
   },
   {
-   "path": "/tools/crt-statistics",
-   "fam": "/tools/<x>",
-   "acc28": 5,
-   "v28": 25,
-   "rate": 1.28,
-   "mult": 3.25
-  },
-  {
    "path": "/footprint-chart-backtesting",
    "fam": "/<concept>-backtesting",
    "acc28": 7,
    "v28": 11,
    "rate": 1.49,
+   "mult": 3.25
+  },
+  {
+   "path": "/tools/crt-statistics",
+   "fam": "/tools/<x>",
+   "acc28": 5,
+   "v28": 25,
+   "rate": 1.28,
    "mult": 3.25
   },
   {
@@ -74,19 +244,19 @@
  ],
  "explore": [
   {
-   "path": "/backtest-eurusd",
-   "fam": "/backtest-<market>",
-   "acc28": 2,
-   "v28": 6,
-   "conf": 0.38,
-   "mult": 1.45
-  },
-  {
    "path": "/liquidity-sweep-backtester",
    "fam": "/<concept>-backtesting",
    "acc28": 1,
    "v28": 1,
    "conf": 0.09,
+   "mult": 1.45
+  },
+  {
+   "path": "/backtesting-software",
+   "fam": "/<concept>-backtesting",
+   "acc28": 2,
+   "v28": 5,
+   "conf": 0.33,
    "mult": 1.45
   }
  ],
@@ -98,7 +268,7 @@
    "visitors90": 3013,
    "accounts90": 959,
    "accounts28": 292,
-   "accounts7": 50,
+   "accounts7": 49,
    "paid90": 6,
    "worthPerPageWeek": 73.67,
    "mult": 3,
@@ -136,10 +306,10 @@
    "fam": "/backtest-<market>",
    "pages": 20,
    "landed": 15,
-   "visitors90": 290,
+   "visitors90": 291,
    "accounts90": 55,
    "accounts28": 31,
-   "accounts7": 9,
+   "accounts7": 8,
    "paid90": 0,
    "worthPerPageWeek": 0.378,
    "mult": 1.95,
@@ -177,7 +347,7 @@
    "fam": "/tools/<x>",
    "pages": 30,
    "landed": 12,
-   "visitors90": 77,
+   "visitors90": 78,
    "accounts90": 14,
    "accounts28": 10,
    "accounts7": 1,
@@ -468,11 +638,11 @@
  "pageMult": {
   "/backtest": 1.56,
   "/backtest-gold": 3.25,
-  "/tools/crt-statistics": 3.25,
   "/footprint-chart-backtesting": 3.25,
+  "/tools/crt-statistics": 3.25,
   "/backtest-nas100": 1.56,
-  "/backtest-eurusd": 1.45,
-  "/liquidity-sweep-backtester": 1.45
+  "/liquidity-sweep-backtester": 1.45,
+  "/backtesting-software": 1.45
  },
  "queue": [
   {
@@ -518,14 +688,14 @@
    "accounts28": 22
   },
   {
-   "path": "/tools/crt-statistics",
-   "fam": "/tools/<x>",
-   "accounts28": 5
-  },
-  {
    "path": "/footprint-chart-backtesting",
    "fam": "/<concept>-backtesting",
    "accounts28": 7
+  },
+  {
+   "path": "/tools/crt-statistics",
+   "fam": "/tools/<x>",
+   "accounts28": 5
   },
   {
    "path": "/backtest-nas100",
@@ -554,7 +724,7 @@
    },
    {
     "pair": "NAS100",
-    "users": 287
+    "users": 286
    },
    {
     "pair": "EURUSD",
@@ -573,11 +743,11 @@
     "users": 27
    },
    {
-    "pair": "US30",
-    "users": 22
+    "pair": "USDJPY",
+    "users": 23
    },
    {
-    "pair": "USDJPY",
+    "pair": "US30",
     "users": 22
    },
    {
@@ -601,11 +771,11 @@
     "users": 9
    },
    {
-    "pair": "XRPUSD",
-    "users": 7
+    "pair": "USOIL",
+    "users": 8
    },
    {
-    "pair": "NVDA",
+    "pair": "XRPUSD",
     "users": 7
    }
   ],
@@ -615,20 +785,20 @@
   "bingSends7": {
    "WIN": 9,
    "OK": 22,
-   "WEAK": 88,
+   "WEAK": 90,
    "DEAD": 105,
    "other": 0
   },
   "wastedShare": 0.86,
   "aligned": false,
-  "at": "2026-11-14T02:17:58.321Z",
-  "say": "86% of the last 7 days' Bing sends went to WEAK/DEAD families (193 of 224)"
+  "at": "2026-11-14T03:17:54.838Z",
+  "say": "86% of the last 7 days' Bing sends went to WEAK/DEAD families (195 of 226)"
  },
  "cycles": {
   "total": 2,
   "judged": []
  },
- "say": "Base 20 accounts/day (floor 8.8); this week 138 vs normal 141. Effort 3/10. Focus: /backtest, /backtest-gold, /tools/crt-statistics, /footprint-chart-backtesting. Bin: /<firm>-challenge-simulator, /news/<release>, /economic-calendar/<x>, /recap/<x>, /answers/<x>. Audit: 86% of the last 7 days' Bing sends went to WEAK/DEAD families (193 of 224).",
+ "say": "Base 20 accounts/day (floor 8.8); this week 138 vs normal 141. Effort 3/10. Focus: /backtest, /backtest-gold, /footprint-chart-backtesting, /tools/crt-statistics. Bin: /<firm>-challenge-simulator, /news/<release>, /economic-calendar/<x>, /recap/<x>, /answers/<x>. Audit: 86% of the last 7 days' Bing sends went to WEAK/DEAD families (195 of 226).",
  "liveTiers": {
   "/": "WIN",
   "/<concept>-backtesting": "OK",
