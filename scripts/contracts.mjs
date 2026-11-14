@@ -27,6 +27,8 @@ const list = [
     shape: T.obj({ at: T.iso, coverage: T.arr(T.obj({ family: T.str, pages: T.num })) }) },
   { name: "steps", path: "data/guard/steps.json", owner: "core runtime", maxAgeH: 3, fresh: (d) => d.hourly?.at,
     shape: T.obj({ hourly: T.obj({ at: T.iso, steps: T.map(T.obj({ last: T.str, streak: T.num })) }) }) },
+  { name: "drops", path: "data/engine/drops.json", owner: "daily/drops", maxAgeH: 30, fresh: at,
+    shape: T.obj({ at: T.iso, end: T.str, metrics: T.map(T.obj({ level: T.oneOf("drop", "watch", "rise", "normal", "thin", "unknown") })) }) },
   { name: "ledger", path: "data/machines/ledger.jsonl", owner: "shared log",
     shape: T.arr(T.obj({ at: T.iso, machine: T.str, kind: T.str })) },
 ];

@@ -1,0 +1,204 @@
+{
+ "at": "2026-11-14T13:09:15.131Z",
+ "end": "2026-11-13",
+ "method": "weekday-adjusted 4-week baseline, robust dispersion, windows 3+7 d",
+ "metrics": {
+  "accounts": {
+   "level": "normal",
+   "phi": 9.73,
+   "windows": [
+    {
+     "end": "2026-11-13",
+     "w": 3,
+     "observed": 41,
+     "expected": 57.5,
+     "ratio": 0.71,
+     "z": -0.62,
+     "p": 0.2664,
+     "level": "normal"
+    },
+    {
+     "end": "2026-11-13",
+     "w": 7,
+     "observed": 140,
+     "expected": 161,
+     "ratio": 0.87,
+     "z": -0.47,
+     "p": 0.3176,
+     "level": "normal"
+    }
+   ]
+  },
+  "accounts.google": {
+   "level": "normal",
+   "phi": 2.88,
+   "windows": [
+    {
+     "end": "2026-11-13",
+     "w": 3,
+     "observed": 17,
+     "expected": 17.5,
+     "ratio": 0.97,
+     "z": -0.06,
+     "p": 0.4749,
+     "level": "normal"
+    },
+    {
+     "end": "2026-11-13",
+     "w": 7,
+     "observed": 52,
+     "expected": 48.5,
+     "ratio": 1.07,
+     "z": 0.26,
+     "p": 0.6044,
+     "level": "normal"
+    }
+   ]
+  },
+  "accounts.chatgpt": {
+   "level": "watch",
+   "phi": 5.09,
+   "windows": [
+    {
+     "end": "2026-11-13",
+     "w": 3,
+     "observed": 6,
+     "expected": 17,
+     "ratio": 0.35,
+     "z": -1.06,
+     "p": 0.1451,
+     "level": "normal"
+    },
+    {
+     "end": "2026-11-13",
+     "w": 7,
+     "observed": 22,
+     "expected": 45,
+     "ratio": 0.49,
+     "z": -1.36,
+     "p": 0.087,
+     "level": "watch"
+    }
+   ]
+  },
+  "accounts.bing": {
+   "level": "unknown",
+   "phi": null,
+   "windows": []
+  },
+  "accounts.direct": {
+   "level": "normal",
+   "phi": 2.93,
+   "windows": [
+    {
+     "end": "2026-11-13",
+     "w": 3,
+     "observed": 13,
+     "expected": 12.5,
+     "ratio": 1.04,
+     "z": 0.07,
+     "p": 0.5295,
+     "level": "normal"
+    },
+    {
+     "end": "2026-11-13",
+     "w": 7,
+     "observed": 43,
+     "expected": 25.5,
+     "ratio": 1.69,
+     "z": 1.81,
+     "p": 0.9649,
+     "level": "normal"
+    }
+   ]
+  },
+  "accounts.social": {
+   "level": "unknown",
+   "phi": null,
+   "windows": []
+  },
+  "visitors": {
+   "level": "watch",
+   "phi": 44.29,
+   "windows": [
+    {
+     "end": "2026-11-13",
+     "w": 3,
+     "observed": 126,
+     "expected": 235.5,
+     "ratio": 0.54,
+     "z": -0.96,
+     "p": 0.1688,
+     "level": "normal"
+    },
+    {
+     "end": "2026-11-13",
+     "w": 7,
+     "observed": 343,
+     "expected": 592,
+     "ratio": 0.58,
+     "z": -1.38,
+     "p": 0.0845,
+     "level": "watch"
+    }
+   ]
+  },
+  "visitors.google": {
+   "level": "drop",
+   "phi": 1.1,
+   "windows": [
+    {
+     "end": "2026-11-13",
+     "w": 3,
+     "observed": 5,
+     "expected": 11.5,
+     "ratio": 0.43,
+     "z": -1.64,
+     "p": 0.051,
+     "level": "drop"
+    },
+    {
+     "end": "2026-11-13",
+     "w": 7,
+     "observed": 26,
+     "expected": 34,
+     "ratio": 0.76,
+     "z": -1.17,
+     "p": 0.1209,
+     "level": "normal"
+    }
+   ]
+  },
+  "visitors.chatgpt": {
+   "level": "normal",
+   "phi": 17.66,
+   "windows": [
+    {
+     "end": "2026-11-13",
+     "w": 3,
+     "observed": 25,
+     "expected": 29,
+     "ratio": 0.86,
+     "z": -0.16,
+     "p": 0.4372,
+     "level": "normal"
+    },
+    {
+     "end": "2026-11-13",
+     "w": 7,
+     "observed": 61,
+     "expected": 83,
+     "ratio": 0.73,
+     "z": -0.51,
+     "p": 0.3036,
+     "level": "normal"
+    }
+   ]
+  },
+  "visitors.bing": {
+   "level": "unknown",
+   "phi": null,
+   "windows": []
+  }
+ }
+}

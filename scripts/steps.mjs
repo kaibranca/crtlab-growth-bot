@@ -43,6 +43,8 @@ export const PLANS = {
     s("expiry", ["GH_WATCH_TOKEN", "CF_API_TOKEN", "CF_ACCOUNT_ID", "META_PAGE_TOKEN", "META_APP_ID", "META_APP_SECRET", ...MAIL], { timeout: 120 }),
     s("gsc-sitemap", ["GSC_SA_JSON"], { timeout: 120 }),
     s("traffic", [...DB, "BING_API_KEY"]),
+    // v2 ENGINE (engine/, ENGINE.md §6 build-new): WATCH — weekday-adjusted drop/rise detector, backtested Aug–Nov
+    s("drops", [...DB, ...MAIL], { cmd: ["node", "engine/watch/drops.mjs"] }),
     s("summary"),
   ] },
 };
