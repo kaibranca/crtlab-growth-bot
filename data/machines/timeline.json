@@ -1,7 +1,7 @@
 {
- "at": "2026-11-14T01:36:12.416Z",
+ "at": "2026-11-14T01:57:21.753Z",
  "note": "Every change in the ecosystem, 45 days. Read it before judging any result: was it this, or something else that changed here?",
- "traffic7": 10,
+ "traffic7": 14,
  "events": [
   {
    "at": "2026-11-08T22:10:17.637Z",
@@ -277,6 +277,13 @@
    "traffic": true
   },
   {
+   "at": "2026-11-12T22:55:44Z",
+   "kind": "machine-change",
+   "where": "hooks",
+   "what": "site deploy [app other /backtest*] Chart fixes: fullscreen surfaces, replay-TF blink,",
+   "traffic": true
+  },
+  {
    "at": "2026-11-13T02:20:07.906Z",
    "kind": "win",
    "where": "core",
@@ -302,6 +309,13 @@
    "kind": "site-deploy",
    "where": "/backtest*",
    "what": "/backtest: free + \"no signup\" back in the snippet and lead, prices off the meta description (still on the page)",
+   "traffic": true
+  },
+  {
+   "at": "2026-11-13T13:10:58Z",
+   "kind": "machine-change",
+   "where": "hooks",
+   "what": "site deploy [/backtest*] /backtest: free + \"no signup\" back in the snippet ",
    "traffic": true
   },
   {
@@ -372,6 +386,13 @@
    "kind": "site-deploy",
    "where": "indexing other",
    "what": "WORKS on the site: main sitemap = page families that bring accounts; DEAD families → /sitemap-archive.xml",
+   "traffic": true
+  },
+  {
+   "at": "2026-11-13T21:34:23Z",
+   "kind": "machine-change",
+   "where": "hooks",
+   "what": "site deploy [indexing other] WORKS on the site: main sitemap = page families th",
    "traffic": true
   },
   {
@@ -471,6 +492,13 @@
    "kind": "site-deploy",
    "where": "indexing",
    "what": "Google-only noindex on the 5 dead auto page families (2,492 pages, 0 accounts in 90 d)",
+   "traffic": true
+  },
+  {
+   "at": "2026-11-14T01:19:53Z",
+   "kind": "machine-change",
+   "where": "hooks",
+   "what": "site deploy [indexing] Google-only noindex on the 5 dead auto page famili",
    "traffic": true
   },
   {
@@ -597,6 +625,10 @@
   "loss|2026-11-14T01:21:59.417Z|/economic-calendar/<x>: 357 pages (13% of the site) → 3 visitors, 0 accounts in 90 d": 1,
   "loss|2026-11-14T01:21:59.417Z|/recap/<x>: 36 pages (1% of the site) → 0 visitors, 0 accounts in 90 d": 1,
   "loss|2026-11-14T01:21:59.417Z|hook \"replay-last\" on /economic-calendar/<event>: superseded (every page of the family got the ReplayHook block (same offer) on 11-11 19:00 ": 1,
-  "loss|2026-11-14T01:21:59.417Z|hook \"replay-last\" on /news/<release>: superseded (every page of the family got the ReplayHook block (same offer) on 11-11 19:00 — both arms": 1
+  "loss|2026-11-14T01:21:59.417Z|hook \"replay-last\" on /news/<release>: superseded (every page of the family got the ReplayHook block (same offer) on 11-11 19:00 — both arms": 1,
+  "machine-change|2026-11-12T22:55:44Z|site deploy [app other /backtest*] Chart fixes: fullscreen surfaces, replay-TF blink,": 1,
+  "machine-change|2026-11-13T13:10:58Z|site deploy [/backtest*] /backtest: free + \"no signup\" back in the snippet ": 1,
+  "machine-change|2026-11-13T21:34:23Z|site deploy [indexing other] WORKS on the site: main sitemap = page families th": 1,
+  "machine-change|2026-11-14T01:19:53Z|site deploy [indexing] Google-only noindex on the 5 dead auto page famili": 1
  }
 }

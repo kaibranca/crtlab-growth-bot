@@ -1,12 +1,12 @@
 {
- "at": "2026-11-14T01:20:06.250Z",
+ "at": "2026-11-14T01:59:16.371Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
  "items": [
   {
    "kind": "fix",
-   "what": "MISALIGNED machines: 86% of the last 7 days' Bing sends went to WEAK/DEAD families (192 of 222)",
+   "what": "MISALIGNED machines: 86% of the last 7 days' Bing sends went to WEAK/DEAD families (193 of 224)",
    "why": "find which machine still pushes WEAK/DEAD pages and steer it with works-lib (values.json rule 2)",
    "engine": "main",
    "score": 7,
@@ -75,7 +75,7 @@
   },
   {
    "kind": "fix",
-   "what": "IndexNow is late (last run 9 h ago, normal every 2 h)",
+   "what": "IndexNow is late (last run 9.7 h ago, normal every 2 h)",
    "why": "needs a build or a decision",
    "engine": "fixer",
    "score": 4,
@@ -161,7 +161,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 8.01s — phones 6.74s vs desktop 7.2s (79% of loads on phones); the server answers in 0.23s and candles in 0.04s (HIT) — the time is on the visitor's side. Most slow-load time sits in: mobile/US 5.68s ×579, mobile/JP 6.64s ×317, mobile/IN 6.32s ×234, mobile/BR 11s ×86. Needs a build session to profile one slow load.",
+   "what": "Chart pages: the slowest 10% of real loads take 8.09s — phones 6.65s vs desktop 7.6s (81% of loads on phones); the server answers in 0.17s and candles in 0.02s (HIT) — the time is on the visitor's side. Most slow-load time sits in: mobile/US 5.8s ×582, mobile/JP 6.64s ×335, mobile/IN 6.5s ×246, mobile/BR 8.29s ×90. Needs a build session to profile one slow load.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
@@ -169,7 +169,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 8.01s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
+   "what": "Chart pages: the slowest 10% of real loads take 8.09s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,
