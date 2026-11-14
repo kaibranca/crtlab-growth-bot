@@ -12,6 +12,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
-      - run: node --test test/
+      - run: node --test test/*.test.mjs
       - run: node scripts/secret-scan.mjs
       - run: node scripts/run.mjs hourly --dry > /dev/null && node scripts/run.mjs daily --dry > /dev/null
