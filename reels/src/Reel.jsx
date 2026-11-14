@@ -156,7 +156,7 @@ export const Reel = (d) => {
   const edge = (y) => cl((y - L.PT) / 40) * cl((L.PB - y) / 40);
   // captions: ONE fixed line under the chart, cross-faded (the old line eases out while the new one eases in)
   return (
-    <AbsoluteFill style={{ background: `radial-gradient(ellipse 80% 45% at 50% 46%, #0d0e12 0%, ${C.bg} 72%)`, fontFamily: SANS }}>
+    <AbsoluteFill style={{ background: C.bg, fontFamily: SANS }}>{/* v14.1: flat — soft gradients band into steps after IG/FB compression (Kai: "looks low quality on phone") */}
       <svg width={W} height={1920} style={{ position: "absolute", inset: 0 }}>
         <g opacity={.6 * axisA}>{[1, 2, 3, 4, 5].map((j) => { const x = L.PL + (L.PR - L.PL) * j / 6; return <line key={"vg" + j} x1={x} x2={x} y1={L.PT} y2={L.PB} stroke="#fff" strokeOpacity={.03} />; })}</g>
         <defs><clipPath id="plot"><rect x={L.PL - 16} y={L.PT - 8} width={L.PR - L.PL + 32} height={L.PB - L.PT + 16} /></clipPath></defs>
@@ -176,8 +176,7 @@ export const Reel = (d) => {
             <text x={L.axisX + 40} y={y + 6} fill="#fff" fontSize={17} fontWeight={600} fontFamily={SANS} textAnchor="middle">{fmt(lastB[3], d.dp)}</text></g>; })() : null}
         {live ? <g opacity={chartA}>{marks}{toolCursor}</g> : null}
       </svg>
-      <div style={{ position: "absolute", left: 0, top: L.PT - 10, width: L.PL + 46, height: L.PB - L.PT + 20, background: `linear-gradient(90deg, ${C.bg} 0%, ${C.bg} 40%, rgba(5,5,6,0) 100%)`, pointerEvents: "none" }} />
-      <div style={{ position: "absolute", left: L.PR - 46, top: L.PT - 10, width: 62, height: L.PB - L.PT + 20, background: "linear-gradient(90deg, rgba(5,5,6,0) 0%, rgba(5,5,6,.92) 100%)", pointerEvents: "none" }} />
+      {/* edge fades removed v14.1 (banding) */}
       {specs.filter((sp) => sp.cap).map((sp) => { const b = sp.cap, o = life(t, sp.t0, sp.t1, .32, .18) * (1 - dim); if (o <= 0) return null; const k = eo(t, sp.t0, .45);
         const col = b.tone === "up" ? "#22c39b" : b.tone === "dn" ? "#ff5a6e" : C.text;
         if (sp.fixed) return <div key={sp.key} style={{ position: "absolute", left: 40, right: 40, top: L.cap, textAlign: "center", whiteSpace: "nowrap", fontSize: 46, fontWeight: 700, letterSpacing: -.4, color: col, opacity: o }}>
@@ -213,8 +212,7 @@ function Title({ d, t, o = 1 }) {
   return <div style={{ position: "absolute", top: L.title + (72 - size) * .5, left: 40, right: 40, textAlign: "center", whiteSpace: "nowrap", fontFamily: SANS, fontSize: size, fontWeight: 750, letterSpacing: -1.6, lineHeight: 1.05, color: C.text, opacity: o, display: "flex", alignItems: "center", justifyContent: "center", gap: size * .28,
     transform: `perspective(900px) rotateX(${(1 - eo(t, .04, .7)) * 24}deg)`, transformOrigin: "50% 100%",
     textShadow: "0 12px 32px rgba(0,0,0,.55)" }}>
-    {/* a faint glow behind the title: depth without a box */}
-    <div style={{ position: "absolute", left: "50%", top: "50%", width: 760, height: 150, transform: "translate(-50%, -50%)", background: "radial-gradient(ellipse at center, rgba(77,141,255,.07) 0%, rgba(77,141,255,0) 70%)", opacity: eo(t, .2, .8), pointerEvents: "none", zIndex: -1 }} />
+    {/* title glow removed v14.1 (banding) */}
     {/* intro: the icon settles in (soft scale), the words rise out of a mask — two different entrances, nothing identical */}
     <Img src={staticFile(`m/${d.mk}.webp`)} style={{ width: size * .92, height: size * .92, opacity: eo(t, .18, .45) * (1 - ein(t, d.__dim ?? 1e9, .45)), transform: `rotate(${(1 - eo(t, .18, .6)) * -14}deg) scale(${(.78 + .22 * eo(t, .18, .6)) * (1 - .15 * ein(t, d.__dim ?? 1e9, .45))})` }} />
     <span style={{ overflow: "hidden", display: "inline-block", paddingBottom: 6 }}><span style={{ display: "inline-block", transform: `translateY(${((1 - eo(t, .04, .55)) - ein(t, (d.__dim ?? 1e9) + .05, .5)) * 105}%)` }}>
@@ -228,13 +226,13 @@ function SignOff({ t, T }) {
   const pm = ein(t, T.ptr, .8), hover = eo(t, T.click - .25, .22), press = t >= T.click ? Math.sin(cl((t - T.click) / .22) * Math.PI) : 0;
   const px = mix(900, 560, pm), py = mix(400, 160, pm);
   return <div style={{ position: "absolute", left: 0, right: 0, top: 720, height: 300, display: "flex", flexDirection: "column", alignItems: "center", fontFamily: SANS, opacity: k * (1 - out), transform: `translateY(${(1 - k) * 12}px) scale(${1 + .03 * out})` }}>
-    <div style={{ width: 680, height: 92, borderRadius: 46, background: "linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.035))", border: "1px solid rgba(255,255,255,.13)", boxShadow: "inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(255,255,255,.03)", display: "flex", alignItems: "center", gap: 18, padding: "0 32px", boxSizing: "border-box" }}>
+    <div style={{ width: 680, height: 92, borderRadius: 46, background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.13)", boxShadow: "inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(255,255,255,.03)", display: "flex", alignItems: "center", gap: 18, padding: "0 32px", boxSizing: "border-box" }}>
       <svg width={30} height={30} viewBox="0 0 24 24" fill="none" stroke="#8d8f99" strokeWidth={2.2} strokeLinecap="round"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 L20.5 20.5" /></svg>
       <div style={{ display: "flex", alignItems: "center", fontSize: 40, fontWeight: 560, color: "#ececf1", whiteSpace: "pre" }}>{"crtlab.pro".slice(0, n)}
         <span style={{ display: "inline-block", width: 3, height: 42, marginLeft: 3, borderRadius: 2, background: "#ececf1", opacity: caret }} /></div>
     </div>
     <div style={{ marginTop: 14, width: 680, height: 88, borderRadius: 28, boxSizing: "border-box", display: "flex", alignItems: "center", gap: 20, padding: "0 32px", opacity: row,
-      background: `linear-gradient(180deg, rgba(255,255,255,${mix(.07, .12, hover)}), rgba(255,255,255,${mix(.025, .05, hover)}))`, border: "1px solid rgba(255,255,255,.13)", boxShadow: "inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(255,255,255,.03)", transform: `translateY(${(1 - row) * 12}px) scale(${1 - .016 * press})` }}>
+      background: `rgba(255,255,255,${mix(.055, .1, hover)})`, border: "1px solid rgba(255,255,255,.13)", boxShadow: "inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(255,255,255,.03)", transform: `translateY(${(1 - row) * 12}px) scale(${1 - .016 * press})` }}>
       <Img src={staticFile("potion-glyph.png")} style={{ width: 38, height: 38, marginRight: -6 }} />
       <span style={{ fontSize: 31, fontWeight: 760, color: C.acc }}>CRTLAB</span>
       <span style={{ width: 2, height: 32, background: "rgba(255,255,255,.14)" }} />
