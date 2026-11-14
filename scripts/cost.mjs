@@ -28,7 +28,14 @@ const J = (f, d = null) => { try { return JSON.parse(fs.readFileSync(f, "utf8"))
 const state = J(`${DIR}/state.json`, { fixes: [], emailed: null });
 const TOKEN = process.env.RAILWAY_API_TOKEN;
 if (!TOKEN) { fs.writeFileSync(`${DIR}/plan.json`, JSON.stringify({ at: new Date().toISOString(), status: "needs RAILWAY_API_TOKEN (GitHub secret)" })); console.log("cost: no RAILWAY_API_TOKEN — waiting"); process.exit(0); }
-const gql = async (query) => { const r = await fetch("https://backboard.railway.com/graphql/v2", { method: "POST", headers: { ...(process.env.RAILWAY_PROJECT_TOKEN ? { "Project-Access-Token": TOKEN } : { Authorization: `Bearer ${TOKEN}` }), "content-type": "application/json" }, body: JSON.stringify({ query }) });
+// HANDS (11-14): every Railway mutation passes the hands gate. Off = the change is logged as a recommendation, not made.
+// Inside safely(): moves back toward safety (revert a lever, cap back to 768 after a crash) always go through.
+const { handsOn, HandsOff } = await import("./hands.mjs"); const HANDS = handsOn("cost"); let SAFE = false; const recommended = [];
+const safely = async (fn) => { SAFE = true; try { return await fn(); } finally { SAFE = false; } };
+const gql = async (query) => {
+  if (/^\s*mutation/.test(query) && !HANDS && !SAFE) { const what = query.replace(/\s+/g, " ").slice(0, 140); recommended.push(what); console.log("HANDS OFF — recommend only:", what); throw new HandsOff("cost", what); }
+  return gql0(query); };
+const gql0 = async (query) => { const r = await fetch("https://backboard.railway.com/graphql/v2", { method: "POST", headers: { ...(process.env.RAILWAY_PROJECT_TOKEN ? { "Project-Access-Token": TOKEN } : { Authorization: `Bearer ${TOKEN}` }), "content-type": "application/json" }, body: JSON.stringify({ query }) });
   const j = await r.json(); if (j.errors) throw new Error(JSON.stringify(j.errors).slice(0, 200)); return j.data; };
 
 const svcs = (await gql(`query { project(id: "${PROJECT}") { services { edges { node { id name serviceInstances { edges { node { environmentId latestDeployment { id createdAt } } } } } } } } }`)).project.services.edges.map((e) => e.node);
@@ -105,7 +112,7 @@ try {
     const sinceDeployH = webInst?.latestDeployment?.createdAt ? (NOW - Date.parse(webInst.latestDeployment.createdAt)) / H : null;
     const setCap = async (mbCap) => gql(`mutation { variableUpsert(input: { projectId: "${PROJECT}", environmentId: "${ENV}", serviceId: "${webSvc.id}", name: "WEB_NODE_OPTIONS", value: "--max-old-space-size=${mbCap}", skipDeploys: true }) }`);
     if (!HC.stopped && HC.cap < 768 && sinceDeployH != null && mem.uptimeH + 0.25 < sinceDeployH) {
-      await setCap(768); HC.cap = 768; HC.stopped = true; heapNote = `web restarted without a deploy at cap ${mem.heapCapMB} MB → cap back to 768, tuner stopped`;
+      await safely(() => setCap(768)); HC.cap = 768; HC.stopped = true; heapNote = `web restarted without a deploy at cap ${mem.heapCapMB} MB → cap back to 768, tuner stopped`;
       append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|heap-revert|${iso(NOW)}`, machine: "cost", kind: "loss", what: heapNote });
     } else if (!HC.stopped && HC.samples.length >= 24) {
       const peak = Math.max(...HC.samples.map((x) => x.peak)), want = Math.min(768, Math.max(384, Math.ceil((peak * 1.6) / 64) * 64));
@@ -142,7 +149,7 @@ if (heapNote && /→ cap|back to 768/.test(heapNote)) actions.push(heapNote); //
     const crashed = x.svc === "web" && memNow && dep && memNow.uptimeH + 0.25 < (NOW - Date.parse(dep.createdAt)) / H;
     const revert = async (why) => {
       try {
-        if (x.kind === "limit") await setLimit(x.svc, x.prev); else if (x.prev == null) await del(x.svc, x.name); else await upsert(x.svc, x.name, x.prev);
+        await safely(() => (x.kind === "limit" ? setLimit(x.svc, x.prev) : x.prev == null ? del(x.svc, x.name) : upsert(x.svc, x.name, x.prev)));
         x.verdict = "reverted"; x.why = why; actions.push(`lever ${x.id} REVERTED — ${why}`);
         append("data/machines/ledger.jsonl", { at: new Date().toISOString(), key: `cost|lever|${x.id}`, machine: "cost", kind: "loss", what: `${x.name}=${x.value} on ${x.svc}: ${why} → reverted (applies next deploy)` });
       } catch (e) { actions.push(`lever ${x.id} revert failed: ${String(e).slice(0, 60)}`); }
@@ -216,6 +223,7 @@ for (const f of state.fixes) if (!f.verdict && NOW - Date.parse(f.at) > DAY) { c
 const total = rows.reduce((t, r) => t + r.dayCost, 0), avg = rows.reduce((t, r) => t + r.avgDayCost, 0);
 const weekPace = +(avg * 30).toFixed(2);
 const plan = { creep: creep7.map((x) => ({ svc: x.svc, commit: x.commit, msg: x.msg, dMB: x.dMB, perMonth: x.perMonth })), levers: (state.levers ?? []).map((x) => ({ id: x.id, svc: x.svc, set: `${x.name}=${x.value}`, live: !!x.liveAt, beforeGB: x.beforeGB ?? null, afterGB: x.afterGB ?? null, verdict: x.verdict ?? (x.liveAt ? "judging" : "waiting for a deploy") })), heap: { cap: HC.cap, stopped: HC.stopped, samples: HC.samples.length, note: heapNote }, at: new Date().toISOString(), status: weekPace > BUDGET_MONTH ? "over budget" : "ok", budget: BUDGET_MONTH, weekPace, overBy: +Math.max(0, weekPace - BUDGET_MONTH).toFixed(2), deploys, dayCost: +total.toFixed(2), avgDayCost: +avg.toFixed(2), monthPace: +(total * 30).toFixed(2), services: rows.sort((a, b) => b.dayCost - a.dayCost), incidents, actions, fixes: state.fixes.slice(-10) };
+plan.hands = HANDS ? "on" : { on: false, recommended }; // what it would have changed, for Kai / the decision core
 fs.writeFileSync(`${DIR}/plan.json`, JSON.stringify(plan, null, 1));
 append(`${DIR}/score.jsonl`, { at: plan.at, dayCost: plan.dayCost, mem: Object.fromEntries(rows.map((r) => [r.svc, r.memGB])) });
 if (incidents.length && state.emailed !== iso(NOW) && process.env.RESEND_API_KEY && process.env.ALERT_TO) {

@@ -6,6 +6,8 @@ import { T } from "./store.mjs";
 const at = (d) => d.at;
 
 const list = [
+  { name: "hands", path: "data/machines/hands.json", owner: "human",
+    shape: T.map((v, p) => (typeof v === "string" ? [] : T.obj({ on: T.bool, why: T.str })(v, p))) },
   { name: "freeze", path: "data/machines/freeze.json", owner: "human or hourly/guard",
     shape: T.obj({ until: T.iso, set: T.str, why: T.str, holds: T.map(T.str) }) },
   { name: "values", path: "data/machines/values.json", owner: "human",
