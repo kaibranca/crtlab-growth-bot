@@ -23,7 +23,7 @@ export const PLANS = {
     s("jobs", [...DB, ...MAIL], { cmd: ["node", "engine/guard/jobs.mjs"], alertAfter: 1 }),
     s("minutes", ["GH_WATCH_TOKEN", ...MAIL]),
     s("load-alert", ["OPS_KEY", ...MAIL]),
-    s("shield", [...CF, "CF_BAN_LIST", "OPS_KEY", ...MAIL], { alertAfter: 1 }),
+    s("shield", [...CF, "CF_BAN_LIST", "OPS_KEY", ...MAIL, ...DB], { alertAfter: 1 }),
     s("watchdog", [], { alertAfter: 1 }),
     s("upcoming"), s("indicators"), s("live-news"), s("headlines"), s("indexnow"),
     s("cost", ["OPS_KEY", "RAILWAY_API_TOKEN", "RAILWAY_PROJECT_TOKEN", ...MAIL]),

@@ -1,5 +1,5 @@
 import { test } from "node:test"; import assert from "node:assert/strict";
-import { banEligible } from "../scripts/shield-lib.mjs";
+import { banEligible, ipPrefix } from "../scripts/shield-lib.mjs";
 const x = (o) => ({ n: 10, asn: 64500, uas: new Set(["python-requests/2.31"]), ...o });
 
 test("bans a repeat scripted attacker over the threshold", () => assert.equal(banEligible(x(), { banAt: 6 }).ban, true));
@@ -12,4 +12,12 @@ test("never bans search or AI crawlers, even mixed with other agents", () => {
   for (const ua of ["Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0)",
     "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; ChatGPT-User/1.0; +https://openai.com/bot", "OAI-SearchBot/1.0", "GPTBot/1.1", "PerplexityBot/1.0", "ClaudeBot/1.0"])
     assert.equal(banEligible(x({ asn: 15169, uas: new Set(["curl/8", ua]) }), { banAt: 6 }).ban, false, ua);
+});
+
+test("never bans a real user's network; same prefix rule as the site", () => {
+  assert.equal(ipPrefix("91.239.154.58"), "91.239.154.0/24"); assert.equal(ipPrefix("2403:6200:8814:1:2::9"), "2403:6200:8814::/48"); assert.equal(ipPrefix("bad"), null);
+  const users = new Set(["91.239.154.0/24"]);
+  assert.equal(banEligible(x(), { banAt: 6, ip: "91.239.154.200", users }).ban, false);
+  assert.equal(banEligible(x(), { banAt: 6, ip: "8.8.4.4", users }).ban, true);
+  assert.equal(banEligible(x(), { banAt: 6, ip: "91.239.154.200", users: null }).ban, true); // no evidence → old rule
 });

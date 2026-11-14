@@ -49,9 +49,22 @@ if (expired.length) await cf(`/accounts/${ACC}/rules/lists/${LIST}/items`, { met
 const exp = new Date(now + BAN_DAYS * 864e5).toISOString();
 // 11-14: eligibility is one tested rule (shield-lib) — never shared networks, never search / AI crawlers; HANDS gate fails closed
 const { banEligible } = await import("./shield-lib.mjs"), { handsOn } = await import("./hands.mjs"), HANDS = handsOn("shield");
-const spared = [...per.entries()].filter(([ip, x]) => x.n >= BAN_AT && !have.has(ip) && !banEligible(x, { banAt: BAN_AT }).ban);
-if (spared.length) console.log(`shield: spared ${spared.length} over-threshold IP(s):`, spared.slice(0, 5).map(([ip, x]) => `${ip} (${banEligible(x, { banAt: BAN_AT }).why})`).join(", "));
-const fresh = HANDS ? [...per.entries()].filter(([ip, x]) => banEligible(x, { banAt: BAN_AT, already: have.has(ip) }).ban).sort((a, b) => b[1].n - a[1].n).slice(0, MAX_NEW) : [];
+// real users' networks (read-only DB role). Unreadable → null → old behaviour (ban + email a person-like ban for a human check).
+let USERS = null;
+if (process.env.ANALYTICS_DB_URL && [...per.values()].some((x) => x.n >= BAN_AT)) try {
+  const pg = (await import("pg")).default, db = new pg.Client({ connectionString: process.env.ANALYTICS_DB_URL, ssl: { rejectUnauthorized: false }, statement_timeout: 15000 });
+  await db.connect();
+  const g = await db.query(`select distinct ip_prefix p from guest_presence g where created_at > now() - interval '90 days' and ip_prefix is not null
+    and (converted_at is not null or exists (select 1 from guest_meters m where m.device_key = g.device_key and m.candles_used > 0))`);
+  const u = await db.query(`select distinct ip from sessions where created_at > now() - interval '90 days' and ip is not null`);
+  await db.end();
+  const { ipPrefix } = await import("./shield-lib.mjs");
+  USERS = new Set([...g.rows.map((r) => r.p), ...u.rows.map((r) => ipPrefix(r.ip))].filter(Boolean));
+} catch (e) { console.log("shield: real-user networks unreadable — " + String(e.message || e).slice(0, 80)); USERS = null; }
+const elig = (ip, x) => banEligible(x, { banAt: BAN_AT, already: have.has(ip), ip, users: USERS });
+const spared = [...per.entries()].filter(([ip, x]) => x.n >= BAN_AT && !have.has(ip) && !elig(ip, x).ban);
+if (spared.length) console.log(`shield: spared ${spared.length} over-threshold IP(s):`, spared.slice(0, 5).map(([ip, x]) => `${ip} (${elig(ip, x).why})`).join(", "));
+const fresh = HANDS ? [...per.entries()].filter(([ip, x]) => elig(ip, x).ban).sort((a, b) => b[1].n - a[1].n).slice(0, MAX_NEW) : [];
 if (!HANDS) console.log("shield: HANDS OFF — no new bans (expired ones are still lifted)");
 if (fresh.length) await cf(`/accounts/${ACC}/rules/lists/${LIST}/items`, { method: "POST",
   body: JSON.stringify(fresh.map(([ip, x]) => ({ ip, comment: `auto|${Object.entries(x.src).map(([k, v]) => `${k}:${v}`).join(",")}|asn=${x.asn}|exp=${exp}` }))) });
@@ -76,7 +89,8 @@ const HOSTING_WORDS = /amazon|aws|google|microsoft|azure|digitalocean|ovh|hetzne
 const SCRIPT_UA = /^$|go-http-client|python|curl|wget|libwww|okhttp|java\/|httpclient|axios|node-fetch|scrapy|zgrab|masscan|nuclei|nikto|sqlmap/i;
 const scripted = (x) => [...(x.uas || [])].every((u) => SCRIPT_UA.test(u)) || (x.reqs >= 5 && x.wp === x.reqs);
 const isHosting = (x) => HOSTING_ASN.has(x.asn) || HOSTING_WORDS.test(x.org || "") || scripted(x);
-const humanBans = fresh.filter(([, x]) => !isHosting(x));
+// with the real-user check run, a person-like ban is on a network no real user has used in 90 d → no human check needed
+const humanBans = USERS ? [] : fresh.filter(([, x]) => !isHosting(x));
 const changed = mode !== lvl;
 if (fresh.length) console.log(`bans: ${fresh.length} (${fresh.length - humanBans.length} cloud/hosting, silent · ${humanBans.length} could be a person)`);
 if ((humanBans.length || changed) && process.env.RESEND_API_KEY && process.env.ALERT_TO) {
