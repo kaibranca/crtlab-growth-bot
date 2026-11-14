@@ -110,7 +110,9 @@ const HL = 14 * DAY, wOf = (at) => Math.pow(0.5, (NOW - Date.parse(at)) / HL);
 const obs = (id) => state.q[id]?.asked || [];
 function posteriors() {
   const g = { m: 0, n: 0 }, cl = {};
-  for (const q of Qs) for (const o of obs(q.id)) { const w = wOf(o.at); g.m += w * o.m; g.n += w; (cl[q.cluster] ??= { m: 0, n: 0, c: 0, r1: 0 }); cl[q.cluster].m += w * o.m; cl[q.cluster].n += w; cl[q.cluster].c += w * (o.c || 0); cl[q.cluster].r1 += w * (o.r === 1 ? 1 : 0); }
+  // 11-14 FIX: brand questions always name us — they were in the GLOBAL mean every cluster shrinks to, so asking 4 brand
+  // questions lifted every cluster's share ~6× (sov 0.007 → 0.066 on 11-14, a fake win). Brand stays in its own cluster only.
+  for (const q of Qs) for (const o of obs(q.id)) { const w = wOf(o.at); if (q.cluster !== "brand") { g.m += w * o.m; g.n += w; } (cl[q.cluster] ??= { m: 0, n: 0, c: 0, r1: 0 }); cl[q.cluster].m += w * o.m; cl[q.cluster].n += w; cl[q.cluster].c += w * (o.c || 0); cl[q.cluster].r1 += w * (o.r === 1 ? 1 : 0); }
   const gm = (g.m + 0.5) / (g.n + 5), clu = {}, qp = {};
   for (const c of new Set(Qs.map((q) => q.cluster))) { const x = cl[c] || { m: 0, n: 0, c: 0, r1: 0 }; clu[c] = { share: (x.m + 6 * gm) / (x.n + 6), cited: x.n ? x.c / x.n : 0, first: x.n ? x.r1 / x.n : 0, n: +x.n.toFixed(1), value: +(cluVal[c] || 1).toFixed(2) }; }
   for (const q of Qs) { let m = 0, n = 0; for (const o of obs(q.id)) { const w = wOf(o.at); m += w * o.m; n += w; }

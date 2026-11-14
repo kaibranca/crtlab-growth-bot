@@ -11,7 +11,7 @@ const surges = readLines("data/ai/surges.jsonl").filter((x) => NOW - Date.parse(
 const runs = readLines("data/ai/runs.jsonl").filter((x) => NOW - Date.parse(x.at) < 7 * DAY);
 const sent = runs.reduce((t, r) => t + (r.submitted || 0), 0);
 const L = plan.learned;
-const R = J("data/radar/plan.json"), rs = readLines("data/radar/score.jsonl"), rw = (a, b) => { const x = rs.filter((s) => { const t = NOW - Date.parse(s.day + "T12:00:00Z"); return t >= a * DAY && t < b * DAY; }); return x.length ? x.at(-1).sov : null; };
+const R = J("data/radar/plan.json"), rs = readLines("data/radar/score.jsonl").filter((s) => !s.invalid), /* 11-14: rows marked invalid never trend */ rw = (a, b) => { const x = rs.filter((s) => { const t = NOW - Date.parse(s.day + "T12:00:00Z"); return t >= a * DAY && t < b * DAY; }); return x.length ? x.at(-1).sov : null; };
 const radarLines = R ? [``, `AI RADAR — what AI answers recommend (share of voice, value-weighted)`, `  Now ${(R.sov * 100).toFixed(0)}%${rw(7, 14) != null ? ` (a week ago ${(rw(7, 14) * 100).toFixed(0)}%)` : ""} · spend this month ~$${R.monthCost} of $${R.budget}`,
   ...Object.entries(R.clusters).sort((a, b) => b[1].value - a[1].value).map(([c, x]) => x.n < 1 ? `  ${c.padEnd(7)} not asked yet` : `  ${c.padEnd(7)} ${(x.share * 100).toFixed(0).padStart(3)}% mentioned · ${(x.cited * 100).toFixed(0)}% cited · ${(x.first * 100).toFixed(0)}% first (${Math.round(x.n)} answers)`),
   ...(R.events.filter((e) => NOW - Date.parse(e.at) < 7 * DAY).map((e) => `  ${e.kind}: "${e.q}"`)),
