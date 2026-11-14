@@ -69,43 +69,10 @@ async function guard(env, d) {
 const kvGet = async (env, k) => { try { return env.SENTINEL ? JSON.parse((await env.SENTINEL.get(k)) ?? "null") : null; } catch { return null; } };
 const kvPut = async (env, k, v, ttl) => { try { if (env.SENTINEL) await env.SENTINEL.put(k, JSON.stringify(v), ttl ? { expirationTtl: ttl } : undefined); } catch {} };
 
-// THE SENTINEL (11-12 — reaction speed: every engine was triggered hourly, so a wave was seen up to an hour late). Every 5
-// minutes, Cloudflare's own edge counts of people asking AI assistants (ChatGPT-User / Claude-User / Perplexity-User) for
-// CRTLAB pages over the last 15 minutes, per page, against a rolling baseline the worker keeps in its own cache. A spike
-// (total ≥ 3× its baseline and ≥ 15, or one page ≥ 4× and ≥ 6) starts hourly.yml AT ONCE with the spike attached → the
-// engine locks in on those pages within minutes. 45-min cooldown. Free: no GitHub run on a normal day, no site load.
-// Secrets: CF_API_TOKEN (Analytics: read) + CF_ZONE_ID. Without them it does nothing.
-async function sentinel(env, d) {
-  if (d.getUTCMinutes() < 5) console.log(`${d.toISOString()} sentinel: run (kv ${env.SENTINEL ? "on" : "off"})`);
-  if (!env.CF_API_TOKEN || !env.CF_ZONE_ID) { console.log(`${d.toISOString()} sentinel: off — missing ${!env.CF_API_TOKEN ? "CF_API_TOKEN " : ""}${!env.CF_ZONE_ID ? "CF_ZONE_ID" : ""} (wrangler secret put)`); return; }
-  const since = new Date(d.getTime() - 15 * 60e3).toISOString(), until = d.toISOString(), pages = {};
-  let total = 0;
-  for (const ua of ["ChatGPT-User", "Claude-User", "Perplexity-User"]) {
-    const q = `{viewer{zones(filter:{zoneTag:"${env.CF_ZONE_ID}"}){httpRequestsAdaptiveGroups(limit:60,filter:{datetime_geq:"${since}",datetime_lt:"${until}",userAgent_like:"%${ua}%"},orderBy:[count_DESC]){count dimensions{clientRequestPath}}}}}`;
-    const j = await fetch("https://api.cloudflare.com/client/v4/graphql", { method: "POST", headers: { Authorization: `Bearer ${env.CF_API_TOKEN}`, "content-type": "application/json" }, body: JSON.stringify({ query: q }) }).then((r) => r.json()).catch((e) => ({ errors: [String(e)] }));
-    if (j?.errors?.length) { console.log(`${d.toISOString()} sentinel: Cloudflare API error (${ua}) — ${JSON.stringify(j.errors).slice(0, 200)}`); return; } // never read an error as "0 fetches"
-    for (const r of j?.data?.viewer?.zones?.[0]?.httpRequestsAdaptiveGroups ?? []) { const p = r.dimensions.clientRequestPath.split("?")[0]; if (/^\/(api|_next)|\.(png|jpg|svg|ico|xml|txt)$/.test(p)) continue; pages[p] = (pages[p] ?? 0) + r.count; total += r.count; }
-  }
-  // rolling baseline (EWMA per 15-min window, total + per page), kept in the worker's edge cache for 3 days
-  let base = await kvGet(env, "baseline");
-  base ??= { total: total || 5, pages: {}, n: 0 };
-  const hot = Object.entries(pages).filter(([p, n]) => n >= 6 && n >= 4 * Math.max(1, base.pages[p] ?? 0.5)).sort((a, b) => b[1] - a[1]);
-  const spike = base.n >= 12 && ((total >= 15 && total >= 3 * base.total) || hot.length);
-  // learn the baseline AFTER judging (a spike moves it slowly, so a long wave stays visible)
-  const a = spike ? 0.05 : 0.15; base.total = base.total * (1 - a) + total * a; base.n++;
-  for (const p of new Set([...Object.keys(base.pages), ...Object.keys(pages)])) { const v = (base.pages[p] ?? 0) * (1 - a) + (pages[p] ?? 0) * a; if (v < 0.05) delete base.pages[p]; else base.pages[p] = +v.toFixed(3); }
-  await kvPut(env, "baseline", base, 259200);
-  if (d.getUTCMinutes() === 2 || base.n <= 2) console.log(`${d.toISOString()} sentinel ok: ${total} people-fetches in 15 min vs ~${base.total.toFixed(1)} baseline (${base.n} windows learned, ${Object.keys(base.pages).length} pages tracked)`); // hourly heartbeat
-  if (!spike) return;
-  if (await kvGet(env, "cooldown")) { console.log(`${d.toISOString()} sentinel: spike (${total} vs ~${base.total.toFixed(1)}) — cooling down`); return; }
-  const top = (hot.length ? hot : Object.entries(pages).sort((x, y) => y[1] - x[1])).slice(0, 8).map(([p]) => p);
-  const why = `${total} people-fetches in 15 min vs ~${base.total.toFixed(1)} normal${hot.length ? ` · hot: ${hot.slice(0, 3).map(([p, n]) => `${p} ${n}`).join(", ")}` : ""}`;
-  const r = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/hourly.yml/dispatches`, { method: "POST",
-    headers: { Authorization: `Bearer ${env.GH_TOKEN}`, Accept: "application/vnd.github+json", "User-Agent": "crtlab-cron", "X-GitHub-Api-Version": "2022-11-28" },
-    body: JSON.stringify({ ref: "main", inputs: { spike: JSON.stringify({ why, pages: top }).slice(0, 900) } }) });
-  console.log(`${d.toISOString()} sentinel: SPIKE ${why} → hourly ${r.status}`);
-  await kvPut(env, "cooldown", 1, 2700);
-}
+// THE SENTINEL was REMOVED 11-14: on a spike of AI-assistant fetches it started the WHOLE hourly run to "lock in" on hot pages.
+// Lock-in was retired as theatre (v1 post-mortem: 4 spikes, all flat) and no machine read the spike input any more, so every
+// spike = a duplicate hourly run (double sends, file races, false double-run alarms). The signal itself is kept as DATA:
+// data/aicrawl logs ChatGPT-User reads per page every hour → engine/watch reads.chatgpt; LEARN can test "do reads convert".
 
 // /api/data-version through the WAF (edge header: a worker's own-zone fetch skips the transform rule). null on any non-200.
 export async function dataVersion(env, f = fetch) {
@@ -130,7 +97,6 @@ export default {
   async scheduled(event, env, ctx) {
     const d = new Date(event.scheduledTime), m = d.getUTCMinutes(), h = d.getUTCHours(), w = d.getUTCDay();
     if (m === 7 && h % 3 === 0) ctx.waitUntil(guard(env, d));
-    if (m % 5 === 2) await sentinel(env, d).catch((e) => console.log("sentinel error " + String(e).slice(0, 80))); // awaited: its logs + KV writes finish inside the event
     const due = JOBS.filter(([, mm, hh, ww]) => hit(mm, m) && hit(hh, h) && hit(ww, w));
     for (const [wf, , , , repo = REPO, inputs] of due) {
       // 11-14 MINUTES: a retry slot that would find nothing to do still bills a full GitHub minute (private repo, 2,000 free/month;
