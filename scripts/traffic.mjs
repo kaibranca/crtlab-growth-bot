@@ -21,9 +21,12 @@ const prev = J(`${OUT}/plan.json`, {});
 const state = J(`${OUT}/state.json`, { rankN: 3, minImpr: 5, ghosts: {} });
 
 // ── 0. the site's real pages (sitemap) + tokens for matching ─────────────────────────────────────────────────────────
-const sm = await fetch(`${SITE}/sitemap.xml`, { headers: UA }).then((r) => (r.ok ? r.text() : "")).catch(() => "");
+// 11-13 the site split its sitemap (main = WORKS families, /sitemap-archive.xml = the rest). Both are REAL pages — reading only
+// the main one dropped below 500 and this step silently exited 0 for days ("ok" with no plan written). Read both; fail LOUD.
+const getSm = (u) => fetch(u, { headers: UA }).then((r) => (r.ok ? r.text() : "")).catch(() => "");
+const sm = (await getSm(`${SITE}/sitemap.xml`)) + (await getSm(`${SITE}/sitemap-archive.xml`));
 const PAGES = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => { try { return new URL(m[1]).pathname.replace(/\/$/, "") || "/"; } catch { return null; } }).filter(Boolean);
-if (PAGES.length < 500) { console.log(`traffic: sitemap looked wrong (${PAGES.length} pages) — nothing changed`); process.exit(0); }
+if (PAGES.length < 500) { console.log(`traffic: sitemap looked wrong (${PAGES.length} pages) — nothing changed`); process.exit(1); }
 const REAL = new Set(PAGES);
 fs.writeFileSync(`${OUT}/pages.json`, JSON.stringify({ at: new Date().toISOString(), pages: PAGES })); // the brain only ever pushes real pages
 const SYN = { gold: "xauusd", xau: "xauusd", silver: "xagusd", oil: "usoil", wti: "usoil", crude: "usoil", nasdaq: "nas100", nq: "nas100", us100: "nas100", ustec: "nas100",

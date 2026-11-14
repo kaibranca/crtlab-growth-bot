@@ -54,7 +54,7 @@ if (!inv.some((x) => x.day === today)) {
 // Any other machine JSON is at least parse-checked (11-14: values.json was broken 4 h and the analyst read NO values).
 const { check } = await import("./store.mjs"), { CONTRACTS } = await import("./contracts.mjs");
 const contracts = Object.fromEntries(CONTRACTS.map((c) => { const r = check(c); return [c.name, { kind: r.kind, detail: r.detail || null, ageH: r.ageH != null ? +r.ageH.toFixed(1) : null }]; }));
-const badC = Object.entries(contracts).filter(([, r]) => r.kind !== "ok" && !(n === "freeze" && r.kind === "missing"));
+const badC = Object.entries(contracts).filter(([n, r]) => r.kind !== "ok" && !(n === "freeze" && r.kind === "missing"));
 for (const [n, r] of badC) alerts.push([`contract-${n}-${r.kind}`, `GUARD: data contract "${n}" is ${r.kind.toUpperCase()}${r.detail ? " (" + r.detail + ")" : ""}. Machines reading it must not decide from it until fixed.`]);
 const contracted = new Set(CONTRACTS.map((c) => c.path)), broken = [];
 for (const dir of ["data/machines", "data/ai", "data/works", "data/reels", "data/guard", "data/radar", "data/google"]) { if (!fs.existsSync(dir)) continue;
