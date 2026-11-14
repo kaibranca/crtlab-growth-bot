@@ -45,7 +45,7 @@ const learnability = { groups: groups.length, judged: judged.length, clean: judg
 // 3. WATCH self-grade, every metric WATCH covers: are its alarms real (the fall lasted) or noise? n ≥ 30 before any tuning.
 //    COMPOUNDS: graded episodes are kept forever in `alarms` (metric|day) — the series is a rolling 120 days, the record is not.
 const alarms = { ...(prev.alarms ?? {}) };
-for (const m of Object.keys(S.series)) for (const e of gradeAlarms(S.series[m], S.from, S.end).episodes) {
+for (const m of Object.keys(S.series)) for (const e of gradeAlarms(S.series[m], S.starts?.[m] ?? S.from, S.end).episodes) { // later-starting series: no fake zeros
   const k = m + "|" + e.day, old = alarms[k];
   if (!old || old.state === "pending" || old.state === "unknown") alarms[k] = { metric: m, day: e.day, level: e.level, state: e.state, ratio: e.ratio ?? null };
 }

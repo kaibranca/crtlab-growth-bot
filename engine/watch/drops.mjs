@@ -16,7 +16,7 @@ if (!url) { console.log("drops: no ANALYTICS_DB_URL — skipped"); process.exit(
 const SRC = `case when s ~ 'google' then 'google' when s ~ 'chatgpt|openai' then 'chatgpt' when s ~ 'bing' then 'bing'
   when s ~ 'instagram|facebook|^ig$|^fb$|tiktok|youtube|reddit|x\\.com|t\\.co' then 'social' when s in ('direct','none','') then 'direct' else 'other' end`;
 export const METRICS = ["accounts", "accounts.google", "accounts.chatgpt", "accounts.bing", "accounts.direct", "accounts.social",
-  "visitors", "visitors.google", "visitors.chatgpt", "visitors.bing", "paywall.seen", "paywall.packs", "buyers.new"];
+  "visitors", "visitors.google", "visitors.chatgpt", "visitors.bing", "paywall.seen", "paywall.packs", "buyers.new", "reads.chatgpt"];
 // 11-14: the engine judged itself on accounts only — it could not see money. Pack clicks halved the week $99 lifetime hit
 // the wall (21 vs ~33/wk) and nothing noticed; the DB has no purchase date at all → buyers come from Stripe (the truth).
 
@@ -68,9 +68,16 @@ const put = (k, d, n) => { if (series[k]) series[k][d] = (series[k][d] ?? 0) + n
 for (const r of acc) { put("accounts", r.d, r.n); put("accounts." + r.src, r.d, r.n); }
 for (const r of vis) { put("visitors", r.d, r.n); put("visitors." + r.src, r.d, r.n); }
 for (const r of wall) put(r.type === "wall_view" ? "paywall.seen" : "paywall.packs", r.d, r.n);
+// TOP of the AI funnel: ChatGPT-User fetches (a live chat reading our page) from the aicrawl log in this repo. 11-14: reads of
+// / and /backtest ROSE (208 → 681, 126 → 235 a week) while ChatGPT accounts from them fell — the loss is between citing and
+// signing up, which only reads + visits + accounts side by side can show. Log starts 11-01 → "unknown" until ~3 weeks exist.
+for (const f of fs.readdirSync("data/aicrawl").filter((x) => x.endsWith(".jsonl")))
+  for (const l of fs.readFileSync(`data/aicrawl/${f}`, "utf8").split("\n")) { let j; try { j = JSON.parse(l); } catch { continue; }
+    const d = String(j.to).slice(0, 10), n = j.bots?.["ChatGPT-User"]?.hits ?? 0; if (n && d >= since && d <= end) put("reads.chatgpt", d, n); }
+const readsFrom = Object.keys(series["reads.chatgpt"]).sort()[0];
 
 const metrics = {};
-for (const m of METRICS) if (m !== "buyers.new") metrics[m] = evaluate(series[m], since, end);
+for (const m of METRICS) if (m !== "buyers.new") metrics[m] = evaluate(series[m], m === "reads.chatgpt" ? (readsFrom ?? end) : since, end); // reads: no zeros before the log began
 metrics["buyers.new"] = buyers.err ? { level: "unknown", why: buyers.err, windows: [] } : gapTest(buyers.map, end);
 
 let prev = null; try { prev = JSON.parse(fs.readFileSync(OUT, "utf8")); } catch {}
@@ -78,7 +85,7 @@ const changed = METRICS.filter((m) => (prev?.metrics?.[m]?.level ?? "normal") !=
 fs.mkdirSync("data/engine", { recursive: true });
 // ONE reader of user analytics, many consumers: the daily outcome series (no buyers — public repo) for LEARN and any machine
 // that needs "what did users do", so every machine uses the same definitions (real visitor, source mapping) instead of its own SQL.
-fs.writeFileSync("data/engine/series.json", JSON.stringify({ at: new Date().toISOString(), from: since, end, series }));
+fs.writeFileSync("data/engine/series.json", JSON.stringify({ at: new Date().toISOString(), from: since, end, starts: readsFrom ? { "reads.chatgpt": readsFrom } : {}, series })); // starts: a series whose source began later — days before it are UNKNOWN, not 0
 // WHERE each moving accounts metric moved (shift-share by landing page) — only for watch/drop/rise, the rest is noise
 const why = {};
 for (const m of METRICS.filter((m) => m.startsWith("accounts") && ["watch", "drop", "rise"].includes(metrics[m].level))) {
