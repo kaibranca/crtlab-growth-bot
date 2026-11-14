@@ -1,0 +1,17 @@
+name: test
+# Every push that touches code: unit tests + secret scan (public repo → Actions minutes are free). Bot data commits don't trigger it.
+on:
+  push: { paths: ["scripts/**", "test/**", "reels/engine/**", ".github/workflows/**"] }
+  pull_request:
+permissions: { contents: read }
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node --test test/
+      - run: node scripts/secret-scan.mjs
+      - run: node scripts/run.mjs hourly --dry > /dev/null && node scripts/run.mjs daily --dry > /dev/null

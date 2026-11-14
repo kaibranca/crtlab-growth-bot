@@ -14,76 +14,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
-      - name: AI crawler counts
-        run: node scripts/aicrawl.mjs
-        env: { OPS_KEY: "${{ secrets.OPS_KEY }}" }
-      # AI REFERRAL MACHINE (11-10) — the main short-term engine: learns every hour from the reads just drained + the
-      # day's AI clicks, re-plans, and sends Bing the next most valuable pages (quota paced over the day)
-      - name: Deploy watch → device QA guard after each site deploy
-        continue-on-error: true
-        run: node scripts/deploy-watch.mjs
-        env: { GH_TOKEN: "${{ github.token }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}", RAILWAY_API_TOKEN: "${{ secrets.RAILWAY_API_TOKEN }}" }
-      # WORKS ENGINE (11-13) — the north star: accounts by page family (deduped), focus / explore / bin, daily cycle judged,
-      # effort. Runs BEFORE the AI machine so every Bing send, llms.txt pick and builder uses this hour's ranking.
-      - name: WORKS engine (what brings accounts → focus, bin, cycles, effort)
-        continue-on-error: true
-        run: npm i pg@8 --no-save --no-package-lock --silent && node scripts/works.mjs
-        env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}" }
-      - name: AI referral machine
-        continue-on-error: true
-        run: node scripts/ai-pull.mjs && node scripts/ai-eyes.mjs && node scripts/recommend.mjs; node scripts/ai-machine.mjs; npm i pg@8 --no-save --no-package-lock --silent; node scripts/bandit.mjs; node scripts/ai-truth.mjs; GH_WATCH_TOKEN=${{ secrets.GH_WATCH_TOKEN }} node scripts/timeline.mjs || true; node scripts/guard.mjs || true; GH_WATCH_TOKEN=${{ secrets.GH_WATCH_TOKEN }} node scripts/minutes.mjs || true
-        env: { OPS_KEY: "${{ secrets.OPS_KEY }}", BING_API_KEY: "${{ secrets.BING_API_KEY }}", CF_API_TOKEN: "${{ secrets.CF_API_TOKEN }}", CF_ZONE_ID: "${{ secrets.CF_ZONE_ID }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}" }
-      - name: Load alert (emails Kai if even one chart load was turned away, failed or slow in the last hour)
-        continue-on-error: true
-        run: node scripts/load-alert.mjs
-        env: { OPS_KEY: "${{ secrets.OPS_KEY }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
-      - name: Shield (ban repeat attackers 7 days at Cloudflare; Under Attack mode during a flood)
-        continue-on-error: true
-        run: node scripts/shield.mjs
-        env: { CF_API_TOKEN: "${{ secrets.CF_API_TOKEN }}", CF_ZONE_ID: "${{ secrets.CF_ZONE_ID }}", CF_ACCOUNT_ID: "${{ secrets.CF_ACCOUNT_ID }}", CF_BAN_LIST: "${{ secrets.CF_BAN_LIST }}", OPS_KEY: "${{ secrets.OPS_KEY }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
-      - name: Watchdog
-        id: wd
-        continue-on-error: true
-        run: node scripts/watchdog.mjs
-      - name: Calendar (actuals land within the hour)
-        continue-on-error: true
-        run: node scripts/upcoming.mjs
-      - name: Indicator pages (every release since 2016; rewrites only indicators that just released)
-        continue-on-error: true
-        run: node scripts/indicators.mjs
-      - name: Same-day news pages (actual vs forecast + Bitcoin/Ethereum, free; the rest fills in overnight)
-        continue-on-error: true
-        run: node scripts/live-news.mjs
-      - name: Headlines
-        continue-on-error: true
-        run: node scripts/headlines.mjs
-      - name: IndexNow (only URLs whose lastmod moved)
-        continue-on-error: true
-        run: node scripts/indexnow.mjs
-      - name: Cost machine (Railway memory/egress per service, diagnoses spikes, fixes cache bloat in quiet hours)
-        continue-on-error: true
-        run: node scripts/cost.mjs
-        env: { OPS_KEY: "${{ secrets.OPS_KEY }}", RAILWAY_API_TOKEN: "${{ secrets.RAILWAY_API_TOKEN }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}" }
-      - name: People machine (real visitors + sign-ups vs the same hours of 14 days; finds the segment that fell)
-        continue-on-error: true
-        run: npm i pg@8 --no-save --no-package-lock --silent && node scripts/humans.mjs
-        env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}" }
-      - name: Outcomes (one real number per machine and lead, this week vs last)
-        continue-on-error: true
-        run: npm i pg@8 --no-save --no-package-lock --silent && node scripts/outcomes.mjs
-        env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}" }
-      - name: Supervisor + engine core (every machine watched, mistakes, mode surge/dip, the /machine web)
-        continue-on-error: true
-        run: node scripts/supervisor.mjs; node scripts/peaks.mjs; node scripts/fixer.mjs; node scripts/world.mjs; node scripts/executive.mjs; node scripts/upgrades.mjs; node scripts/tuner.mjs; node scripts/iq.mjs; node scripts/self.mjs; node scripts/core.mjs; node scripts/traffic-core.mjs
-        env: { RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", GH_TOKEN: "${{ github.token }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}", SPIKE: "${{ inputs.spike }}" }
-      - name: The other brains — money, data, security, content, retention, speed (they read each other + the engines)
-        continue-on-error: true
-        run: node scripts/brains.mjs; node scripts/memory.mjs
-        env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}", CF_API_TOKEN: "${{ secrets.CF_API_TOKEN }}", CF_ACCOUNT_ID: "${{ secrets.CF_ACCOUNT_ID }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}" }
-      - run: node scripts/summary.mjs
+      - run: npm i pg@8 --no-save --no-package-lock --silent
+      # CORE RUNTIME (11-14): every machine isolated, own timeout, ONLY its own secrets (scripts/steps.mjs), every result recorded
+      # (data/guard/runs.jsonl + steps.json). Repeat failures email + turn this run red. Replaces continue-on-error / `|| true`.
+      - name: Machines (hourly)
+        id: run
+        run: node scripts/run.mjs hourly
+        env: { OPS_KEY: "${{ secrets.OPS_KEY }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}", BING_API_KEY: "${{ secrets.BING_API_KEY }}", CF_API_TOKEN: "${{ secrets.CF_API_TOKEN }}", CF_ZONE_ID: "${{ secrets.CF_ZONE_ID }}", CF_ACCOUNT_ID: "${{ secrets.CF_ACCOUNT_ID }}", CF_BAN_LIST: "${{ secrets.CF_BAN_LIST }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}", RAILWAY_API_TOKEN: "${{ secrets.RAILWAY_API_TOKEN }}", GH_TOKEN: "${{ github.token }}", SPIKE: "${{ inputs.spike }}" }
       - name: Save
-        run: |
-          bash scripts/push.sh "hourly $(date -u +%FT%H:%M)"
-      - name: Alert on failure
-        if: steps.wd.outcome == 'failure'
-        run: echo "::error::Watchdog failed — see the table above" && exit 1
+        if: always()
+        run: bash scripts/push.sh "hourly $(date -u +%FT%H:%M)"
+      - name: Red if a machine keeps failing
+        if: steps.run.outputs.failed != '0'
+        run: echo "::error::${{ steps.run.outputs.failed }} machine(s) failing repeatedly — see the step table" && exit 1
