@@ -86,6 +86,15 @@ export function checkAttribution(direct, total) {
     : res("truth-attribution", "visitor sources are known", "ok", `${Math.round(share * 100)}% unattributed`);
 }
 
+// Buyers are THE outcome. If the WATCH can't read them (no key, Stripe refused, stale file) the engine is blind on money — FAIL.
+export function checkBuyers(drops, now) {
+  if (!drops?.at) return res("truth-buyers", "new buyers are measured", "unknown", "no data/engine/drops.json yet");
+  const ageH = (now - Date.parse(drops.at)) / 36e5, b = drops.metrics?.["buyers.new"];
+  if (ageH > 30) return res("truth-buyers", "new buyers are measured", "fail", `WATCH is ${ageH.toFixed(0)} h old`);
+  if (!b || b.level === "unknown") return res("truth-buyers", "new buyers are measured", "fail", `buyers unknown — ${b?.why ?? "metric missing"}`);
+  return res("truth-buyers", "new buyers are measured", "ok", `level ${b.level}`);
+}
+
 export function summarise(checks) {
   const fail = checks.filter((c) => c.state === "fail"), unknown = checks.filter((c) => c.state === "unknown");
   return { ok: checks.length - fail.length - unknown.length, fail: fail.length, unknown: unknown.length, of: checks.length };

@@ -19,6 +19,7 @@ const checks = [
   L.checkIndexNow(lines("data/indexnow.jsonl"), NOW),
   L.checkSitemap(sitemaps, NOW),
   L.checkCore(J("data/guard/steps.json"), NOW),
+  L.checkBuyers(J("data/engine/drops.json"), NOW),
 ];
 
 if (process.env.ANALYTICS_DB_URL) {

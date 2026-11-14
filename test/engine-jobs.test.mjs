@@ -46,3 +46,12 @@ test("truth: frozen DB, north star off by > 15 %, mostly-unattributed visitors =
   assert.equal(L.checkAttribution(67, 100).state, "fail");
   assert.equal(L.checkAttribution(30, 100).state, "ok");
 });
+
+test("buyers check: blind on money = fail, never quiet", () => {
+  const now = Date.parse("2026-11-15T12:00Z"), at = "2026-11-15T06:45Z";
+  assert.equal(L.checkBuyers(null, now).state, "unknown");
+  assert.equal(L.checkBuyers({ at, metrics: { "buyers.new": { level: "unknown", why: "Stripe charges 403" } } }, now).state, "fail");
+  assert.equal(L.checkBuyers({ at, metrics: {} }, now).state, "fail");
+  assert.equal(L.checkBuyers({ at: "2026-11-13T06:45Z", metrics: { "buyers.new": { level: "normal" } } }, now).state, "fail");
+  assert.equal(L.checkBuyers({ at, metrics: { "buyers.new": { level: "thin" } } }, now).state, "ok");
+});

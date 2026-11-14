@@ -81,3 +81,13 @@ export function ioReport(io) {
     unowned: Object.fromEntries(Object.entries(readers).filter(([f]) => !writers[f]).map(([f, r]) => [f, r.length])),
   };
 }
+
+// OUTPUT CHECK (11-14): exit 0 is not "job done". traffic exited 0 for a day without writing data/traffic/plan.json (the
+// sitemap had split under its 500-page guard) and the core called it "ok". A step that owns a refreshed contract
+// (contracts.mjs: owner "<plan>/<step>" + fresh) must have rewritten that file in THIS run, else the step is a failure.
+export function ownedOutputs(contracts, planName, stepName) {
+  return contracts.filter((c) => c.owner === `${planName}/${stepName}` && typeof c.fresh === "function").map((c) => c.path);
+}
+export function unwritten(paths, before, after) {
+  return paths.filter((p) => after[p] == null || after[p] === before[p]);
+}

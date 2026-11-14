@@ -42,3 +42,16 @@ test("judge needs BOTH size and certainty", () => {
   assert.equal(judge({ expected: 100, ratio: 0.4, z: -2 }), "drop");
   assert.equal(judge({ expected: 5, ratio: 0, z: -3 }), "thin");
 });
+
+import { gapTest } from "../engine/watch/drops-lib.mjs";
+test("buyers gap test: normal gap ok, long dry spell flagged, too few buyers = thin, none = unknown", () => {
+  const weekly = {}; for (let i = 0; i < 8; i++) weekly[addDays("2026-09-01", i * 7)] = 1; // 1 buyer / week to 10-20
+  assert.equal(gapTest(weekly, "2026-10-23").level, "normal");            // 3 days after a buyer
+  const r = gapTest(weekly, "2026-11-12");                                 // 23 dry days at 1/week → p ≈ 0.04
+  assert.equal(r.gap, 23); assert.equal(r.level, "watch"); assert.equal(r.typicalGap, 7);
+  assert.equal(gapTest(weekly, "2026-11-03").level, "normal");            // 14 days = 2× typical: still normal
+  assert.equal(gapTest(weekly, "2026-11-15").level, "drop");              // 26 days ≈ 3.7× typical
+  assert.equal(gapTest({ "2026-11-01": 1, "2026-11-05": 1 }, "2026-11-30").level, "thin");
+  assert.equal(gapTest({}, "2026-11-30").level, "unknown");
+  assert.equal(gapTest({ "2026-12-01": 3 }, "2026-11-30").level, "unknown"); // future rows never count
+});

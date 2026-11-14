@@ -5,7 +5,9 @@
 // A step failing `alertAfter` times in a row → one email (deduped 20 h) + the workflow run turns red (output failed=N).
 // Always exits 0 itself so the Save step still commits the records.
 import fs from "node:fs"; import os from "node:os"; import path from "node:path"; import { spawnSync } from "node:child_process";
-import { PLANS } from "./steps.mjs"; import { pickEnv, scrub, shouldSkip, health, alerting, ioReport } from "./run-lib.mjs";
+import { PLANS } from "./steps.mjs"; import { pickEnv, scrub, shouldSkip, health, alerting, ioReport, ownedOutputs, unwritten } from "./run-lib.mjs";
+import { CONTRACTS } from "./contracts.mjs";
+const mtimes = (ps) => Object.fromEntries(ps.map((p) => { try { return [p, fs.statSync(p).mtimeMs]; } catch { return [p, null]; } }));
 const TRACE = path.resolve("scripts/trace-fs.mjs"), TDIR = fs.mkdtempSync(path.join(os.tmpdir(), "io-"));
 
 // the plan as data (names only, no values): which machines exist, what outside systems each is given — the /machine web reads it
@@ -29,14 +31,15 @@ for (const step of steps) {
   if (skip) { results.push({ at, plan: planName, step: step.name, status: "skipped", ms: 0, err: skip }); console.log(`⏭  ${step.name}: ${skip}`); continue; }
   if (dry) { console.log(`· ${step.name}  ${step.cmd.join(" ")}  env=[${step.env.join(",")}]  ${step.timeout}s`); results.push({ at, step: step.name, status: "ok" }); continue; }
   console.log(`::group::${step.name}`);
-  const t0 = Date.now();
+  const t0 = Date.now(), owned = ownedOutputs(CONTRACTS, planName, step.name), before = mtimes(owned);
   const env = { ...pickEnv(process.env, step.env), NODE_OPTIONS: `--import=${TRACE}`, TRACE_OUT: path.join(TDIR, `${step.name}.json`) };
   const r = spawnSync(step.cmd[0], step.cmd.slice(1), { env, encoding: "utf8", timeout: step.timeout * 1000, maxBuffer: 32 << 20 });
   const ms = Date.now() - t0;
   process.stdout.write(scrub(r.stdout, allSecrets)); process.stderr.write(scrub(r.stderr, allSecrets));
   console.log("::endgroup::");
-  const status = r.error?.code === "ETIMEDOUT" ? "timeout" : r.status === 0 ? "ok" : "fail";
-  const err = status === "ok" ? null : scrub((r.stderr || r.error?.message || `exit ${r.status}`).trim().split("\n").slice(-4).join(" | "), allSecrets).slice(0, 400);
+  const missed = r.status === 0 ? unwritten(owned, before, mtimes(owned)) : [];
+  const status = r.error?.code === "ETIMEDOUT" ? "timeout" : r.status === 0 && !missed.length ? "ok" : "fail";
+  const err = status === "ok" ? null : missed.length ? `exit 0 but did not write ${missed.join(", ")} (owned output)` : scrub((r.stderr || r.error?.message || `exit ${r.status}`).trim().split("\n").slice(-4).join(" | "), allSecrets).slice(0, 400);
   results.push({ at, plan: planName, step: step.name, status, ms, code: r.status, err });
   console.log(`${status === "ok" ? "✓" : "✗"} ${step.name} ${status} ${(ms / 1000).toFixed(1)}s${err ? "  " + err : ""}`);
 }

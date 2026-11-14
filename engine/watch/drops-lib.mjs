@@ -40,3 +40,22 @@ export function replay(map, from, start, end, rules = RULES) {
   for (let d = start; d <= end; d = addDays(d, 1)) { const r = evaluate(map, from, d, rules); if (r.level === "drop" || r.level === "watch" || r.level === "rise") out.push({ day: d, level: r.level, w: r.windows.find((x) => x.level === r.level) }); }
   return out;
 }
+
+// BUYERS — too rare (~1/week) for window tests ("thin" forever), but they are THE outcome, so they get their own test:
+// how unlikely is the current dry spell at our recent rate? P(no new buyer in g days | Poisson λ/day) = e^(−λg).
+// λ = the rate over the `lookback` days ENDING AT THE LAST BUYER (the normal before the gap). Tested 11-14: measuring it over
+// days ending TODAY let the gap deflate its own rate — 23 dry days at a 1/week pace read "normal" (p 0.13 instead of 0.04).
+// Levels: watch at ~2.4× the typical gap, drop at ~3.5×.
+// map = {ymd: new buyers}. Needs ≥ minEvents buyers in the lookback, else "thin" (say so, never guess).
+export const GAP = { lookback: 56, minEvents: 4, watchP: 0.1, dropP: 0.03 };
+export function gapTest(map, end, g = GAP) {
+  let last = null;
+  for (const [d, k] of Object.entries(map)) if (d <= end && k && (!last || d > last)) last = d;
+  if (!last) return { level: "unknown", windows: [] };
+  const from = addDays(last, -g.lookback + 1);
+  let n = 0; for (const [d, k] of Object.entries(map)) if (d >= from && d <= last && k) n += k;
+  const gap = Math.round((Date.parse(end) - Date.parse(last)) / 864e5), rate = n / g.lookback;
+  if (n < g.minEvents) return { level: "thin", gap, n, windows: [] };
+  const p = Math.exp(-rate * gap);
+  return { level: p < g.dropP ? "drop" : p < g.watchP ? "watch" : "normal", gap, n, typicalGap: +(1 / rate).toFixed(1), p: +p.toFixed(3), windows: [] };
+}

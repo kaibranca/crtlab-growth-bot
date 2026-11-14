@@ -71,3 +71,15 @@ test("ioReport: flags two writers of one state file, tolerates shared logs, find
   assert.deepEqual(Object.keys(r.sharedLog), ["data/log.jsonl"]);
   assert.deepEqual(r.unowned, { "data/x.json": 1 });
 });
+
+import { ownedOutputs, unwritten } from "../scripts/run-lib.mjs";
+test("output check: exit 0 without writing the owned file is a failure", () => {
+  const C = [{ path: "data/traffic/plan.json", owner: "daily/traffic", fresh: () => 0 }, { path: "data/ai/hooks.json", owner: "hourly/ai-machine" },
+    { path: "data/x.json", owner: "daily/traffic" }];
+  assert.deepEqual(ownedOutputs(C, "daily", "traffic"), ["data/traffic/plan.json"]); // only contracts that must stay fresh
+  assert.deepEqual(ownedOutputs(C, "hourly", "ai-machine"), []);
+  const p = ["data/traffic/plan.json"];
+  assert.deepEqual(unwritten(p, { [p[0]]: 1 }, { [p[0]]: 1 }), p);       // untouched → failure
+  assert.deepEqual(unwritten(p, { [p[0]]: 1 }, { [p[0]]: 2 }), []);      // rewritten → ok
+  assert.deepEqual(unwritten(p, { [p[0]]: null }, { [p[0]]: null }), p); // never created → failure
+});
