@@ -36,6 +36,20 @@ for (const a of L("data/radar/actions.jsonl").filter((a) => !a.verdict && NOW - 
 for (const a of L("data/ai/actions.jsonl").filter((a) => !a.verdict && a.at && NOW - Date.parse(a.at) > 14 * DAY)) out.unjudged.push({ key: `ai|${a.page || a.id}|${a.at}`, what: `AI machine action ${a.kind || ""} on ${a.page || a.id || "?"}: never judged` });
 if (out.unjudged.length) out.lessons.push(`${out.unjudged.length} machine actions older than 14 days were never judged: work done, nothing learned. Every action needs a verdict day.`);
 
+// 4. RETIRE CANDIDATES (Kai 11-14: "cut off what doesn't work, keep only refined stuff, a smart engine that does it"). Rules, so it
+// can never thrash: a family qualifies only after ≥ 60 days with real exposure and 0 accounts, it is RETIRED (Google-only noindex,
+// page kept for users/Bing/ChatGPT, reversible) never deleted (deleting = 404s + loses AI readers), it stays retired ≥ 60 days,
+// and the change goes through Kai-reviewed code inside the guard's 1-change-per-week budget. Revive = accounts appear.
+const CV = Object.fromEntries((J("data/google/plan.json", {}).coverage || []).map((c) => [c.family.replace("…", "x"), c]));
+const RET = J("data/guard/retire.json", { since: {}, retired: ["/news/<release>", "/economic-calendar/<x>", "/answers/<x>", "/recap/<x>", "/<firm>-challenge-simulator"], retiredAt: "2026-11-14" });
+for (const f of fams) { const dead = (f.pages || 0) >= 10 && (f.accounts90 || 0) === 0 && (f.visitors90 || 0) > 0;
+  if (dead) RET.since[f.fam] ??= out.at.slice(0, 10); else delete RET.since[f.fam]; }
+out.retire = Object.entries(RET.since).filter(([fam, d]) => !RET.retired.includes(fam) && NOW - Date.parse(d) >= 60 * DAY).map(([fam, d]) => ({ fam, deadSince: d }));
+out.watch = Object.entries(RET.since).filter(([fam]) => !RET.retired.includes(fam)).map(([fam, d]) => ({ fam, deadSince: d, eligible: new Date(Date.parse(d) + 60 * DAY).toISOString().slice(0, 10) }));
+out.revive = RET.retired.filter((fam) => fams.some((f) => f.fam === fam && (f.accounts90 || 0) >= 2));
+if (out.retire.length) out.lessons.push(`Ready to RETIRE (60 d dead with exposure): ${out.retire.map((x) => x.fam).join(", ")} — one per guard window, via code.`);
+if (out.revive.length) out.lessons.push(`Retired but now bringing accounts → REVIVE: ${out.revive.join(", ")}.`);
+fs.writeFileSync("data/guard/retire.json", JSON.stringify(RET, null, 1));
 fs.mkdirSync("data/guard", { recursive: true }); fs.writeFileSync("data/guard/failures.json", JSON.stringify(out, null, 1));
 // the ledger finally hears about losses (once per key)
 const LG = "data/machines/ledger.jsonl", have = new Set(L(LG).map((x) => x.key));
