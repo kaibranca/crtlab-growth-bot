@@ -7,6 +7,8 @@
 // the share of change groups that are clean (one change alone). It only rises if changes are spaced (guard budget 1 / 7 d).
 import fs from "node:fs";
 import { clusters, verdict, lessons, gradeAlarms } from "./learn-lib.mjs";
+import { googleUpdates, overlapping } from "../lib/external.mjs";
+import { addDays } from "../lib/stats.mjs";
 
 const OUT = "data/engine/learn.json", LEDGER = "data/machines/ledger.jsonl";
 const J = (p) => { try { return JSON.parse(fs.readFileSync(p, "utf8")); } catch { return null; } };
@@ -24,10 +26,16 @@ for (const e of J("data/machines/timeline.json")?.events ?? [])
 const changes = [...reg.values()].filter((c) => c.at.slice(0, 10) >= S.from).sort((a, b) => a.at.localeCompare(b.at));
 
 // 2. verdicts per group — primary outcome = accounts; per-source + pack clicks as detail (same windows, same rules)
+const GOOGLE = await googleUpdates({ since: S.from }); // null = unreadable (said, never assumed "none")
+if (GOOGLE == null) console.log("learn: Google Search Status unreadable — outside confounds unknown this run");
 const DETAIL = ["accounts.google", "accounts.chatgpt", "paywall.packs"].filter((m) => S.series[m]);
 const groups = clusters(changes).map((g) => {
   const v = verdict(S.series.accounts, S.from, S.end, g);
   v.detail = Object.fromEntries(DETAIL.map((m) => { const d = verdict(S.series[m], S.from, S.end, g), w = d.windows.at(-1); return [m, { state: d.state, ratio: w.ratio ?? null, z: w.z ?? null }]; }));
+  // OUTSIDE confounds: a Google ranking update anywhere in [first change, last change + 14 d] → the group is not clean
+  const ext = overlapping(GOOGLE ?? [], g.day0, addDays(g.last, 14));
+  if (ext.length) { v.external = ext.map((e) => e.what); v.clean = false; }
+  if (GOOGLE == null) v.externalUnknown = true;
   return v;
 });
 const judged = groups.filter((g) => !["pending", "unknown"].includes(g.state));
@@ -48,7 +56,7 @@ for (const g of Object.values(grade)) { g.precision = g.graded ? +(g.confirmed /
 
 const out = { at: new Date().toISOString(), end: S.end,
   method: "after-change window (7/14 d) vs same-weekday trimmed normal from BEFORE the group's first change; groups = changes ≤ 6 d apart; helped/hurt need z ±1.64 AND ±15%",
-  learnability, lessons: lessons(groups), groups: groups.slice(-40), grade, alarms, changes };
+  learnability, lessons: lessons(groups), groups: groups.slice(-40), grade, alarms, external: GOOGLE, changes };
 // 4. ledger: one lesson per group when its final (14-day) verdict lands — the memory every machine + session reads
 const done = new Set((prev.groups ?? []).filter((g) => g.final).map((g) => g.day0 + "|" + g.n));
 for (const g of groups) {
@@ -57,7 +65,7 @@ for (const g of groups) {
   g.final = true;
   if (done.has(g.day0 + "|" + g.n)) continue;
   const what = `${g.n} change${g.n > 1 ? "s" : ""} ${g.day0}→${g.last} (${[...new Set(g.changes.map((c) => c.where))].join(", ")}): accounts ${g.state.toUpperCase()} over 14 d` +
-    (w14.ratio != null ? ` (×${w14.ratio}, z ${w14.z}, smallest visible ±${Math.round(w14.mde * 100)}%)` : "") + (g.clean ? "" : " — CONFOUNDED: cannot credit any single change");
+    (w14.ratio != null ? ` (×${w14.ratio}, z ${w14.z}, smallest visible ±${Math.round(w14.mde * 100)}%)` : "") + (g.clean ? "" : g.external ? ` — CONFOUNDED by Google (${g.external.join(", ")})${g.n > 1 ? ` + ${g.n} changes` : ""}` : " — CONFOUNDED: cannot credit any single change");
   fs.appendFileSync(LEDGER, JSON.stringify({ at: new Date().toISOString(), key: `learn|${g.day0}|${g.n}`, machine: "learn", kind: g.state === "hurt" ? "loss" : g.state === "helped" ? "win" : "lesson", what }) + "\n");
 }
 fs.mkdirSync("data/engine", { recursive: true });

@@ -42,3 +42,12 @@ test("self-grade: a lasting fall confirms the alarm; a 3-day dip is graded 'reco
   const dip = gradeAlarms(build((d) => (d >= "2026-10-01" && d <= "2026-10-03" ? 0.2 : 1)), FROM, LAST);
   assert.ok(dip.episodes.every((e) => e.state !== "confirmed"));
 });
+
+import { overlapping } from "../engine/lib/external.mjs";
+test("external: Google updates overlap a window (ongoing = open-ended)", () => {
+  const ev = [{ begin: "2026-08-18T00:00Z", end: "2026-08-21T00:00Z", what: "spam" }, { begin: "2026-11-10T18:06Z", end: null, what: "core" }];
+  assert.deepEqual(overlapping(ev, "2026-08-20", "2026-09-03").map((e) => e.what), ["spam"]);
+  assert.deepEqual(overlapping(ev, "2026-09-01", "2026-09-15"), []);
+  assert.deepEqual(overlapping(ev, "2026-11-20", "2026-12-04").map((e) => e.what), ["core"]);
+  assert.deepEqual(overlapping(null, "2026-11-20", "2026-12-04"), []);
+});
