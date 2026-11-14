@@ -11,6 +11,7 @@ export const KIND = {
   shield: "security", cost: "infra", reels: "post",
   "bing-send": "signal", "bing-submit": "signal", indexnow: "signal", "gsc-sitemap": "signal",
   hooks: "traffic", "home-hook": "traffic", bandit: "traffic", llms: "traffic", "sitemap-tiers": "traffic",
+  session: "traffic", // a Claude session / Kai shipping a visitor-facing site change (engine/learn/register.mjs asks first)
 };
 
 // ctx: { hands: {kind, data} (contract check), freeze: {kind, data}, budget: {used, of} | null, google: [{what, begin, end}] | null, now }

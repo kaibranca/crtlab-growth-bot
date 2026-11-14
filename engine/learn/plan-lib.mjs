@@ -43,3 +43,8 @@ export function judge(exp, w) {
   if ((up && w.state === "hurt") || (!up && w.state === "helped")) return "refuted (moved the other way)";
   return `inconclusive (no effect ≥ ±${Math.round((w.mde ?? 0) * 100)} % — smaller effects are invisible here)`;
 }
+// the change group an experiment belongs to: the group whose [day0, last] contains its start day (±1 for deploy timing)
+export function groupFor(groups, ymd) {
+  const t = Date.parse(ymd), D = 864e5;
+  return (groups ?? []).find((g) => Date.parse(g.day0) - D <= t && t <= Date.parse(g.last) + D) ?? null;
+}

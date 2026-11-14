@@ -6,7 +6,9 @@
 // change overlapped another → NOTHING since July could be judged alone. Learnability is therefore the first number here:
 // the share of change groups that are clean (one change alone). It only rises if changes are spaced (guard budget 1 / 7 d).
 import fs from "node:fs";
-import { clusters, verdict, lessons, gradeAlarms } from "./learn-lib.mjs";
+import { clusters, verdict, lessons, gradeAlarms, effect, RULES } from "./learn-lib.mjs";
+import { judge, groupFor } from "./plan-lib.mjs";
+import { asSeries } from "../lib/stats.mjs";
 import { googleUpdates, overlapping } from "../lib/external.mjs";
 import { addDays } from "../lib/stats.mjs";
 
@@ -54,9 +56,22 @@ for (const a of Object.values(alarms)) { const g = (grade[a.metric] ??= { graded
   if (a.state === "confirmed" || a.state === "recovered") { g.graded++; if (a.state === "confirmed") g.confirmed++; } else if (a.state === "pending") g.pending++; }
 for (const g of Object.values(grade)) { g.precision = g.graded ? +(g.confirmed / g.graded).toFixed(2) : null; g.enough = g.graded >= 30; }
 
+// 4. PRE-REGISTERED experiments (engine/learn/register.mjs): judged against THEIR OWN hypothesis, metric and window — inside
+//    their change group (baseline from before the group's first change), confounds stated. A verdict is final once due.
+const EXP = J("data/engine/experiments.json")?.experiments ?? [];
+const experiments = EXP.map((e) => {
+  const day = e.at.slice(0, 10), found = groupFor(groups, day), g = found ?? { day0: day, last: day, n: 1 };
+  // no change record for that date (registry starts 11-08) → cleanliness UNKNOWN, never assumed clean
+  if (!S.series[e.metric]) return { id: e.id, verdict: "unknown metric", what: e.what };
+  if (e.plan?.design === "split") return { id: e.id, what: e.what, verdict: "split test — judged from its own arms, not before/after", design: "split" };
+  const s = asSeries(S.series[e.metric], S.starts?.[e.metric] ?? S.from, S.end);
+  const w = effect(s, g.last, e.plan?.days ?? 14, S.end, RULES, addDays(g.day0, -1));
+  const v = e.plan?.design === "not learnable" ? "not learnable (registered as such — never credited)" : judge(e, w);
+  return { id: e.id, what: e.what, metric: e.metric, expect: e.expect, verdict: v, clean: found ? found.clean !== false && !found.external : null, window: w, due: e.verdictDue };
+});
 const out = { at: new Date().toISOString(), end: S.end,
   method: "after-change window (7/14 d) vs same-weekday trimmed normal from BEFORE the group's first change; groups = changes ≤ 6 d apart; helped/hurt need z ±1.64 AND ±15%",
-  learnability, lessons: lessons(groups), groups: groups.slice(-40), grade, alarms, external: GOOGLE, changes };
+  learnability, lessons: lessons(groups), groups: groups.slice(-40), grade, alarms, experiments, external: GOOGLE, changes };
 // 4. ledger: one lesson per group when its final (14-day) verdict lands — the memory every machine + session reads
 const done = new Set((prev.groups ?? []).filter((g) => g.final).map((g) => g.day0 + "|" + g.n));
 for (const g of groups) {
@@ -68,6 +83,10 @@ for (const g of groups) {
     (w14.ratio != null ? ` (×${w14.ratio}, z ${w14.z}, smallest visible ±${Math.round(w14.mde * 100)}%)` : "") + (g.clean ? "" : g.external ? ` — CONFOUNDED by Google (${g.external.join(", ")})${g.n > 1 ? ` + ${g.n} changes` : ""}` : " — CONFOUNDED: cannot credit any single change");
   fs.appendFileSync(LEDGER, JSON.stringify({ at: new Date().toISOString(), key: `learn|${g.day0}|${g.n}`, machine: "learn", kind: g.state === "hurt" ? "loss" : g.state === "helped" ? "win" : "lesson", what }) + "\n");
 }
+const doneExp = new Set((prev.experiments ?? []).filter((x) => x.verdict && !x.verdict.startsWith("pending")).map((x) => x.id));
+for (const x of experiments) if (x.verdict && !x.verdict.startsWith("pending") && !doneExp.has(x.id) && x.window)
+  fs.appendFileSync(LEDGER, JSON.stringify({ at: new Date().toISOString(), key: `learn|exp|${x.id}`, machine: "learn", kind: x.verdict === "confirmed" ? "win" : x.verdict.startsWith("refuted") ? "loss" : "lesson",
+    what: `EXPERIMENT "${x.what}" (${x.metric} ${x.expect > 0 ? "+" : ""}${Math.round(x.expect * 100)} % hoped): ${x.verdict.toUpperCase()}${x.window?.ratio != null ? ` — ×${x.window.ratio}, z ${x.window.z}` : ""}${x.clean === true ? "" : x.clean === false ? " (confounded)" : " (no change record — cleanliness unknown)"}` }) + "\n");
 fs.mkdirSync("data/engine", { recursive: true });
 fs.writeFileSync(OUT, JSON.stringify(out, null, 1)); // groups carry their final flags (same objects)
 

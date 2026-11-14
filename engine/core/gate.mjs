@@ -20,7 +20,7 @@ export function context(now = Date.now()) {
 
 export function gate(machine, what = "", ctx = context()) {
   const d = decide(machine, ctx);
-  try { // log only when this machine's decision or reason changed (keeps the log small and every row meaningful)
+  if (!process.env.NODE_TEST_CONTEXT) try { // log only when this machine's decision or reason changed; tests never write the production log
     let last = null;
     if (fs.existsSync(LOG)) for (const l of fs.readFileSync(LOG, "utf8").trim().split("\n").reverse()) { try { const r = JSON.parse(l); if (r.machine === machine) { last = r; break; } } catch {} }
     if (!last || last.allow !== d.allow || last.why !== d.why) {

@@ -37,6 +37,8 @@ const list = [
     shape: T.obj({ at: T.iso, checks: T.arr(T.obj({ id: T.str, what: T.str, state: T.oneOf("ok", "warn", "fail", "learning"), detail: T.str })) }) },
   { name: "digest", path: "data/engine/digest.json", owner: "daily/digest", maxAgeH: 30, fresh: at, firstDue: "2026-11-15T08:00:00Z",
     shape: T.obj({ at: T.iso, last: T.iso, notes: T.num }) },
+  { name: "experiments", path: "data/engine/experiments.json", owner: "human (engine/learn/register.mjs)",
+    shape: T.obj({ at: T.iso, experiments: T.arr(T.obj({ id: T.str, at: T.iso, what: T.str, metric: T.str, expect: T.num })) }) },
   { name: "jobs", path: "data/engine/jobs.json", owner: "hourly/jobs", maxAgeH: 3, fresh: at,
     shape: T.obj({ at: T.iso, checks: T.arr(T.obj({ id: T.str, job: T.str, state: T.oneOf("ok", "fail", "unknown"), detail: T.str }), { min: 1 }) }) },
   { name: "ledger", path: "data/machines/ledger.jsonl", owner: "shared log",
