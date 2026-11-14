@@ -1,0 +1,14 @@
+# 11-14: APPEND-ONLY logs written by more than one workflow (hourly + daily overlap ~06:40, reels, health). scripts/push.sh
+# settles rebase conflicts with -X theirs, which silently DROPPED the other workflow's appended rows (measured: a ledger row
+# lost on 11-11). union keeps both sides' lines (tested on a scratch repo with rebase -X theirs). Only for files that are
+# appended, never rewritten in place (a rewritten "today's row" file would get duplicates — e.g. data/traffic/score.jsonl).
+data/machines/ledger.jsonl merge=union
+data/guard/runs.jsonl merge=union
+data/indexnow.jsonl merge=union
+data/ai/runs.jsonl merge=union
+data/ai/changes.jsonl merge=union
+data/ai/edge.jsonl merge=union
+data/world/sends.jsonl merge=union
+data/world/llms.jsonl merge=union
+data/engine/gate.jsonl merge=union
+data/engine/inbox/*.jsonl merge=union
