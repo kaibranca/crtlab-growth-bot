@@ -5,6 +5,7 @@
 // A check that cannot run says "unknown" (never a false alarm, never silence about a dead token: invalid = 0 days).
 import fs from "node:fs";
 import tls from "node:tls";
+import "./mailguard.mjs"; // 11-14: through the mail router
 const J = (f, d) => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return d; } };
 const out = [], now = Date.now(), days = (t) => (t ? Math.floor((t - now) / 864e5) : null);
 const item = (id, name, at, note = "", fix = "") => out.push({ id, name, expires: at ? new Date(at).toISOString().slice(0, 10) : null, daysLeft: at === 0 ? 0 : days(at), note, fix });

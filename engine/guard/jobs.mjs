@@ -47,5 +47,6 @@ const s = L.summarise(checks);
 console.log(`jobs: ${s.ok}/${s.of} ok, ${s.fail} fail, ${s.unknown} unknown`); for (const c of checks) console.log(`  ${c.state.padEnd(7)} ${c.job} — ${c.detail}`);
 if (turned.length && process.env.RESEND_API_KEY) {
   const { mail } = await import("../../reels/engine/alert.mjs");
-  await mail(`CRTLAB jobs: ${turned.map((c) => `${c.job} ${c.state}`).join(", ")}`, turned.map((c) => `${c.state.toUpperCase()} — ${c.job}: ${c.detail}`).join("\n") + "\n\nOne email per change. Detail: data/engine/jobs.json");
+  const urgent = turned.some((c) => c.state === "fail" && ["data-live", "truth-db-live"].includes(c.id)); // users see stale charts / engine blind
+  await mail(`CRTLAB jobs: ${turned.map((c) => `${c.job} ${c.state}`).join(", ")}`, turned.map((c) => `${c.state.toUpperCase()} — ${c.job}: ${c.detail}`).join("\n") + "\n\nOne email per change. Detail: data/engine/jobs.json", { level: urgent ? "urgent" : "info" });
 }

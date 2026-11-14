@@ -50,6 +50,8 @@ export const PLANS = {
     s("drops", [...DB, ...MAIL, "STRIPE_READ_KEY"], { cmd: ["node", "engine/watch/drops.mjs"] }),
     // v2 LEARN: verdict per change group (accounts after vs the normal BEFORE it), confounds, learnability, WATCH self-grade
     s("learn", [], { cmd: ["node", "engine/learn/learn.mjs"], needs: "drops" }),
+    // v2 MAIL: the ONE daily email — every non-urgent bot mail since yesterday, grouped (urgent ones went out immediately)
+    s("digest", MAIL, { cmd: ["node", "engine/core/digest.mjs"] }),
     s("summary"),
   ] },
 };
