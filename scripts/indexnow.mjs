@@ -21,6 +21,7 @@ const changed = urls.filter((u) => u.mod && (first ? Date.parse(u.mod) >= cutoff
 const fresh = changed.filter((u) => !sent[u.loc] || Date.now() - sent[u.loc] > 20 * 3600e3).map((u) => u.loc);
 let status = "nothing new";
 if (fresh.length) {
+  if (!(await import("./hands.mjs")).handsOn("indexnow")) { console.log("HANDS OFF (indexnow): nothing sent"); process.exit(0); }
   const r = await fetch("https://api.indexnow.org/IndexNow", { method: "POST", headers: { "content-type": "application/json; charset=utf-8" }, body: JSON.stringify({ host: "crtlab.pro", key: KEY, keyLocation: `${SITE}/${KEY}.txt`, urlList: fresh.slice(0, 10000) }) });
   status = `HTTP ${r.status}`;
   if (!r.ok) { console.log(status, "— state not saved, retried next run"); append("data/indexnow.jsonl", { at: now().toISOString(), sitemap: urls.length, submitted: 0, status }); process.exit(0); }

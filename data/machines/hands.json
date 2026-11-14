@@ -1,5 +1,31 @@
 {
  "_": "PRODUCTION HANDS (11-14). Which machines may CHANGE live systems (Railway, Cloudflare, Google/Bing submissions, posting). Missing / broken / not listed = NO hands (fail closed): the machine observes and recommends only. Moves back toward safety (reverting its own lever, raising a cap after a crash) are always allowed. Changing a value here is a Kai decision.",
- "cost": { "on": false, "why": "11-14: was about to set a hard 1.1 GB memory limit on live web at the 03:17 run to save cents; a traffic wave would OOM-kill the app. Scaling > pennies. Recommends only until rebuilt with load headroom rules." },
- "shield": { "on": true, "why": "security layer: bans repeat attackers 7 d at Cloudflare. 11-14: never bans shared networks or search/AI crawlers (shield-lib, tested). Broken hands file = no new bans; expired bans always lifted." }
+ "cost": {
+  "on": false,
+  "why": "11-14: was about to set a hard 1.1 GB memory limit on live web at the 03:17 run to save cents; a traffic wave would OOM-kill the app. Scaling > pennies. Recommends only until rebuilt with load headroom rules."
+ },
+ "shield": {
+  "on": true,
+  "why": "security layer: bans repeat attackers 7 d at Cloudflare. 11-14: never bans shared networks or search/AI crawlers (shield-lib, tested). Broken hands file = no new bans; expired bans always lifted."
+ },
+ "bing-send": {
+  "on": true,
+  "why": "ai-machine: daily Bing URL quota, steered by works tiers. Free, reversible; wrong pages only waste quota."
+ },
+ "bing-submit": {
+  "on": true,
+  "why": "weekly Bing URL batch + feed. Free."
+ },
+ "indexnow": {
+  "on": true,
+  "why": "tells Bing/Yandex about URLs whose lastmod moved. Free."
+ },
+ "gsc-sitemap": {
+  "on": true,
+  "why": "re-submits the sitemap to Google daily. Read-mostly; the sitemap itself is site code."
+ },
+ "reels": {
+  "on": true,
+  "why": "posts reels to crtlab.pro IG + FB only (account lock in post.mjs). The one channel that has shown a breakout (FB 5,930 plays 11-14)."
+ }
 }

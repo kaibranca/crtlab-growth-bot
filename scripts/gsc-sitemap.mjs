@@ -10,6 +10,7 @@ if (!SA.client_email) { console.log("gsc-sitemap: no GSC_SA_JSON"); process.exit
 const b64 = (x) => Buffer.from(x).toString("base64url"), t = Math.floor(Date.now() / 1000);
 const head = b64(JSON.stringify({ alg: "RS256", typ: "JWT" })), body = b64(JSON.stringify({ iss: SA.client_email, scope: "https://www.googleapis.com/auth/webmasters", aud: "https://oauth2.googleapis.com/token", iat: t, exp: t + 3600 }));
 const sig = crypto.createSign("RSA-SHA256").update(`${head}.${body}`).sign(SA.private_key, "base64url");
+{ const { handsOn } = await import("./hands.mjs"); if (!handsOn("gsc-sitemap")) { console.log("HANDS OFF (gsc-sitemap): nothing sent — data/machines/hands.json"); process.exit(0); } }
 const tok = await (await fetch("https://oauth2.googleapis.com/token", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" }, body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${head}.${body}.${sig}` })).json();
 if (!tok.access_token) { console.log("gsc-sitemap: token failed", JSON.stringify(tok).slice(0, 200)); process.exit(1); }
 const H = { authorization: `Bearer ${tok.access_token}` };

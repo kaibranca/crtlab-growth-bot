@@ -386,7 +386,8 @@ if (process.env.BING_API_KEY && queue.length) {
   // waited a day). An urgent run may spend at most URG_CAP × (35% at midnight → 100% by the last hour) of what is left.
   const dayFrac = 0.35 + 0.65 * (24 - hoursLeft) / 23, due = Math.min(queue.filter((q) => urgent(q) >= 2).length, Math.round(quota * URG_CAP * dayFrac)); // urgent goes now but never spends the whole day (11-11: 61 at 01:16 left 0 for later surges)
   const batch = pick(Math.min(quota, Math.max(Math.min(due, quota), Math.ceil(quota / hoursLeft))));
-  if (batch.length) {
+  const BING_HANDS = (await import("./hands.mjs")).handsOn("bing-send"); if (!BING_HANDS && batch.length) { bingStatus = "HANDS OFF"; console.log("HANDS OFF (bing-send):", batch.length, "not sent"); }
+  if (BING_HANDS && batch.length) {
     const r = await fetch(api("SubmitUrlBatch"), { method: "POST", headers: { "content-type": "application/json; charset=utf-8" }, body: JSON.stringify({ siteUrl: SITE + "/", urlList: batch.map((q) => SITE + (q.p === "/" ? "" : q.p)) }) }).catch((e) => ({ status: String(e) }));
     bingStatus = `HTTP ${r.status}`;
     if (r.status === 200) { const at = new Date().toISOString(); for (const q of batch) { sub[q.p] = at; append("data/world/sends.jsonl", { at, p: q.p, why: q.why }); } submitted = batch; } // the world model's action history

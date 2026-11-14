@@ -11,6 +11,7 @@ const urlList = [...PATHS, ...(process.env.URLS || "").split(",").filter(Boolean
 const api = (m) => `https://ssl.bing.com/webmaster/api.svc/json/${m}?apikey=${KEY}`;
 const q = await (await fetch(api("GetUrlSubmissionQuota") + `&siteUrl=${encodeURIComponent(SITE + "/")}`)).text();
 console.log("quota before:", q);
+{ const { handsOn } = await import("./hands.mjs"); if (!handsOn("bing-submit")) { console.log("HANDS OFF (bing-submit): nothing sent — data/machines/hands.json"); process.exit(0); } }
 const r = await fetch(api("SubmitUrlBatch"), { method: "POST", headers: { "content-type": "application/json; charset=utf-8" }, body: JSON.stringify({ siteUrl: SITE + "/", urlList: urlList.slice(0, 100) }) });
 console.log("SubmitUrlBatch", r.status, await r.text(), urlList.length, "urls");
 // 11-13 SITEMAP: Google had none submitted — make sure Bing has the sitemap too (Bing feeds ChatGPT search). Idempotent.

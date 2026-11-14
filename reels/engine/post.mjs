@@ -11,6 +11,7 @@ if (!TOK) { console.error("no META_PAGE_TOKEN"); process.exit(1); }
 const plan = JSON.parse(fs.readFileSync(`${DIR}/plan-${D}.json`, "utf8")), R = plan.reels[+K], mp4 = new URL(`../out/reel-${K}.mp4`, import.meta.url);
 if (!R) { console.error("no reel", K); process.exit(1); }
 if (readLog().some((x) => x.plan === D && x.k === +K && x.plat === PLAT && x.id)) { console.log("already posted", D, K, PLAT); process.exit(0); }
+{ const { handsOn } = await import("../../scripts/hands.mjs"); if (!handsOn("reels")) { console.log("HANDS OFF (reels): nothing sent — data/machines/hands.json"); process.exit(0); } }
 const bytes = fs.readFileSync(mp4);
 
 const j = async (r) => { const t = await r.text(); let x; try { x = JSON.parse(t); } catch { x = { raw: t }; } if (!r.ok || x.error) throw new Error(`${r.status} ${JSON.stringify(x.error || x).slice(0, 300)}`); return x; };
