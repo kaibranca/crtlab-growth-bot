@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T12:19:53.509Z",
+ "at": "2026-11-14T13:20:09.295Z",
  "hourly": [
   {
    "name": "aicrawl",
@@ -89,6 +89,17 @@
   {
    "name": "guard",
    "env": [
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "jobs",
+   "env": [
+    "ANALYTICS_DB_URL",
     "RESEND_API_KEY",
     "ALERT_TO",
     "ALERT_FROM"
@@ -409,6 +420,17 @@
    "env": [
     "ANALYTICS_DB_URL",
     "BING_API_KEY"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "drops",
+   "env": [
+    "ANALYTICS_DB_URL",
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
    ],
    "needs": null,
    "off": false

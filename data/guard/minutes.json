@@ -1,11 +1,21 @@
 {
- "at": "2026-11-14T12:18:07.095Z",
+ "at": "2026-11-14T13:18:05.475Z",
  "used": 453,
  "perDay7": 64.7,
- "projected": 1520,
- "free": 2000,
  "perRepo": {
   "crtlab-backtester": 453,
   "crtlab-standalone": 0
- }
+ },
+ "mode": "tight",
+ "why": "pace 64.7/day > allowance 61.6/day (projected 1553 > 1500)",
+ "allowPerDay": 61.6,
+ "projected": 1553,
+ "ceiling": 1500,
+ "free": 2000,
+ "daysLeft": 17,
+ "retrySlots": [
+  7,
+  11,
+  15
+ ]
 }
