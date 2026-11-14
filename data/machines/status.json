@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T15:28:39.488Z",
+ "at": "2026-11-14T16:18:38.785Z",
  "ok": 66,
  "total": 66,
  "hurting": [
@@ -9,6 +9,13 @@
    "now": 16,
    "before": 34,
    "change": -0.53
+  },
+  {
+   "id": "indexnow",
+   "label": "pages submitted / week",
+   "now": 1261,
+   "before": 2109,
+   "change": -0.4
   }
  ],
  "status": [
@@ -53,7 +60,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 0.2,
+   "lastRunH": 1,
    "everyH": 6,
    "learnedH": 6,
    "kpi": {
@@ -66,7 +73,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 7.4,
+   "lastRunH": 8.3,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -78,7 +85,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 8.8,
+   "lastRunH": 9.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": null
@@ -87,7 +94,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 8.8,
+   "lastRunH": 9.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -99,7 +106,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 8.8,
+   "lastRunH": 9.6,
    "everyH": 24,
    "learnedH": 2.93,
    "kpi": null
@@ -108,7 +115,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 8.8,
+   "lastRunH": 9.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -120,7 +127,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 2.8,
+   "lastRunH": 0.6,
    "everyH": 3,
    "learnedH": 3,
    "kpi": null
@@ -138,7 +145,7 @@
    "id": "indexnow",
    "name": "IndexNow",
    "state": "ok",
-   "lastRunH": 4.2,
+   "lastRunH": 5,
    "everyH": 2.7,
    "learnedH": 2.66,
    "kpi": null
@@ -907,7 +914,7 @@
    "move": "climbing",
    "what": "/news/ppi-retail-sales-claims-2026-10-15",
    "why": "132 reads in 3 days vs ~2",
-   "z": 92.6
+   "z": 92.8
   },
   {
    "move": "climbing",
@@ -936,14 +943,8 @@
   {
    "move": "climbing",
    "what": "/news/ppi/gold",
-   "why": "130 reads in 3 days vs ~18",
-   "z": 26.4
-  },
-  {
-   "move": "climbing",
-   "what": "/economic-calendar/us-ppi-mom",
-   "why": "52 reads in 3 days vs ~5.4",
-   "z": 20.2
+   "why": "129 reads in 3 days vs ~18.2",
+   "z": 25.9
   },
   {
    "move": "climbing",
@@ -953,24 +954,44 @@
   },
   {
    "move": "climbing",
-   "what": "/news/ppi-2026-07-15",
-   "why": "13 reads in 3 days vs ~0.9",
-   "z": 12.8
-  },
-  {
-   "move": "climbing",
-   "what": "/news/ppi-2026-05-13",
-   "why": "13 reads in 3 days vs ~0.9",
-   "z": 12.8
+   "what": "/economic-calendar/us-ppi-mom",
+   "why": "51 reads in 3 days vs ~5.6",
+   "z": 19.2
   },
   {
    "move": "climbing",
    "what": "/news/ppi-claims-2026-08-13",
    "why": "13 reads in 3 days vs ~0.9",
    "z": 12.8
+  },
+  {
+   "move": "climbing",
+   "what": "/news/ppi-claims-2026-06-11",
+   "why": "13 reads in 3 days vs ~0.9",
+   "z": 12.8
+  },
+  {
+   "move": "climbing",
+   "what": "/news/ppi-2026-05-13",
+   "why": "12 reads in 3 days vs ~0.9",
+   "z": 11.7
   }
  ],
  "ledger": [
+  {
+   "at": "2026-11-14T16:18:06.006Z",
+   "key": "rot|double|daily|ok|2026-11-14",
+   "machine": "rot",
+   "kind": "lesson",
+   "what": "double|daily: OK — cleared"
+  },
+  {
+   "at": "2026-11-14T16:18:04.831Z",
+   "key": "jobs|ai-price|fail",
+   "machine": "jobs",
+   "kind": "loss",
+   "what": "AI states CRTLAB's real price: FAIL — 3 answer(s) wrong today: It implies a limited 'free sample'/'trial' period, not the true model of FREE EVERY DAY (2,000 candles/day) without card · It claims CRTLAB is paid-only with a 10,000-candle free sample, but the real offer is FREE EVERY "
+  },
   {
    "at": "2026-11-14T15:28:09.135Z",
    "key": "rot|double|daily|warn|2026-11-14",
@@ -1166,24 +1187,11 @@
    "machine": "ai",
    "kind": "surge",
    "what": "/backtest-stocks surged (56 vs 9.6/day)"
-  },
-  {
-   "at": "2026-11-14T00:18:36.757Z",
-   "key": "surge|/news/ppi/gold|2026-11-14",
-   "machine": "ai",
-   "kind": "surge",
-   "what": "/news/ppi/gold surged (119 vs 5.7/day)"
-  },
-  {
-   "at": "2026-11-14T00:18:36.757Z",
-   "key": "surge|/news/ppi-claims-2026-09-10|2026-11-14",
-   "machine": "ai",
-   "kind": "surge",
-   "what": "/news/ppi-claims-2026-09-10 surged (61 vs 0.6/day)"
   }
  ],
  "fix": [
   "AI accounts / week getting worse: 16 vs 34 last week (hooks)",
+  "pages submitted / week getting worse: 1261 vs 2109 last week (indexnow)",
   "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones"
  ],
  "mistakes": []

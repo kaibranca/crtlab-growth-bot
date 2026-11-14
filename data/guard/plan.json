@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T15:28:39.756Z",
+ "at": "2026-11-14T16:18:39.122Z",
  "hourly": [
   {
    "name": "aicrawl",
@@ -240,86 +240,10 @@
    "off": false
   },
   {
-   "name": "fixer",
-   "env": [
-    "GH_WATCH_TOKEN"
-   ],
-   "needs": null,
-   "off": true
-  },
-  {
    "name": "world",
    "env": [],
    "needs": null,
    "off": false
-  },
-  {
-   "name": "executive",
-   "env": [],
-   "needs": null,
-   "off": true
-  },
-  {
-   "name": "upgrades",
-   "env": [
-    "GH_TOKEN"
-   ],
-   "needs": null,
-   "off": true
-  },
-  {
-   "name": "tuner",
-   "env": [],
-   "needs": null,
-   "off": true
-  },
-  {
-   "name": "iq",
-   "env": [
-    "GH_TOKEN"
-   ],
-   "needs": null,
-   "off": true
-  },
-  {
-   "name": "self",
-   "env": [],
-   "needs": null,
-   "off": true
-  },
-  {
-   "name": "core",
-   "env": [
-    "RESEND_API_KEY",
-    "ALERT_TO",
-    "ALERT_FROM"
-   ],
-   "needs": null,
-   "off": true
-  },
-  {
-   "name": "traffic-core",
-   "env": [],
-   "needs": null,
-   "off": true
-  },
-  {
-   "name": "brains",
-   "env": [
-    "ANALYTICS_DB_URL",
-    "CF_ACCOUNT_ID",
-    "CF_API_TOKEN",
-    "GH_TOKEN",
-    "GH_WATCH_TOKEN"
-   ],
-   "needs": null,
-   "off": true
-  },
-  {
-   "name": "memory",
-   "env": [],
-   "needs": null,
-   "off": true
   },
   {
    "name": "summary",
@@ -452,6 +376,16 @@
    "name": "learn",
    "env": [],
    "needs": "drops",
+   "off": false
+  },
+  {
+   "name": "digest",
+   "env": [
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
    "off": false
   },
   {
