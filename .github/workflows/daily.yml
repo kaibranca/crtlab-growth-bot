@@ -2,6 +2,8 @@ name: daily
 on:
   # was schedule 40 6 * * *: now started by the Cloudflare cron worker (cron-worker/worker.js). GitHub's own schedule drops runs and doubled them (11-09).
   workflow_dispatch:
+    inputs:
+      only: { description: "run only these steps (comma list, e.g. drops,learn) — no radar/device-qa/analyst dispatch", required: false, default: "" }
 concurrency: { group: data, cancel-in-progress: false }
 permissions: { contents: write, actions: write }
 jobs:
@@ -17,9 +19,11 @@ jobs:
         continue-on-error: true  # deps-audit step then fails loudly in the runner if the lockfile is missing
         with: { repository: kaibranca/crtlab-standalone, ref: live, path: site, ssh-key: "${{ secrets.SITE_DEPLOY_KEY }}", sparse-checkout: package-lock.json, sparse-checkout-cone-mode: false }
       - name: Dispatch radar.yml
+        if: ${{ !inputs.only }}
         continue-on-error: true  # fire-and-forget trigger; the dispatched workflow reports its own result
         run: 'curl -sf -o /dev/null -w "radar.yml dispatch %{http_code}\n" -X POST -H "Authorization: Bearer ${{ github.token }}" -H "Accept: application/vnd.github+json" https://api.github.com/repos/${{ github.repository }}/actions/workflows/radar.yml/dispatches -d "{\"ref\":\"main\"}"'
       - name: Dispatch device-qa.yml
+        if: ${{ !inputs.only }}
         continue-on-error: true  # fire-and-forget trigger; the dispatched workflow reports its own result
         run: 'curl -sf -o /dev/null -w "device-qa.yml dispatch %{http_code}\n" -X POST -H "Authorization: Bearer ${{ github.token }}" -H "Accept: application/vnd.github+json" https://api.github.com/repos/${{ github.repository }}/actions/workflows/device-qa.yml/dispatches -d "{\"ref\":\"main\"}"'
       - run: npm i pg@8 --no-save --no-package-lock --silent
@@ -27,12 +31,13 @@ jobs:
       # (data/guard/runs.jsonl + steps.json). Repeat failures email + turn this run red. Replaces continue-on-error / `|| true`.
       - name: Machines (daily)
         id: run
-        run: node scripts/run.mjs daily
+        run: node scripts/run.mjs daily ${{ inputs.only && format('--only {0}', inputs.only) || '' }}
         env: { OPS_KEY: "${{ secrets.OPS_KEY }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}", BING_API_KEY: "${{ secrets.BING_API_KEY }}", CF_API_TOKEN: "${{ secrets.CF_API_TOKEN }}", CF_ZONE_ID: "${{ secrets.CF_ZONE_ID }}", CF_ACCOUNT_ID: "${{ secrets.CF_ACCOUNT_ID }}", OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}", GSC_SA_JSON: "${{ secrets.GSC_SA_JSON }}", GH_WATCH_TOKEN: "${{ secrets.GH_WATCH_TOKEN }}", META_PAGE_TOKEN: "${{ secrets.META_PAGE_TOKEN }}", META_APP_ID: "${{ secrets.META_APP_ID }}", META_APP_SECRET: "${{ secrets.META_APP_SECRET }}", STRIPE_READ_KEY: "${{ secrets.STRIPE_READ_KEY }}" }
       - name: Save
         if: always()
         run: bash scripts/push.sh "daily $(date -u +%FT%H:%M)"
       - name: AI analyst (after this run's data is pushed, so it reads today's numbers)
+        if: ${{ !inputs.only }}
         continue-on-error: true  # fire-and-forget trigger; the dispatched workflow reports its own result
         run: 'curl -sf -o /dev/null -w "analyst.yml dispatch %{http_code}\n" -X POST -H "Authorization: Bearer ${{ github.token }}" -H "Accept: application/vnd.github+json" https://api.github.com/repos/${{ github.repository }}/actions/workflows/analyst.yml/dispatches -d "{\"ref\":\"main\"}"'
       - name: Red if a machine keeps failing
