@@ -1,10 +1,10 @@
 {
- "at": "2026-11-14T15:18:14.919Z",
+ "at": "2026-11-14T15:28:07.829Z",
  "summary": {
-  "ok": 7,
+  "ok": 8,
   "fail": 2,
   "unknown": 0,
-  "of": 9
+  "of": 10
  },
  "checks": [
   {
@@ -23,7 +23,7 @@
    "id": "indexnow",
    "job": "IndexNow submits",
    "state": "ok",
-   "detail": "36 URLs accepted in 24 h"
+   "detail": "32 URLs accepted in 24 h"
   },
   {
    "id": "sitemap",
@@ -35,19 +35,25 @@
    "id": "core",
    "job": "engine core",
    "state": "ok",
-   "detail": "hourly 1.0 h, daily 8.6 h ago"
+   "detail": "hourly 0.1 h, daily 0.1 h ago"
   },
   {
    "id": "truth-buyers",
    "job": "new buyers are measured",
    "state": "fail",
-   "detail": "buyers unknown — metric missing"
+   "detail": "buyers unknown — no STRIPE_READ_KEY"
+  },
+  {
+   "id": "truth-secrets",
+   "job": "every machine has its secrets",
+   "state": "ok",
+   "detail": "all declared secrets present"
   },
   {
    "id": "truth-db-live",
    "job": "analytics DB is live",
    "state": "ok",
-   "detail": "newest guest row 0.0 h old"
+   "detail": "newest guest row 0.2 h old"
   },
   {
    "id": "truth-north-star",

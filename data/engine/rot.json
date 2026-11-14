@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T15:18:16.762Z",
+ "at": "2026-11-14T15:28:09.135Z",
  "checks": [
   {
    "id": "dur|hourly/supervisor",
@@ -14,6 +14,12 @@
    "detail": "1 extra run(s) < 50 min apart in 48 h (double dispatch = races + waste)"
   },
   {
+   "id": "double|daily",
+   "what": "daily runs once per slot",
+   "state": "warn",
+   "detail": "1 extra run(s) < 600 min apart in 48 h (double dispatch = races + waste)"
+  },
+  {
    "id": "grow|repo",
    "what": "repo size (GitHub)",
    "state": "learning",
@@ -23,7 +29,7 @@
    "id": "grow|data",
    "what": "tracked data/ size",
    "state": "learning",
-   "detail": "42.1 MB now; 1/7 days of history for a trend"
+   "detail": "42.3 MB now; 1/7 days of history for a trend"
   },
   {
    "id": "grow|file",
@@ -35,14 +41,14 @@
    "id": "minutes",
    "what": "GitHub minutes pace",
    "state": "warn",
-   "detail": "pace 64.7/day > allowance 61.6/day (projected 1553 > 1500)"
+   "detail": "pace 64.9/day > allowance 61.5/day (projected 1557 > 1500)"
   }
  ],
  "hist": [
   {
    "day": "2026-11-14",
    "repoMB": 19.3,
-   "dataMB": 42.1,
+   "dataMB": 42.3,
    "maxFileMB": 1.21,
    "maxFile": "data/aicrawl/2026-11.jsonl"
   }

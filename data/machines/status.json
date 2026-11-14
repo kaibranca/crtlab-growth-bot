@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T15:20:03.484Z",
+ "at": "2026-11-14T15:28:39.488Z",
  "ok": 66,
  "total": 66,
  "hurting": [
@@ -53,7 +53,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 0,
+   "lastRunH": 0.2,
    "everyH": 6,
    "learnedH": 6,
    "kpi": {
@@ -66,7 +66,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 7.3,
+   "lastRunH": 7.4,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -78,7 +78,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 8.6,
+   "lastRunH": 8.8,
    "everyH": 24,
    "learnedH": null,
    "kpi": null
@@ -87,7 +87,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 8.6,
+   "lastRunH": 8.8,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -99,7 +99,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 8.6,
+   "lastRunH": 8.8,
    "everyH": 24,
    "learnedH": 2.93,
    "kpi": null
@@ -108,7 +108,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 8.6,
+   "lastRunH": 8.8,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -120,7 +120,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 2.6,
+   "lastRunH": 2.8,
    "everyH": 3,
    "learnedH": 3,
    "kpi": null
@@ -138,7 +138,7 @@
    "id": "indexnow",
    "name": "IndexNow",
    "state": "ok",
-   "lastRunH": 4,
+   "lastRunH": 4.2,
    "everyH": 2.7,
    "learnedH": 2.66,
    "kpi": null
@@ -972,6 +972,13 @@
  ],
  "ledger": [
   {
+   "at": "2026-11-14T15:28:09.135Z",
+   "key": "rot|double|daily|warn|2026-11-14",
+   "machine": "rot",
+   "kind": "loss",
+   "what": "daily runs once per slot: WARN — 1 extra run(s) < 600 min apart in 48 h (double dispatch = races + waste)"
+  },
+  {
    "at": "2026-11-14T15:18:16.762Z",
    "key": "rot|minutes|warn|2026-11-14",
    "machine": "rot",
@@ -1173,27 +1180,11 @@
    "machine": "ai",
    "kind": "surge",
    "what": "/news/ppi-claims-2026-09-10 surged (61 vs 0.6/day)"
-  },
-  {
-   "at": "2026-11-14T00:18:36.757Z",
-   "key": "surge|/news/ppi-retail-sales-claims-2026-10-15|2026-11-14",
-   "machine": "ai",
-   "kind": "surge",
-   "what": "/news/ppi-retail-sales-claims-2026-10-15 surged (117 vs 1.4/day)"
   }
  ],
  "fix": [
   "AI accounts / week getting worse: 16 vs 34 last week (hooks)",
   "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones"
  ],
- "mistakes": [
-  {
-   "where": "hourly",
-   "n": 2,
-   "last": "run failure",
-   "at": "2026-11-14T14:20:04Z",
-   "repeating": false,
-   "url": "https://github.com/kaibranca/crtlab-growth-bot/actions/runs/43604094533"
-  }
- ]
+ "mistakes": []
 }

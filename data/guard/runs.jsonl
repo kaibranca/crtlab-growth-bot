@@ -609,3 +609,42 @@
 {"at":"2026-11-14T15:20:03.824Z","plan":"hourly","step":"summary","status":"ok","ms":84,"code":0,"err":null}
 {"at":"2026-11-14T15:21:52.775Z","plan":"daily","step":"drops","status":"ok","ms":3126,"code":0,"err":null}
 {"at":"2026-11-14T15:21:55.903Z","plan":"daily","step":"learn","status":"ok","ms":423,"code":0,"err":null}
+{"at":"2026-11-14T15:27:47.545Z","plan":"hourly","step":"aicrawl","status":"ok","ms":406,"code":0,"err":null}
+{"at":"2026-11-14T15:27:47.954Z","plan":"hourly","step":"deploy-watch","status":"ok","ms":537,"code":0,"err":null,"missingEnv":["RAILWAY_PROJECT_ID"]}
+{"at":"2026-11-14T15:27:48.491Z","plan":"hourly","step":"works","status":"ok","ms":2268,"code":0,"err":null}
+{"at":"2026-11-14T15:27:50.760Z","plan":"hourly","step":"ai-pull","status":"ok","ms":430,"code":0,"err":null}
+{"at":"2026-11-14T15:27:51.191Z","plan":"hourly","step":"ai-eyes","status":"ok","ms":13809,"code":0,"err":null}
+{"at":"2026-11-14T15:28:05.000Z","plan":"hourly","step":"recommend","status":"ok","ms":40,"code":0,"err":null}
+{"at":"2026-11-14T15:28:05.041Z","plan":"hourly","step":"ai-machine","status":"ok","ms":970,"code":0,"err":null}
+{"at":"2026-11-14T15:28:06.011Z","plan":"hourly","step":"bandit","status":"ok","ms":1186,"code":0,"err":null}
+{"at":"2026-11-14T15:28:07.199Z","plan":"hourly","step":"ai-truth","status":"ok","ms":36,"code":0,"err":null,"missingEnv":["ALERT_FROM"]}
+{"at":"2026-11-14T15:28:07.236Z","plan":"hourly","step":"timeline","status":"ok","ms":461,"code":0,"err":null}
+{"at":"2026-11-14T15:28:07.698Z","plan":"hourly","step":"guard","status":"ok","ms":100,"code":0,"err":null,"missingEnv":["ALERT_FROM"]}
+{"at":"2026-11-14T15:28:07.798Z","plan":"hourly","step":"jobs","status":"ok","ms":1304,"code":0,"err":null,"missingEnv":["ALERT_FROM"]}
+{"at":"2026-11-14T15:28:09.103Z","plan":"hourly","step":"rot","status":"ok","ms":527,"code":0,"err":null,"missingEnv":["ALERT_FROM"]}
+{"at":"2026-11-14T15:28:09.630Z","plan":"hourly","step":"minutes","status":"ok","ms":1307,"code":0,"err":null,"missingEnv":["ALERT_FROM"]}
+{"at":"2026-11-14T15:28:10.937Z","plan":"hourly","step":"load-alert","status":"ok","ms":352,"code":0,"err":null,"missingEnv":["ALERT_FROM"]}
+{"at":"2026-11-14T15:28:11.290Z","plan":"hourly","step":"shield","status":"ok","ms":1199,"code":0,"err":null,"missingEnv":["ALERT_FROM"]}
+{"at":"2026-11-14T15:28:12.489Z","plan":"hourly","step":"watchdog","status":"ok","ms":2858,"code":0,"err":null}
+{"at":"2026-11-14T15:28:15.347Z","plan":"hourly","step":"upcoming","status":"ok","ms":6014,"code":0,"err":null}
+{"at":"2026-11-14T15:28:21.361Z","plan":"hourly","step":"indicators","status":"ok","ms":3423,"code":0,"err":null}
+{"at":"2026-11-14T15:28:24.784Z","plan":"hourly","step":"live-news","status":"ok","ms":46,"code":0,"err":null}
+{"at":"2026-11-14T15:28:24.830Z","plan":"hourly","step":"headlines","status":"ok","ms":1050,"code":0,"err":null}
+{"at":"2026-11-14T15:28:25.881Z","plan":"hourly","step":"indexnow","status":"ok","ms":307,"code":0,"err":null}
+{"at":"2026-11-14T15:28:26.188Z","plan":"hourly","step":"cost","status":"ok","ms":1744,"code":0,"err":null,"missingEnv":["RAILWAY_PROJECT_TOKEN","ALERT_FROM"]}
+{"at":"2026-11-14T15:28:27.932Z","plan":"hourly","step":"humans","status":"ok","ms":1342,"code":0,"err":null}
+{"at":"2026-11-14T15:28:29.274Z","plan":"hourly","step":"outcomes","status":"ok","ms":1788,"code":0,"err":null}
+{"at":"2026-11-14T15:28:31.062Z","plan":"hourly","step":"supervisor","status":"ok","ms":8433,"code":0,"err":null,"missingEnv":["ALERT_FROM"]}
+{"at":"2026-11-14T15:28:39.495Z","plan":"hourly","step":"peaks","status":"ok","ms":44,"code":0,"err":null}
+{"at":"2026-11-14T15:28:39.539Z","plan":"hourly","step":"fixer","status":"skipped","ms":0,"err":"off (kill switch)"}
+{"at":"2026-11-14T15:28:39.539Z","plan":"hourly","step":"world","status":"ok","ms":87,"code":0,"err":null}
+{"at":"2026-11-14T15:28:39.626Z","plan":"hourly","step":"executive","status":"skipped","ms":0,"err":"off (kill switch)"}
+{"at":"2026-11-14T15:28:39.627Z","plan":"hourly","step":"upgrades","status":"skipped","ms":0,"err":"off (kill switch)"}
+{"at":"2026-11-14T15:28:39.627Z","plan":"hourly","step":"tuner","status":"skipped","ms":0,"err":"off (kill switch)"}
+{"at":"2026-11-14T15:28:39.627Z","plan":"hourly","step":"iq","status":"skipped","ms":0,"err":"off (kill switch)"}
+{"at":"2026-11-14T15:28:39.627Z","plan":"hourly","step":"self","status":"skipped","ms":0,"err":"off (kill switch)"}
+{"at":"2026-11-14T15:28:39.627Z","plan":"hourly","step":"core","status":"skipped","ms":0,"err":"off (kill switch)"}
+{"at":"2026-11-14T15:28:39.627Z","plan":"hourly","step":"traffic-core","status":"skipped","ms":0,"err":"off (kill switch)"}
+{"at":"2026-11-14T15:28:39.627Z","plan":"hourly","step":"brains","status":"skipped","ms":0,"err":"off (kill switch)"}
+{"at":"2026-11-14T15:28:39.627Z","plan":"hourly","step":"memory","status":"skipped","ms":0,"err":"off (kill switch)"}
+{"at":"2026-11-14T15:28:39.627Z","plan":"hourly","step":"summary","status":"ok","ms":111,"code":0,"err":null}

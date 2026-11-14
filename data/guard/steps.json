@@ -1,396 +1,456 @@
 {
  "hourly": {
-  "at": "2026-11-14T15:20:03.911Z",
+  "at": "2026-11-14T15:28:39.743Z",
   "steps": {
    "aicrawl": {
     "last": "ok",
-    "at": "2026-11-14T15:17:48.020Z",
+    "at": "2026-11-14T15:27:47.545Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 536
+    "ms": 406,
+    "missingEnv": []
    },
    "deploy-watch": {
     "last": "ok",
-    "at": "2026-11-14T15:17:48.559Z",
+    "at": "2026-11-14T15:27:47.954Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 654
+    "ms": 537,
+    "missingEnv": [
+     "RAILWAY_PROJECT_ID"
+    ]
    },
    "works": {
     "last": "ok",
-    "at": "2026-11-14T15:17:49.213Z",
+    "at": "2026-11-14T15:27:48.491Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 2480
+    "ms": 2268,
+    "missingEnv": []
    },
    "ai-pull": {
     "last": "ok",
-    "at": "2026-11-14T15:17:51.694Z",
+    "at": "2026-11-14T15:27:50.760Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 454
+    "ms": 430,
+    "missingEnv": []
    },
    "ai-eyes": {
     "last": "ok",
-    "at": "2026-11-14T15:17:52.148Z",
+    "at": "2026-11-14T15:27:51.191Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 15162
+    "ms": 13809,
+    "missingEnv": []
    },
    "recommend": {
     "last": "ok",
-    "at": "2026-11-14T15:18:07.310Z",
+    "at": "2026-11-14T15:28:05.000Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 31
+    "ms": 40,
+    "missingEnv": []
    },
    "ai-machine": {
     "last": "ok",
-    "at": "2026-11-14T15:18:07.341Z",
+    "at": "2026-11-14T15:28:05.041Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 1668
+    "ms": 970,
+    "missingEnv": []
    },
    "bandit": {
     "last": "ok",
-    "at": "2026-11-14T15:18:09.009Z",
+    "at": "2026-11-14T15:28:06.011Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 1487
+    "ms": 1186,
+    "missingEnv": []
    },
    "ai-truth": {
     "last": "ok",
-    "at": "2026-11-14T15:18:10.498Z",
+    "at": "2026-11-14T15:28:07.199Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 3546
+    "ms": 36,
+    "missingEnv": [
+     "ALERT_FROM"
+    ]
    },
    "timeline": {
     "last": "ok",
-    "at": "2026-11-14T15:18:14.044Z",
+    "at": "2026-11-14T15:28:07.236Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 517
+    "ms": 461,
+    "missingEnv": []
    },
    "guard": {
     "last": "ok",
-    "at": "2026-11-14T15:18:14.561Z",
+    "at": "2026-11-14T15:28:07.698Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 14,
-    "rate7": 0.875,
+    "runs7": 17,
+    "ok7": 15,
+    "rate7": 0.882,
     "lastError": "    at Array.filter (<anonymous>) |     at file:///home/runner/work/crtlab-growth-bot/crtlab-growth-bot/scripts/guard.mjs:57:40 |  | Node.js v20.20.2",
-    "ms": 331
+    "ms": 100,
+    "missingEnv": [
+     "ALERT_FROM"
+    ]
    },
    "minutes": {
     "last": "ok",
-    "at": "2026-11-14T15:18:17.288Z",
+    "at": "2026-11-14T15:28:09.630Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 1398
+    "ms": 1307,
+    "missingEnv": [
+     "ALERT_FROM"
+    ]
    },
    "load-alert": {
     "last": "ok",
-    "at": "2026-11-14T15:18:18.686Z",
+    "at": "2026-11-14T15:28:10.937Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 322
+    "ms": 352,
+    "missingEnv": [
+     "ALERT_FROM"
+    ]
    },
    "shield": {
     "last": "ok",
-    "at": "2026-11-14T15:18:19.008Z",
+    "at": "2026-11-14T15:28:11.290Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 1172
+    "ms": 1199,
+    "missingEnv": [
+     "ALERT_FROM"
+    ]
    },
    "watchdog": {
     "last": "ok",
-    "at": "2026-11-14T15:18:20.180Z",
+    "at": "2026-11-14T15:28:12.489Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 3466
+    "ms": 2858,
+    "missingEnv": []
    },
    "upcoming": {
     "last": "ok",
-    "at": "2026-11-14T15:18:23.646Z",
+    "at": "2026-11-14T15:28:15.347Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 5793
+    "ms": 6014,
+    "missingEnv": []
    },
    "indicators": {
     "last": "ok",
-    "at": "2026-11-14T15:18:29.439Z",
+    "at": "2026-11-14T15:28:21.361Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 3149
+    "ms": 3423,
+    "missingEnv": []
    },
    "live-news": {
     "last": "ok",
-    "at": "2026-11-14T15:18:32.589Z",
+    "at": "2026-11-14T15:28:24.784Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 34
+    "ms": 46,
+    "missingEnv": []
    },
    "headlines": {
     "last": "ok",
-    "at": "2026-11-14T15:18:32.624Z",
+    "at": "2026-11-14T15:28:24.830Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 1553
+    "ms": 1050,
+    "missingEnv": []
    },
    "indexnow": {
     "last": "ok",
-    "at": "2026-11-14T15:18:34.178Z",
+    "at": "2026-11-14T15:28:25.881Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 330
+    "ms": 307,
+    "missingEnv": []
    },
    "cost": {
     "last": "ok",
-    "at": "2026-11-14T15:18:34.509Z",
+    "at": "2026-11-14T15:28:26.188Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 2229
+    "ms": 1744,
+    "missingEnv": [
+     "RAILWAY_PROJECT_TOKEN",
+     "ALERT_FROM"
+    ]
    },
    "humans": {
     "last": "ok",
-    "at": "2026-11-14T15:18:36.738Z",
+    "at": "2026-11-14T15:28:27.932Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 1790
+    "ms": 1342,
+    "missingEnv": []
    },
    "outcomes": {
     "last": "ok",
-    "at": "2026-11-14T15:18:38.528Z",
+    "at": "2026-11-14T15:28:29.274Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 2382
+    "ms": 1788,
+    "missingEnv": []
    },
    "supervisor": {
     "last": "ok",
-    "at": "2026-11-14T15:18:40.910Z",
+    "at": "2026-11-14T15:28:31.062Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 82581
+    "ms": 8433,
+    "missingEnv": [
+     "ALERT_FROM"
+    ]
    },
    "peaks": {
     "last": "ok",
-    "at": "2026-11-14T15:20:03.491Z",
+    "at": "2026-11-14T15:28:39.495Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 34
+    "ms": 44,
+    "missingEnv": []
    },
    "fixer": {
     "last": "skipped",
-    "at": "2026-11-14T15:20:03.526Z",
+    "at": "2026-11-14T15:28:39.539Z",
     "streak": 0,
     "runs7": 1,
     "ok7": 1,
     "rate7": 1,
     "lastError": null,
-    "ms": 0
+    "ms": 0,
+    "missingEnv": []
    },
    "world": {
     "last": "ok",
-    "at": "2026-11-14T15:20:03.526Z",
+    "at": "2026-11-14T15:28:39.539Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 298
+    "ms": 87,
+    "missingEnv": []
    },
    "executive": {
     "last": "skipped",
-    "at": "2026-11-14T15:20:03.824Z",
+    "at": "2026-11-14T15:28:39.626Z",
     "streak": 0,
     "runs7": 1,
     "ok7": 1,
     "rate7": 1,
     "lastError": null,
-    "ms": 0
+    "ms": 0,
+    "missingEnv": []
    },
    "upgrades": {
     "last": "skipped",
-    "at": "2026-11-14T15:20:03.824Z",
+    "at": "2026-11-14T15:28:39.627Z",
     "streak": 0,
     "runs7": 1,
     "ok7": 1,
     "rate7": 1,
     "lastError": null,
-    "ms": 0
+    "ms": 0,
+    "missingEnv": []
    },
    "tuner": {
     "last": "skipped",
-    "at": "2026-11-14T15:20:03.824Z",
+    "at": "2026-11-14T15:28:39.627Z",
     "streak": 0,
     "runs7": 1,
     "ok7": 1,
     "rate7": 1,
     "lastError": null,
-    "ms": 0
+    "ms": 0,
+    "missingEnv": []
    },
    "iq": {
     "last": "skipped",
-    "at": "2026-11-14T15:20:03.824Z",
+    "at": "2026-11-14T15:28:39.627Z",
     "streak": 0,
     "runs7": 1,
     "ok7": 1,
     "rate7": 1,
     "lastError": null,
-    "ms": 0
+    "ms": 0,
+    "missingEnv": []
    },
    "self": {
     "last": "skipped",
-    "at": "2026-11-14T15:20:03.824Z",
+    "at": "2026-11-14T15:28:39.627Z",
     "streak": 0,
     "runs7": 1,
     "ok7": 1,
     "rate7": 1,
     "lastError": null,
-    "ms": 0
+    "ms": 0,
+    "missingEnv": []
    },
    "core": {
     "last": "skipped",
-    "at": "2026-11-14T15:20:03.824Z",
+    "at": "2026-11-14T15:28:39.627Z",
     "streak": 0,
     "runs7": 1,
     "ok7": 1,
     "rate7": 1,
     "lastError": null,
-    "ms": 0
+    "ms": 0,
+    "missingEnv": []
    },
    "traffic-core": {
     "last": "skipped",
-    "at": "2026-11-14T15:20:03.824Z",
+    "at": "2026-11-14T15:28:39.627Z",
     "streak": 0,
     "runs7": 1,
     "ok7": 1,
     "rate7": 1,
     "lastError": null,
-    "ms": 0
+    "ms": 0,
+    "missingEnv": []
    },
    "brains": {
     "last": "skipped",
-    "at": "2026-11-14T15:20:03.824Z",
+    "at": "2026-11-14T15:28:39.627Z",
     "streak": 0,
     "runs7": 1,
     "ok7": 1,
     "rate7": 1,
     "lastError": null,
-    "ms": 0
+    "ms": 0,
+    "missingEnv": []
    },
    "memory": {
     "last": "skipped",
-    "at": "2026-11-14T15:20:03.824Z",
+    "at": "2026-11-14T15:28:39.627Z",
     "streak": 0,
     "runs7": 1,
     "ok7": 1,
     "rate7": 1,
     "lastError": null,
-    "ms": 0
+    "ms": 0,
+    "missingEnv": []
    },
    "summary": {
     "last": "ok",
-    "at": "2026-11-14T15:20:03.824Z",
+    "at": "2026-11-14T15:28:39.627Z",
     "streak": 0,
-    "runs7": 16,
-    "ok7": 16,
+    "runs7": 17,
+    "ok7": 17,
     "rate7": 1,
     "lastError": null,
-    "ms": 84
+    "ms": 111,
+    "missingEnv": []
    },
    "jobs": {
     "last": "ok",
-    "at": "2026-11-14T15:18:14.892Z",
+    "at": "2026-11-14T15:28:07.798Z",
     "streak": 0,
-    "runs7": 3,
-    "ok7": 3,
+    "runs7": 4,
+    "ok7": 4,
     "rate7": 1,
     "lastError": null,
-    "ms": 1843
+    "ms": 1304,
+    "missingEnv": [
+     "ALERT_FROM"
+    ]
    },
    "rot": {
     "last": "ok",
-    "at": "2026-11-14T15:18:16.735Z",
+    "at": "2026-11-14T15:28:09.103Z",
     "streak": 0,
-    "runs7": 1,
-    "ok7": 1,
+    "runs7": 2,
+    "ok7": 2,
     "rate7": 1,
     "lastError": null,
-    "ms": 553
+    "ms": 527,
+    "missingEnv": [
+     "ALERT_FROM"
+    ]
    }
   }
  },

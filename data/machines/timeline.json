@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T15:18:14.554Z",
+ "at": "2026-11-14T15:28:07.692Z",
  "note": "Every change in the ecosystem, 45 days. Read it before judging any result: was it this, or something else that changed here?",
  "traffic7": 14,
  "events": [
@@ -599,6 +599,34 @@
    "where": "drops",
    "what": "visitors.google: DROP — 3 d 5 vs 11.5 normal (×0.43, z -1.64)",
    "traffic": false
+  },
+  {
+   "at": "2026-11-14T15:18:14.919Z",
+   "kind": "loss",
+   "where": "jobs",
+   "what": "new buyers are measured: FAIL — buyers unknown — metric missing",
+   "traffic": false
+  },
+  {
+   "at": "2026-11-14T15:18:16.762Z",
+   "kind": "loss",
+   "where": "rot",
+   "what": "hourly/supervisor runtime: WARN — p95 104 s = 70% of its 150 s limit",
+   "traffic": false
+  },
+  {
+   "at": "2026-11-14T15:18:16.762Z",
+   "kind": "loss",
+   "where": "rot",
+   "what": "hourly runs once per slot: WARN — 1 extra run(s) < 50 min apart in 48 h (double dispatch = races + waste)",
+   "traffic": false
+  },
+  {
+   "at": "2026-11-14T15:18:16.762Z",
+   "kind": "loss",
+   "where": "rot",
+   "what": "GitHub minutes pace: WARN — pace 64.7/day > allowance 61.6/day (projected 1553 > 1500)",
+   "traffic": false
   }
  ],
  "seen": {
@@ -699,6 +727,10 @@
   "loss|2026-11-14T13:09:15.132Z|visitors: WATCH — 7 d 343 vs 592 normal (×0.58, z -1.38)": 1,
   "loss|2026-11-14T13:09:15.132Z|visitors.google: DROP — 3 d 5 vs 11.5 normal (×0.43, z -1.64)": 1,
   "data-release|2026-11-14T14:00:00Z|data d20261114-0647 through 2026-11-13": 1,
-  "data-release|2026-11-14T15:00:00Z|data d20261114-0647 through 2026-11-13": 1
+  "data-release|2026-11-14T15:00:00Z|data d20261114-0647 through 2026-11-13": 1,
+  "loss|2026-11-14T15:18:14.919Z|new buyers are measured: FAIL — buyers unknown — metric missing": 1,
+  "loss|2026-11-14T15:18:16.762Z|hourly/supervisor runtime: WARN — p95 104 s = 70% of its 150 s limit": 1,
+  "loss|2026-11-14T15:18:16.762Z|hourly runs once per slot: WARN — 1 extra run(s) < 50 min apart in 48 h (double dispatch = races + waste)": 1,
+  "loss|2026-11-14T15:18:16.762Z|GitHub minutes pace: WARN — pace 64.7/day > allowance 61.6/day (projected 1553 > 1500)": 1
  }
 }
