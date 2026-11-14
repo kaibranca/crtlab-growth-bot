@@ -57,7 +57,8 @@ fs.writeFileSync(OUT, JSON.stringify({ at: new Date(NOW).toISOString(), checks, 
 for (const c of turned) fs.appendFileSync(LEDGER, JSON.stringify({ at: new Date(NOW).toISOString(), key: `rot|${c.id}|${c.state}|${today}`, machine: "rot", kind: c.state === "ok" ? "lesson" : "loss", what: `${c.what}: ${c.state.toUpperCase()} — ${c.detail}` }) + "\n");
 console.log(`rot: ${checks.filter((c) => c.state === "fail").length} fail · ${checks.filter((c) => c.state === "warn").length} warn · ${checks.length} checks`);
 for (const c of checks) if (c.state !== "ok") console.log(`  ${c.state.padEnd(8)} ${c.what} — ${c.detail}`);
-const bad = turned.filter((c) => c.state === "fail" || c.state === "warn");
+// minutes: the governor (scripts/minutes) already emails its own mode changes — state only here, never a second email
+const bad = turned.filter((c) => (c.state === "fail" || c.state === "warn") && c.id !== "minutes");
 if (bad.length && process.env.RESEND_API_KEY) {
   const { mail } = await import("../../reels/engine/alert.mjs");
   await mail(`CRTLAB rot: ${bad.map((c) => `${c.what} ${c.state}`).join(", ")}`, bad.map((c) => `${c.state.toUpperCase()} — ${c.what}: ${c.detail}`).join("\n") + "\n\nSlow decay caught before it breaks. One email per change. Detail: data/engine/rot.json");
