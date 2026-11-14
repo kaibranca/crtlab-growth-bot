@@ -78,3 +78,14 @@ Scaling multiplies everything, the bad included, so the constraints live in the 
 4. Decision core with real statistics (§3)
 5. /machine rebuilt as a plain dashboard on the new data (site, deploy window, admin page)
 6. Delete theatre code (already OFF 11-14)
+
+## 8. External tools (Kai 11-14: "CRTLAB runs on proven plugins — do the same")
+Rule: a tool earns its place by closing a real gap, staying free, pinned in a lockfile, named here with its reason.
+| Gap | Tool | Status |
+|---|---|---|
+| decision statistics (intervals, beta-binomial, tests) | simple-statistics / jstat | with the decision core |
+| data contracts at scale | zod (engine/ only; scripts/store.mjs T stays for old code) | with engine/ |
+| engine did not run at all | healthchecks.io free dead-man switch, pinged by run.mjs | next |
+| dependency + code security | Dependabot, CodeQL (free on public repos), actions pinned by SHA | next |
+| tests | node:test (built in) | live |
+Rejected: workflow orchestrators (Temporal/Airflow — cost, GH Actions + CF cron suffice), paid APM, agent frameworks.
