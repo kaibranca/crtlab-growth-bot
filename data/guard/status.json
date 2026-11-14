@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T16:18:04.765Z",
+ "at": "2026-11-14T17:18:11.538Z",
  "budget": {
   "used": 4,
   "of": 1,
@@ -68,38 +68,38 @@
   },
   "traffic-plan": {
    "kind": "stale",
-   "detail": "33.6 h old (max 30 h)",
-   "ageH": 33.6
+   "detail": "34.6 h old (max 30 h)",
+   "ageH": 34.6
   },
   "google-plan": {
    "kind": "ok",
    "detail": null,
-   "ageH": 9.6
+   "ageH": 10.6
   },
   "steps": {
    "kind": "ok",
    "detail": null,
-   "ageH": 0.8
+   "ageH": 1
   },
   "drops": {
    "kind": "ok",
    "detail": null,
-   "ageH": 0.9
+   "ageH": 1.9
   },
   "series": {
    "kind": "ok",
    "detail": null,
-   "ageH": 0.9
+   "ageH": 1.9
   },
   "learn": {
    "kind": "ok",
    "detail": null,
-   "ageH": 0.9
+   "ageH": 1.9
   },
   "rot": {
    "kind": "ok",
    "detail": null,
-   "ageH": 0.8
+   "ageH": 1
   },
   "digest": {
    "kind": "ok",
@@ -114,7 +114,7 @@
   "jobs": {
    "kind": "ok",
    "detail": null,
-   "ageH": 0.8
+   "ageH": 1
   },
   "ledger": {
    "kind": "ok",
@@ -124,7 +124,7 @@
  },
  "broken": [],
  "alerts": [
-  "GUARD: data contract \"traffic-plan\" is STALE (33.6 h old (max 30 h)). Machines reading it must not decide from it until fixed.",
+  "GUARD: data contract \"traffic-plan\" is STALE (34.6 h old (max 30 h)). Machines reading it must not decide from it until fixed.",
   "GUARD: data contract \"experiments\" is MISSING. Machines reading it must not decide from it until fixed."
  ]
 }

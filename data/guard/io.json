@@ -1,29 +1,30 @@
 {
- "at": "2026-11-14T16:18:39.114Z",
+ "at": "2026-11-14T17:18:49.810Z",
  "steps": {
   "hourly/aicrawl": {
-   "at": "2026-11-14T16:17:45.381Z",
+   "at": "2026-11-14T17:17:48.981Z",
    "reads": [],
    "writes": [
     "data/aicrawl/<month>.jsonl"
    ]
   },
   "hourly/deploy-watch": {
-   "at": "2026-11-14T16:17:45.692Z",
+   "at": "2026-11-14T17:17:49.452Z",
    "reads": [
-    "data/machines/humans.json"
+    "data/machines/humans.json",
+    "data/mobile/build.txt"
    ],
    "writes": [
     "data/machines/deploy-judge.json",
-    "data/machines/deploys.jsonl",
-    "data/mobile/build.txt"
+    "data/machines/deploys.jsonl"
    ]
   },
   "hourly/works": {
-   "at": "2026-11-14T16:17:47.436Z",
+   "at": "2026-11-14T17:17:50.188Z",
    "reads": [
     "data/ai/submitted.json",
     "data/engine/drops.json",
+    "data/engine/gate.jsonl",
     "data/google/plan.json",
     "data/guard/status.json",
     "data/machines/freeze.json",
@@ -31,14 +32,13 @@
     "data/works/cycles.jsonl"
    ],
    "writes": [
-    "data/engine/gate.jsonl",
     "data/machines/self/works.json",
     "data/works/plan.json",
     "data/works/state.json"
    ]
   },
   "hourly/ai-pull": {
-   "at": "2026-11-14T16:17:49.679Z",
+   "at": "2026-11-14T17:17:53.693Z",
    "reads": [
     "data/ai/.backfill-first-touch"
    ],
@@ -48,7 +48,7 @@
    ]
   },
   "hourly/ai-eyes": {
-   "at": "2026-11-14T16:17:50.031Z",
+   "at": "2026-11-14T17:17:54.307Z",
    "reads": [
     "data/ai/plan.json",
     "data/ai/submitted.json"
@@ -60,7 +60,7 @@
    ]
   },
   "hourly/recommend": {
-   "at": "2026-11-14T16:18:01.902Z",
+   "at": "2026-11-14T17:18:07.612Z",
    "reads": [
     "data/radar/answers.jsonl",
     "data/radar/plan.json",
@@ -72,7 +72,7 @@
    ]
   },
   "hourly/ai-machine": {
-   "at": "2026-11-14T16:18:01.934Z",
+   "at": "2026-11-14T17:18:07.653Z",
    "reads": [
     "data/ai/changes.jsonl",
     "data/ai/clicks-hourly.json",
@@ -82,6 +82,7 @@
     "data/ai/truth.json",
     "data/aicrawl/<month>.jsonl",
     "data/engine/drops.json",
+    "data/engine/gate.jsonl",
     "data/events/upcoming.json",
     "data/guard/status.json",
     "data/machines/freeze.json",
@@ -104,35 +105,34 @@
     "data/ai/score.jsonl",
     "data/ai/submitted.json",
     "data/ai/surges.jsonl",
-    "data/engine/gate.jsonl",
     "data/world/llms.jsonl",
     "data/world/sends.jsonl"
    ]
   },
   "hourly/bandit": {
-   "at": "2026-11-14T16:18:03.171Z",
+   "at": "2026-11-14T17:18:09.041Z",
    "reads": [
     "data/ai/clicks.json",
     "data/aicrawl/<month>.jsonl",
     "data/engine/drops.json",
+    "data/engine/gate.jsonl",
     "data/guard/status.json",
     "data/machines/freeze.json",
     "data/machines/hands.json"
    ],
    "writes": [
-    "data/ai/bandit.json",
-    "data/engine/gate.jsonl"
+    "data/ai/bandit.json"
    ]
   },
   "hourly/ai-truth": {
-   "at": "2026-11-14T16:18:04.269Z",
+   "at": "2026-11-14T17:18:10.797Z",
    "reads": [
     "data/ai/truth.json"
    ],
    "writes": []
   },
   "hourly/timeline": {
-   "at": "2026-11-14T16:18:04.302Z",
+   "at": "2026-11-14T17:18:10.836Z",
    "reads": [
     "data/google/sitemaps.json",
     "data/guard/status.json",
@@ -145,7 +145,7 @@
    ]
   },
   "hourly/guard": {
-   "at": "2026-11-14T16:18:04.701Z",
+   "at": "2026-11-14T17:18:11.458Z",
    "reads": [
     "data/ai",
     "data/ai/bandit.json",
@@ -233,13 +233,12 @@
     "data/works/state.json"
    ],
    "writes": [
-    "data/engine/inbox/hourly.jsonl",
     "data/guard/status.json",
     "data/reels/alerted.json"
    ]
   },
   "hourly/minutes": {
-   "at": "2026-11-14T16:18:06.402Z",
+   "at": "2026-11-14T17:18:14.235Z",
    "reads": [],
    "writes": [
     "data/guard/minutes.json",
@@ -247,36 +246,36 @@
    ]
   },
   "hourly/load-alert": {
-   "at": "2026-11-14T16:18:07.548Z",
+   "at": "2026-11-14T17:18:15.588Z",
    "reads": [],
    "writes": [
     "data/load/<month>.jsonl"
    ]
   },
   "hourly/shield": {
-   "at": "2026-11-14T16:18:07.863Z",
+   "at": "2026-11-14T17:18:15.976Z",
    "reads": [
     "data/ai/clicks-hourly.json",
     "data/engine/drops.json",
+    "data/engine/gate.jsonl",
     "data/guard/status.json",
     "data/machines/freeze.json",
     "data/machines/hands.json",
     "data/machines/humans.json"
    ],
    "writes": [
-    "data/engine/gate.jsonl",
     "data/shield.json"
    ]
   },
   "hourly/watchdog": {
-   "at": "2026-11-14T16:18:09.415Z",
+   "at": "2026-11-14T17:18:17.203Z",
    "reads": [],
    "writes": [
     "data/watchdog/<month>.jsonl"
    ]
   },
   "hourly/upcoming": {
-   "at": "2026-11-14T16:18:12.128Z",
+   "at": "2026-11-14T17:18:20.941Z",
    "reads": [
     "data/events/au-cpi-<date>.json",
     "data/events/au-jobs-<date>.json",
@@ -313,7 +312,7 @@
    "writes": []
   },
   "hourly/indicators": {
-   "at": "2026-11-14T16:18:18.016Z",
+   "at": "2026-11-14T17:18:27.070Z",
    "reads": [
     "data/indicators/au-ai-group-manufacturing-index.json",
     "data/indicators/au-australia-aig-construction-index-aig-construction-index.json",
@@ -1077,7 +1076,7 @@
    "writes": []
   },
   "hourly/live-news": {
-   "at": "2026-11-14T16:18:21.307Z",
+   "at": "2026-11-14T17:18:30.581Z",
    "reads": [
     "data/events/index.json",
     "data/events/upcoming.json",
@@ -1086,14 +1085,14 @@
    "writes": []
   },
   "hourly/headlines": {
-   "at": "2026-11-14T16:18:21.344Z",
+   "at": "2026-11-14T17:18:30.626Z",
    "reads": [
     "data/events/headlines.json"
    ],
    "writes": []
   },
   "hourly/indexnow": {
-   "at": "2026-11-14T16:18:22.205Z",
+   "at": "2026-11-14T17:18:32.025Z",
    "reads": [],
    "writes": [
     "data/indexnow-sent.json",
@@ -1101,33 +1100,33 @@
    ]
   },
   "hourly/cost": {
-   "at": "2026-11-14T16:18:22.479Z",
+   "at": "2026-11-14T17:18:32.437Z",
    "reads": [
-    "data/cost/deploys.jsonl",
     "data/cost/levers-seed.json",
     "data/engine/drops.json",
+    "data/engine/gate.jsonl",
     "data/guard/status.json",
     "data/load/<month>.jsonl",
     "data/machines/freeze.json",
     "data/machines/hands.json"
    ],
    "writes": [
+    "data/cost/deploys.jsonl",
     "data/cost/plan.json",
     "data/cost/score.jsonl",
     "data/cost/state.json",
-    "data/engine/gate.jsonl",
     "data/machines/self/cost.json"
    ]
   },
   "hourly/humans": {
-   "at": "2026-11-14T16:18:24.070Z",
+   "at": "2026-11-14T17:18:35.641Z",
    "reads": [],
    "writes": [
     "data/machines/humans.json"
    ]
   },
   "hourly/outcomes": {
-   "at": "2026-11-14T16:18:25.251Z",
+   "at": "2026-11-14T17:18:37.855Z",
    "reads": [
     "data/ai/score.jsonl",
     "data/cost/plan.json",
@@ -1145,7 +1144,7 @@
    ]
   },
   "hourly/supervisor": {
-   "at": "2026-11-14T16:18:27.106Z",
+   "at": "2026-11-14T17:18:40.545Z",
    "reads": [
     "data/ai/edge.json",
     "data/ai/lessons.json",
@@ -1160,7 +1159,7 @@
     "data/indexnow.jsonl",
     "data/machines/alerted.json",
     "data/machines/ecosystem.json",
-    "data/machines/ledger.jsonl",
+    "data/machines/mistakes.jsonl",
     "data/machines/outcomes.json",
     "data/mentions/plan.json",
     "data/mentions/score.jsonl",
@@ -1171,14 +1170,14 @@
    ],
    "writes": [
     "data/machines/lastgreen.json",
-    "data/machines/mistakes.jsonl",
+    "data/machines/ledger.jsonl",
     "data/machines/rhythm.json",
     "data/machines/status.json",
     "data/machines/supervisor-seen.json"
    ]
   },
   "hourly/peaks": {
-   "at": "2026-11-14T16:18:38.794Z",
+   "at": "2026-11-14T17:18:49.555Z",
    "reads": [
     "data/ai/clicks.json"
    ],
@@ -1187,7 +1186,7 @@
    ]
   },
   "hourly/world": {
-   "at": "2026-11-14T16:18:38.833Z",
+   "at": "2026-11-14T17:18:49.598Z",
    "reads": [
     "data/ai/clicks.json",
     "data/aicrawl/<month>.jsonl",
@@ -1198,7 +1197,7 @@
    ]
   },
   "hourly/summary": {
-   "at": "2026-11-14T16:18:38.905Z",
+   "at": "2026-11-14T17:18:49.686Z",
    "reads": [
     "data/ai/plan.json",
     "data/ai/runs.jsonl",
@@ -1408,7 +1407,7 @@
    ]
   },
   "hourly/jobs": {
-   "at": "2026-11-14T16:18:04.804Z",
+   "at": "2026-11-14T17:18:11.565Z",
    "reads": [
     "data/engine/drops.json",
     "data/google/sitemaps.json",
@@ -1420,13 +1419,11 @@
     "data/works/plan.json"
    ],
    "writes": [
-    "data/engine/inbox/hourly.jsonl",
-    "data/engine/jobs.json",
-    "data/machines/ledger.jsonl"
+    "data/engine/jobs.json"
    ]
   },
   "hourly/rot": {
-   "at": "2026-11-14T16:18:05.979Z",
+   "at": "2026-11-14T17:18:13.646Z",
    "reads": [
     "data/ai/.backfill-first-touch",
     "data/ai/bandit.json",
@@ -1482,6 +1479,8 @@
     "data/cost/score.jsonl",
     "data/cost/state.json",
     "data/engine/drops.json",
+    "data/engine/gate.jsonl",
+    "data/engine/inbox/hourly.jsonl",
     "data/engine/jobs.json",
     "data/engine/learn.json",
     "data/engine/series.json",
@@ -2454,6 +2453,7 @@
     "data/machines/knowledge.json",
     "data/machines/landing.json",
     "data/machines/lastgreen.json",
+    "data/machines/ledger.jsonl",
     "data/machines/mail.json",
     "data/machines/mistakes.jsonl",
     "data/machines/outcomes.json",
@@ -2552,8 +2552,7 @@
     "data/world/surges.json"
    ],
    "writes": [
-    "data/engine/rot.json",
-    "data/machines/ledger.jsonl"
+    "data/engine/rot.json"
    ]
   },
   "daily/drops": {
@@ -2598,24 +2597,10 @@
     "daily/summary"
    ]
   },
-  "sharedLog": {
-   "data/engine/gate.jsonl": [
-    "hourly/works",
-    "hourly/ai-machine",
-    "hourly/bandit",
-    "hourly/shield",
-    "hourly/cost"
-   ],
-   "data/engine/inbox/hourly.jsonl": [
-    "hourly/guard",
-    "hourly/jobs"
-   ],
-   "data/machines/ledger.jsonl": [
-    "hourly/jobs",
-    "hourly/rot"
-   ]
-  },
+  "sharedLog": {},
   "unowned": {
+   "data/mobile/build.txt": 2,
+   "data/engine/gate.jsonl": 6,
    "data/machines/freeze.json": 8,
    "data/machines/hands.json": 8,
    "data/works/cycles.jsonl": 2,
@@ -3461,13 +3446,13 @@
    "data/indicators/us-wholesale-sales-mom.json": 2,
    "data/recaps/ranges.json": 2,
    "data/events/headlines.json": 2,
-   "data/cost/deploys.jsonl": 2,
    "data/cost/levers-seed.json": 2,
    "data/indexnow.jsonl": 6,
    "data/machines/outcomes.jsonl": 2,
    "data/brains/index.json": 2,
    "data/events/react/index.json": 2,
    "data/health.json": 4,
+   "data/machines/mistakes.jsonl": 2,
    "data/mobile/report.json": 4,
    "data/recap-runs.jsonl": 4,
    "data/bing-weekly.jsonl": 3,
@@ -3507,6 +3492,7 @@
    "data/brains/speed/brain.json": 1,
    "data/brains/speed/branches.json": 1,
    "data/brains/speed/ecosystem.json": 1,
+   "data/engine/inbox/hourly.jsonl": 1,
    "data/events/calendar.json": 1,
    "data/events/react/au-cpi--AUDUSD.json": 1,
    "data/events/react/au-jobs--AUDUSD.json": 1,
