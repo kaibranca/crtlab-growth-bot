@@ -1,5 +1,5 @@
 {
- "note": "RADAR question bank. source bank = hand-written buyer questions; surge/ai = discovered by the machine. target = the CRTLAB page that should win the answer. status retired = no longer asked.",
+ "note": "RADAR question bank. source bank = hand-written buyer questions; surge/ai = discovered by the machine. target = the CRTLAB page that should win the answer. status retired = no longer asked. cluster brand (11-14) = what AI says when someone asks about CRTLAB by name (after seeing a reel): watched for WRONG claims, kept OUT of share of voice.",
  "questions": [
   {
    "id": "what-is-the-best-free-backtesting-software",
@@ -394,6 +394,34 @@
    "cluster": "niche",
    "target": "/backtest-nas100",
    "source": "kai-11-13: niche questions we can own (Kai: ChatGPT names CRTLAB when asked 'CRT backtester')"
+  },
+  {
+   "id": "what-is-crtlab",
+   "q": "What is CRTLAB (crtlab.pro)?",
+   "cluster": "brand",
+   "target": "/",
+   "source": "bank"
+  },
+  {
+   "id": "is-crtlab-free",
+   "q": "Is CRTLAB free to use?",
+   "cluster": "brand",
+   "target": "/",
+   "source": "bank"
+  },
+  {
+   "id": "crtlab-review",
+   "q": "Is CRTLAB any good for backtesting? Reviews?",
+   "cluster": "brand",
+   "target": "/",
+   "source": "bank"
+  },
+  {
+   "id": "crtlab-vs-fx-replay",
+   "q": "CRTLAB vs FX Replay, which is better?",
+   "cluster": "brand",
+   "target": "/",
+   "source": "bank"
   }
  ]
 }

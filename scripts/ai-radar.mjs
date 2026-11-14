@@ -266,8 +266,9 @@ W(`${D}/boost.json`, { at: new Date().toISOString(), note: "ai-machine.mjs multi
 W(`${D}/gaps.json`, { at: new Date().toISOString(), note: "Questions where CRTLAB is usually NOT recommended: who wins, with what claim, and the CRTLAB page that should win. Build list for Claude sessions (new pages need Kai's OK).", gaps: gaps.slice(0, 40), wrong });
 
 // ── proof: score curve ───────────────────────────────────────────────────────────────────────────────────────────────
-const tot = Object.values(clu).reduce((t, c) => t + c.value, 0) || 1;
-const sov = Object.values(clu).reduce((t, c) => t + c.share * c.value, 0) / tot;
+const cluS = Object.entries(clu).filter(([c]) => c !== "brand").map(([, c]) => c); // brand questions always name us: never in share of voice
+const tot = cluS.reduce((t, c) => t + c.value, 0) || 1;
+const sov = cluS.reduce((t, c) => t + c.share * c.value, 0) / tot;
 const sc = readLines(`${D}/score.jsonl`).filter((s) => s.day !== TODAY);
 const todayRows = readLines(`${D}/answers.jsonl`).filter((x) => x.at.startsWith(TODAY));
 sc.push({ day: TODAY, asked: todayRows.length, mentioned: todayRows.filter((x) => x.m).length, cited: todayRows.filter((x) => x.c).length, first: todayRows.filter((x) => x.r === 1).length, sov: +sov.toFixed(3), clusters: Object.fromEntries(Object.entries(clu).map(([c, x]) => [c, +x.share.toFixed(2)])), cost: +state.cost[mon].toFixed(2) });
