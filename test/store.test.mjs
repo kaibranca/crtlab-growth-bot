@@ -34,3 +34,9 @@ test("registry: unique names, every live contract file passes its own shape", ()
   assert.equal(new Set(CONTRACTS.map((x) => x.name)).size, CONTRACTS.length);
   for (const x of CONTRACTS) { const r = check(x, { now: Date.now() }); assert.ok(["ok", "stale", "missing"].includes(r.kind), `${x.name}: ${r.kind} ${r.detail}`); }
 });
+
+test("a new contract before its first run is pending, after it is missing", async () => {
+  const { check } = await import("../scripts/store.mjs");
+  assert.equal(check({ name: "x", path: "data/__nope.json", firstDue: "2999-01-01T00:00:00Z" }).kind, "ok");
+  assert.equal(check({ name: "x", path: "data/__nope.json", firstDue: "2000-01-01T00:00:00Z" }).kind, "missing");
+});

@@ -29,7 +29,9 @@ export class ContractError extends Error {
 
 // Check one contract against the file on disk (or a given text, for tests). kind: ok | missing | broken | shape | stale
 export function check(c, { now = Date.now(), text } = {}) {
-  if (text == null) { if (!fs.existsSync(c.path)) return { kind: "missing" }; text = fs.readFileSync(c.path, "utf8"); }
+  // firstDue (11-14): a NEW contract whose owner hasn't had its first run yet is "pending", not "missing" — a false alarm
+  // every hour until the first run would teach Kai to ignore guard emails.
+  if (text == null) { if (!fs.existsSync(c.path)) return c.firstDue && Date.now() < Date.parse(c.firstDue) ? { kind: "ok", detail: `pending — first run due ${c.firstDue}` } : { kind: "missing" }; text = fs.readFileSync(c.path, "utf8"); }
   let data;
   try { data = c.path.endsWith(".jsonl") ? text.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)) : JSON.parse(text); }
   catch (e) { return { kind: "broken", detail: String(e.message).slice(0, 120) }; }
