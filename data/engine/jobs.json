@@ -1,0 +1,59 @@
+{
+ "at": "2026-11-14T13:12:49.479Z",
+ "summary": {
+  "ok": 7,
+  "fail": 1,
+  "unknown": 0,
+  "of": 8
+ },
+ "checks": [
+  {
+   "id": "data-live",
+   "job": "daily data pull",
+   "state": "ok",
+   "detail": "live d20261114-0647 through 2026-11-13"
+  },
+  {
+   "id": "reels-posted",
+   "job": "reels posting",
+   "state": "ok",
+   "detail": "2/2 due slots posted"
+  },
+  {
+   "id": "indexnow",
+   "job": "IndexNow submits",
+   "state": "ok",
+   "detail": "39 URLs accepted in 24 h"
+  },
+  {
+   "id": "sitemap",
+   "job": "sitemap → Google",
+   "state": "ok",
+   "detail": "Google fetched 2026-11-13T13:15, 0 errors"
+  },
+  {
+   "id": "core",
+   "job": "engine core",
+   "state": "ok",
+   "detail": "hourly 0.9 h, daily 6.5 h ago"
+  },
+  {
+   "id": "truth-db-live",
+   "job": "analytics DB is live",
+   "state": "ok",
+   "detail": "newest guest row 1.0 h old"
+  },
+  {
+   "id": "truth-north-star",
+   "job": "north star counts real accounts",
+   "state": "ok",
+   "detail": "works 138 vs users 140"
+  },
+  {
+   "id": "truth-attribution",
+   "job": "visitor sources are known",
+   "state": "fail",
+   "detail": "67% of real visitors have no source (direct/none) — per-source visitor numbers are blind"
+  }
+ ]
+}

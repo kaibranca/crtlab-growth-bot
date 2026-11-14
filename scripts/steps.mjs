@@ -19,6 +19,8 @@ export const PLANS = {
     s("ai-truth", MAIL),
     s("timeline", ["GH_WATCH_TOKEN"]),
     s("guard", MAIL, { alertAfter: 1 }),
+    // v2 GUARD: did each machine do its JOB + are machines reading the TRUTH (engine/guard/jobs-lib.mjs, tested)
+    s("jobs", [...DB, ...MAIL], { cmd: ["node", "engine/guard/jobs.mjs"], alertAfter: 1 }),
     s("minutes", ["GH_WATCH_TOKEN", ...MAIL]),
     s("load-alert", ["OPS_KEY", ...MAIL]),
     s("shield", [...CF, "CF_BAN_LIST", "OPS_KEY", ...MAIL], { alertAfter: 1 }),

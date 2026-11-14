@@ -29,6 +29,8 @@ const list = [
     shape: T.obj({ hourly: T.obj({ at: T.iso, steps: T.map(T.obj({ last: T.str, streak: T.num })) }) }) },
   { name: "drops", path: "data/engine/drops.json", owner: "daily/drops", maxAgeH: 30, fresh: at,
     shape: T.obj({ at: T.iso, end: T.str, metrics: T.map(T.obj({ level: T.oneOf("drop", "watch", "rise", "normal", "thin", "unknown") })) }) },
+  { name: "jobs", path: "data/engine/jobs.json", owner: "hourly/jobs", maxAgeH: 3, fresh: at,
+    shape: T.obj({ at: T.iso, checks: T.arr(T.obj({ id: T.str, job: T.str, state: T.oneOf("ok", "fail", "unknown"), detail: T.str }), { min: 1 }) }) },
   { name: "ledger", path: "data/machines/ledger.jsonl", owner: "shared log",
     shape: T.arr(T.obj({ at: T.iso, machine: T.str, kind: T.str })) },
 ];
