@@ -2,7 +2,7 @@
 
 // Non-secret variables every step may see. Secrets are NEVER inherited: each step lists the ones it uses.
 // CONFIG = non-secret knobs scripts read (switches, model names, paths); safe to pass to every step.
-export const CONFIG = ["DRY", "FORCE", "NOW", "BOT_DIR", "TRAFFIC_BRAIN", "UPG_API", "IQ_API", "MENTIONS_MODEL", "FUNNEL_BASE", "SPIKE"];
+export const CONFIG = ["DRY", "FORCE", "NOW", "BOT_DIR", "TRAFFIC_BRAIN", "UPG_API", "IQ_API", "MENTIONS_MODEL", "FUNNEL_BASE", "SPIKE", "NODE_TEST_CONTEXT"];
 const BASE = new RegExp(`^(PATH|HOME|LANG|LC_\\w+|TZ|TMPDIR|CI|RUNNER_\\w+|NODE_\\w+|npm_\\w+|${CONFIG.join("|")})$`);
 const GITHUB_SAFE = /^GITHUB_(?!TOKEN$)\w+$/;
 
