@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T06:41:34.590Z",
+ "at": "2026-11-14T06:41:21.676Z",
  "note": "Questions where CRTLAB is usually NOT recommended: who wins, with what claim, and the CRTLAB page that should win. Build list for Claude sessions (new pages need Kai's OK).",
  "gaps": [
   {
@@ -8,7 +8,7 @@
    "cluster": "free",
    "ourPage": "/best-backtesting-software",
    "value": 26.08,
-   "p": 0.01,
+   "p": 0.05,
    "winners": [
     {
      "n": "QuantConnect LEAN",
@@ -44,7 +44,7 @@
    "cluster": "free",
    "ourPage": "/backtest",
    "value": 26.08,
-   "p": 0.01,
+   "p": 0.05,
    "winners": [
     {
      "n": "QuantConnect",
@@ -78,7 +78,7 @@
    "cluster": "free",
    "ourPage": "/backtest",
    "value": 26.08,
-   "p": 0.01,
+   "p": 0.05,
    "winners": [
     {
      "n": "QuantConnect",
@@ -106,7 +106,7 @@
    "cluster": "free",
    "ourPage": "/backtest",
    "value": 26.08,
-   "p": 0.01,
+   "p": 0.05,
    "winners": [
     {
      "n": "TradingView",
@@ -134,7 +134,7 @@
    "cluster": "free",
    "ourPage": "/backtest",
    "value": 26.08,
-   "p": 0.01,
+   "p": 0.05,
    "winners": [
     {
      "n": "MetaTrader 5",
@@ -176,7 +176,7 @@
    "cluster": "free",
    "ourPage": "/backtest",
    "value": 26.08,
-   "p": 0.01,
+   "p": 0.05,
    "winners": [
     {
      "n": "TradingView",
@@ -211,7 +211,7 @@
    "cluster": "free",
    "ourPage": "/backtest",
    "value": 26.08,
-   "p": 0.01,
+   "p": 0.05,
    "winners": [
     {
      "n": "TradingView Bar Replay",
@@ -254,7 +254,7 @@
    "cluster": "flow",
    "ourPage": "/order-flow-backtesting",
    "value": 5.66,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [],
    "winningDomains": [],
    "diag": "not found",
@@ -266,7 +266,7 @@
    "cluster": "flow",
    "ourPage": "/footprint-chart-backtesting",
    "value": 5.66,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [
     {
      "n": "TradingView",
@@ -308,7 +308,7 @@
    "cluster": "flow",
    "ourPage": "/order-flow-backtesting",
    "value": 5.66,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [],
    "winningDomains": [],
    "diag": "not found",
@@ -320,7 +320,7 @@
    "cluster": "flow",
    "ourPage": "/footprint-chart-backtesting",
    "value": 5.66,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [
     {
      "n": "Sierra Chart",
@@ -356,12 +356,33 @@
    "fix": "indexing: push our page to Bing"
   },
   {
+   "id": "crt-backtester",
+   "q": "CRT backtester",
+   "cluster": "niche",
+   "ourPage": "/crt-strategy-backtester",
+   "value": 5.66,
+   "p": 0.08,
+   "winners": [
+    {
+     "n": "crttrading.com",
+     "r": 1,
+     "why": "Source for CRT in trading (Candle Range Theory) link provided",
+     "$": ""
+    }
+   ],
+   "winningDomains": [
+    "crttrading.com"
+   ],
+   "diag": "not found",
+   "fix": "indexing: push our page to Bing"
+  },
+  {
    "id": "how-to-backtest-trading-around-news-releases-like-cpi-and-nf",
    "q": "How to backtest trading around news releases like CPI and NFP",
    "cluster": "news",
    "ourPage": "/backtest-with-news",
    "value": 3.32,
-   "p": 0.01,
+   "p": 0.04,
    "winners": [],
    "winningDomains": [],
    "diag": "not found",
@@ -373,7 +394,7 @@
    "cluster": "news",
    "ourPage": "/news/cpi/gold",
    "value": 3.32,
-   "p": 0.01,
+   "p": 0.04,
    "winners": [],
    "winningDomains": [
     "federalreserve.gov",
@@ -388,7 +409,7 @@
    "cluster": "news",
    "ourPage": "/news/nfp/nas100",
    "value": 3.32,
-   "p": 0.01,
+   "p": 0.04,
    "winners": [],
    "winningDomains": [
     "bls.gov",
@@ -403,7 +424,7 @@
    "cluster": "news",
    "ourPage": "/news/cpi/gold",
    "value": 3.32,
-   "p": 0.01,
+   "p": 0.04,
    "winners": [],
    "winningDomains": [
     "bls.gov",
@@ -418,7 +439,7 @@
    "cluster": "news",
    "ourPage": "/news/ppi/gold",
    "value": 3.32,
-   "p": 0.01,
+   "p": 0.04,
    "winners": [],
    "winningDomains": [],
    "diag": "not found",
@@ -430,7 +451,7 @@
    "cluster": "news",
    "ourPage": "/news/cpi/eurusd",
    "value": 3.32,
-   "p": 0.01,
+   "p": 0.04,
    "winners": [],
    "winningDomains": [],
    "diag": "not found",
@@ -442,7 +463,7 @@
    "cluster": "news",
    "ourPage": "/news/claims/gold",
    "value": 3.32,
-   "p": 0.01,
+   "p": 0.04,
    "winners": [],
    "winningDomains": [
     "en.wikipedia.org",
@@ -457,7 +478,7 @@
    "cluster": "prop",
    "ourPage": "/prop-firm-backtesting",
    "value": 3.16,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [],
    "winningDomains": [],
    "diag": "not found",
@@ -469,7 +490,7 @@
    "cluster": "prop",
    "ourPage": "/prop-firm-challenge-simulator",
    "value": 3.16,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [
     {
      "n": "PropFirmSim",
@@ -509,7 +530,7 @@
    "cluster": "prop",
    "ourPage": "/ftmo-challenge-simulator",
    "value": 3.16,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [
     {
      "n": "FTMO Free Trial",
@@ -548,7 +569,7 @@
    "cluster": "prop",
    "ourPage": "/prop-firm-backtesting",
    "value": 3.16,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [],
    "winningDomains": [
     "cftc.gov"
@@ -562,7 +583,7 @@
    "cluster": "replay",
    "ourPage": "/tradingview-bar-replay-alternative",
    "value": 2.83,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [
     {
      "n": "Rechart",
@@ -604,7 +625,7 @@
    "cluster": "replay",
    "ourPage": "/tradingview-bar-replay-alternative",
    "value": 2.83,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [
     {
      "n": "TradingView",
@@ -647,7 +668,7 @@
    "cluster": "replay",
    "ourPage": "/candle-by-candle-replay",
    "value": 2.83,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [
     {
      "n": "NinjaTrader",
@@ -689,7 +710,7 @@
    "cluster": "replay",
    "ourPage": "/candle-by-candle-replay",
    "value": 2.83,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [
     {
      "n": "TradingView",
@@ -717,7 +738,7 @@
    "cluster": "stats",
    "ourPage": "/tools/fair-value-gap-statistics",
    "value": 2.83,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [
     {
      "n": "tradeanalysis.io",
@@ -745,7 +766,7 @@
    "cluster": "stats",
    "ourPage": "/tools/previous-day-high-low-statistics",
    "value": 2.83,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [],
    "winningDomains": [],
    "diag": "not found",
@@ -757,7 +778,7 @@
    "cluster": "stats",
    "ourPage": "/answers/does-london-sweep-the-asian-range-and-reverse",
    "value": 2.83,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [],
    "winningDomains": [],
    "diag": "not found",
@@ -769,7 +790,7 @@
    "cluster": "stats",
    "ourPage": "/answers/what-time-does-gold-make-its-high-or-low-of-the-day",
    "value": 2.83,
-   "p": 0.01,
+   "p": 0.06,
    "winners": [],
    "winningDomains": [],
    "diag": "not found",
@@ -781,7 +802,7 @@
    "cluster": "gold",
    "ourPage": "/backtest-gold",
    "value": 2.45,
-   "p": 0.01,
+   "p": 0.05,
    "winners": [
     {
      "n": "Python",
@@ -818,7 +839,7 @@
    "cluster": "gold",
    "ourPage": "/backtest-nas100",
    "value": 2.45,
-   "p": 0.01,
+   "p": 0.05,
    "winners": [
     {
      "n": "TradingView",
@@ -855,7 +876,7 @@
    "cluster": "gold",
    "ourPage": "/london-session-backtester",
    "value": 2.45,
-   "p": 0.01,
+   "p": 0.05,
    "winners": [
     {
      "n": "TradingView Bar Replay",
@@ -897,7 +918,7 @@
    "cluster": "gold",
    "ourPage": "/new-york-session-backtester",
    "value": 2.45,
-   "p": 0.01,
+   "p": 0.05,
    "winners": [
     {
      "n": "Python",
@@ -934,7 +955,7 @@
    "cluster": "gold",
    "ourPage": "/backtest-bitcoin",
    "value": 2.45,
-   "p": 0.01,
+   "p": 0.05,
    "winners": [
     {
      "n": "Python (pandas)",
@@ -966,5 +987,24 @@
    "fix": "indexing: push our page to Bing"
   }
  ],
- "wrong": []
+ "wrong": [
+  {
+   "at": "2026-11-14T06:41:07.647Z",
+   "id": "what-is-crtlab",
+   "what": "It implies a limited 'free sample'/'trial' period, not the true model of FREE EVERY DAY (2,000 candles/day) without card",
+   "said": "CRTLAB (crtlab.pro) appears to be a **browser-based trading backtesting and market-replay platform**. It lets traders replay real historical charts candle by ca"
+  },
+  {
+   "at": "2026-11-14T06:41:08.915Z",
+   "id": "is-crtlab-free",
+   "what": "It claims CRTLAB is paid-only with a 10,000-candle free sample, but the real offer is FREE EVERY DAY: 2,000 candles/day ",
+   "said": "Not entirely. CRTLAB appears to offer **some free access**, but the **full product is paid**. - The **main backtesting/replay product** says it is “paid only,” with a **free"
+  },
+  {
+   "at": "2026-11-14T06:41:21.673Z",
+   "id": "crtlab-vs-fx-replay",
+   "what": "States 1,000 free candles/day, but CRTLAB is 2,000 candles/day every day.",
+   "said": "If you mean **CRTLAB vs FX Replay**, the short answer is: - **Choose FX Replay** if you need **seconds-level granularity** or **futures data**. FX Replay says it supports ba"
+  }
+ ]
 }

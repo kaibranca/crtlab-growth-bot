@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T06:19:38.555Z",
+ "updated": "2026-11-14T06:41:21.955Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 99.28,
@@ -693,7 +693,7 @@
    "at": "2026-11-14T00:56:17.010Z",
    "job": "reels",
    "ok": true,
-   "text": "BREAKOUT \"OB ENTRY\" 5991 plays (22.4× normal) → champion formula, lock-in 7 days"
+   "text": "BREAKOUT \"OB ENTRY\" 5995 plays (22.4× normal) → champion formula, lock-in 7 days"
   },
   {
    "at": "2026-11-14T00:18:15.700Z",
@@ -2367,78 +2367,92 @@
    "acc": 0.5173
   },
   "radar": {
-   "at": "2026-11-13T06:41:34.591Z",
-   "sov": 0.007,
+   "at": "2026-11-14T06:41:21.678Z",
+   "sov": 0.066,
    "clusters": {
     "free": {
-     "share": 0.006543497053174305,
+     "share": 0.05533457946910868,
      "cited": 0,
      "first": 0,
-     "n": 6.2,
+     "n": 5.9,
      "value": 26.08
     },
     "replay": {
-     "share": 0.008132820582378401,
+     "share": 0.06836980079846501,
      "cited": 0,
      "first": 0,
-     "n": 3.8,
+     "n": 3.6,
      "value": 2.83
     },
     "ict": {
-     "share": 0.013291810881952942,
+     "share": 0.10964493992501105,
      "cited": 0,
      "first": 0,
      "n": 0,
      "value": 2.24
     },
     "prop": {
-     "share": 0.008287602760336243,
+     "share": 0.06963108981400731,
      "cited": 0,
      "first": 0,
-     "n": 3.6,
+     "n": 3.4,
      "value": 3.16
     },
     "flow": {
-     "share": 0.008288343649105604,
+     "share": 0.06963712369338419,
      "cited": 0,
      "first": 0,
-     "n": 3.6,
+     "n": 3.4,
      "value": 5.66
     },
     "gold": {
-     "share": 0.0072500475847618396,
+     "share": 0.06114853048774603,
      "cited": 0,
      "first": 0,
-     "n": 5,
+     "n": 4.8,
      "value": 2.45
     },
     "news": {
-     "share": 0.006343785583841604,
+     "share": 0.053685673498425894,
      "cited": 0,
      "first": 0,
-     "n": 6.6,
+     "n": 6.3,
      "value": 3.32
     },
     "stats": {
-     "share": 0.008132212601744914,
+     "share": 0.06836484363499731,
      "cited": 0,
      "first": 0,
-     "n": 3.8,
+     "n": 3.6,
      "value": 2.83
     },
     "data": {
-     "share": 0.013291810881952942,
+     "share": 0.10964493992501105,
      "cited": 0,
      "first": 0,
      "n": 0,
      "value": 1
+    },
+    "niche": {
+     "share": 0.0939812471954217,
+     "cited": 0,
+     "first": 0,
+     "n": 1,
+     "value": 5.66
+    },
+    "brand": {
+     "share": 0.4657884668450045,
+     "cited": 1,
+     "first": 0.7499986975533202,
+     "n": 4,
+     "value": 12.88
     }
    },
    "gaps": [
     {
      "q": "What is the best free backtesting software?",
      "ourPage": "/best-backtesting-software",
-     "p": 0.01,
+     "p": 0.05,
      "diag": "not found",
      "winners": [
       "QuantConnect LEAN",
@@ -2449,7 +2463,7 @@
     {
      "q": "Is there a free backtesting tool for day trading?",
      "ourPage": "/backtest",
-     "p": 0.01,
+     "p": 0.05,
      "diag": "not found",
      "winners": [
       "QuantConnect",
@@ -2460,7 +2474,7 @@
     {
      "q": "Best free website to backtest trading strategies",
      "ourPage": "/backtest",
-     "p": 0.01,
+     "p": 0.05,
      "diag": "not found",
      "winners": [
       "QuantConnect",
@@ -2470,7 +2484,7 @@
     {
      "q": "How can I backtest a trading strategy for free without coding?",
      "ourPage": "/backtest",
-     "p": 0.01,
+     "p": 0.05,
      "diag": "not found",
      "winners": [
       "TradingView",
@@ -2480,7 +2494,7 @@
     {
      "q": "Free alternative to paid backtesting software for forex",
      "ourPage": "/backtest",
-     "p": 0.01,
+     "p": 0.05,
      "diag": "not found",
      "winners": [
       "MetaTrader 5",
@@ -2492,7 +2506,7 @@
     {
      "q": "What is the best backtesting software for beginners?",
      "ourPage": "/backtest",
-     "p": 0.01,
+     "p": 0.05,
      "diag": "not found",
      "winners": [
       "TradingView",
@@ -2501,9 +2515,28 @@
      ]
     }
    ],
-   "wrong": [],
+   "wrong": [
+    {
+     "at": "2026-11-14T06:41:07.647Z",
+     "id": "what-is-crtlab",
+     "what": "It implies a limited 'free sample'/'trial' period, not the true model of FREE EVERY DAY (2,000 candles/day) without card",
+     "said": "CRTLAB (crtlab.pro) appears to be a **browser-based trading backtesting and market-replay platform**. It lets traders replay real historical charts candle by ca"
+    },
+    {
+     "at": "2026-11-14T06:41:08.915Z",
+     "id": "is-crtlab-free",
+     "what": "It claims CRTLAB is paid-only with a 10,000-candle free sample, but the real offer is FREE EVERY DAY: 2,000 candles/day ",
+     "said": "Not entirely. CRTLAB appears to offer **some free access**, but the **full product is paid**. - The **main backtesting/replay product** says it is “paid only,” with a **free"
+    },
+    {
+     "at": "2026-11-14T06:41:21.673Z",
+     "id": "crtlab-vs-fx-replay",
+     "what": "States 1,000 free candles/day, but CRTLAB is 2,000 candles/day every day.",
+     "said": "If you mean **CRTLAB vs FX Replay**, the short answer is: - **Choose FX Replay** if you need **seconds-level granularity** or **futures data**. FX Replay says it supports ba"
+    }
+   ],
    "events": [],
-   "cost": 0.64,
+   "cost": 0.75,
    "budget": 2.5,
    "score": [
     {
@@ -2533,6 +2566,13 @@
      "asked": 6,
      "mentioned": 0,
      "cited": 0
+    },
+    {
+     "day": "2026-11-14",
+     "sov": 0.066,
+     "asked": 5,
+     "mentioned": 4,
+     "cited": 4
     }
    ]
   },
@@ -3872,7 +3912,7 @@
    "ig": 12,
    "fb": 12
   },
-  "views7d": 11417,
+  "views7d": 11423,
   "site7d": 0,
   "signups7d": 0,
   "champion": {
@@ -3884,7 +3924,7 @@
    "track": "281",
    "id": "1461633655300997",
    "plat": "fb",
-   "views": 5991,
+   "views": 5995,
    "x": 22.4,
    "from": "fb 1461633655300997",
    "at": "2026-11-14T00:56:17.010Z"
@@ -3921,7 +3961,7 @@
     "plat": "fb",
     "title": "POV CPI DROPPED",
     "mk": "SP500",
-    "views": 259,
+    "views": 261,
     "site": 0,
     "link": "https://www.facebook.com/reel/1125049417042533/"
    },
@@ -3939,7 +3979,7 @@
     "plat": "fb",
     "title": "OB ENTRY",
     "mk": "XAGUSD",
-    "views": 5991,
+    "views": 5995,
     "site": 0,
     "link": "https://www.facebook.com/reel/1461633655300997/"
    },

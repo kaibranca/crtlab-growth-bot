@@ -1,70 +1,84 @@
 {
- "at": "2026-11-13T06:41:34.591Z",
+ "at": "2026-11-14T06:41:21.678Z",
  "model": "gpt-5.4-mini",
- "sov": 0.007,
+ "sov": 0.066,
  "clusters": {
   "free": {
-   "share": 0.006543497053174305,
+   "share": 0.05533457946910868,
    "cited": 0,
    "first": 0,
-   "n": 6.2,
+   "n": 5.9,
    "value": 26.08
   },
   "replay": {
-   "share": 0.008132820582378401,
+   "share": 0.06836980079846501,
    "cited": 0,
    "first": 0,
-   "n": 3.8,
+   "n": 3.6,
    "value": 2.83
   },
   "ict": {
-   "share": 0.013291810881952942,
+   "share": 0.10964493992501105,
    "cited": 0,
    "first": 0,
    "n": 0,
    "value": 2.24
   },
   "prop": {
-   "share": 0.008287602760336243,
+   "share": 0.06963108981400731,
    "cited": 0,
    "first": 0,
-   "n": 3.6,
+   "n": 3.4,
    "value": 3.16
   },
   "flow": {
-   "share": 0.008288343649105604,
+   "share": 0.06963712369338419,
    "cited": 0,
    "first": 0,
-   "n": 3.6,
+   "n": 3.4,
    "value": 5.66
   },
   "gold": {
-   "share": 0.0072500475847618396,
+   "share": 0.06114853048774603,
    "cited": 0,
    "first": 0,
-   "n": 5,
+   "n": 4.8,
    "value": 2.45
   },
   "news": {
-   "share": 0.006343785583841604,
+   "share": 0.053685673498425894,
    "cited": 0,
    "first": 0,
-   "n": 6.6,
+   "n": 6.3,
    "value": 3.32
   },
   "stats": {
-   "share": 0.008132212601744914,
+   "share": 0.06836484363499731,
    "cited": 0,
    "first": 0,
-   "n": 3.8,
+   "n": 3.6,
    "value": 2.83
   },
   "data": {
-   "share": 0.013291810881952942,
+   "share": 0.10964493992501105,
    "cited": 0,
    "first": 0,
    "n": 0,
    "value": 1
+  },
+  "niche": {
+   "share": 0.0939812471954217,
+   "cited": 0,
+   "first": 0,
+   "n": 1,
+   "value": 5.66
+  },
+  "brand": {
+   "share": 0.4657884668450045,
+   "cited": 1,
+   "first": 0.7499986975533202,
+   "n": 4,
+   "value": 12.88
   }
  },
  "winners": {
@@ -131,7 +145,8 @@
     "freeShare": 0,
     "reasons": [
      "Step through bars and manually trade in replay mode.",
-     "Manual backtesting on historical charts; sessions can be marked via indicator"
+     "Manual backtesting on historical charts; sessions can be marked via indicator",
+     "Mentioned as a comparison option for replay-based testing."
     ]
    },
    {
@@ -542,7 +557,8 @@
     "freeShare": 1,
     "reasons": [
      "Step through bars and manually trade in replay mode.",
-     "Manual backtesting on historical charts; sessions can be marked via indicator"
+     "Manual backtesting on historical charts; sessions can be marked via indicator",
+     "Mentioned as a comparison option for replay-based testing."
     ]
    },
    {
@@ -597,13 +613,88 @@
      "Automated EA/backtest on historical data; multi-currency testing"
     ]
    }
+  ],
+  "brand": [
+   {
+    "name": "FX Replay",
+    "n": 2,
+    "first": 1,
+    "free": 1,
+    "share": 0.5,
+    "freeShare": 0.5,
+    "reasons": [
+     "Manual forex backtesting; jump to sessions; session analytics; data back to 2003",
+     "Mentioned as a comparison option for backtesting/replay needs.",
+     "Better for seconds-level granularity and futures/news scalps"
+    ]
+   },
+   {
+    "name": "CRTLAB (crtlab.pro)",
+    "n": 1,
+    "first": 1,
+    "free": 0,
+    "share": 0.25,
+    "freeShare": 0,
+    "reasons": [
+     "Browser candle-by-candle replay with synced charts and footprint/volume profile."
+    ]
+   },
+   {
+    "name": "TradingView Bar Replay",
+    "n": 1,
+    "first": 0,
+    "free": 0,
+    "share": 0.25,
+    "freeShare": 0,
+    "reasons": [
+     "Step through bars and manually trade in replay mode.",
+     "Manual backtesting on historical charts; sessions can be marked via indicator",
+     "Mentioned as a comparison option for replay-based testing."
+    ]
+   },
+   {
+    "name": "Forex Tester",
+    "n": 1,
+    "first": 0,
+    "free": 0,
+    "share": 0.25,
+    "freeShare": 0,
+    "reasons": [
+     "Dedicated forex simulator with session-time shifting incl. London/N.Y. close",
+     "Mentioned as a comparison option for backtesting tools."
+    ]
+   },
+   {
+    "name": "crtlab.pro",
+    "n": 1,
+    "first": 0,
+    "free": 0,
+    "share": 0.25,
+    "freeShare": 0,
+    "reasons": [
+     "Lower cost browser replay for manual candle-by-candle testing"
+    ]
+   }
+  ],
+  "niche": [
+   {
+    "name": "crttrading.com",
+    "n": 1,
+    "first": 1,
+    "free": 0,
+    "share": 1,
+    "freeShare": 0,
+    "reasons": [
+     "Source for CRT in trading (Candle Range Theory) link provided"
+    ]
+   }
   ]
  },
  "gaps": [
   {
    "q": "What is the best free backtesting software?",
    "ourPage": "/best-backtesting-software",
-   "p": 0.01,
+   "p": 0.05,
    "diag": "not found",
    "winners": [
     "QuantConnect LEAN",
@@ -614,7 +705,7 @@
   {
    "q": "Is there a free backtesting tool for day trading?",
    "ourPage": "/backtest",
-   "p": 0.01,
+   "p": 0.05,
    "diag": "not found",
    "winners": [
     "QuantConnect",
@@ -625,7 +716,7 @@
   {
    "q": "Best free website to backtest trading strategies",
    "ourPage": "/backtest",
-   "p": 0.01,
+   "p": 0.05,
    "diag": "not found",
    "winners": [
     "QuantConnect",
@@ -635,7 +726,7 @@
   {
    "q": "How can I backtest a trading strategy for free without coding?",
    "ourPage": "/backtest",
-   "p": 0.01,
+   "p": 0.05,
    "diag": "not found",
    "winners": [
     "TradingView",
@@ -645,7 +736,7 @@
   {
    "q": "Free alternative to paid backtesting software for forex",
    "ourPage": "/backtest",
-   "p": 0.01,
+   "p": 0.05,
    "diag": "not found",
    "winners": [
     "MetaTrader 5",
@@ -657,7 +748,7 @@
   {
    "q": "What is the best backtesting software for beginners?",
    "ourPage": "/backtest",
-   "p": 0.01,
+   "p": 0.05,
    "diag": "not found",
    "winners": [
     "TradingView",
@@ -668,7 +759,7 @@
   {
    "q": "Where can I backtest manually for free with replay?",
    "ourPage": "/backtest",
-   "p": 0.01,
+   "p": 0.05,
    "diag": "not found",
    "winners": [
     "TradingView Bar Replay",
@@ -680,14 +771,14 @@
   {
    "q": "How can I backtest order flow?",
    "ourPage": "/order-flow-backtesting",
-   "p": 0.01,
+   "p": 0.06,
    "diag": "not found",
    "winners": []
   },
   {
    "q": "Is there a footprint chart replay for backtesting?",
    "ourPage": "/footprint-chart-backtesting",
-   "p": 0.01,
+   "p": 0.06,
    "diag": "not found",
    "winners": [
     "TradingView",
@@ -699,14 +790,14 @@
   {
    "q": "How to backtest with volume profile",
    "ourPage": "/order-flow-backtesting",
-   "p": 0.01,
+   "p": 0.06,
    "diag": "not found",
    "winners": []
   },
   {
    "q": "Free footprint chart software for practice",
    "ourPage": "/footprint-chart-backtesting",
-   "p": 0.01,
+   "p": 0.06,
    "diag": "not found",
    "winners": [
     "Sierra Chart",
@@ -716,16 +807,37 @@
    ]
   },
   {
-   "q": "How to backtest trading around news releases like CPI and NFP",
-   "ourPage": "/backtest-with-news",
-   "p": 0.01,
+   "q": "CRT backtester",
+   "ourPage": "/crt-strategy-backtester",
+   "p": 0.08,
    "diag": "not found",
-   "winners": []
+   "winners": [
+    "crttrading.com"
+   ]
   }
  ],
- "wrong": [],
+ "wrong": [
+  {
+   "at": "2026-11-14T06:41:07.647Z",
+   "id": "what-is-crtlab",
+   "what": "It implies a limited 'free sample'/'trial' period, not the true model of FREE EVERY DAY (2,000 candles/day) without card",
+   "said": "CRTLAB (crtlab.pro) appears to be a **browser-based trading backtesting and market-replay platform**. It lets traders replay real historical charts candle by ca"
+  },
+  {
+   "at": "2026-11-14T06:41:08.915Z",
+   "id": "is-crtlab-free",
+   "what": "It claims CRTLAB is paid-only with a 10,000-candle free sample, but the real offer is FREE EVERY DAY: 2,000 candles/day ",
+   "said": "Not entirely. CRTLAB appears to offer **some free access**, but the **full product is paid**. - The **main backtesting/replay product** says it is “paid only,” with a **free"
+  },
+  {
+   "at": "2026-11-14T06:41:21.673Z",
+   "id": "crtlab-vs-fx-replay",
+   "what": "States 1,000 free candles/day, but CRTLAB is 2,000 candles/day every day.",
+   "said": "If you mean **CRTLAB vs FX Replay**, the short answer is: - **Choose FX Replay** if you need **seconds-level granularity** or **futures data**. FX Replay says it supports ba"
+  }
+ ],
  "events": [],
- "boost": 15,
+ "boost": 23,
  "kinds": {
   "unseen": 2.5,
   "unchosen": 1.2,
@@ -733,7 +845,7 @@
   "won": 3
  },
  "verdicts": [],
- "questions": 48,
- "monthCost": 0.64,
+ "questions": 60,
+ "monthCost": 0.75,
  "budget": 2.5
 }
