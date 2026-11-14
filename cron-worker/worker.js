@@ -13,7 +13,7 @@ const JOBS = [
   ["reels.yml", 40, 8, "*"],             // 08:40 plan + render today's reels
   ["restore.yml", 17, 5, 0],             // Sun 05:17 backup restore test
   ["weekly.yml", 0, 5, 1],               // Mon 05:00 weekly SEO
-  ["daily-data.yml", 24, 6, "*", "kaibranca/crtlab-backtester"], // 06:24 (11-14, was 06:15): build takes ~32 min → ready ~06:56, released 07:00:00; a long day releases the moment it is verified (job.mjs). The old start idled ~13 billed minutes a day waiting for 07:00
+  ["daily-data.yml", 32, 6, "*", "kaibranca/crtlab-backtester"], // 06:32 (11-14 pm, was 06:24): measured build 25 min (06:24→06:49) + 4 min state save; 06:24 still idled 11 billed min. Ready ~06:57, released 07:00:00; a long day releases the moment it is verified (job.mjs). The old start idled ~13 billed minutes a day waiting for 07:00
   ["daily-data.yml", 30, 8, "*", "kaibranca/crtlab-backtester", { retry: "1" }],  // retry slot: skips itself if 06:30 already went live
   ["daily-data.yml", 30, 11, "*", "kaibranca/crtlab-backtester", { retry: "1" }], // second retry slot
   // 11-11 (Kai: "if it fails the counter won't refresh — it always has to"): a retry every 1–2 h through the afternoon. A
@@ -42,7 +42,10 @@ async function guard(env, d) {
     if (age == null || age > 3) why.push(`the hourly engine has not reported for ${age == null ? "an unknown time" : age.toFixed(1) + " h"} (supervisor + every machine behind it)`);
   } catch (e) { why.push("could not read the engine status: " + String(e).slice(0, 60)); }
   try {
-    const v = await fetch("https://crtlab.pro/api/data-version", { headers: { "User-Agent": "crtlab-cron", ...(env.EDGE_SECRET ? { "x-crtlab-edge": env.EDGE_SECRET } : {}) } }) // WAF rule 3 403s an empty UA; a worker's own-zone fetch skips the transform rule, so it carries the edge header itself.then((r) => (r.ok ? r.json() : null));
+    // WAF rule 3 403s an empty UA; a worker's own-zone fetch skips the transform rule, so it carries the edge header itself.
+    // (11-14 FIX: the .then() had been pasted INSIDE this comment → v was a raw Response → v.end undefined → false
+    // "data through unknown" alerts. Shared reader below, tested in test/cron-worker.test.mjs.)
+    const v = await dataVersion(env);
     const x = new Date(d); x.setUTCHours(0, 0, 0, 0); if (d - x < 7.5 * 3.6e6) x.setUTCDate(x.getUTCDate() - 1);
     do x.setUTCDate(x.getUTCDate() - 1); while (x.getUTCDay() === 0 || x.getUTCDay() === 6);
     const want = x.toISOString().slice(0, 10);
@@ -104,6 +107,25 @@ async function sentinel(env, d) {
   await kvPut(env, "cooldown", 1, 2700);
 }
 
+// /api/data-version through the WAF (edge header: a worker's own-zone fetch skips the transform rule). null on any non-200.
+export async function dataVersion(env, f = fetch) {
+  const r = await f("https://crtlab.pro/api/data-version", { headers: { "User-Agent": "crtlab-cron", ...(env?.EDGE_SECRET ? { "x-crtlab-edge": env.EDGE_SECRET } : {}) }, signal: AbortSignal.timeout(8000) });
+  return r.ok ? r.json() : null;
+}
+// a retry is pointless only when the site positively says every market is through its due session
+export const retryNotNeeded = (v) => !!(v && typeof v.end === "string" && typeof v.due === "string" && v.end >= v.due);
+
+// MINUTES GOVERNOR (11-14): the bot's minutes step writes data/guard/minutes.json (mode + retrySlots) hourly. Same rule as
+// scripts/minutes-lib.mjs retryAllowed (test/cron-worker.test.mjs proves the two agree). Stale/missing = allow (fail open).
+export function retryAllowed(decision, hour, now = Date.now()) {
+  if (!decision || !decision.at || now - Date.parse(decision.at) > 6 * 3.6e6) return true;
+  const slots = decision.retrySlots ?? ({ normal: null, tight: [7, 11, 15], critical: [11] })[decision.mode] ?? null;
+  return slots == null || slots.includes(hour);
+}
+async function minutesDecision(d) {
+  try { const r = await fetch(`https://raw.githubusercontent.com/${REPO}/main/data/guard/minutes.json?t=${d.getTime()}`, { headers: { "User-Agent": "crtlab-cron" }, signal: AbortSignal.timeout(8000) }); return r.ok ? await r.json() : null; } catch { return null; }
+}
+
 export default {
   async scheduled(event, env, ctx) {
     const d = new Date(event.scheduledTime), m = d.getUTCMinutes(), h = d.getUTCHours(), w = d.getUTCDay();
@@ -114,8 +136,14 @@ export default {
       // 11-14 MINUTES: a retry slot that would find nothing to do still bills a full GitHub minute (private repo, 2,000 free/month;
       // the pull was on pace for ~2,200). Ask the site first: every market already through its due session → skip the dispatch.
       // Fails OPEN: if the site can't answer, the retry runs as before (the pull must never be missed to save a minute).
-      if (inputs?.retry && !(h === 11 || h === 15)) { try { // 11:30 + 15:30 always run (held markets get their retry); the rest skip when current const v = await (await fetch("https://crtlab.pro/api/data-version", { headers: { "User-Agent": "crtlab-cron" }, signal: AbortSignal.timeout(8000) })).json();
-        if (v?.end && v?.due && v.end >= v.due) { console.log(`${d.toISOString()} ${wf} retry skipped: live ${v.live} through ${v.end} (due ${v.due})`); continue; } } catch (e) { console.log("retry pre-check failed, dispatching: " + String(e).slice(0, 60)); } }
+      // 11-14 FIX: the pre-check code had been pasted INSIDE a comment → `v` was never defined → every slot "failed open" and
+      // billed a minute. Also: no forced 11:30/15:30 slots any more — /api/data-version `end` is the MIN over all markets, so a
+      // held market already shows as end < due and its retry still runs. Still fails OPEN (site unreachable → dispatch).
+      if (inputs?.retry && !retryAllowed(await minutesDecision(d), h)) { console.log(`${d.toISOString()} ${wf} retry slot ${h}:30 shed by the minutes governor`); continue; }
+      if (inputs?.retry) { try {
+        const v = await dataVersion(env);
+        if (retryNotNeeded(v)) { console.log(`${d.toISOString()} ${wf} retry skipped: live ${v.live} through ${v.end} (due ${v.due})`); continue; }
+      } catch (e) { console.log("retry pre-check failed, dispatching: " + String(e).slice(0, 60)); } }
       const r = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/${wf}/dispatches`, {
         method: "POST",
         headers: { Authorization: `Bearer ${env.GH_TOKEN}`, Accept: "application/vnd.github+json", "User-Agent": "crtlab-cron", "X-GitHub-Api-Version": "2022-11-28" },
