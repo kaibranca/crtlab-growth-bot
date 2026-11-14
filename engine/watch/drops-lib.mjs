@@ -59,3 +59,18 @@ export function gapTest(map, end, g = GAP) {
   const p = Math.exp(-rate * gap);
   return { level: p < g.dropP ? "drop" : p < g.watchP ? "watch" : "normal", gap, n, typicalGap: +(1 / rate).toFixed(1), p: +p.toFixed(3), windows: [] };
 }
+
+// WHY (11-14): a level says THAT a number moved, not WHERE. Shift-share by landing page: recent `rw` days vs the `pw` days
+// before them (scaled to rw), each page's share of the net change; pages that appeared/vanished called out. Small pages
+// (both sides < minN) are pooled so noise isn't ranked. rows = [{ page, recent, prior }]. First real use: ChatGPT accounts
+// 14 d vs prior 28 d — /backtest 54.5 → 13, / 51.5 → 8 (≈ all of the fall), /footprint-chart-backtesting 0 → 7 (new door).
+export function explain(rows, { rw = 14, pw = 28, minN = 3, top = 5 } = {}) {
+  const k = rw / pw, pages = rows.map((r) => ({ page: r.page, recent: r.recent, expected: +(r.prior * k).toFixed(1) }));
+  const big = pages.filter((p) => p.recent >= minN || p.expected >= minN), small = pages.filter((p) => !big.includes(p));
+  if (small.length) big.push({ page: `(${small.length} small pages)`, recent: small.reduce((a, p) => a + p.recent, 0), expected: +small.reduce((a, p) => a + p.expected, 0).toFixed(1) });
+  const net = big.reduce((a, p) => a + p.recent - p.expected, 0);
+  const rank = big.map((p) => ({ ...p, delta: +(p.recent - p.expected).toFixed(1), ratio: p.expected > 0 ? +(p.recent / p.expected).toFixed(2) : null,
+    share: net ? +((p.recent - p.expected) / net).toFixed(2) : null }));
+  return { net: +net.toFixed(1), losers: rank.filter((p) => p.delta < 0).sort((a, b) => a.delta - b.delta).slice(0, top),
+    gainers: rank.filter((p) => p.delta > 0).sort((a, b) => b.delta - a.delta).slice(0, top) };
+}

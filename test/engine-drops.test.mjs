@@ -55,3 +55,13 @@ test("buyers gap test: normal gap ok, long dry spell flagged, too few buyers = t
   assert.equal(gapTest({}, "2026-11-30").level, "unknown");
   assert.equal(gapTest({ "2026-12-01": 3 }, "2026-11-30").level, "unknown"); // future rows never count
 });
+
+import { explain } from "../engine/watch/drops-lib.mjs";
+test("why: ranks the pages that carry a fall, pools small ones, shows new doors", () => {
+  const e = explain([{ page: "/backtest", recent: 13, prior: 109 }, { page: "/", recent: 8, prior: 103 }, { page: "/footprint", recent: 7, prior: 0 },
+    { page: "/a", recent: 1, prior: 2 }, { page: "/b", recent: 0, prior: 2 }]);
+  assert.equal(e.losers[0].page, "/"); assert.equal(e.losers[1].page, "/backtest");
+  assert.ok(e.losers[0].share + e.losers[1].share > 1);              // the two carry more than the whole net (a gain offsets)
+  assert.equal(e.gainers[0].page, "/footprint"); assert.equal(e.gainers[0].ratio, null);
+  assert.ok(e.losers.some((p) => p.page === "(2 small pages)") || e.gainers.every((p) => p.page !== "/a"));
+});

@@ -4,7 +4,7 @@
 //   out: data/engine/drops.json + data/engine/series.json (owner: daily/drops) · ledger row + email ONLY when a metric's level CHANGES
 // Method + thresholds: drops-lib.mjs (weekday-adjusted, measured dispersion, backtested Aug–Nov 2026).
 import fs from "node:fs";
-import { evaluate, gapTest } from "./drops-lib.mjs";
+import { evaluate, gapTest, explain } from "./drops-lib.mjs";
 import { googleUpdates, overlapping } from "../lib/external.mjs";
 import { addDays, iso } from "../lib/stats.mjs";
 
@@ -33,6 +33,11 @@ const vis = (await db.query(`select to_char(g.created_at,'YYYY-MM-DD') d, ${SRC}
   where g.converted_at is not null or exists (select 1 from guest_meters m where m.device_key = g.device_key and m.candles_used > 0) group by 1,2`, [since, end])).rows;
 const wall = (await db.query(`select to_char(created_at,'YYYY-MM-DD') d, type, count(distinct subject)::int n from wall_events
   where created_at >= $1 and created_at < $2::date + 1 and not coalesce(staff,false) and type in ('wall_view','pack_click') group by 1,2`, [since, end])).rows;
+// WHY: accounts by source × landing page (the converting guest's first page), last 14 complete days vs the 28 before
+const lp = (await db.query(`select ${SRC} src, page, count(*) filter (where created_at::date > $1::date - 14)::int recent,
+  count(*) filter (where created_at::date <= $1::date - 14)::int prior from (select u.created_at,
+  lower(coalesce(nullif(u.signup_utm_source,''), nullif(u.signup_source,''), 'none')) s, coalesce(regexp_replace(g.landing_path, '[?#].*', ''), '(unknown)') page
+  from users u left join guest_presence g on g.converted_user_id = u.id where u.created_at::date > $1::date - 42 and u.created_at::date <= $1::date) x group by 1,2`, [end])).rows;
 await db.end();
 
 // NEW buyers from Stripe: first successful, unrefunded, live charge per customer (full history, so renewals never count as new).
@@ -74,10 +79,17 @@ fs.mkdirSync("data/engine", { recursive: true });
 // ONE reader of user analytics, many consumers: the daily outcome series (no buyers — public repo) for LEARN and any machine
 // that needs "what did users do", so every machine uses the same definitions (real visitor, source mapping) instead of its own SQL.
 fs.writeFileSync("data/engine/series.json", JSON.stringify({ at: new Date().toISOString(), from: since, end, series }));
+// WHERE each moving accounts metric moved (shift-share by landing page) — only for watch/drop/rise, the rest is noise
+const why = {};
+for (const m of METRICS.filter((m) => m.startsWith("accounts") && ["watch", "drop", "rise"].includes(metrics[m].level))) {
+  const src = m.split(".")[1], by = new Map();
+  for (const r of lp) if (!src || r.src === src) { const o = by.get(r.page) ?? { page: r.page, recent: 0, prior: 0 }; o.recent += r.recent; o.prior += r.prior; by.set(r.page, o); }
+  why[m] = explain([...by.values()]);
+}
 // Google ranking updates live in the last 14 days — named next to any Google metric, so nobody blames our own change first
 const G = await googleUpdates({ since: addDays(end, -60) }), activeG = G == null ? null : overlapping(G, addDays(end, -14), end);
 const pub = { ...metrics, "buyers.new": { level: metrics["buyers.new"].level, p: metrics["buyers.new"].p ?? null, why: metrics["buyers.new"].why } }; // public repo: no buyer counts
-fs.writeFileSync(OUT, JSON.stringify({ at: new Date().toISOString(), end, method: "weekday-adjusted 4-week baseline, robust dispersion, windows 3+7 d; buyers = gap test vs the 56-day rate before the last buyer", google: activeG, metrics: pub }, null, 1));
+fs.writeFileSync(OUT, JSON.stringify({ at: new Date().toISOString(), end, method: "weekday-adjusted 4-week baseline, robust dispersion, windows 3+7 d; buyers = gap test vs the 56-day rate before the last buyer", google: activeG, why, metrics: pub }, null, 1));
 
 const line = (m) => { const r = metrics[m]; if (m === "buyers.new") return `buyers.new: ${r.level.toUpperCase()} — ${r.gap} days since the last new buyer; normal gap ~${r.typicalGap} d (${r.n} in the 56 d before it), chance of a gap this long ${Math.round((r.p ?? 0) * 100)}%`;
   const w = r.windows.find((x) => x.level === r.level) ?? r.windows[r.windows.length - 1];
@@ -90,6 +102,9 @@ if (bad.length && process.env.RESEND_API_KEY) {
   const { mail } = await import("../../reels/engine/alert.mjs");
   await mail(`CRTLAB watch: ${bad.map((m) => `${m} ${metrics[m].level}`).join(", ")}`,
     ["Compared with the same weekdays over the last 4 weeks (complete days to " + end + "):", "", ...bad.map(line), "",
+      ...bad.filter((m) => why[m]).flatMap((m) => [`WHERE (${m}, last 14 d vs the 28 before, by landing page):`,
+        ...why[m].losers.map((p) => `  ↓ ${p.page}  ${p.expected} → ${p.recent}${p.share != null ? `  (${Math.round(p.share * 100)}% of the change)` : ""}`),
+        ...why[m].gainers.slice(0, 3).map((p) => `  ↑ ${p.page}  ${p.expected} → ${p.recent}`), ""]),
       ...(bad.some((m) => m.includes("google")) && activeG?.length ? [`OUTSIDE: Google ${activeG.map((e) => `${e.what} (from ${e.begin.slice(0, 10)}${e.end ? " to " + e.end.slice(0, 10) : ", still rolling out"})`).join("; ")} — Google numbers move for everyone; don't credit or blame our own changes for it.`, ""] : []),
       "Levels only change when the number does — no repeat emails. Detail: data/engine/drops.json"].join("\n"));
 }
