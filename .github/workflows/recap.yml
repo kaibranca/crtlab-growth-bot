@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version: 20 }
       - run: node scripts/recap.mjs
         env: { DATABENTO_API_KEY: "${{ secrets.DATABENTO_API_KEY }}" }
@@ -22,7 +22,7 @@ jobs:
         continue-on-error: true
       - run: node scripts/summary.mjs
       # the reel engine renders from these same 1-minute bars (no second data bill); 7 days so weekend reels have data
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with: { name: bars, path: .cache/, retention-days: 7, include-hidden-files: true }
       - run: |
           bash scripts/push.sh "recap $(date -u +%F)"

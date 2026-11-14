@@ -9,7 +9,7 @@ jobs:
   promote:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with: { repository: kaibranca/crtlab-standalone, ref: rebuild-integration, ssh-key: "${{ secrets.SITE_DEPLOY_KEY }}", fetch-depth: 0 }
       - name: Fast-forward live
         run: |
