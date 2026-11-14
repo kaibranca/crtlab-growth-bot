@@ -3,7 +3,7 @@
 //   worksTier(path) → "WIN" | "OK" | "WEAK" | "DEAD" | null
 //   canBuild(path)  → false for a DEAD (binned) family: no new pages there until it produces accounts again
 // The engine itself is scripts/works.mjs (hourly). Family rule kept identical to it.
-import fs from "node:fs";
+import { check } from "./store.mjs"; import { C } from "./contracts.mjs";
 const NOTMKT = /^\/(learn|help|faq|features|pricing|blog|news|recap|tools|answers|terms|privacy|risk|company|markets|replay|login|signup|hub|account|analytics|backtester|reference|statistics|partnerships|refund|third-party|unsubscribe|week-ahead)$/;
 export const family = (p) => {
   if (p === "/" || p === "") return "/";
@@ -21,9 +21,21 @@ export const family = (p) => {
   if (/(backtest|backtester|backtesting|alternative|replay|simulator)/.test(p)) return "/<concept>-backtesting";
   return "/<page>";
 };
-let PLAN;
-const plan = () => { if (PLAN === undefined) { try { const j = JSON.parse(fs.readFileSync("data/works/plan.json", "utf8")); PLAN = Date.now() - Date.parse(j.at) < 3 * 864e5 ? j : null; } catch { PLAN = null; } } return PLAN; }; // stale (> 3 d) = no opinion
+// Read through the "works" contract. Stale up to 72 h is still used for steering (works runs hourly; a few missed runs
+// shouldn't zero every multiplier); broken / wrong shape / older = NO opinion, and the reason is exposed (worksStatus).
+// Fail-safe directions: steering goes NEUTRAL (×1), building goes CLOSED (no new pages while blind = no spam risk).
+let PLAN, STATUS;
+const plan = () => {
+  if (PLAN === undefined) {
+    const r = check(C.works);
+    const usable = r.kind === "ok" || (r.kind === "stale" && r.ageH < 72);
+    PLAN = usable ? r.data : null; STATUS = { kind: r.kind, detail: r.detail || null, used: usable };
+  }
+  return PLAN;
+};
+export const worksStatus = () => (plan(), STATUS);
 export const worksTier = (p) => plan()?.tiers?.[family(p)] ?? null;
 export const worksMul = (p) => { const W = plan(); if (!W) return 1; const m = W.pageMult?.[p] ?? W.famMult?.[family(p)] ?? 1; return Math.max(0.3, Math.min(3.5, m)); };
-export const canBuild = (p) => worksTier(p) !== "DEAD";
+export const canBuild = (p) => plan() != null && worksTier(p) !== "DEAD";
 export const worksPlan = plan;
+export const _reset = () => { PLAN = undefined; }; // tests
