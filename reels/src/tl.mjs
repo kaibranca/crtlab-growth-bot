@@ -49,11 +49,35 @@ export function build(d) {
   const k0 = T.dim + .5, KEY = .1; T.keys = [...Array(10)].map((_, i) => [k0 + i * KEY, i + 1]);
   T.typed = T.keys.at(-1)[0]; T.row = T.typed + .2; T.ptr = T.row + .25; T.click = T.ptr + .85; T.out = T.click + .1; T.end = T.out + .55;
   const DUR = Math.ceil((T.end + .03) * FPS);
-  return { N, B, HI, LO, BW, cw, X, Y, sch, T, beats, cams, DUR, pace };
+  // the auto-scale track, one entry per frame: [scale, centre y]. Target = every printed candle + the prices of shapes already
+  // shown (zone, BOS, position tool from just before it draws), padded 14%; at least 45% of the story's range; only widens.
+  const when = (k) => { const b = beats.find((x) => x.show?.includes(k)); return b ? b.t - .35 : Infinity; };
+  const extra = []; if (d.zone) extra.push([when("zone"), d.zone.top, d.zone.bot]); if (d.bos) extra.push([when("bos"), d.bos.price, d.bos.price]);
+  if (d.trade) extra.push([when("tool"), d.trade.stop, d.trade.target]); if (d.measure) extra.push([when("measure"), d.measure.from, d.measure.to]);
+  if (d.level != null && d.model !== "ob" && d.model !== "fvg") extra.push([when("level"), d.level, d.level]);
+  const view = []; let th = -Infinity, tl = Infinity, ch = null, clo = null, rr = null, mxI = -1; const a = 1 - Math.exp(-1 / FPS / .5), minSp = (HI - LO) * .62;
+  for (let f = 0; f < DUR; f++) { const tt = f / FPS;
+    for (let i = 0; i <= cur; i++) { const p = prog(sch[i], tt); if (p <= 0) continue; mxI = Math.max(mxI, i); const c = partial(B[i], p); th = Math.max(th, c[1]); tl = Math.min(tl, c[2]); }
+    for (const [t0, x, y] of extra) if (tt >= t0) { th = Math.max(th, x, y); tl = Math.min(tl, x, y); }
+    let hi = th, lo = tl; if (!isFinite(hi)) { hi = B[0].h; lo = B[0].l; }
+    const sp = Math.max(minSp, (hi - lo) * 1.28), mid = (hi + lo) / 2; let H1 = Math.min(HI, mid + sp / 2), L1 = Math.max(LO, mid - sp / 2);
+    if (H1 - L1 < sp) { if (H1 >= HI) L1 = Math.max(LO, HI - sp); else H1 = Math.min(HI, LO + sp); }
+    if (ch == null) { ch = H1; clo = L1; } else { ch += (H1 - ch) * a; clo += (L1 - clo) * a; }
+    const yH = Y(Math.max(ch, hi + (hi - lo) * .04)), yL = Y(Math.min(clo, lo - (hi - lo) * .04)); // printed candles are always inside, even mid-follow
+    // time: the view holds the printed candles + 5 empty slots ahead (at least 20), widening smoothly; at the end = the whole story
+    const R = Math.min(N - 1 + .8, Math.max(23, mxI + 6)); rr = rr == null ? R : rr + (R - rr) * a; rr = Math.max(rr, mxI + 1.2);
+    view.push([(L.PB - L.PT) / Math.max(1, yL - yH), (yH + yL) / 2, Math.max(1, (L.PR - L.PL) / (X(rr) + BW * .9 - L.PL))]); }
+  return { N, B, HI, LO, BW, cw, X, Y, sch, T, beats, cams, DUR, pace, view };
 }
 
 // camera at time t → { s, cx, cy } (world point cx,cy is drawn at the plot centre, scaled by s). s = 1 → the whole chart.
+// v14 (11-14, Kai: "the animation randomly snaps"): ONE steady frame for the whole reel, like a TradingView replay. The chart is
+// framed once to hold every candle + level of the story; nothing zooms or pans between beats. FOCUS = 0 keeps it that way.
+// AUTO-SCALE like TradingView: x never moves; the PRICE range follows what is on screen. It only ever WIDENS (never zooms back in),
+// and it follows smoothly (critically damped, ~0.35s), so the chart breathes out as the move unfolds and never snaps.
+export const FOCUS = 0;
 export function camera(G, t) {
+  if (!FOCUS) { const f = G.view[Math.max(0, Math.min(G.view.length - 1, Math.round(t * FPS)))]; return { s: f[0], cx: (L.PL + L.PR) / 2, cy: f[1], sx: f[2] }; }
   const PCX = (L.PL + L.PR) / 2, PCY = (L.PT + L.PB) / 2, full = { s: 1, cx: PCX, cy: PCY };
   const state = (f, to) => {
     if (!f) return full;
@@ -105,7 +129,7 @@ export const prog = (s, t) => (!s ? 0 : t < s[0] ? 0 : cl((t - s[0]) / (s[1] - s
 export function offscreen(G) {
   const PCX = (L.PL + L.PR) / 2, PCY = (L.PT + L.PB) / 2; let worst = 0, at = null;
   for (let f = 0; f < G.DUR; f += 2) { const t = f / FPS; if (t >= G.T.dim) break; const c = camera(G, t);
-    for (let i = 0; i <= G.T.last; i++) { const p = prog(G.sch[i], t); if (p <= 0) continue; const b = partial(G.B[i], p), x = PCX + (G.X(i) - c.cx) * c.s, yh = PCY + (G.Y(b[1]) - c.cy) * c.s, yl = PCY + (G.Y(b[2]) - c.cy) * c.s;
+    for (let i = 0; i <= G.T.last; i++) { const p = prog(G.sch[i], t); if (p <= 0) continue; const b = partial(G.B[i], p), x = FOCUS ? PCX + (G.X(i) - c.cx) * c.s : L.PL + (G.X(i) - L.PL) * c.sx, yh = PCY + (G.Y(b[1]) - c.cy) * c.s, yl = PCY + (G.Y(b[2]) - c.cy) * c.s;
       const o = Math.max(L.PL - x, x - L.PR, L.PT - yh, yl - L.PB, 0); if (o > worst) { worst = o; at = +t.toFixed(2); } } }
   return { worst: +worst.toFixed(1), at };
 }

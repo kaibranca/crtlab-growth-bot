@@ -9,6 +9,7 @@ export const nice = (mk) => NICE[mk] || mk;
 const money = (s, x) => (s.unit === "$" ? "$" + Math.abs(x).toLocaleString("en-US", { maximumFractionDigits: Math.abs(x) >= 100 ? 0 : 2 }) : s.unit === "pips" ? Math.round(Math.abs(x) / (s.mk.includes("JPY") ? .01 : .0001)) + " pips" : Math.round(Math.abs(x)).toLocaleString("en-US") + " pts");
 const NAME = { ob: ["OB", "ENTRY"], fvg: ["FVG", "ENTRY"], crt: ["CRT", "SETUP"], asia: ["ASIA", "RANGE"], break: ["PDH", "BREAK"], news: ["NEWS", "SPIKE"], nyopen: ["NY OPEN", "BREAK"] };
 
+const slash = (mk) => (/^[A-Z]{6}$/.test(mk) ? mk.slice(0, 3) + "/" + mk.slice(3) : nice(mk).toUpperCase());
 export function titleOptions(s, fam) {
   const nm = [...NAME[s.model]]; if (s.model === "break" && s.side === "low") nm[0] = "PDL"; if (s.model === "news") nm[0] = s.event.name;
   const mv = (s.trade ? "+2R" : money(s, s.measure.to - s.measure.from)).toUpperCase(), n = nice(s.mk).toUpperCase();
@@ -18,17 +19,22 @@ export function titleOptions(s, fam) {
     result: trade ? [[mv, nm.join(" ")], [nm[0], mv]] : [[nm[0], mv], [`${n} ${nm[0]}`, mv]],
     question: trade ? [[nm[0], "OR TRAP?"], ["WOULD YOU", "TAKE THIS?"], ["TAKE THIS", `${nm[0]}?`]] : [[nm[0], "OR TRAP?"], ["WOULD YOU", "TRADE THIS?"]],
     pov: trade ? [["POV", `${nm[0]} TAPPED`], ["POV", "YOU WAITED"]] : [["POV", `${nm[0]} ${verb}`], ["POV", "YOU MARKED IT"]],
+    // v14 (11-14) Kai's manual-era winners: "SMC ENTRY", "XAU/USD"-style pair titles; and the product-led quiz (spot it before the next candle)
+    smc: [["SMC", "ENTRY"], ["ICT", "ENTRY"], ["SMC", nm.join(" ")]],
+    pair: [[slash(s.mk), nm.join(" ")], [slash(s.mk), "ENTRY"]],
+    quiz: trade ? [["SPOT THE", "ENTRY?"], ["WOULD YOU", "ENTER HERE?"]] : [["SPOT THE", `${nm[0]}?`]],
     time: s.when9 ? [[s.when9, nm.join(" ")]] : [[DAYN[s.wd]?.toUpperCase() || n, nm.join(" ")]],
   }[fam] || [nm];
   // never a doubled word ("FVG FVG ENTRY"), never too long for one clean line
   return F.filter((x) => { if (!x[0]) return false; const w = (x[0] + " " + (x[1] || "")).toUpperCase().split(/\s+/).filter((y) => /[A-Z]/.test(y)); return new Set(w).size === w.length && (x[0] + " " + x[1]).length <= 20; });
 }
 
-export function copy(s, fam, avoid = new Set()) {
+export function copy(s, fam, avoid = new Set(), want = null) {
   const d = new Date(s.date + "T12:00:00Z"), when = `${s.wd} ${d.getUTCDate()} ${MON[d.getUTCMonth()]}`, kt = s.bars[s.kb].lab;
   s.when9 = s.model === "news" ? `${s.event.time} NY` : s.model === "nyopen" ? "9:30 NY" : null;
   const opts = titleOptions(s, fam), h = hash(s.id + fam); let title = null;
-  for (let k = 0; k < opts.length; k++) { const c = opts[(h + k) % opts.length]; if (!avoid.has(c.join(" "))) { title = c; break; } }
+  if (want) { const w = opts.find((o) => o.join(" ") === want); if (w) title = w; } // the champion's exact title (repeats are the point)
+  for (let k = 0; k < opts.length && !title; k++) { const c = opts[(h + k) % opts.length]; if (!avoid.has(c.join(" "))) { title = c; break; } }
   if (!title) return null;
   const up = s.trade ? s.trade.side === "long" : s.side === "high", mv = s.measure ? money(s, s.measure.to - s.measure.from) : null;
   const pct = s.measure ? ((s.measure.to - s.measure.from) / s.measure.from * 100) : 0;

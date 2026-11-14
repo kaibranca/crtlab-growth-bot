@@ -45,7 +45,7 @@ export function mix(d) {
   const tool = beats.find((b) => b.show?.includes("tool"));
   if (d.trade && tool) { /* every cursor click uses the same clean click as the domain (Kai): tool icon click, grab, release */
     const clk = (at) => { place(smp("click_001"), at, .42); place(smp("click_003"), at + .09, .22); };
-    clk(tool.t - .66); place(smp("click_001"), tool.t, .42); place(smp("click_003"), tool.t + .62, .22); }
+    /* v14: no cursor draws the tool any more, so no clicks */ void clk; }
   // ── typing: minimal, soft, real keys ──────────────────────────────────────────────────────────────────────────────
   const KEYS = ["click1", "click2", "select_001", "select_002"].map(smp);
   T.keys.forEach(([s], i) => place(KEYS[(i * 3 + (seed & 3)) % 4], s + (rnd() - .5) * .012, .14 * (.8 + .35 * rnd()), .96 + .08 * rnd(), (rnd() - .5) * .3));

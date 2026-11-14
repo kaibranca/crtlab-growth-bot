@@ -42,7 +42,8 @@ const views = (x) => { const m = rmet[x.id]; return m ? (x.plat === "ig" ? m.vie
 const r7 = rlog.filter((x) => Date.parse(x.postedAt) >= since(7));
 const reels = { live: rlive, posted7d: { ig: r7.filter((x) => x.plat === "ig").length, fb: r7.filter((x) => x.plat === "fb").length },
   views7d: r7.reduce((s, x) => s + (views(x) || 0), 0), site7d: +r7.reduce((s, x) => s + (rmet[x.id]?.site || 0), 0).toFixed(1), signups7d: +r7.reduce((s, x) => s + (rmet[x.id]?.signups || 0), 0).toFixed(1),
-  next: upcoming.slice(0, 4), last: rlog.slice(-6).reverse().map((x) => ({ at: x.postedAt, plat: x.plat, title: x.title, mk: x.mk, views: views(x), site: rmet[x.id]?.site ?? null, link: x.permalink })) };
+  champion: jr("champion.json"), next: upcoming.slice(0, 4), last: rlog.slice(-6).reverse().map((x) => ({ at: x.postedAt, plat: x.plat, title: x.title, mk: x.mk, views: views(x), site: rmet[x.id]?.site ?? null, link: x.permalink })) };
+{ const c = jr("champion.json"); if (c?.id) act.push({ at: c.at, job: "reels", ok: true, text: `BREAKOUT "${c.title}" ${c.views} ${c.plat === "ig" ? "views" : "plays"} (${c.x}× normal) → champion formula, lock-in 7 days` }); }
 for (const x of rlog.slice(-30)) act.push({ at: x.postedAt, job: "reels", ok: true, text: `posted "${x.title}" (${x.mk}) to ${x.plat === "ig" ? "Instagram" : "Facebook"}` });
 const sh = fs.existsSync("data/shield.json") ? JSON.parse(fs.readFileSync("data/shield.json", "utf8")) : null;
 const shield = sh && { at: sh.at, lastHour: sh.lastHour, blocked24h: (sh.history || []).filter((h) => Date.parse(h.at) >= since(1)).reduce((s, h) => s + h.blocked, 0), banned7d: (sh.history || []).filter((h) => Date.parse(h.at) >= since(7)).reduce((s, h) => s + h.banned, 0) };

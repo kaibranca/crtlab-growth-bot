@@ -67,7 +67,7 @@ function zoneTrade(bars, zone, side, from, maxBars = 18) {
   // the zone must still be untouched until that touch: no close beyond the far side before
   for (let i = from; i < e[0]; i++) if (side === "long" ? bars[i].c < zone.bot : bars[i].c > zone.top) return null;
   const risk = Math.abs(entry - stop), target = side === "long" ? entry + 2 * risk : entry - 2 * risk, w = walk(bars, e[0], e[1], side, stop, target);
-  if (!w || w.hit !== "tp" || w.i - e[0] > maxBars) return null;
+  if (!w || w.hit !== "tp" || w.i - e[0] > maxBars || w.i - e[0] < 3) return null; // v14: the payoff must PLAY OUT (≥3 candles), not land on the entry candle
   // how far it really ran from the entry before the stop or the day ran out (used for score, not the picture)
   let run = 0; for (let i = e[0]; i < Math.min(bars.length, w.i + 12); i++) run = Math.max(run, side === "long" ? bars[i].h - entry : entry - bars[i].l);
   return { side, entry, stop, target, iE: e[0], jE: e[1], iX: w.i, jX: w.j, R: 2, run: run / risk };
@@ -92,26 +92,37 @@ function fvg(bars, base, range) {
 }
 
 function ob(bars, base, range) {
-  const out = [];
+  // v2 (11-14): a TEXTBOOK order block, the way traders draw it. Kai: "weird concept on price". The old one took any opposite
+  // candle 1 bar after a nearby low = a mid-leg candle, a 3-bar "BOS". Now:
+  //   1. a CONFIRMED swing (2-bar pivot) 3–24 bars before the block = real structure
+  //   2. the block is the last opposite candle at the ORIGIN of the move (its extreme is the local top/bottom)
+  //   3. displacement: the leg from the block breaks the swing with a CLOSE within 6 bars, and travels ≥ 1.6× the block
+  //   4. price leaves, then returns to the block (zoneTrade: first touch, 2R, must win, quick)
+  const out = [], piv = (i, hi) => i >= 2 && i < bars.length - 2 && [-2, -1, 1, 2].every((d) => (hi ? bars[i].h >= bars[i + d].h : bars[i].l <= bars[i + d].l));
   for (let k = 8; k < bars.length - 6; k++) {
     for (const side of ["long", "short"]) {
-      const o = bars[k]; if (side === "long" ? o.c >= o.o : o.c <= o.o) continue; // the last opposite candle
-      const prev = bars.slice(k - 8, k), swing = side === "long" ? Math.max(...prev.map((b) => b.h)) : Math.min(...prev.map((b) => b.l));
-      const si = k - 8 + prev.findIndex((b) => (side === "long" ? b.h : b.l) === swing);
-      let bi = -1; for (let i = k + 1; i <= k + 3 && i < bars.length; i++) if (side === "long" ? bars[i].c > swing : bars[i].c < swing) { bi = i; break; }
+      const o = bars[k], L = side === "long"; if (L ? o.c >= o.o : o.c <= o.o) continue; // the last opposite candle
+      // origin: the block's extreme is the extreme of the 4 bars before it (it starts the move, it is not inside it)
+      if (bars.slice(k - 2, k).some((b) => (L ? b.l < o.l : b.h > o.h))) continue;
+      if (L ? bars[k + 1].c <= bars[k + 1].o : bars[k + 1].c >= bars[k + 1].o) continue; // the move starts on the next candle
+      let si = -1; for (let i = k - 3; i >= Math.max(2, k - 24); i--) if (piv(i, L)) { si = i; break; }
+      if (si < 0) continue; const swing = L ? bars[si].h : bars[si].l;
+      if (L ? swing <= o.h : swing >= o.l) continue; // the swing sits beyond the block: the leg must travel to break it
+      let bi = -1; for (let i = k + 1; i <= k + 6 && i < bars.length; i++) { if (L ? bars[i].c < o.l : bars[i].c > o.h) break; if (L ? bars[i].c > swing : bars[i].c < swing) { bi = i; break; } }
       if (bi < 0) continue;
       const zone = { top: o.h, bot: o.l, i0: k, label: "OB" }, size = zone.top - zone.bot;
-      if (size < range * .05 || size > range * .3) continue;
-      // price has to leave first: at least 2 bars away before it comes back
+      if (size < range * .07 || size > range * .3) continue;
+      const ext = L ? Math.max(...bars.slice(k + 1, bi + 1).map((b) => b.h)) : Math.min(...bars.slice(k + 1, bi + 1).map((b) => b.l));
+      if (Math.abs(ext - (L ? zone.top : zone.bot)) < size * 1.4) continue; // displacement, not a drift
       const tr = zoneTrade(bars, zone, side, bi + 2); if (!tr) continue;
       zone.i1 = tr.iX;
       // liquidity: the pullback's swing points on the way back to the OB (stops resting there get taken first)
       const liq = [];
-      for (let i = bi + 1; i < tr.iE; i++) { const b = bars[i], L = bars[i - 1], R = bars[i + 1]; if (!R) break;
+      for (let i = bi + 1; i < tr.iE; i++) { const b = bars[i], P = bars[i - 1], R = bars[i + 1]; if (!R) break;
         const gap = size * .35; // clearly away from the zone, so the $ never sits on the shade
-        if (side === "long" ? b.l < L.l && b.l <= R.l && b.l > zone.top + gap : b.h > L.h && b.h >= R.h && b.h < zone.bot - gap) liq.push({ i, price: side === "long" ? b.l : b.h }); }
+        if (L ? b.l < P.l && b.l <= R.l && b.l > zone.top + gap : b.h > P.h && b.h >= R.h && b.h < zone.bot - gap) liq.push({ i, price: L ? b.l : b.h }); }
       out.push({ ...base, model: "ob", zone, trade: tr, bos: { price: swing, i0: si, i1: bi }, liq: liq.slice(-3), kb: tr.iE, keyMin: tr.jE, level: tr.entry, levelLabel: "OB",
-        win: [k - 9, tr.iX + 4], score: 2.2 + Math.min(3, tr.run) * .4 + base.rel / 120 + liq.length * .25 });
+        win: [Math.min(si, k) - 5, tr.iX + 4], score: 2.2 + Math.min(3, tr.run) * .4 + base.rel / 120 + liq.length * .25 + Math.min(1, (bi - si) / 12) * .4 });
     }
   }
   return out;
@@ -196,6 +207,10 @@ export function candidates(D) {
     // zone models on 5m in the active hours (02:00–12:00 NY): tighter, cleaner setups
     const act = min.filter((b) => { const h = ny(b.t).h; return h >= 2 && h < 12; }), b5 = agg(act, 5), r5 = act.length ? Math.max(...act.map((b) => b.h)) - Math.min(...act.map((b) => b.l)) : 0;
     if (b5.length > 40) for (const s of [...fvg(b5, { ...base, tf: "5m" }, r5), ...ob(b5, { ...base, tf: "5m" }, r5)]) { s.bars = b5; out.push(s); }
+    // v14: OB on 15m across the whole day too (textbook blocks are rarer than gaps; the champion slot needs one most days)
+    for (const s of ob(b15, { ...base, tf: "15m" }, range)) { s.bars = b15; out.push(s); }
+    // and 3m in the active hours
+    const b3 = agg(act, 3); if (b3.length > 60) for (const s of ob(b3, { ...base, tf: "3m" }, r5)) { s.bars = b3; out.push(s); }
     if (["NAS100", "SP500", "US30", "XAUUSD"].includes(r.id)) out.push(...nyopen(min, base));
     for (const ev of evs) out.push(...news(raw, D, base, ev));
   }

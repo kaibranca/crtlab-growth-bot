@@ -33,4 +33,6 @@ jobs:
             node -e "const q=require('./reels/out/qa.json');process.exit(q['$K']?.ok?0:1)" 2>/dev/null || { echo "reel $D/$K failed QA or missing — skip"; echo "{\"at\":\"$(date -u +%FT%TZ)\",\"kind\":\"qa\",\"plat\":\"$P\",\"plan\":\"$D\",\"k\":$K,\"note\":\"not posted: failed QA or no render\"}" >> data/reels/alerts.jsonl; continue; }
             node reels/engine/post.mjs "$D" "$K" "$P" || true
           done < due.txt
+      - name: pulse (hourly views on fresh reels → breakout email + champion formula for both platforms)
+        run: node reels/engine/pulse.mjs || true
       - run: bash scripts/push.sh "reels post $(date -u +%FT%H)"

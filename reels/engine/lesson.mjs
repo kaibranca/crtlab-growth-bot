@@ -8,7 +8,7 @@ const at = (i, price) => ({ i, price });
 
 export const ANGLES = { ob: ["rule", "why", "mistake"], fvg: ["rule", "risk", "mistake"], crt: ["rule", "why"], asia: ["rule", "why"], break: ["rule", "mistake"], news: ["rule", "why"], nyopen: ["rule", "mistake"] };
 
-export function lesson(s, angle) {
+export function lesson(s, angle, { quiz = false } = {}) {
   const tr = s.trade, long = tr ? tr.side === "long" : s.side === "high", z = s.zone, B = s.bars, N = B.length - 1;
   const hiLo = s.side === "high" ? "high" : "low", other = s.side === "high" ? "low" : "high", Cap = (w) => w[0].toUpperCase() + w.slice(1);
   const mv = s.measure ? money(s, s.measure.to - s.measure.from) : "";
@@ -33,6 +33,8 @@ export function lesson(s, angle) {
         { ...tap, cap: pick({ rule: "The tap is the entry", why: "Back into the OB", mistake: "Enter on the tap" }) },
         { ...risk, cap: pick({ rule: `Stop ${long ? "under" : "over"} the OB`, why: "Risk 1 to make 2", mistake: "Tight stop, 2R target" }) },
         { ...res, cap: "Target hit" }];
+      // QUIZ (product-led, the CRTLAB replay idea): the chart stops one candle before the entry, the future hidden, and asks
+      if (quiz) steps.splice(3, 0, { to: tr.iE - 1, focus: entryFocus, point: at(tr.iE - 1, B[tr.iE - 1].c), cap: "Would you enter here?", hold: 1.7 });
     } else {
       const mid = z.i0 + 1, three = { to: z.i0 + 2, show: ["three"], focus: around(s, z.i0 - 2, z.i0 + 4, B[mid].h, B[mid].l), point: at(mid, (B[mid].o + B[mid].c) / 2) };
       const gap = { show: ["zone"], focus: three.focus, point: at(z.i0 + 2, (z.top + z.bot) / 2) };
@@ -42,6 +44,7 @@ export function lesson(s, angle) {
         { ...tap, cap: pick({ rule: "Entry on the return", risk: "Back into the gap", mistake: "Wait for the return" }) },
         { ...risk, cap: pick({ rule: "Stop past the gap", risk: "A full fill means you're wrong", mistake: "Stop past the gap" }) },
         { ...res, cap: "Target hit" }];
+      if (quiz) steps.splice(2, 0, { to: tr.iE - 1, focus: entryFocus, point: at(tr.iE - 1, B[tr.iE - 1].c), cap: "Would you enter here?", hold: 1.7 });
     }
   } else {
     const end = at(Math.min(s.measure.i1, N), s.measure.to), tone = s.side === "high" ? "up" : "dn", lvl = at(Math.min(3, N), s.level);

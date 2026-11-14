@@ -13,7 +13,7 @@ export const save = (f, x) => { fs.mkdirSync(DIR, { recursive: true }); fs.write
 
 export const ARMS = {
   model: ["ob", "fvg", "crt", "asia", "break", "news", "nyopen"],
-  fam: ["name", "result", "question", "pov", "time"],
+  fam: ["name", "smc", "pair", "result", "question", "pov", "time", "quiz"], // smc/pair = Kai's manual-era winners ("SMC ENTRY", "XAU/USD"); quiz = product-led "spot it before the next candle"
   angle: ["rule", "why", "mistake", "risk"],          // the lesson angle (engine/lesson.mjs); each model offers a subset
   pace: ["short", "long"],
   tagset: ["smc", "day", "fx", "pa", "bt"],
@@ -41,11 +41,15 @@ function draw(B, plat, arm, value, r) {
   return s.sum / (s.n + k) + gauss(r) / Math.sqrt(s.n + 1) * .8;
 }
 // pick a value of an arm: blend IG (the bigger audience) with FB for content arms; hours are per platform only
+// v14 (11-14) THE TWO MACHINES TALK: content arms (model, title family, angle, pace, music) are learned from IG + FB POOLED. Each
+// reward is already scored against its own platform's normal, so a FB breakout lifts the same arm for IG and vice versa. (Was a
+// fixed 70/30 IG/FB blend, so FB — where the 5,930-play breakout happened — barely counted.) Hours stay per platform.
+const pooled = (B, arm, v) => { const a = B.ig?.[arm]?.[v] || { n: 0, sum: 0 }, b = B.fb?.[arm]?.[v] || { n: 0, sum: 0 }; return { n: a.n + b.n, sum: a.sum + b.sum }; };
 export function pick(arm, values, r, { plat = null, explore = .15, B = brain() } = {}) {
   if (!values.length) return null;
   if (r() < explore) return values[Math.floor(r() * values.length)];
   let best = null, bv = -Infinity;
-  for (const v of values) { const x = plat ? draw(B, plat, arm, v, r) : .7 * draw(B, "ig", arm, v, r) + .3 * draw(B, "fb", arm, v, r); if (x > bv) { bv = x; best = v; } }
+  for (const v of values) { const x = plat ? draw(B, plat, arm, v, r) : (() => { const s = pooled(B, arm, v); return s.sum / (s.n + 2) + gauss(r) / Math.sqrt(s.n + 1) * .8; })(); if (x > bv) { bv = x; best = v; } }
   return best;
 }
 export const mean = (B, plat, arm, v) => { const s = B[plat]?.[arm]?.[v]; return s ? { n: s.n, avg: s.sum / (s.n + 2) } : { n: 0, avg: 0 }; };
@@ -72,7 +76,8 @@ export function memory(today) {
   const log = readLog(), recent = (days) => log.filter((x) => x.date >= addDays(today, -days));
   return {
     stories: new Set(log.map((x) => x.story)),                                    // a story is never posted twice
-    titles: new Set(recent(30).map((x) => x.title)),                               // no title repeats inside 30 days
+    titles: new Set(recent(1).map((x) => x.title)),                                // v14: titles MAY repeat (Kai 11-14: his winners were all "OB ENTRY / SMC ENTRY / FVG ENTRY"; the old 30-day ban blocked the winning title) — just not the same title on consecutive days
+    tracks: log.filter((x) => x.track).slice(-8).map((x) => x.track),               // music rotation: the last 4 reels' tracks (each reel logs twice, IG + FB)
     mkModel: new Set(recent(5).map((x) => `${x.mk}|${x.model}`)),                  // same market+model rests 5 days
     lastLook: log.slice(-2).map((x) => `${x.fam}|${x.angle}|${x.pace}`),             // never the same look twice running
     mkToday: new Set(log.filter((x) => x.date === today).map((x) => x.mk)),
