@@ -31,7 +31,7 @@ jobs:
         env: { ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}" }
       - name: AI referral machine
         continue-on-error: true
-        run: node scripts/ai-pull.mjs && node scripts/ai-eyes.mjs && node scripts/recommend.mjs; node scripts/ai-machine.mjs; npm i pg@8 --no-save --no-package-lock --silent; node scripts/bandit.mjs; node scripts/ai-truth.mjs
+        run: node scripts/ai-pull.mjs && node scripts/ai-eyes.mjs && node scripts/recommend.mjs; node scripts/ai-machine.mjs; npm i pg@8 --no-save --no-package-lock --silent; node scripts/bandit.mjs; node scripts/ai-truth.mjs; node scripts/guard.mjs || true
         env: { OPS_KEY: "${{ secrets.OPS_KEY }}", BING_API_KEY: "${{ secrets.BING_API_KEY }}", CF_API_TOKEN: "${{ secrets.CF_API_TOKEN }}", CF_ZONE_ID: "${{ secrets.CF_ZONE_ID }}", RESEND_API_KEY: "${{ secrets.RESEND_API_KEY }}", ALERT_TO: "${{ secrets.ALERT_TO }}", ANALYTICS_DB_URL: "${{ secrets.ANALYTICS_DB_URL }}" }
       - name: Load alert (emails Kai if even one chart load was turned away, failed or slow in the last hour)
         continue-on-error: true

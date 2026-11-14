@@ -537,7 +537,13 @@ for (const e of hk.experiments.filter((x) => x.status === "running" && x.started
   expReport.push({ id: e.id, family: e.family, template: e.template, ...e.last, status: e.status });
 }
 // keep every family testing: nothing running and nothing won → start the next approved template it hasn't tried
+// PROTECTED (11-14, Kai: machines must never confuse traffic): the families that bring ~95% of accounts (/: 959, /backtest: 160,
+// /backtest-<market>: 55 in 90 d) never get machine-run experiments. A 2h switchback showed Googlebot a different homepage
+// depending on the hour. Changes to these pages = Kai-reviewed code, one at a time (scripts/guard.mjs PROTECT).
+const { PROTECT } = await import("./guard-lib.mjs");
+for (const e of hk.experiments) if (PROTECT.has(e.family) && ["running", "paused"].includes(e.status)) { e.status = "superseded"; e.why = "protected family (11-14)"; }
 for (const [famName, tpls] of Object.entries(LIBRARY)) {
+  if (PROTECT.has(famName)) continue;
   const mine = hk.experiments.filter((x) => x.family === famName);
   if (mine.some((x) => x.status === "running" || x.status === "won" || x.status === "paused")) continue;
   const next = [...tpls].sort((a, b) => winRate(b) - winRate(a)).find((t) => !mine.some((x) => x.template === t));
