@@ -1,7 +1,9 @@
-// PRODUCTION HANDS — the one gate every machine passes before changing a live system. Fails CLOSED.
-import { check } from "./store.mjs"; import { C } from "./contracts.mjs";
-export function handsOn(machine, r = check(C.hands)) {
-  if (r.kind !== "ok") return false;
-  return r.data[machine]?.on === true;
+// PRODUCTION HANDS — every machine passes ONE gate before changing a live system (engine/core/gate: hands + freeze + change
+// budget + Google rollouts, every change of decision logged). Fails CLOSED. `r` (a hands contract result) is for tests.
+import { decide } from "../engine/core/gate-lib.mjs";
+import { gate } from "../engine/core/gate.mjs";
+export function handsOn(machine, r) {
+  if (r) return decide(machine, { hands: r, now: Date.now() }).allow;
+  return gate(machine).allow;
 }
 export class HandsOff extends Error { constructor(machine, what) { super(`HANDS OFF (${machine}): would ${what}`); this.handsOff = true; } }

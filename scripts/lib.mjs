@@ -1,15 +1,18 @@
 import "./mailguard.mjs"; // every bot mail under one day budget (Resend free 100/day is shared with the site)
 // shared helpers for the growth bot jobs (Node 20, no dependencies)
 import fs from "node:fs"; import { check } from "./store.mjs"; import { C } from "./contracts.mjs";
+import { gate as gateFn } from "../engine/core/gate.mjs";
 export const SITE = "https://crtlab.pro";
 // TRAFFIC FREEZE (11-14, Kai: "make sure all machines don't make edits that confuse / stall anything traffic-wise"): while
 // data/machines/freeze.json is active, machines with hands on landing pages / sitemap / llms.txt HOLD their last state.
 // FAILS CLOSED (11-14): a broken / wrong-shape freeze file means HOLD (the old version returned false = every machine
 // un-frozen). Only a missing file means no freeze. The guard alerts on the broken file within the hour.
-export const frozen = (hold, r = check(C.freeze)) => {
-  if (r.kind === "missing") return false;
-  if (r.kind !== "ok") return true;
-  return Date.now() < Date.parse(r.data.until) && (!hold || hold in r.data.holds);
+// 11-14: traffic holds now go through the ONE gate (engine/core/gate): freeze + change budget + Google rollouts, logged.
+// frozen(hold) = "this traffic machine may NOT change what users/search see right now". No hold name = the freeze itself.
+// `r` (a freeze contract result) tests the freeze rule alone; live calls (no `r`) ask the whole gate.
+export const frozen = (hold, r) => {
+  if (r || !hold) { r ??= check(C.freeze); if (r.kind === "missing") return false; if (r.kind !== "ok") return true; return Date.now() < Date.parse(r.data.until) && (!hold || hold in r.data.holds); }
+  return !gateFn(hold).allow;
 };
 export const now = () => new Date();
 export const month = (d = now()) => d.toISOString().slice(0, 7);
