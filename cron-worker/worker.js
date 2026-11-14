@@ -13,7 +13,7 @@ const JOBS = [
   ["reels.yml", 40, 8, "*"],             // 08:40 plan + render today's reels
   ["restore.yml", 17, 5, 0],             // Sun 05:17 backup restore test
   ["weekly.yml", 0, 5, 1],               // Mon 05:00 weekly SEO
-  ["daily-data.yml", 15, 6, "*", "kaibranca/crtlab-backtester"], // 06:15: built + verified by ~06:45, RELEASED at 07:00:00 UTC (11-10)
+  ["daily-data.yml", 24, 6, "*", "kaibranca/crtlab-backtester"], // 06:24 (11-14, was 06:15): build takes ~32 min → ready ~06:56, released 07:00:00; a long day releases the moment it is verified (job.mjs). The old start idled ~13 billed minutes a day waiting for 07:00
   ["daily-data.yml", 30, 8, "*", "kaibranca/crtlab-backtester", { retry: "1" }],  // retry slot: skips itself if 06:30 already went live
   ["daily-data.yml", 30, 11, "*", "kaibranca/crtlab-backtester", { retry: "1" }], // second retry slot
   // 11-11 (Kai: "if it fails the counter won't refresh — it always has to"): a retry every 1–2 h through the afternoon. A
@@ -111,6 +111,11 @@ export default {
     if (m % 5 === 2) await sentinel(env, d).catch((e) => console.log("sentinel error " + String(e).slice(0, 80))); // awaited: its logs + KV writes finish inside the event
     const due = JOBS.filter(([, mm, hh, ww]) => hit(mm, m) && hit(hh, h) && hit(ww, w));
     for (const [wf, , , , repo = REPO, inputs] of due) {
+      // 11-14 MINUTES: a retry slot that would find nothing to do still bills a full GitHub minute (private repo, 2,000 free/month;
+      // the pull was on pace for ~2,200). Ask the site first: every market already through its due session → skip the dispatch.
+      // Fails OPEN: if the site can't answer, the retry runs as before (the pull must never be missed to save a minute).
+      if (inputs?.retry && !(h === 11 || h === 15)) { try { // 11:30 + 15:30 always run (held markets get their retry); the rest skip when current const v = await (await fetch("https://crtlab.pro/api/data-version", { headers: { "User-Agent": "crtlab-cron" }, signal: AbortSignal.timeout(8000) })).json();
+        if (v?.end && v?.due && v.end >= v.due) { console.log(`${d.toISOString()} ${wf} retry skipped: live ${v.live} through ${v.end} (due ${v.due})`); continue; } } catch (e) { console.log("retry pre-check failed, dispatching: " + String(e).slice(0, 60)); } }
       const r = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/${wf}/dispatches`, {
         method: "POST",
         headers: { Authorization: `Bearer ${env.GH_TOKEN}`, Accept: "application/vnd.github+json", "User-Agent": "crtlab-cron", "X-GitHub-Api-Version": "2022-11-28" },
