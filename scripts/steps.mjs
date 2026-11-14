@@ -21,6 +21,8 @@ export const PLANS = {
     s("guard", MAIL, { alertAfter: 1 }),
     // v2 GUARD: did each machine do its JOB + are machines reading the TRUTH (engine/guard/jobs-lib.mjs, tested)
     s("jobs", [...DB, ...MAIL], { cmd: ["node", "engine/guard/jobs.mjs"], alertAfter: 1 }),
+    // v2 GUARD ROT: slow decay (runtime creep/headroom, reliability drift, double runs, growth to limits, minutes pace)
+    s("rot", ["GH_TOKEN", ...MAIL], { cmd: ["node", "engine/guard/rot.mjs"] }),
     s("minutes", ["GH_WATCH_TOKEN", ...MAIL]),
     s("load-alert", ["OPS_KEY", ...MAIL]),
     s("shield", [...CF, "CF_BAN_LIST", "OPS_KEY", ...MAIL, ...DB], { alertAfter: 1 }),
