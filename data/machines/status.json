@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T03:29:59.938Z",
+ "at": "2026-11-14T04:19:36.587Z",
  "ok": 65,
  "total": 66,
  "hurting": [
@@ -53,7 +53,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 0.2,
+   "lastRunH": 1,
    "everyH": 6,
    "learnedH": 6,
    "kpi": {
@@ -66,7 +66,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 19.4,
+   "lastRunH": 20.3,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -78,7 +78,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 20.8,
+   "lastRunH": 21.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": null
@@ -87,7 +87,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 20.8,
+   "lastRunH": 21.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -99,7 +99,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 0.2,
+   "lastRunH": 0.8,
    "everyH": 24,
    "learnedH": 2.93,
    "kpi": null
@@ -108,7 +108,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 20.8,
+   "lastRunH": 21.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -120,7 +120,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 2.8,
+   "lastRunH": 0.6,
    "everyH": 3,
    "learnedH": 3,
    "kpi": null
@@ -138,7 +138,7 @@
    "id": "indexnow",
    "name": "IndexNow",
    "state": "late",
-   "lastRunH": 11.2,
+   "lastRunH": 12,
    "everyH": 2,
    "learnedH": 2,
    "kpi": null
@@ -907,19 +907,19 @@
    "move": "climbing",
    "what": "/news/ppi-retail-sales-claims-2026-10-15",
    "why": "128 reads in 3 days vs ~1.8",
-   "z": 94.8
+   "z": 95
   },
   {
    "move": "surge",
    "what": "/news/ppi-retail-sales-claims-2026-10-15",
    "why": "116 AI reads in 24 h vs ~1.5/day",
-   "z": 94.1
+   "z": 94.2
   },
   {
    "move": "surge",
    "what": "/news/ppi-claims-2026-09-10",
    "why": "60 AI reads in 24 h vs ~0.7/day",
-   "z": 73.1
+   "z": 73.2
   },
   {
    "move": "climbing",
@@ -954,14 +954,14 @@
   {
    "move": "surge",
    "what": "/news/ppi/gold",
-   "why": "117 AI reads in 24 h vs ~5.8/day",
-   "z": 46
+   "why": "116 AI reads in 24 h vs ~5.9/day",
+   "z": 45.3
   },
   {
    "move": "climbing",
    "what": "/economic-calendar/us-ppi-mom",
-   "why": "60 reads in 3 days vs ~3.3",
-   "z": 31.5
+   "why": "59 reads in 3 days vs ~3.5",
+   "z": 29.5
   },
   {
    "move": "climbing",
@@ -1184,7 +1184,7 @@
  ],
  "fix": [
   "AI accounts / week getting worse: 16 vs 34 last week (hooks)",
-  "IndexNow is late (last run 11.2 h ago, normal every 2 h)",
+  "IndexNow is late (last run 12 h ago, normal every 2 h)",
   "word of mouth is near zero (under 5 outside sources in 35 days) — nothing links to CRTLAB yet; mentions machine will flag the first ones"
  ],
  "mistakes": []

@@ -1,22 +1,22 @@
 {
- "at": "2026-11-14T03:28:31.846Z",
+ "at": "2026-11-14T04:18:23.323Z",
  "selfCheck": {
   "devices": [
    {
     "dev": "desktop",
-    "raw24": 97,
-    "beat24": 0.526,
-    "beatNormal": 0.574,
-    "stay24": 0.278,
-    "stayNormal": 0.262
+    "raw24": 89,
+    "beat24": 0.494,
+    "beatNormal": 0.575,
+    "stay24": 0.303,
+    "stayNormal": 0.261
    },
    {
     "dev": "mobile",
     "raw24": 28,
-    "beat24": 0.571,
-    "beatNormal": 0.348,
-    "stay24": 0.607,
-    "stayNormal": 0.466
+    "beat24": 0.5,
+    "beatNormal": 0.353,
+    "stay24": 0.571,
+    "stayNormal": 0.471
    }
   ],
   "rawSurge": [],
@@ -26,48 +26,48 @@
  "wave": {
   "window": "3h",
   "visitors": {
-   "now": 2,
-   "normal": 3.9,
-   "ratio": 0.51,
-   "z": -0.7
+   "now": 3,
+   "normal": 4.4,
+   "ratio": 0.68,
+   "z": -0.5
   },
   "signups": {
-   "now": 0,
-   "normal": 1.5,
-   "ratio": 0,
-   "z": -1.1
+   "now": 2,
+   "normal": 1.6,
+   "ratio": 1.27,
+   "z": 0.3
   },
   "riding": []
  },
  "visitors": {
-  "now": 44,
-  "normal": 37,
-  "ratio": 1.19,
-  "z": 0.8
+  "now": 43,
+  "normal": 37.1,
+  "ratio": 1.16,
+  "z": 0.7
  },
  "rawVisitors": {
-  "now": 125,
-  "normal": 124.7,
-  "ratio": 1,
-  "z": 0
+  "now": 117,
+  "normal": 125.5,
+  "ratio": 0.93,
+  "z": -0.1
  },
  "signups": {
-  "now": 14,
-  "normal": 16.3,
-  "ratio": 0.86,
-  "z": -0.3
+  "now": 15,
+  "normal": 16.4,
+  "ratio": 0.92,
+  "z": -0.2
  },
  "state": "normal",
  "why": [
   "landing /backtest pages: 4 vs ~6.8/day",
   "source Google: 1 vs ~3.7/day",
-  "landing chart: 4 vs ~5.6/day",
-  "country US: 2 vs ~2.8/day"
+  "source AI answers: 5 vs ~6.7/day",
+  "landing chart: 4 vs ~5.6/day"
  ],
  "gainers": [
-  "source Direct: 32 vs ~22.9/day",
-  "device mobile: 17 vs ~8.4/day",
-  "landing home: 25 vs ~17.4/day"
+  "source Direct: 32 vs ~23/day",
+  "landing home: 25 vs ~17.4/day",
+  "device mobile: 16 vs ~8.6/day"
  ],
  "segments": [
   {
@@ -85,8 +85,17 @@
    "now": 1,
    "normal": 3.7,
    "ratio": 0.27,
-   "z": -1.3,
+   "z": -1.2,
    "gap": -2.7
+  },
+  {
+   "dim": "source",
+   "seg": "AI answers",
+   "now": 5,
+   "normal": 6.7,
+   "ratio": 0.74,
+   "z": -0.7,
+   "gap": -1.7
   },
   {
    "dim": "landing",
@@ -94,7 +103,7 @@
    "now": 4,
    "normal": 5.6,
    "ratio": 0.71,
-   "z": -0.8,
+   "z": -0.7,
    "gap": -1.6
   },
   {
@@ -114,15 +123,6 @@
    "ratio": 0.97,
    "z": -0.1,
    "gap": -0.7
-  },
-  {
-   "dim": "source",
-   "seg": "AI answers",
-   "now": 6,
-   "normal": 6.6,
-   "ratio": 0.9,
-   "z": -0.3,
-   "gap": -0.6
   },
   {
    "dim": "landing",
@@ -161,31 +161,31 @@
    "gap": 1.4
   },
   {
+   "dim": "device",
+   "seg": "mobile",
+   "now": 16,
+   "normal": 8.6,
+   "ratio": 1.87,
+   "z": 2.2,
+   "gap": 7.4
+  },
+  {
    "dim": "landing",
    "seg": "home",
    "now": 25,
    "normal": 17.4,
-   "ratio": 1.44,
-   "z": 1.3,
+   "ratio": 1.43,
+   "z": 1.2,
    "gap": 7.6
-  },
-  {
-   "dim": "device",
-   "seg": "mobile",
-   "now": 17,
-   "normal": 8.4,
-   "ratio": 2.02,
-   "z": 2.5,
-   "gap": 8.6
   },
   {
    "dim": "source",
    "seg": "Direct",
    "now": 32,
-   "normal": 22.9,
-   "ratio": 1.4,
-   "z": 1.6,
-   "gap": 9.1
+   "normal": 23,
+   "ratio": 1.39,
+   "z": 1.5,
+   "gap": 9
   }
  ]
 }

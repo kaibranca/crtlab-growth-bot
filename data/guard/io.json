@@ -1,26 +1,26 @@
 {
- "at": "2026-11-14T03:30:00.118Z",
+ "at": "2026-11-14T04:19:36.835Z",
  "steps": {
   "hourly/aicrawl": {
-   "at": "2026-11-14T03:27:46.430Z",
+   "at": "2026-11-14T04:17:46.522Z",
    "reads": [],
    "writes": [
     "data/aicrawl/<month>.jsonl"
    ]
   },
   "hourly/deploy-watch": {
-   "at": "2026-11-14T03:27:46.774Z",
+   "at": "2026-11-14T04:17:46.854Z",
    "reads": [
-    "data/machines/humans.json"
+    "data/machines/humans.json",
+    "data/mobile/build.txt"
    ],
    "writes": [
     "data/machines/deploy-judge.json",
-    "data/machines/deploys.jsonl",
-    "data/mobile/build.txt"
+    "data/machines/deploys.jsonl"
    ]
   },
   "hourly/works": {
-   "at": "2026-11-14T03:27:48.941Z",
+   "at": "2026-11-14T04:17:47.372Z",
    "reads": [
     "data/ai/submitted.json",
     "data/google/plan.json",
@@ -34,7 +34,7 @@
    ]
   },
   "hourly/ai-pull": {
-   "at": "2026-11-14T03:27:52.196Z",
+   "at": "2026-11-14T04:17:49.621Z",
    "reads": [
     "data/ai/.backfill-first-touch"
    ],
@@ -44,7 +44,7 @@
    ]
   },
   "hourly/ai-eyes": {
-   "at": "2026-11-14T03:27:52.698Z",
+   "at": "2026-11-14T04:17:50.019Z",
    "reads": [
     "data/ai/plan.json",
     "data/ai/submitted.json"
@@ -56,7 +56,7 @@
    ]
   },
   "hourly/recommend": {
-   "at": "2026-11-14T03:28:05.336Z",
+   "at": "2026-11-14T04:18:01.150Z",
    "reads": [
     "data/radar/answers.jsonl",
     "data/radar/plan.json",
@@ -68,14 +68,13 @@
    ]
   },
   "hourly/ai-machine": {
-   "at": "2026-11-14T03:28:05.363Z",
+   "at": "2026-11-14T04:18:01.188Z",
    "reads": [
     "data/ai/changes.jsonl",
     "data/ai/clicks-hourly.json",
     "data/ai/clicks.json",
     "data/ai/edge.json",
     "data/ai/index.json",
-    "data/ai/surges.jsonl",
     "data/ai/truth.json",
     "data/aicrawl/<month>.jsonl",
     "data/events/upcoming.json",
@@ -98,12 +97,13 @@
     "data/ai/runs.jsonl",
     "data/ai/score.jsonl",
     "data/ai/submitted.json",
+    "data/ai/surges.jsonl",
     "data/world/llms.jsonl",
     "data/world/sends.jsonl"
    ]
   },
   "hourly/bandit": {
-   "at": "2026-11-14T03:28:06.671Z",
+   "at": "2026-11-14T04:18:03.044Z",
    "reads": [
     "data/ai/clicks.json",
     "data/aicrawl/<month>.jsonl",
@@ -114,14 +114,14 @@
    ]
   },
   "hourly/ai-truth": {
-   "at": "2026-11-14T03:28:08.315Z",
+   "at": "2026-11-14T04:18:04.160Z",
    "reads": [
     "data/ai/truth.json"
    ],
    "writes": []
   },
   "hourly/timeline": {
-   "at": "2026-11-14T03:28:08.339Z",
+   "at": "2026-11-14T04:18:04.202Z",
    "reads": [
     "data/google/sitemaps.json",
     "data/guard/status.json",
@@ -134,7 +134,7 @@
    ]
   },
   "hourly/guard": {
-   "at": "2026-11-14T03:28:08.919Z",
+   "at": "2026-11-14T04:18:04.627Z",
    "reads": [
     "data/ai",
     "data/ai/bandit.json",
@@ -224,21 +224,21 @@
    ]
   },
   "hourly/minutes": {
-   "at": "2026-11-14T03:28:08.981Z",
+   "at": "2026-11-14T04:18:04.713Z",
    "reads": [],
    "writes": [
     "data/guard/minutes.json"
    ]
   },
   "hourly/load-alert": {
-   "at": "2026-11-14T03:28:10.290Z",
+   "at": "2026-11-14T04:18:05.775Z",
    "reads": [],
    "writes": [
     "data/load/<month>.jsonl"
    ]
   },
   "hourly/shield": {
-   "at": "2026-11-14T03:28:10.663Z",
+   "at": "2026-11-14T04:18:06.094Z",
    "reads": [
     "data/ai/clicks-hourly.json",
     "data/machines/hands.json",
@@ -249,14 +249,14 @@
    ]
   },
   "hourly/watchdog": {
-   "at": "2026-11-14T03:28:11.545Z",
+   "at": "2026-11-14T04:18:07.578Z",
    "reads": [],
    "writes": [
     "data/watchdog/<month>.jsonl"
    ]
   },
   "hourly/upcoming": {
-   "at": "2026-11-14T03:28:15.965Z",
+   "at": "2026-11-14T04:18:10.386Z",
    "reads": [
     "data/events/au-cpi-<date>.json",
     "data/events/au-jobs-<date>.json",
@@ -293,7 +293,7 @@
    "writes": []
   },
   "hourly/indicators": {
-   "at": "2026-11-14T03:28:22.690Z",
+   "at": "2026-11-14T04:18:15.901Z",
    "reads": [
     "data/indicators/au-ai-group-manufacturing-index.json",
     "data/indicators/au-australia-aig-construction-index-aig-construction-index.json",
@@ -1057,7 +1057,7 @@
    "writes": []
   },
   "hourly/live-news": {
-   "at": "2026-11-14T03:28:26.499Z",
+   "at": "2026-11-14T04:18:19.034Z",
    "reads": [
     "data/events/index.json",
     "data/events/upcoming.json",
@@ -1066,14 +1066,14 @@
    "writes": []
   },
   "hourly/headlines": {
-   "at": "2026-11-14T03:28:26.527Z",
+   "at": "2026-11-14T04:18:19.075Z",
    "reads": [
     "data/events/headlines.json"
    ],
    "writes": []
   },
   "hourly/indexnow": {
-   "at": "2026-11-14T03:28:27.933Z",
+   "at": "2026-11-14T04:18:19.990Z",
    "reads": [],
    "writes": [
     "data/indexnow-sent.json",
@@ -1081,7 +1081,7 @@
    ]
   },
   "hourly/cost": {
-   "at": "2026-11-14T03:28:28.257Z",
+   "at": "2026-11-14T04:18:20.296Z",
    "reads": [
     "data/cost/deploys.jsonl",
     "data/cost/levers-seed.json",
@@ -1096,14 +1096,14 @@
    ]
   },
   "hourly/humans": {
-   "at": "2026-11-14T03:28:29.769Z",
+   "at": "2026-11-14T04:18:21.917Z",
    "reads": [],
    "writes": [
     "data/machines/humans.json"
    ]
   },
   "hourly/outcomes": {
-   "at": "2026-11-14T03:28:31.887Z",
+   "at": "2026-11-14T04:18:23.336Z",
    "reads": [
     "data/ai/score.jsonl",
     "data/cost/plan.json",
@@ -1121,7 +1121,7 @@
    ]
   },
   "hourly/supervisor": {
-   "at": "2026-11-14T03:28:34.572Z",
+   "at": "2026-11-14T04:18:25.219Z",
    "reads": [
     "data/ai/edge.json",
     "data/ai/lessons.json",
@@ -1153,7 +1153,7 @@
    ]
   },
   "hourly/peaks": {
-   "at": "2026-11-14T03:29:59.947Z",
+   "at": "2026-11-14T04:19:36.596Z",
    "reads": [
     "data/ai/clicks.json"
    ],
@@ -1162,7 +1162,7 @@
    ]
   },
   "hourly/world": {
-   "at": "2026-11-14T03:29:59.979Z",
+   "at": "2026-11-14T04:19:36.639Z",
    "reads": [
     "data/ai/clicks.json",
     "data/aicrawl/<month>.jsonl",
@@ -1173,7 +1173,7 @@
    ]
   },
   "hourly/summary": {
-   "at": "2026-11-14T03:30:00.038Z",
+   "at": "2026-11-14T04:19:36.721Z",
    "reads": [
     "data/ai/plan.json",
     "data/ai/runs.jsonl",
@@ -1212,6 +1212,7 @@
   "multiWriter": {},
   "sharedLog": {},
   "unowned": {
+   "data/mobile/build.txt": 1,
    "data/google/plan.json": 2,
    "data/machines/freeze.json": 5,
    "data/works/cycles.jsonl": 1,
@@ -1220,7 +1221,6 @@
    "data/radar/plan.json": 4,
    "data/radar/questions.json": 2,
    "data/ai/changes.jsonl": 1,
-   "data/ai/surges.jsonl": 1,
    "data/ai/truth.json": 4,
    "data/events/upcoming.json": 3,
    "data/machines/hands.json": 4,
