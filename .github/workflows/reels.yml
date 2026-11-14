@@ -22,8 +22,8 @@ jobs:
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       ALERT_TO: ${{ secrets.ALERT_TO }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version: 20 }
       - name: 1-minute bars from the last 7 recaps (each recap saves ~2 days; merged = a full week of setups, no second data bill)
         run: |
@@ -62,7 +62,7 @@ jobs:
           ls reels/out/reel-*.json >/dev/null 2>&1 || { echo "plan existed, nothing to render"; exit 0; }
           echo "D=$D" >> "$GITHUB_ENV"   # set first so a QA failure still uploads the videos to look at
           node reels/engine/make.mjs
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always() && env.D != ''
         with:
           name: reels-${{ env.D }}

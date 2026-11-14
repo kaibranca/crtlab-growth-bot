@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
         with: { repository: kaibranca/crtlab-standalone, ref: rebuild-integration, path: site, ssh-key: "${{ secrets.SITE_DEPLOY_KEY }}", sparse-checkout: lib }
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with: { node-version: 20 }
       - name: Search Console → titles, gaps, outcomes
         run: node scripts/gsc.mjs

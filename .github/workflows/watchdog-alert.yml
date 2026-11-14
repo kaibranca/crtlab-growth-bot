@@ -18,7 +18,7 @@ jobs:
         run: echo "key=wd-$(echo "$WHY" | sed -E 's/[0-9.]+ h\b//g' | sha1sum | cut -c1-12)-$(( $(date +%s) / 43200 ))" >> "$GITHUB_OUTPUT"
       - name: Already emailed?
         id: seen
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with: { path: .wd, key: "${{ steps.k.outputs.key }}" }
       - name: Email
         if: steps.seen.outputs.cache-hit != 'true'
@@ -33,6 +33,6 @@ jobs:
       - name: Remember
         if: steps.seen.outputs.cache-hit != 'true'
         run: mkdir -p .wd && date -u > .wd/sent
-      - uses: actions/cache/save@v4
+      - uses: actions/cache/save@v6
         if: steps.seen.outputs.cache-hit != 'true'
         with: { path: .wd, key: "${{ steps.k.outputs.key }}" }
