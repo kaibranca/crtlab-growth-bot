@@ -1,5 +1,5 @@
 {
- "at": "2026-11-13T23:20:08.448Z",
+ "at": "2026-11-14T00:20:02.680Z",
  "constraint": "conversion",
  "buildPays": {},
  "note": "Ranked by what makes the machines smarter where the constraint is. Builder: take the top item you can finish, see BUILDER.md.",
@@ -32,28 +32,18 @@
    "buildPays": 0.5
   },
   {
-   "kind": "fix",
-   "machine": "holdout",
-   "name": "Holdout",
-   "engine": "main",
-   "what": "Holdout lost 15 IQ since 12 Nov (89 → 74)",
-   "why": "learning doesn't vanish — an input it learns from broke (file missing, read failing, reset state)",
-   "score": 5,
-   "buildPays": 0.5
-  },
-  {
    "kind": "outcome",
    "machine": "hooks",
    "name": "Hook tests",
    "engine": "traffic",
    "what": "Hook tests (IQ 115) learns, but its outcome falls — find what it's missing",
-   "why": "its outcome is falling (AI accounts / week -27%)",
+   "why": "its outcome is falling (AI accounts / week -53%)",
    "score": 4,
    "buildPays": 0.5
   },
   {
    "kind": "fix",
-   "what": "Lost peak: chatgpt → /backtest 5 clicks/wk vs 126 at its best (week to 2026-10-25) — −58 accounts/wk",
+   "what": "Lost peak: chatgpt → ALL 44 clicks/wk vs 162 at its best (week to 2026-10-25) — −67 accounts/wk",
    "why": "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked",
    "engine": "fixer",
    "score": 4,
@@ -61,7 +51,7 @@
   },
   {
    "kind": "fix",
-   "what": "Lost peak: google → / 4 clicks/wk vs 30 at its best (week to 2026-09-03) — −6 accounts/wk",
+   "what": "Lost peak: chatgpt → /backtest 4 clicks/wk vs 126 at its best (week to 2026-10-25) — −59 accounts/wk",
    "why": "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked",
    "engine": "fixer",
    "score": 4,
@@ -69,7 +59,7 @@
   },
   {
    "kind": "fix",
-   "what": "Lost peak: bing → / 0 clicks/wk vs 16 at its best (week to 2026-09-02) — −1 accounts/wk",
+   "what": "Lost peak: google → / 5 clicks/wk vs 30 at its best (week to 2026-09-03) — −5 accounts/wk",
    "why": "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked",
    "engine": "fixer",
    "score": 4,
@@ -77,7 +67,7 @@
   },
   {
    "kind": "fix",
-   "what": "AI accounts / week getting worse: 22 vs 30 last week (hooks)",
+   "what": "AI accounts / week getting worse: 16 vs 34 last week (hooks)",
    "why": "a build session reads the machine's evidence and changes what it does",
    "engine": "fixer",
    "score": 4,
@@ -163,7 +153,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 8.21s — phones 6.74s vs desktop 6.89s (77% of loads on phones); the server answers in 0.26s and candles in 0.1s (HIT) — the time is on the visitor's side. Most slow-load time sits in: mobile/US 5.62s ×564, mobile/JP 6.76s ×288, mobile/IN 6.12s ×222, mobile/BR 11s ×84. Needs a build session to profile one slow load.",
+   "what": "Chart pages: the slowest 10% of real loads take 8.12s — phones 6.75s vs desktop 7.2s (79% of loads on phones); the server answers in 0.26s and candles in 0.06s (HIT) — the time is on the visitor's side. Most slow-load time sits in: mobile/US 5.68s ×566, mobile/JP 6.68s ×296, mobile/IN 6.32s ×227, mobile/BR 11s ×86. Needs a build session to profile one slow load.",
    "why": "speed brain asks for it",
    "engine": "speed",
    "score": 3,
@@ -171,7 +161,7 @@
   },
   {
    "kind": "build",
-   "what": "Chart pages: the slowest 10% of real loads take 8.21s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
+   "what": "Chart pages: the slowest 10% of real loads take 8.12s → say \"chart speed\" — edge-cache immutable candle windows (a build session) [impact 1.5]",
    "why": "fixer brain asks for it",
    "engine": "fixer",
    "score": 3,
@@ -231,6 +221,16 @@
    "name": "Search gaps",
    "engine": "traffic",
    "what": "Teach Search gaps to judge itself on an outcome it can measure",
+   "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
+   "score": 2,
+   "buildPays": 0.5
+  },
+  {
+   "kind": "learn",
+   "machine": "bingseo",
+   "name": "Bing webmaster",
+   "engine": "traffic",
+   "what": "Teach Bing webmaster to judge itself on an outcome it can measure",
    "why": "acts but learns nothing from what happens next — no outcome to judge itself by",
    "score": 2,
    "buildPays": 0.5

@@ -1,19 +1,32 @@
 {
- "at": "2026-11-13T23:20:03.975Z",
+ "at": "2026-11-14T00:19:57.127Z",
  "note": "best 7 days of the last 75 vs the last 7, per source × landing family (AI/search clicks from data/ai/clicks.json). lost = ≤ 35 % of peak for ≥ 14 days, peak ≥ 15 clicks/wk, ranked by accounts lost per week.",
  "lost": [
+  {
+   "src": "chatgpt",
+   "page": "ALL",
+   "peak": 162,
+   "peakAccounts": 80,
+   "peakWeekEnd": "2026-10-25",
+   "now": 44,
+   "nowAccounts": 13,
+   "ratio": 0.27,
+   "downDays": 14,
+   "lostPerWeek": 118,
+   "lostAccountsPerWeek": 67
+  },
   {
    "src": "chatgpt",
    "page": "/backtest",
    "peak": 126,
    "peakAccounts": 63,
    "peakWeekEnd": "2026-10-25",
-   "now": 5,
-   "nowAccounts": 5,
-   "ratio": 0.04,
-   "downDays": 14,
-   "lostPerWeek": 121,
-   "lostAccountsPerWeek": 58
+   "now": 4,
+   "nowAccounts": 4,
+   "ratio": 0.03,
+   "downDays": 15,
+   "lostPerWeek": 122,
+   "lostAccountsPerWeek": 59
   },
   {
    "src": "google",
@@ -21,12 +34,12 @@
    "peak": 30,
    "peakAccounts": 9,
    "peakWeekEnd": "2026-09-03",
-   "now": 4,
-   "nowAccounts": 3,
-   "ratio": 0.13,
-   "downDays": 68,
-   "lostPerWeek": 26,
-   "lostAccountsPerWeek": 6
+   "now": 5,
+   "nowAccounts": 4,
+   "ratio": 0.17,
+   "downDays": 69,
+   "lostPerWeek": 25,
+   "lostAccountsPerWeek": 5
   },
   {
    "src": "bing",
@@ -37,7 +50,7 @@
    "now": 0,
    "nowAccounts": 0,
    "ratio": 0,
-   "downDays": 68,
+   "downDays": 69,
    "lostPerWeek": 16,
    "lostAccountsPerWeek": 1
   }
@@ -49,12 +62,12 @@
    "peak": 162,
    "peakAccounts": 80,
    "peakWeekEnd": "2026-10-25",
-   "now": 42,
-   "nowAccounts": 14,
-   "ratio": 0.26,
-   "downDays": 13,
-   "lostPerWeek": 120,
-   "lostAccountsPerWeek": 66
+   "now": 44,
+   "nowAccounts": 13,
+   "ratio": 0.27,
+   "downDays": 14,
+   "lostPerWeek": 118,
+   "lostAccountsPerWeek": 67
   },
   {
    "src": "google",
@@ -62,12 +75,12 @@
    "peak": 39,
    "peakAccounts": 19,
    "peakWeekEnd": "2026-10-17",
-   "now": 15,
-   "nowAccounts": 9,
-   "ratio": 0.38,
-   "downDays": 16,
-   "lostPerWeek": 24,
-   "lostAccountsPerWeek": 10
+   "now": 16,
+   "nowAccounts": 10,
+   "ratio": 0.41,
+   "downDays": 17,
+   "lostPerWeek": 23,
+   "lostAccountsPerWeek": 9
   },
   {
    "src": "bing",
@@ -75,11 +88,11 @@
    "peak": 24,
    "peakAccounts": 5,
    "peakWeekEnd": "2026-11-04",
-   "now": 13,
+   "now": 12,
    "nowAccounts": 6,
-   "ratio": 0.54,
-   "downDays": 3,
-   "lostPerWeek": 11,
+   "ratio": 0.5,
+   "downDays": 4,
+   "lostPerWeek": 12,
    "lostAccountsPerWeek": -1
   },
   {
@@ -91,7 +104,7 @@
    "now": 0,
    "nowAccounts": 0,
    "ratio": 0,
-   "downDays": 18,
+   "downDays": 19,
    "lostPerWeek": 2,
    "lostAccountsPerWeek": 0
   },

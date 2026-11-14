@@ -11,10 +11,10 @@
     "tries": 0,
     "read": {
      "blocksA": 1,
-     "blocksB": 0,
+     "blocksB": 1,
      "lift": null,
      "P": null,
-     "at": "2026-11-13T23:20:05.102Z",
+     "at": "2026-11-14T00:19:58.358Z",
      "model": "log KPI ~ trend + release + arm"
     }
    },
@@ -34,11 +34,11 @@
     "id": "ai.resendDays:10:2026-11-12",
     "tries": 0,
     "read": {
-     "blocksA": 0,
+     "blocksA": 1,
      "blocksB": 1,
      "lift": null,
      "P": null,
-     "at": "2026-11-13T23:20:05.102Z",
+     "at": "2026-11-14T00:19:58.359Z",
      "model": "log KPI ~ trend + release + arm"
     }
    },
@@ -59,11 +59,11 @@
     "kpi": "reads",
     "tries": 0,
     "read": {
-     "blocksA": 0,
+     "blocksA": 1,
      "blocksB": 1,
      "lift": null,
      "P": null,
-     "at": "2026-11-13T23:20:05.103Z",
+     "at": "2026-11-14T00:19:58.359Z",
      "model": "log KPI ~ trend + release + arm"
     }
    },
@@ -84,11 +84,11 @@
     "kpi": "reads",
     "tries": 0,
     "read": {
-     "blocksA": 0,
+     "blocksA": 1,
      "blocksB": 1,
      "lift": null,
      "P": null,
-     "at": "2026-11-13T23:20:05.103Z",
+     "at": "2026-11-14T00:19:58.359Z",
      "model": "log KPI ~ trend + release + arm"
     }
    },
@@ -110,10 +110,10 @@
     "tries": 0,
     "read": {
      "blocksA": 1,
-     "blocksB": 0,
+     "blocksB": 1,
      "lift": null,
      "P": null,
-     "at": "2026-11-13T23:20:05.103Z",
+     "at": "2026-11-14T00:19:58.359Z",
      "model": "log KPI ~ trend + release + arm"
     }
    },
@@ -131,7 +131,7 @@
   "ai.sisterBoost": 2,
   "ai.qualityWeight": 1
  },
- "at": "2026-11-13T23:20:05.103Z",
+ "at": "2026-11-14T00:19:58.359Z",
  "note": "Self-tuning knobs: champion vs challenger in 2-day switchback blocks, judged on the knob's KPI (normalised by its own 7-day mean). Machines read active[knob].",
  "objective": {
   "kpi": "reads",

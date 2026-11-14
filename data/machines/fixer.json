@@ -8,8 +8,8 @@
   "43358542167": true,
   "43417626955": true
  },
- "day": "2026-11-13",
- "at": "2026-11-13T23:20:04.008Z",
+ "day": "2026-11-14",
+ "at": "2026-11-14T00:19:57.162Z",
  "actions": [
   {
    "at": "2026-11-12T12:03:51.703Z",
@@ -59,25 +59,25 @@
  ],
  "tasks": [
   {
-   "what": "Lost peak: chatgpt → /backtest 5 clicks/wk vs 126 at its best (week to 2026-10-25) — −58 accounts/wk",
+   "what": "Lost peak: chatgpt → ALL 44 clicks/wk vs 162 at its best (week to 2026-10-25) — −67 accounts/wk",
    "evidence": "data/machines/peaks.json",
    "fix": "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked",
    "impact": 5
   },
   {
-   "what": "Lost peak: google → / 4 clicks/wk vs 30 at its best (week to 2026-09-03) — −6 accounts/wk",
+   "what": "Lost peak: chatgpt → /backtest 4 clicks/wk vs 126 at its best (week to 2026-10-25) — −59 accounts/wk",
+   "evidence": "data/machines/peaks.json",
+   "fix": "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked",
+   "impact": 5
+  },
+  {
+   "what": "Lost peak: google → / 5 clicks/wk vs 30 at its best (week to 2026-09-03) — −5 accounts/wk",
    "evidence": "data/machines/peaks.json",
    "fix": "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked",
    "impact": 2
   },
   {
-   "what": "Lost peak: bing → / 0 clicks/wk vs 16 at its best (week to 2026-09-02) — −1 accounts/wk",
-   "evidence": "data/machines/peaks.json",
-   "fix": "find what changed on that page/source around the peak's end (git log, wording, blocks, ranking) and restore what worked",
-   "impact": 1
-  },
-  {
-   "what": "AI accounts / week getting worse: 22 vs 30 last week (hooks)",
+   "what": "AI accounts / week getting worse: 16 vs 34 last week (hooks)",
    "evidence": "supervisor",
    "fix": "needs a build or a decision"
   },

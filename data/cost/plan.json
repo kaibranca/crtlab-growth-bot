@@ -29,7 +29,7 @@
    "set": "MALLOC_ARENA_MAX=2",
    "live": true,
    "beforeGB": 1.093,
-   "afterGB": 1.081,
+   "afterGB": 1.073,
    "verdict": "judging"
   },
   {
@@ -38,17 +38,17 @@
    "set": "WEB_NODE_OPTIONS=--max-old-space-size=512",
    "live": true,
    "beforeGB": 1.109,
-   "afterGB": 1.081,
+   "afterGB": 1.073,
    "verdict": "judging"
   }
  ],
  "heap": {
   "cap": 512,
   "stopped": false,
-  "samples": 96,
+  "samples": 97,
   "note": "heap peak 315 MB → cap 512 MB is right"
  },
- "at": "2026-11-13T23:18:29.710Z",
+ "at": "2026-11-14T00:18:30.602Z",
  "status": "over budget",
  "budget": 10,
  "weekPace": 25.5,
@@ -59,25 +59,25 @@
   "web": 6,
   "ops": 0
  },
- "dayCost": 0.85,
+ "dayCost": 0.84,
  "avgDayCost": 0.85,
- "monthPace": 25.5,
+ "monthPace": 25.2,
  "services": [
   {
    "svc": "web",
-   "memGB": 0.66,
-   "normalGB": 0.84,
-   "dayCost": 0.54,
+   "memGB": 0.7,
+   "normalGB": 0.85,
+   "dayCost": 0.53,
    "avgDayCost": 0.48,
-   "monthPace": 16.13
+   "monthPace": 16
   },
   {
    "svc": "Postgres",
-   "memGB": 0.5,
+   "memGB": 0.44,
    "normalGB": 0.4,
    "dayCost": 0.17,
    "avgDayCost": 0.15,
-   "monthPace": 5.01
+   "monthPace": 4.98
   },
   {
    "svc": "data",
@@ -85,7 +85,7 @@
    "normalGB": 0.24,
    "dayCost": 0.14,
    "avgDayCost": 0.22,
-   "monthPace": 4.15
+   "monthPace": 4.11
   },
   {
    "svc": "ops",
