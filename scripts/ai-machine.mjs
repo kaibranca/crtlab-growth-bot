@@ -545,7 +545,11 @@ for (const [famName, tpls] of Object.entries(LIBRARY)) {
     ? { id: `home-${next}-${iso(NOW)}`, family: famName, template: next, split: 0.5, mode: "switchback", grain: "2h", status: "paused", auto: true }
     : { id: `${famName.replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "")}-${next}-${iso(NOW)}`, family: famName, template: next, split: 0.5, status: "running", started: new Date().toISOString() });
 }
-fs.writeFileSync(HOOKS, JSON.stringify(hk, null, 1));
+// FREEZE: hold every page's hook state — running tests pause (page = as before), nothing new starts, winners stay as they were
+if ((await import("./lib.mjs")).frozen("hooks")) { const prev = fs.existsSync(HOOKS) ? JSON.parse(fs.readFileSync(HOOKS, "utf8")) : { experiments: [] };
+  for (const e of prev.experiments || []) if (e.status === "running") { e.status = "paused"; e.pausedBy = "freeze"; }
+  fs.writeFileSync(HOOKS, JSON.stringify(prev, null, 1)); console.log("hooks: FROZEN (traffic freeze) — running tests paused, nothing new");
+} else fs.writeFileSync(HOOKS, JSON.stringify(hk, null, 1));
 fs.writeFileSync(LES, JSON.stringify(LESSONS, null, 1));
 
 // ── 5. plan ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -597,7 +601,7 @@ fs.writeFileSync("data/ai/plan.json", JSON.stringify(plan, null, 1));
   const due = [...lastmod.keys()].map((p) => ({ p, d: soon(p), v: page.get(p)?.value ?? 0 })).filter((x) => x.d).sort((a, b) => b.v - a.v);
   for (const x of due) { if (picks.filter((q) => q.why === "release").length >= 4) break; add(x.p, "release", x.d); }
   for (const x of plan.winners) add(x.p, "winner");
-  fs.writeFileSync("data/ai/llms.json", JSON.stringify({ at: plan.at, picks }, null, 1));
+  if (!(await import("./lib.mjs")).frozen("llms")) fs.writeFileSync("data/ai/llms.json", JSON.stringify({ at: plan.at, picks }, null, 1)); // FREEZE: llms.txt list held
   { const LL = "data/world/llms.jsonl", day = iso(NOW), rows = readLines(LL); const row = { day, paths: picks.map((q) => q.path) }; if (rows.at(-1)?.day === day) rows[rows.length - 1] = row; else rows.push(row);
     fs.mkdirSync("data/world", { recursive: true }); fs.writeFileSync(LL, rows.slice(-120).map((x) => JSON.stringify(x)).join("\n") + "\n"); } }
 

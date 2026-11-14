@@ -103,5 +103,7 @@ for (const f of FAMS) {
 }
 st.transfer = { at: new Date().toISOString(), fetches: allF, clicks: allC, lift: Object.fromEntries(ARMS.map((a) => [a, +LIFT[a].toFixed(3)])) };
 st.at = new Date().toISOString(); st.note = "Conversion bandit: per family, tomorrow's share of each ReplayHook wording (site lib/bandit.ts). Shares are written before their day starts.";
+// FREEZE: no shares for new days → every news/calendar page shows its own title (stable), measuring continues
+if ((await import("./lib.mjs")).frozen("bandit")) { const today = new Date().toISOString().slice(0, 10); for (const F of Object.values(st.families || {})) if (F.probs) for (const d of Object.keys(F.probs)) if (d >= today) delete F.probs[d]; console.log("bandit: FROZEN (traffic freeze)"); }
 fs.writeFileSync(F_OUT, JSON.stringify(st, null, 1));
 console.log("bandit: " + report.join(" | "));

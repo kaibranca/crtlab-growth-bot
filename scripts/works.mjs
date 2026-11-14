@@ -205,6 +205,8 @@ const plan = {
   cycles: { total: readLines(CYC).length, judged: readLines(CYC).filter((c) => c.verdict).slice(-5).map((c) => ({ day: c.day, verdict: c.verdict, lift: c.judged?.lift })) },
   say: `Base ${base.perDay} accounts/day (floor ${base.floor}); this week ${last7} vs normal ${base.normalWeek}. Effort ${E}/10. Focus: ${focus.slice(0, 4).map((P) => P.key).join(", ")}. Bin: ${Object.keys(S.bin).join(", ") || "none"}. Audit: ${audit.say}.`,
 };
+// FREEZE: keep the tiers the site last used (no family moved in/out of the main sitemap); fresh `at` so the site doesn't treat it as stale
+{ const { frozen } = await import("./lib.mjs"); if (frozen("sitemap-tiers") && fs.existsSync(OUT)) { const prev = JSON.parse(fs.readFileSync(OUT, "utf8")); if (prev.tiers) { plan.liveTiers = plan.tiers; plan.tiers = prev.tiers; plan.frozen = true; console.log("works: tiers FROZEN (traffic freeze)"); } } }
 fs.writeFileSync(OUT, JSON.stringify(plan, null, 1));
 fs.writeFileSync(ST, JSON.stringify(S, null, 1));
 console.log("works:", plan.say);
