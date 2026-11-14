@@ -29,6 +29,8 @@ for (const e of (J("data/ai/hooks.json", {}).experiments || []).filter((e) => e.
 const spend = changes.filter((c) => c.what !== "llms.json");
 // site deploys that touched page code (promote-site runs that actually deployed) — read from the bot's own deploy log if present
 for (const x of (J("data/deploys.json", {}).list || []).filter((x) => Date.parse(x.at) > NOW - BUDGET_DAYS * DAY && x.pages)) spend.push({ at: x.at, what: "site deploy" });
+// site deploys that touched traffic-facing areas (the timeline reads the live branch's commits + files)
+for (const e of (J("data/machines/timeline.json", {}).events || []).filter((e) => e.kind === "site-deploy" && e.traffic && Date.parse(e.at) > NOW - BUDGET_DAYS * DAY)) spend.push({ at: e.at, what: `site deploy [${e.where}] ${e.what.slice(0, 50)}` });
 const fz = J("data/machines/freeze.json", null), frozenNow = fz && NOW < Date.parse(fz.until);
 if (spend.length > BUDGET && !frozenNow) {
   fs.writeFileSync("data/machines/freeze.json", JSON.stringify({ until: new Date(NOW + 7 * DAY).toISOString(), set: `${new Date().toISOString()} by guard (budget ${spend.length}/${BUDGET} in ${BUDGET_DAYS} d)`,

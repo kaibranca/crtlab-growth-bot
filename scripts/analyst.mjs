@@ -46,6 +46,14 @@ const digest = {
   // 11-13 THE NORTH STAR + CORE VALUES: what works (accounts by page family, deduped), the bin, effort, cycles — judge every
   // machine against THIS, never against reads (data/machines/values.json)
   values: J("data/machines/values.json", null)?.rules ?? null,
+  // 11-14 CONTEXT (Kai: machines must see everything, not their own slice): every change in the ecosystem (site deploys with the
+  // page areas they touched, machine changes, freeze, data releases, reels, verdicts) + the guard, failures, minutes. Before
+  // crediting any result, check what ELSE changed in that window.
+  timeline: (() => { const t = J("data/machines/timeline.json", null); return t ? { traffic7: t.traffic7, last: (t.events || []).slice(-40).map((e) => `${e.at.slice(0, 16)} ${e.kind} [${e.where}] ${e.what}${e.traffic ? " (TRAFFIC)" : ""}`) } : null; })(),
+  guard: J("data/guard/status.json", null),
+  failures: (() => { const f = J("data/guard/failures.json", null); return f ? { lessons: f.lessons, spent: f.spent?.map((x) => x.what), lost: f.lost?.slice(0, 10).map((x) => x.what), retire: f.retire, watch: f.watch } : null; })(),
+  freeze: J("data/machines/freeze.json", null),
+  minutes: J("data/guard/minutes.json", null),
   works: (() => { const w = J("data/works/plan.json", null); return w ? { northStar: w.northStar, base: w.base, effort: w.effort, focus: w.focus, explore: w.explore, families: (w.families ?? []).map((f) => ({ fam: f.fam, tier: f.tier, pages: f.pages, accounts90: f.accounts90, accounts28: f.accounts28, perPageWeek: f.worthPerPageWeek })), dead: w.bin, cycles: w.cycles } : null; })(),
   executive: (() => { const e = J("data/machines/executive.json", null); return e ? { constraint: e.constraint, why: e.why, rates: e.rates, gaps: e.gaps, knobs: e.knobs, strength: e.strength, history: (e.history ?? []).slice(-5) } : null; })(),
   knowledge: (() => { const k = J("data/machines/knowledge.json", null); return k ? { facts: k.count, strongest: k.top, contradicted: Object.values(k.facts ?? {}).filter((f) => f.contradicted).map((f) => `${f.claim} (was: ${f.was})`).slice(0, 5) } : null; })(),
