@@ -5,6 +5,7 @@ the machines judge whether it paid. That closes the loop: **power → IQ → bet
 
 ## 0 · The north star (11-13) — read first
 - `data/machines/values.json` — the core rules. The whole system is judged on NEW ACCOUNTS (deduped), never reads.
+- **TRAFFIC LAWS (values rules 9–13, 11-14) — check BEFORE building anything:** one traffic-facing change per 7 days (`data/guard/status.json` budget; `data/machines/freeze.json` = hold everything), never touch protected pages (/, /backtest, /backtest-<market>, concepts) by machine, no mass pages / sitemap churn / indexing flip-flops, failures first (`data/guard/failures.json`), stay free (`data/guard/minutes.json`). Write machine JSON with JSON.stringify only — hand-edited JSON broke values.json for 4 h.
 - `data/works/plan.json` — what works: base accounts/day, families WIN / OK / WEAK / DEAD, focus + explore, MORE jobs,
   daily cycles + verdicts, effort. Never build in a DEAD family; `works: true` items in the queue come first.
 - Shared rule for every script: `scripts/works-lib.mjs` (`family`, `worksMul`, `worksTier`, `canBuild`).

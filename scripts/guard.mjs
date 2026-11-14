@@ -48,7 +48,13 @@ if (!inv.some((x) => x.day === today)) {
   if (y && row.main != null && Math.abs(row.main - y.main) > y.main * .1) alerts.push([`guard-sitemap-${today}`, `GUARD: main sitemap moved ${y.main} → ${row.main} URLs in a day. Sitemap churn confuses Google — check which machine did it.`]);
   if (w && tot(row) - tot(w) > 150) alerts.push([`guard-pages-${today}`, `GUARD: ${tot(row) - tot(w)} new URLs in 7 days (${tot(w)} → ${tot(row)}). Mass auto pages = Google scaled-content risk.`]);
 }
-const st = { at: new Date().toISOString(), budget: { used: spend.length, of: BUDGET, days: BUDGET_DAYS, changes: spend.slice(-8), llmsRotations: changes.length - spend.length }, frozen: frozenNow ? fz.until : null, inventory: inv.at(-1) || null, alerts: alerts.map((a) => a[1]) };
+// ── broken files: a machine file that doesn't parse silently switches its readers off (11-14: values.json was invalid for 4 h —
+// the AI analyst read NO values). Every JSON the machines read is checked hourly; a broken one emails at once.
+const broken = [];
+for (const dir of ["data/machines", "data/ai", "data/works", "data/reels", "data/guard", "data/radar", "data/google"]) { if (!fs.existsSync(dir)) continue;
+  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith(".json"))) { try { JSON.parse(fs.readFileSync(`${dir}/${f}`, "utf8")); } catch (e) { broken.push(`${dir}/${f}`); } } }
+if (broken.length) alerts.push([`guard-broken-${broken.join(",").slice(0, 80)}`, `GUARD: ${broken.length} machine file(s) are BROKEN JSON — every machine reading them is running blind: ${broken.join(", ")}`]);
+const st = { at: new Date().toISOString(), budget: { used: spend.length, of: BUDGET, days: BUDGET_DAYS, changes: spend.slice(-8), llmsRotations: changes.length - spend.length }, frozen: frozenNow ? fz.until : null, inventory: inv.at(-1) || null, broken, alerts: alerts.map((a) => a[1]) };
 fs.writeFileSync(`${D}/status.json`, JSON.stringify(st, null, 1));
 console.log("guard:", JSON.stringify(st.budget), "frozen", st.frozen, "inventory", JSON.stringify(st.inventory));
 if (alerts.length) { try { await (await import("../reels/engine/alert.mjs")).send(alerts, "CRTLAB guard"); } catch (e) { console.log(String(e).slice(0, 120)); } }
