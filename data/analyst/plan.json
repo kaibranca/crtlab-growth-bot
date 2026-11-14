@@ -1,79 +1,70 @@
 {
- "at": "2026-11-13T06:43:34.026Z",
+ "at": "2026-11-14T06:43:35.403Z",
  "model": "openai:gpt-4.1-mini",
- "headline": "Focus AI traffic on /backtest pages; cut zero-click economic calendar pages",
+ "headline": "Stop Bing sends to DEAD families; focus on /backtest and fix ChatGPT losses",
  "findings": [
   {
-   "claim": "AI reads many economic calendar pages but they get zero clicks, wasting AI attention",
+   "claim": "87% of Bing sends go to WEAK/DEAD families that produce almost no accounts",
    "numbers": [
-    55,
-    42,
-    37,
-    27,
-    23,
-    23
+    87,
+    192,
+    220
    ],
-   "so": "Stop sending AI traffic to economic calendar pages with zero clicks"
+   "so": "Stop sending Bing traffic to WEAK/DEAD families and focus on WIN families only"
   },
   {
-   "claim": "/backtest family pages have high AI reads and clicks and good account conversion",
+   "claim": "/backtest and /backtest-<market> families are WIN and bring most accounts but have leaks losing 14.9 and 6.8 people respectively",
    "numbers": [
-    261,
-    8.66,
-    45
+    14.9,
+    6.8,
+    91,
+    32
    ],
-   "so": "Focus AI traffic on /backtest family pages to improve AI click-through and signups"
+   "so": "Focus effort on improving conversion on /backtest and /backtest-<market> pages"
   },
   {
-   "claim": "AI accounts per week dropped from 30 to 22 despite stable AI clicks at 39/week",
+   "claim": "AI accounts per week dropped from 34 to 16, showing hooks machine is losing effectiveness",
    "numbers": [
-    22,
-    30,
-    39
+    16,
+    34
    ],
-   "so": "Investigate and fix the drop in AI accounts despite stable AI clicks"
+   "so": "Fix or pause hooks machine until it learns from outcomes and improves AI account yield"
   },
   {
-   "claim": "Direct and /backtest-<market> landing pages lose many potential accounts at land → account stage",
+   "claim": "Pages in DEAD families like /news/<release> and /economic-calendar/<x> have 0 accounts despite thousands of pages and reads",
    "numbers": [
-    54,
-    215,
-    62,
-    0.4,
-    0.6,
-    0.54
+    1982,
+    357,
+    0
    ],
-   "so": "Improve conversion on direct and /backtest-<market> landing pages to reduce account loss"
+   "so": "No new pages or effort on DEAD families; keep them Google noindexed as done"
   },
   {
-   "claim": "ChatGPT signups have 12% replay rate, below Google signups at 22%, indicating lower quality",
+   "claim": "ChatGPT source lost peak clicks from 162 to 44 and /backtest clicks from 126 to 4, causing −67 and −59 accounts/week losses",
    "numbers": [
-    12,
-    22
+    162,
+    44,
+    126,
+    4,
+    67,
+    59
    ],
-   "so": "Target AI traffic to pages with higher replay rates to improve quality"
+   "so": "Investigate and restore what worked on ChatGPT source and /backtest pages around 2026-10-25 peak"
   }
  ],
- "proposals": [
-  {
-   "target": "/footprint-chart-backtesting",
-   "why": "winner: 4.51 accounts, 6.77 clicks, 0.75 reads proven to convert well",
-   "explore": false,
-   "evidence": "winner: 4.51 accounts, 6.77 clicks, 0.75 reads"
-  }
- ],
+ "proposals": [],
  "knobs": [
   {
    "id": "ai.exploreShare",
    "value": 0.2,
-   "why": "current champion 0.15, challenger 0.2 under test with no verdict yet to improve AI click rate (rate0 0.00848)",
-   "at": "2026-11-13T06:43:34.026Z"
+   "why": "Champion is 0.15 but challenger 0.2 is being tested; more exploration may find better Bing send targets than current WEAK/DEAD families",
+   "at": "2026-11-14T06:43:35.403Z"
   }
  ],
- "rejected": 1,
+ "rejected": 2,
  "record": {
-  "proposed": 2,
-  "alive": 2,
+  "proposed": 3,
+  "alive": 3,
   "kept": 0,
   "retired": 0,
   "history": [
@@ -88,14 +79,20 @@
     "verdict": "measuring",
     "ratio": null,
     "why": "AI analyst: surging: 47 reads in 24 h vs ~0.5"
+   },
+   {
+    "target": "/footprint-chart-backtesting",
+    "verdict": "measuring",
+    "ratio": null,
+    "why": "AI analyst: winner: 4.51 accounts, 6.77 clicks, 0.75 reads proven to convert well"
    }
   ]
  },
  "candidates": 30,
  "usage": {
-  "prompt_tokens": 8544,
-  "completion_tokens": 411,
-  "total_tokens": 8955,
+  "prompt_tokens": 14111,
+  "completion_tokens": 471,
+  "total_tokens": 14582,
   "prompt_tokens_details": {
    "cached_tokens": 0,
    "audio_tokens": 0
