@@ -41,6 +41,14 @@ humans · outcomes · behaviour · leak · world · retention/comeback emails ·
 guard · guard-lib · failures · timeline · timeline-lib · minutes · cost · expiry · deploy-watch · security · deps-audit ·
 health · watchdog · load-alert · shield · shield-explain · linkcheck · mobile-qa · supervisor (keep the run-failure part)
 
+### SECURITY (part of Guard — every machine that can affect CRTLAB, alone or combined)
+- crtlab-standalone: GitHub reports 17 dependency vulnerabilities (14 high, 3 moderate) on the default branch → triage + patch.
+- Public bot repo: secret scan in CI (no token/key/IP ever committed), workflow permissions least-privilege, pinned actions.
+- Tokens: scope + expiry inventory (Meta data access ~2027-02-06, CF token can roll itself, GH_WATCH_TOKEN, Railway) in expiry.mjs.
+- Machine hands on production (CF rules/bans, sitemap, hooks, emails, posting): each needs a kill switch, a rate cap, and a
+  test that it can't hit protected pages, legit bots, or real users (11-12 it banned Kai's own IP; 11-14 it could ban Googlebot).
+- Combined effects: the guard + timeline judge the SUM of machine actions, not each alone.
+
 ### META / THEATRE → merge or kill
 core (625 lines, the /machine graph) · brains (420) · executive · tuner · iq · self · upgrades · fixer · memory · analyst ·
 ai-report · ai-machine-family · fams · needs · summary (feeds the app board — keep, slim)
