@@ -1,4 +1,5 @@
 # MACHINE AUDIT (started 11-14) — from 78 "machines" to ~5 serious loops
+> Superseded as the plan by ENGINE.md (the spec). This file stays as the 11-14 audit inventory.
 
 Kai 11-14: "the idea is right, we super overbuilt, made the frontend look cool and beneath it it's not good enough — build it like
 a professional, proper engineering, smart, to scale." Honest state: 88 scripts (~9k dense lines), 0 tests, errors swallowed
