@@ -13,7 +13,6 @@ const cf = async (path, opts = {}) => { const r = await fetch(API + path, { ...o
 const STATE = "data/shield.json", st = fs.existsSync(STATE) ? JSON.parse(fs.readFileSync(STATE, "utf8")) : {};
 const hash = (x) => crypto.createHash("sha256").update((process.env.OPS_KEY || "") + x).digest("hex").slice(0, 12);
 
-const SHARED_ASN = new Set([13335, 209242, 36183, 714, 6185]);   // Cloudflare WARP, iCloud Relay (Akamai), Apple
 const BAN_DAYS = 7, MAX_NEW = 50;
 // thresholds per IP in the last hour: scanner/WAF blocks are unambiguous; rate-limit trips mean login brute force
 const SCORE = { firewallCustom: 1, firewallManaged: 1, ratelimit: 2 };
@@ -48,7 +47,12 @@ if (expired.length) await cf(`/accounts/${ACC}/rules/lists/${LIST}/items`, { met
 
 // 4. new bans
 const exp = new Date(now + BAN_DAYS * 864e5).toISOString();
-const fresh = [...per.entries()].filter(([ip, x]) => x.n >= BAN_AT && !SHARED_ASN.has(x.asn) && !have.has(ip)).sort((a, b) => b[1].n - a[1].n).slice(0, MAX_NEW);
+// 11-14: eligibility is one tested rule (shield-lib) — never shared networks, never search / AI crawlers; HANDS gate fails closed
+const { banEligible } = await import("./shield-lib.mjs"), { handsOn } = await import("./hands.mjs"), HANDS = handsOn("shield");
+const spared = [...per.entries()].filter(([ip, x]) => x.n >= BAN_AT && !have.has(ip) && !banEligible(x, { banAt: BAN_AT }).ban);
+if (spared.length) console.log(`shield: spared ${spared.length} over-threshold IP(s):`, spared.slice(0, 5).map(([ip, x]) => `${ip} (${banEligible(x, { banAt: BAN_AT }).why})`).join(", "));
+const fresh = HANDS ? [...per.entries()].filter(([ip, x]) => banEligible(x, { banAt: BAN_AT, already: have.has(ip) }).ban).sort((a, b) => b[1].n - a[1].n).slice(0, MAX_NEW) : [];
+if (!HANDS) console.log("shield: HANDS OFF — no new bans (expired ones are still lifted)");
 if (fresh.length) await cf(`/accounts/${ACC}/rules/lists/${LIST}/items`, { method: "POST",
   body: JSON.stringify(fresh.map(([ip, x]) => ({ ip, comment: `auto|${Object.entries(x.src).map(([k, v]) => `${k}:${v}`).join(",")}|asn=${x.asn}|exp=${exp}` }))) });
 

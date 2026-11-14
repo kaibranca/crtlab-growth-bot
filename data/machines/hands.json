@@ -1,4 +1,5 @@
 {
  "_": "PRODUCTION HANDS (11-14). Which machines may CHANGE live systems (Railway, Cloudflare, Google/Bing submissions, posting). Missing / broken / not listed = NO hands (fail closed): the machine observes and recommends only. Moves back toward safety (reverting its own lever, raising a cap after a crash) are always allowed. Changing a value here is a Kai decision.",
- "cost": { "on": false, "why": "11-14: was about to set a hard 1.1 GB memory limit on live web at the 03:17 run to save cents; a traffic wave would OOM-kill the app. Scaling > pennies. Recommends only until rebuilt with load headroom rules." }
+ "cost": { "on": false, "why": "11-14: was about to set a hard 1.1 GB memory limit on live web at the 03:17 run to save cents; a traffic wave would OOM-kill the app. Scaling > pennies. Recommends only until rebuilt with load headroom rules." },
+ "shield": { "on": true, "why": "security layer: bans repeat attackers 7 d at Cloudflare. 11-14: never bans shared networks or search/AI crawlers (shield-lib, tested). Broken hands file = no new bans; expired bans always lifted." }
 }
