@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T08:17:51.476Z",
+ "at": "2026-11-14T09:17:50.032Z",
  "northStar": {
   "metric": "accounts / week (worth: account 1, replayed +0.5, paid +10)",
   "now": 138,
@@ -177,21 +177,21 @@
     "v": 138
    }
   ],
-  "last24": 21,
+  "last24": 22,
   "realVisitorShare": 0.61,
-  "botRowsDropped": 2857,
+  "botRowsDropped": 2858,
   "perDay": 20,
   "sd": 11.2,
   "floor": 8.8,
   "last7": 138,
   "normalWeek": 141,
   "trend": -0.02,
-  "today": 8,
+  "today": 10,
   "zeroDays28": 0,
   "bySource28": {
    "chatgpt": 130,
    "direct": 334,
-   "google": 32,
+   "google": 31,
    "search": 18,
    "other": 4
   }
@@ -212,9 +212,9 @@
   {
    "path": "/backtest-gold",
    "fam": "/backtest-<market>",
-   "acc28": 22,
-   "v28": 116,
-   "rate": 5.54,
+   "acc28": 21,
+   "v28": 115,
+   "rate": 5.29,
    "mult": 3.25
   },
   {
@@ -244,19 +244,19 @@
  ],
  "explore": [
   {
+   "path": "/crt-strategy-backtester",
+   "fam": "/<concept>-backtesting",
+   "acc28": 2,
+   "v28": 9,
+   "conf": 0.47,
+   "mult": 1.45
+  },
+  {
    "path": "/liquidity-sweep-backtester",
    "fam": "/<concept>-backtesting",
    "acc28": 1,
    "v28": 1,
    "conf": 0.09,
-   "mult": 1.45
-  },
-  {
-   "path": "/smt-divergence-backtester",
-   "fam": "/<concept>-backtesting",
-   "acc28": 1,
-   "v28": 4,
-   "conf": 0.29,
    "mult": 1.45
   }
  ],
@@ -265,12 +265,12 @@
    "fam": "/",
    "pages": 1,
    "landed": 1,
-   "visitors90": 3020,
+   "visitors90": 3021,
    "accounts90": 961,
-   "accounts28": 289,
+   "accounts28": 287,
    "accounts7": 46,
    "paid90": 6,
-   "worthPerPageWeek": 72.837,
+   "worthPerPageWeek": 72.337,
    "mult": 3,
    "tier": "WIN",
    "sources90": {
@@ -308,11 +308,11 @@
    "landed": 15,
    "visitors90": 291,
    "accounts90": 56,
-   "accounts28": 31,
+   "accounts28": 30,
    "accounts7": 8,
    "paid90": 0,
-   "worthPerPageWeek": 0.383,
-   "mult": 1.96,
+   "worthPerPageWeek": 0.37,
+   "mult": 1.92,
    "tier": "WIN",
    "sources90": {
     "google": 25,
@@ -554,7 +554,7 @@
   },
   {
    "fam": "/recap/<x>",
-   "pages": 36,
+   "pages": 37,
    "landed": 0,
    "visitors90": 0,
    "accounts90": 0,
@@ -618,10 +618,10 @@
   "/": 3,
   "/<concept>-backtesting": 1.44,
   "(in-app)": 2.04,
-  "/backtest-<market>": 1.96,
+  "/backtest-<market>": 1.92,
   "/backtest": 3,
   "/tools/<x>": 0.9,
-  "(chart)": 2.53,
+  "(chart)": 2.59,
   "/reference/<x>": 0.4,
   "/blog/<x>": 0.4,
   "/<page>": 0.44,
@@ -641,8 +641,8 @@
   "/tools/crt-statistics": 3.25,
   "/footprint-chart-backtesting": 3.25,
   "/backtest-nas100": 1.56,
-  "/liquidity-sweep-backtester": 1.45,
-  "/smt-divergence-backtester": 1.45
+  "/crt-strategy-backtester": 1.45,
+  "/liquidity-sweep-backtester": 1.45
  },
  "queue": [
   {
@@ -654,7 +654,7 @@
   {
    "rank": 2,
    "fam": "/backtest-<market>",
-   "why": "56 accounts from 20 pages in 90 d (0.383/page/wk, ×1.96 vs site)",
+   "why": "56 accounts from 20 pages in 90 d (0.37/page/wk, ×1.92 vs site)",
    "more": "rank the winners higher (titles, depth, internal links); new only for a market with replay demand and no page"
   },
   {
@@ -685,7 +685,7 @@
   {
    "path": "/backtest-gold",
    "fam": "/backtest-<market>",
-   "accounts28": 22
+   "accounts28": 21
   },
   {
    "path": "/tools/crt-statistics",
@@ -715,15 +715,15 @@
   "demand": [
    {
     "pair": "XAUUSD",
-    "users": 559
+    "users": 556
    },
    {
     "pair": "NAS100",
-    "users": 288
+    "users": 289
    },
    {
     "pair": "EURUSD",
-    "users": 111
+    "users": 112
    },
    {
     "pair": "BTCUSD",
@@ -763,7 +763,7 @@
    },
    {
     "pair": "SOLUSD",
-    "users": 9
+    "users": 10
    },
    {
     "pair": "USOIL",
@@ -786,7 +786,7 @@
   },
   "wastedShare": 0.87,
   "aligned": false,
-  "at": "2026-11-14T08:17:51.476Z",
+  "at": "2026-11-14T09:17:50.032Z",
   "say": "87% of the last 7 days' Bing sends went to WEAK/DEAD families (210 of 242)"
  },
  "cycles": {
