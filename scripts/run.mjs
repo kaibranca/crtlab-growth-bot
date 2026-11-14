@@ -58,6 +58,15 @@ const IOF = `${D}/io.json`; let io = {}; try { io = JSON.parse(fs.readFileSync(I
 for (const x of results) { try { const t = JSON.parse(fs.readFileSync(path.join(TDIR, `${x.step}.json`), "utf8"));
   io[`${planName}/${x.step}`] = { at: x.at, reads: t.reads.filter((f) => f.startsWith("data/")), writes: t.writes.filter((f) => f.startsWith("data/")) }; } catch {} }
 fs.writeFileSync(IOF, JSON.stringify({ at: new Date().toISOString(), steps: io, report: ioReport(io) }, null, 1));
+// compact history for the /machine page (no need to pull the 30-day raw log): one row per run + the last run's log lines
+const HF = `${D}/run-history.json`; let hist = []; try { hist = JSON.parse(fs.readFileSync(HF, "utf8")).runs || []; } catch {}
+const by = (k) => results.filter((x) => x.status === k);
+hist.push({ at: results[0]?.at ?? new Date().toISOString(), plan: planName, ok: by("ok").length, fail: by("fail").length + by("timeout").length,
+  skipped: by("skipped").length, ms: results.reduce((a, x) => a + (x.ms || 0), 0), failed: [...by("fail"), ...by("timeout")].map((x) => x.step) });
+fs.writeFileSync(HF, JSON.stringify({ at: new Date().toISOString(), runs: hist.slice(-400) }));
+const LF = `${D}/last-run.json`; let last = {}; try { last = JSON.parse(fs.readFileSync(LF, "utf8")); } catch {}
+last[planName] = { at: new Date().toISOString(), lines: results.map((x) => ({ at: x.at, step: x.step, status: x.status, ms: x.ms || 0, err: x.err || null })) };
+fs.writeFileSync(LF, JSON.stringify(last));
 writePlanMap();
 
 // ── alerts + visible red ──
