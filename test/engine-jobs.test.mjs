@@ -55,3 +55,12 @@ test("buyers check: blind on money = fail, never quiet", () => {
   assert.equal(L.checkBuyers({ at: "2026-11-13T06:45Z", metrics: { "buyers.new": { level: "normal" } } }, now).state, "fail");
   assert.equal(L.checkBuyers({ at, metrics: { "buyers.new": { level: "thin" } } }, now).state, "ok");
 });
+
+test("secrets: a running step missing a required secret fails; optional and skipped steps don't", () => {
+  const opt = new Set(["GH_TOKEN"]);
+  const st = (m, last = "ok") => ({ daily: { steps: { drops: { last, missingEnv: m } } } });
+  assert.equal(L.checkSecrets(st(["STRIPE_READ_KEY"]), opt).state, "fail");
+  assert.equal(L.checkSecrets(st(["GH_TOKEN"]), opt).state, "ok");
+  assert.equal(L.checkSecrets(st(["STRIPE_READ_KEY"], "skipped"), opt).state, "ok");
+  assert.equal(L.checkSecrets(null, opt).state, "unknown");
+});

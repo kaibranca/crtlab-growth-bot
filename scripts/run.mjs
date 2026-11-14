@@ -5,7 +5,7 @@
 // A step failing `alertAfter` times in a row → one email (deduped 20 h) + the workflow run turns red (output failed=N).
 // Always exits 0 itself so the Save step still commits the records.
 import fs from "node:fs"; import os from "node:os"; import path from "node:path"; import { spawnSync } from "node:child_process";
-import { PLANS } from "./steps.mjs"; import { pickEnv, scrub, shouldSkip, health, alerting, ioReport, ownedOutputs, unwritten } from "./run-lib.mjs";
+import { PLANS } from "./steps.mjs"; import { pickEnv, scrub, shouldSkip, health, alerting, ioReport, ownedOutputs, unwritten, missingEnv } from "./run-lib.mjs";
 import { CONTRACTS } from "./contracts.mjs";
 const mtimes = (ps) => Object.fromEntries(ps.map((p) => { try { return [p, fs.statSync(p).mtimeMs]; } catch { return [p, null]; } }));
 const TRACE = path.resolve("scripts/trace-fs.mjs"), TDIR = fs.mkdtempSync(path.join(os.tmpdir(), "io-"));
@@ -40,7 +40,8 @@ for (const step of steps) {
   const missed = r.status === 0 ? unwritten(owned, before, mtimes(owned)) : [];
   const status = r.error?.code === "ETIMEDOUT" ? "timeout" : r.status === 0 && !missed.length ? "ok" : "fail";
   const err = status === "ok" ? null : missed.length ? `exit 0 but did not write ${missed.join(", ")} (owned output)` : scrub((r.stderr || r.error?.message || `exit ${r.status}`).trim().split("\n").slice(-4).join(" | "), allSecrets).slice(0, 400);
-  results.push({ at, plan: planName, step: step.name, status, ms, code: r.status, err });
+  const noEnv = missingEnv(step.env, process.env); // names only — never values
+  results.push({ at, plan: planName, step: step.name, status, ms, code: r.status, err, ...(noEnv.length ? { missingEnv: noEnv } : {}) });
   console.log(`${status === "ok" ? "✓" : "✗"} ${step.name} ${status} ${(ms / 1000).toFixed(1)}s${err ? "  " + err : ""}`);
 }
 if (dry) process.exit(0);

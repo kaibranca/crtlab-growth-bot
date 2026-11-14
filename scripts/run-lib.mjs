@@ -53,7 +53,7 @@ export function health(rows, now = Date.now()) {
     const ok7 = week.filter((r) => r.status === "ok").length;
     const last = rs.at(-1);
     out[step] = { last: last.status, at: last.at, streak, runs7: week.length, ok7, rate7: week.length ? +(ok7 / week.length).toFixed(3) : null,
-      lastError: [...done].reverse().find((r) => r.status !== "ok")?.err ?? null, ms: last.ms };
+      lastError: [...done].reverse().find((r) => r.status !== "ok")?.err ?? null, ms: last.ms, missingEnv: last.missingEnv ?? [] };
   }
   return out;
 }
@@ -91,3 +91,8 @@ export function ownedOutputs(contracts, planName, stepName) {
 export function unwritten(paths, before, after) {
   return paths.filter((p) => after[p] == null || after[p] === before[p]);
 }
+
+// SILENT SKIPS (11-14): STRIPE_READ_KEY was never set → buyers + security's Stripe guards silently never ran for weeks.
+// Every declared secret a step got EMPTY is recorded; the jobs check fails on required ones. OPTIONAL = has a fallback.
+export const OPTIONAL_ENV = new Set(["GH_TOKEN", "ALERT_FROM", "RAILWAY_PROJECT_ID" /* hardcoded fallback */, "RAILWAY_PROJECT_TOKEN" /* falls back to RAILWAY_API_TOKEN */]);
+export const missingEnv = (keys, env) => keys.filter((k) => !env[k]);

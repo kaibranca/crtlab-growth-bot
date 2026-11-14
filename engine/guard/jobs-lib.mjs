@@ -95,6 +95,16 @@ export function checkBuyers(drops, now) {
   return res("truth-buyers", "new buyers are measured", "ok", `level ${b.level}`);
 }
 
+// Every running step has the secrets it declares (names from steps.json; OPTIONAL ones have a code fallback).
+export function checkSecrets(steps, optional) {
+  if (!steps) return res("truth-secrets", "every machine has its secrets", "unknown", "no steps.json");
+  const miss = [];
+  for (const plan of ["hourly", "daily"]) for (const [n, v] of Object.entries(steps[plan]?.steps ?? {}))
+    if (v.last !== "skipped") for (const k of v.missingEnv ?? []) if (!optional.has(k)) miss.push(`${plan}/${n}: ${k}`);
+  return miss.length ? res("truth-secrets", "every machine has its secrets", "fail", `running WITHOUT ${miss.join(", ")} — those parts silently do nothing`)
+    : res("truth-secrets", "every machine has its secrets", "ok", "all declared secrets present");
+}
+
 export function summarise(checks) {
   const fail = checks.filter((c) => c.state === "fail"), unknown = checks.filter((c) => c.state === "unknown");
   return { ok: checks.length - fail.length - unknown.length, fail: fail.length, unknown: unknown.length, of: checks.length };
