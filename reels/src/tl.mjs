@@ -55,13 +55,12 @@ export function build(d) {
   const extra = []; if (d.zone) extra.push([when("zone"), d.zone.top, d.zone.bot]); if (d.bos) extra.push([when("bos"), d.bos.price, d.bos.price]);
   if (d.trade) extra.push([when("tool"), d.trade.stop, d.trade.target]); if (d.measure) extra.push([when("measure"), d.measure.from, d.measure.to]);
   if (d.level != null && d.model !== "ob" && d.model !== "fvg") extra.push([when("level"), d.level, d.level]);
-  const view = []; let th = -Infinity, tl = Infinity, ch = null, clo = null, rr = null, mxI = -1; const a = 1 - Math.exp(-1 / FPS / .5), minSp = (HI - LO) * .62;
+  const view = []; let th = -Infinity, tl = Infinity, ch = null, clo = null, rr = null, mxI = -1; const a = 1 - Math.exp(-1 / FPS / .5), minSp = (HI - LO) * .5;
   for (let f = 0; f < DUR; f++) { const tt = f / FPS;
     for (let i = 0; i <= cur; i++) { const p = prog(sch[i], tt); if (p <= 0) continue; mxI = Math.max(mxI, i); const c = partial(B[i], p); th = Math.max(th, c[1]); tl = Math.min(tl, c[2]); }
     for (const [t0, x, y] of extra) if (tt >= t0) { th = Math.max(th, x, y); tl = Math.min(tl, x, y); }
     let hi = th, lo = tl; if (!isFinite(hi)) { hi = B[0].h; lo = B[0].l; }
-    const sp = Math.max(minSp, (hi - lo) * 1.28), mid = (hi + lo) / 2; let H1 = Math.min(HI, mid + sp / 2), L1 = Math.max(LO, mid - sp / 2);
-    if (H1 - L1 < sp) { if (H1 >= HI) L1 = Math.max(LO, HI - sp); else H1 = Math.min(HI, LO + sp); }
+    const sp = Math.max(minSp, (hi - lo) * 1.28), mid = (hi + lo) / 2, H1 = mid + sp / 2, L1 = mid - sp / 2; // centred on what is printed (v14.2: no clamp to the story's range — that crammed early candles into the top third)
     if (ch == null) { ch = H1; clo = L1; } else { ch += (H1 - ch) * a; clo += (L1 - clo) * a; }
     const yH = Y(Math.max(ch, hi + (hi - lo) * .04)), yL = Y(Math.min(clo, lo - (hi - lo) * .04)); // printed candles are always inside, even mid-follow
     // time: the view holds the printed candles + 5 empty slots ahead (at least 20), widening smoothly; at the end = the whole story
