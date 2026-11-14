@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T09:20:04.996Z",
+ "updated": "2026-11-14T09:41:53.612Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 99.27,
@@ -493,6 +493,18 @@
  },
  "activity": [
   {
+   "at": "2026-11-14T09:41:46.712Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
+  },
+  {
+   "at": "2026-11-14T09:31:11.729Z",
+   "job": "reels",
+   "ok": true,
+   "text": "posted \"OB ENTRY\" (SP500) to Facebook"
+  },
+  {
    "at": "2026-11-14T09:18:12.796Z",
    "job": "watchdog",
    "ok": true,
@@ -575,12 +587,6 @@
    "job": "ai-crawl",
    "ok": true,
    "text": "793 crawler visits · OAI-SearchBot 740 · Bingbot 16 · PerplexityBot 10 · Amazonbot 10"
-  },
-  {
-   "at": "2026-11-14T06:43:31.859Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
   },
   {
    "at": "2026-11-14T06:18:10.085Z",
@@ -778,7 +784,7 @@
    "at": "2026-11-14T00:56:17.010Z",
    "job": "reels",
    "ok": true,
-   "text": "BREAKOUT \"OB ENTRY\" 6010 plays (22.4× normal) → champion formula, lock-in 7 days"
+   "text": "BREAKOUT \"OB ENTRY\" 6011 plays (22.4× normal) → champion formula, lock-in 7 days"
   },
   {
    "at": "2026-11-14T00:18:15.700Z",
@@ -965,12 +971,6 @@
    "job": "watchdog",
    "ok": true,
    "text": "18/18 checks pass · avg 155 ms"
-  },
-  {
-   "at": "2026-11-13T20:18:04.901Z",
-   "job": "shield",
-   "ok": true,
-   "text": "Cloudflare blocked 1 attack request"
   }
  ],
  "seo": {
@@ -1080,13 +1080,13 @@
   ]
  },
  "health": {
-  "at": "2026-11-14T06:43:31.859Z",
+  "at": "2026-11-14T09:41:46.712Z",
   "alerts": [],
   "checks": [
    {
     "name": "database size",
     "ok": true,
-    "note": "301 MB"
+    "note": "302 MB"
    },
    {
     "name": "signups flowing",
@@ -1106,7 +1106,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "4h old · 34.7 MB"
+    "note": "7h old · 34.7 MB"
    },
    {
     "name": "market data fresh",
@@ -1116,11 +1116,11 @@
    {
     "name": "AI radar",
     "ok": true,
-    "note": "0h ago · asked 5/5"
+    "note": "3h ago · asked 5/5"
    }
   ],
   "db": {
-   "mb": 301,
+   "mb": 302,
    "tables": [
     [
      "user_events",
@@ -1128,11 +1128,11 @@
     ],
     [
      "ui_events",
-     67
+     68
     ],
     [
      "meter_identities",
-     61
+     62
     ],
     [
      "user_stores",
@@ -1156,22 +1156,22 @@
    "home": {
     "kb": 2609,
     "scripts": 24,
-    "ttfbMs": 177
+    "ttfbMs": 408
    },
    "backtest": {
     "kb": 1448,
     "scripts": 13,
-    "ttfbMs": 269
+    "ttfbMs": 248
    },
    "chart app": {
     "kb": 2609,
     "scripts": 24,
-    "ttfbMs": 300
+    "ttfbMs": 280
    },
    "statistics": {
     "kb": 1212,
     "scripts": 14,
-    "ttfbMs": 219
+    "ttfbMs": 140
    }
   },
   "heavier": []
@@ -3894,9 +3894,9 @@
   "live": true,
   "posted7d": {
    "ig": 12,
-   "fb": 12
+   "fb": 13
   },
-  "views7d": 11444,
+  "views7d": 11446,
   "site7d": 0,
   "signups7d": 0,
   "champion": {
@@ -3908,18 +3908,12 @@
    "track": "281",
    "id": "1461633655300997",
    "plat": "fb",
-   "views": 6010,
+   "views": 6011,
    "x": 22.4,
    "from": "fb 1461633655300997",
    "at": "2026-11-14T00:56:17.010Z"
   },
   "next": [
-   {
-    "plat": "fb",
-    "at": "2026-11-14T09:21:00.000Z",
-    "title": "OB ENTRY",
-    "mk": "SP500"
-   },
    {
     "plat": "ig",
     "at": "2026-11-14T10:24:00.000Z",
@@ -3941,11 +3935,20 @@
   ],
   "last": [
    {
+    "at": "2026-11-14T09:31:11.729Z",
+    "plat": "fb",
+    "title": "OB ENTRY",
+    "mk": "SP500",
+    "views": null,
+    "site": null,
+    "link": "https://www.facebook.com/reel/1685286576524055/"
+   },
+   {
     "at": "2026-11-13T23:41:14.373Z",
     "plat": "fb",
     "title": "POV CPI DROPPED",
     "mk": "SP500",
-    "views": 264,
+    "views": 265,
     "site": 0,
     "link": "https://www.facebook.com/reel/1125049417042533/"
    },
@@ -3963,7 +3966,7 @@
     "plat": "fb",
     "title": "OB ENTRY",
     "mk": "XAGUSD",
-    "views": 6010,
+    "views": 6011,
     "site": 0,
     "link": "https://www.facebook.com/reel/1461633655300997/"
    },
@@ -3984,15 +3987,6 @@
     "views": 310,
     "site": 0,
     "link": "https://www.instagram.com/reel/DfqBsYQjcyd/"
-   },
-   {
-    "at": "2026-11-12T21:11:14.426Z",
-    "plat": "fb",
-    "title": "NY OPEN OR TRAP?",
-    "mk": "XAUUSD",
-    "views": 747,
-    "site": 0,
-    "link": "https://www.facebook.com/reel/2177046699844359/"
    }
   ]
  },
@@ -4007,7 +4001,7 @@
    "listSize": 35,
    "mode": "medium"
   },
-  "blocked24h": 824,
+  "blocked24h": 823,
   "banned7d": 35
  }
 }
