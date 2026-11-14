@@ -1,0 +1,39 @@
+{
+ "at": "2026-11-14T01:21:59.417Z",
+ "spent": [
+  {
+   "key": "fam|/news/<release>",
+   "what": "/news/<release>: 1982 pages (70% of the site) → 7 visitors, 0 accounts in 90 d",
+   "cost": 1982
+  },
+  {
+   "key": "fam|/<firm>-challenge-simulator",
+   "what": "/<firm>-challenge-simulator: 100 pages (4% of the site) → 3 visitors, 0 accounts in 90 d",
+   "cost": 100
+  },
+  {
+   "key": "fam|/economic-calendar/<x>",
+   "what": "/economic-calendar/<x>: 357 pages (13% of the site) → 3 visitors, 0 accounts in 90 d",
+   "cost": 357
+  },
+  {
+   "key": "fam|/recap/<x>",
+   "what": "/recap/<x>: 36 pages (1% of the site) → 0 visitors, 0 accounts in 90 d",
+   "cost": 36
+  }
+ ],
+ "lost": [
+  {
+   "key": "hook|cal-replay-last-1",
+   "what": "hook \"replay-last\" on /economic-calendar/<event>: superseded (every page of the family got the ReplayHook block (same offer) on 11-11 19:00 — both arms changed mid-test; no lesson counted)"
+  },
+  {
+   "key": "hook|rel-replay-last-1",
+   "what": "hook \"replay-last\" on /news/<release>: superseded (every page of the family got the ReplayHook block (same offer) on 11-11 19:00 — both arms changed mid-test; no lesson counted)"
+  }
+ ],
+ "unjudged": [],
+ "lessons": [
+  "87% of the site's pages bring no accounts. More auto pages of these kinds = more Google spam risk, not more traffic. Build pages only in families that bring accounts (/, /backtest, /backtest-<market>, concepts)."
+ ]
+}
