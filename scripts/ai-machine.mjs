@@ -216,7 +216,9 @@ const sisKeys = (p) => { const s = p.split("/").filter(Boolean);
 const sisMatch = (k, q) => (k.startsWith("/news/*/") ? /^\/news\/[^/]+\/[^/]+$/.test(q) && q.endsWith("/" + k.slice(8)) : k.startsWith("*-") ? q.split("/").length === 2 && q.endsWith(k.slice(1)) && family(q) === "/<market>-<concept>" : q.startsWith(k));
 // ECOSYSTEM MODE (scripts/core.mjs, data/machines/mode.json — learned, bounded parameters): SURGE = reach more sisters and
 // let urgent sends take more of the day; DIP = RECOVERY, the proven winners are re-sent first. Normal = the defaults.
-const MODE = (() => { try { return JSON.parse(fs.readFileSync("data/machines/mode.json", "utf8")); } catch { return { mode: "normal", params: {} }; } })();
+// 11-14 THEATRE RETIRED (ENGINE.md): mode / lock-in / executive / tuner / branch inputs were unvalidated self-made signals (surge precision 0.31,
+// lock-in stuck on for hours). Decisions use measured inputs only. Neutral constants keep the code path until the loop rewrite.
+const MODE = { mode: "normal", params: {} };
 // WORLD MODEL CONTEXT CREDIT: where Bing sends measurably pay (per family, shrunk by sample size) → that family's value ×weight
 const WCF = (() => { try { return JSON.parse(fs.readFileSync("data/world/credit.json", "utf8")).credit?.["bing-send"]?.byFamily ?? {}; } catch { return {}; } })();
 const wFam = (p) => { const s0 = p.split("/").filter(Boolean); const f = !s0.length ? "/" : s0.length === 1 ? (/-challenge-simulator$/.test(s0[0]) ? "/<firm>-sim" : /^backtest-/.test(s0[0]) ? "/backtest-<x>" : "/<page>") : `/${s0[0]}/<${s0.length > 2 ? "x/y" : "x"}>`; return Math.max(0.7, Math.min(1.5, WCF[f]?.weight ?? 1)); };
@@ -224,14 +226,14 @@ const wFam = (p) => { const s0 = p.split("/").filter(Boolean); const f = !s0.len
 // RECOMMENDATION ENGINE (recommend.mjs): pages that should win buyer questions ChatGPT answers without CRTLAB → Bing first
 const RECT = new Map(((() => { try { return JSON.parse(fs.readFileSync("data/radar/recommend.json", "utf8")).targets ?? []; } catch { return []; } })()).map((x) => [x.page, x.cluster]));
 const FCJ = new Map(((() => { try { return JSON.parse(fs.readFileSync("data/world/forecast.json", "utf8")).jumps ?? []; } catch { return []; } })()).map((x) => [x.p, x.why]));
-const LOCK = (() => { try { return JSON.parse(fs.readFileSync("data/machines/lockin.json", "utf8")); } catch { return { on: false }; } })(); // core.mjs lock-in
+const LOCK = { on: false };
 // 11-12: lock-in pushes a page only where pushing has PAID — the world model credits Bing sends per family (11-12: calendar
 // ×1.21 yes; news x/y ×0.51 no; held-out pages ×1.15 vs pushed ×0.99 overall). A family measured below ×0.95 on ≥ 5 units
 // is never "all-in"-pushed; unmeasured families still get pushed (that is how they get measured).
 const LOCK_CREDIT = (() => { try { return JSON.parse(fs.readFileSync("data/world/credit.json", "utf8")).credit?.["bing-send"]?.byFamily ?? {}; } catch { return {}; } })();
 const famRe = (k) => new RegExp("^" + k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/<([^>]+)>/g, (_, inner) => inner.split("/").map(() => "[^/]+").join("/")) + "$");
 const lockPays = (p) => { const f = Object.entries(LOCK_CREDIT).find(([k]) => famRe(k).test(p)); return !f || (f[1].units ?? 0) < 5 || (f[1].lift ?? 1) >= 0.95; };
-const EXK = (() => { try { return JSON.parse(fs.readFileSync("data/machines/executive.json", "utf8")).knobs ?? {}; } catch { return {}; } })(); // the executive's knobs
+const EXK = {};
 const MP = MODE.params ?? {}, SIS_TOP = (MODE.mode === "surge" ? (MP.sisterTop ?? 5) : 3) + (LOCK.on ? 2 : 0) + (EXK.sisterAdd ?? 0), URG_CAP = LOCK.on ? 1 : Math.min(1, (MODE.mode === "surge" ? (MP.surgeCap ?? 0.8) : KNOB("ai.urgentCapNormal", 0.6, { ladder: [0.4, 0.5, 0.6, 0.7, 0.8], owner: "bing", what: "share of the Bing quota urgent pages may take on a normal day" })) + (EXK.urgentCapAdd ?? 0));
 const recovery = new Set(MODE.mode === "dip" ? (MODE.targets ?? []) : []);
 // the hottest surges + climbers only (3 each normally, more in surge mode), so sisters never eat the whole Bing quota
@@ -240,14 +242,17 @@ const hot = [...surges.filter((x) => x.kind === "page").slice(0, SIS_TOP), ...ri
   if (keys.length) for (const q of lastmod.keys()) { if (surgePage.has(q) || risePage.has(q)) continue; const hit = keys.find(([k]) => sisMatch(k, q)); if (hit) sisterOf.set(q, hit[1]); } }
 // FOCUS BRANCHES the core built (data/machines/spawned.json): their pages ×boost while the branch is alive
 // + the TRAFFIC BRAIN's branches (data/traffic/branches.json): surge / channel / event / rank / convergence, boost 1.2–2.2
-const FOCUS = (() => { const rd = (f) => { try { return JSON.parse(fs.readFileSync(f, "utf8")).branches.filter((b) => b.state === "alive" && b.boost); } catch { return []; } };
-  return [...rd("data/traffic/branches.json").sort((a, b) => b.boost - a.boost), ...rd("data/machines/spawned.json")]; })();
+const FOCUS = [];
+
 // both engines can claim a page; the SUPER-CORE rule: the strongest claim wins, claims never stack (no runaway boosts)
 const focusMul = (p) => { let m = 1; for (const b of FOCUS) if (p === b.target || p.startsWith(b.target.endsWith("/") ? b.target : b.target + "/") || p.startsWith(b.target + "-")) m = Math.max(m, b.boost); return m; };
 const RISE_B = KNOB("ai.riseBoost", 2.5, { ladder: [1.5, 2, 2.5, 3.2, 4], owner: "rising", what: "Bing priority boost for early-traction (rising) pages" }),
   SIS_B = KNOB("ai.sisterBoost", 2, { ladder: [1.25, 1.5, 2, 2.6, 3.4], owner: "sisters", what: "Bing priority boost for sister pages of a hot page" });
-const boost0 = (p) => (surgePage.has(p) ? (MP.surgeBoost ?? 4) : risePage.has(p) ? RISE_B : sisterOf.has(p) ? SIS_B : surgeFam.has(family(p)) ? 1.5 : 1);
+const boost0 = (p) => (surgePage.has(p) ? (MP.surgeBoost ?? 2) /* measured precision 0.31 on 29 judged → small boost until proven */ : risePage.has(p) ? RISE_B : sisterOf.has(p) ? SIS_B : surgeFam.has(family(p)) ? 1.5 : 1);
 const boost = (p) => boost0(p) * focusMul(p);
+// 11-14: ten unvalidated multipliers stacked could reach ×100+ and let one noisy signal own the Bing quota. The product is
+// capped: no page is worth more than ×6 or less than ×0.2 its base value until the decision core replaces this scoring.
+const CAPMUL = (m) => Math.max(0.2, Math.min(6, m));
 // LANDING QUALITY (outcomes.mjs → data/machines/landing.json): a family whose visitors become real replayers is worth more
 // than one that is only read. mul = (family engaged-rate ÷ site rate)^w, shrunk with 20 guests of the site rate, in [0.5, 2];
 // w is a self-tuning knob — the tuner decides how much to trust it (0 = ignore).
@@ -346,7 +351,7 @@ const queue = [...lastmod.entries()].map(([p, lm]) => {
   const x = page.get(p), last = sub[p] ? Date.parse(sub[p]) : 0, ev = soon(p);
   const changed = Date.parse(lm) > last, stale = NOW - last > RESEND_D * DAY, evDue = ev && NOW - last > 2 * DAY;
   const rcmP = RECT.has(p) && NOW - last > 3 * DAY, fcP = FCJ.has(p) && NOW - last > 2 * DAY, old = bingOld(p) && NOW - last > DAY, lockP = LOCK.on && (LOCK.targets ?? []).includes(p) && lockPays(p) && NOW - last > 3 * 3.6e6, hotP = (surgePage.has(p) && NOW - last > 6 * 3.6e6) || lockP, riseP = risePage.has(p) && NOW - last > 2 * DAY, recP = recovery.has(p) && NOW - last > 2 * DAY, sis = sisterOf.has(p) && NOW - last > DAY, rad = radar[p] && NOW - last > 3 * DAY;
-  return { p, value: x.value * (ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * qualityMul(x.fam) * weekMul(x.fam) * trendMul(x.fam) * wFam(p) * worksMul(p), conf: x.conf, fam: x.fam, why: lockP ? "LOCK-IN" : hotP ? "SURGE" : rcmP ? `RECOMMEND ${RECT.get(p)}` : fcP ? `FORECAST ${FCJ.get(p)}` : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
+  return { p, value: x.value * CAPMUL((ev ? liftOf(p) : 1) * (old ? 2 : 1) * boost(p) * radarMul(p) * yieldMul(x.fam) * qualityMul(x.fam) * weekMul(x.fam) * trendMul(x.fam) * wFam(p) * worksMul(p)), conf: x.conf, fam: x.fam, why: lockP ? "LOCK-IN" : hotP ? "SURGE" : rcmP ? `RECOMMEND ${RECT.get(p)}` : fcP ? `FORECAST ${FCJ.get(p)}` : recP ? "RECOVERY" : riseP ? "RISING" : sis ? `SISTER of ${sisterOf.get(p)}` : rad && radar[p].why === "won" ? "RADAR won" : evDue ? `release ${ev}` : old ? "Bing has an old copy" : rad ? `RADAR ${radar[p].why}` : !last ? "new" : changed ? "changed" : stale ? "refresh" : null };
 }).map((q) => { // 11-13 WORKS: what brings ACCOUNTS outranks what is surging in reads. Focus pages re-sent every 3 d,
   // explore pages every 5 d; a DEAD family keeps its why but loses every urgency (a spike of reads on 0-account pages
   // must never take the quota from the pages that convert).
@@ -363,7 +368,7 @@ const exploit = [...queue].sort(rank);
 const seenFam = new Set(), explore = [];
 for (const q of [...queue].sort((a, b) => a.conf - b.conf || (Math.sin(a.p.length * 7 + NOW / DAY) - Math.sin(b.p.length * 7 + NOW / DAY)))) if (!seenFam.has(q.fam)) { seenFam.add(q.fam); explore.push({ ...q, why: q.why + " · explore" }); }
 // CURIOSITY (scripts/self.mjs): when the traffic engine's IQ stalls it explores harder — 15 % × curiosity (≤ ×1.6 → 24 %)
-const CUR = (() => { try { return Math.max(1, Math.min(1.6, JSON.parse(fs.readFileSync("data/machines/self.json", "utf8")).engines?.traffic?.curiosity ?? 1)); } catch { return 1; } })();
+const CUR = 1;
 const pick = (n) => { const nX = Math.round(n * KNOB("ai.exploreShare", 0.15, { ladder: [0.08, 0.12, 0.15, 0.2, 0.27, 0.35], owner: "ai", what: "share of Bing sends spent exploring pages the machine knows least about" }) * CUR), out = [], used = new Set();
   for (const q of exploit) { if (out.length >= n - nX) break; out.push(q); used.add(q.p); }
   for (const q of explore) { if (out.length >= n) break; if (!used.has(q.p)) { out.push(q); used.add(q.p); } }
@@ -596,7 +601,7 @@ fs.writeFileSync("data/ai/plan.json", JSON.stringify(plan, null, 1));
   // 11-12: ORDER FOLLOWS THE EXECUTIVE — conversion-bound → the pages that send accounts / that people click lead (learned
   // ×3.1 / ×3.9 sign weights); otherwise TRUE surges (world model, growth-adjusted) lead. Picks are logged daily so the world
   // model credits "listed in llms.txt" like any other action.
-  const EXC = (() => { try { return JSON.parse(fs.readFileSync("data/machines/executive.json", "utf8")).constraint; } catch { return null; } })();
+  const EXC = null;
   // 11-13 WORKS FIRST: the pages that bring real ACCOUNTS (all sources, deduped) lead llms.txt — the north star, not reads
   for (const x of (worksPlan()?.focus ?? []).slice(0, 4)) add(x.path, "winner");
   if (EXC === "conversion") { for (const x of plan.winners.slice(0, 4)) add(x.p, "winner"); }

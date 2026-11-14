@@ -27,10 +27,10 @@ export const PLANS = {
     s("cost", ["OPS_KEY", "RAILWAY_API_TOKEN", "RAILWAY_PROJECT_TOKEN", ...MAIL]),
     s("humans", DB), s("outcomes", DB),
     s("supervisor", ["GH_TOKEN", "GH_WATCH_TOKEN", ...MAIL]),
-    // META layer — kept running until the audit decides keep / merge / kill for each (AUDIT.md)
-    s("peaks"), s("fixer", ["GH_WATCH_TOKEN"]), s("world"), s("executive"), s("upgrades", ["GH_TOKEN"]), s("tuner"),
-    s("iq", ["GH_TOKEN"]), s("self"), s("core", MAIL), s("traffic-core"),
-    s("brains", [...DB, "CF_ACCOUNT_ID", "CF_API_TOKEN", "GH_TOKEN", "GH_WATCH_TOKEN"]), s("memory"),
+    // META / THEATRE — OFF 11-14 (ENGINE.md: self-scores, modes, tuner drove no measured result). Code deleted after the /machine rebuild.
+    s("peaks"), s("fixer", ["GH_WATCH_TOKEN"], { off: true }), s("world"), s("executive", [], { off: true }), s("upgrades", ["GH_TOKEN"], { off: true }), s("tuner", [], { off: true }),
+    s("iq", ["GH_TOKEN"], { off: true }), s("self", [], { off: true }), s("core", MAIL, { off: true }), s("traffic-core", [], { off: true }),
+    s("brains", [...DB, "CF_ACCOUNT_ID", "CF_API_TOKEN", "GH_TOKEN", "GH_WATCH_TOKEN"], { off: true }), s("memory", [], { off: true }),
     s("summary", [], { alertAfter: 1 }),
   ] },
   daily: { alertAfter: 1, steps: [
