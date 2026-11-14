@@ -1,5 +1,5 @@
 import { test } from "node:test"; import assert from "node:assert/strict";
-import { pickEnv, scrub, shouldSkip, health, alerting, CONFIG } from "../scripts/run-lib.mjs";
+import { pickEnv, scrub, shouldSkip, health, alerting, CONFIG, ioReport } from "../scripts/run-lib.mjs";
 import { PLANS } from "../scripts/steps.mjs";
 import fs from "node:fs";
 
@@ -63,4 +63,11 @@ test("steps: each step gets every secret its script reads (no silent blind runs)
     const missing = [...new Set(reads(s.cmd[1]))].filter((k) => SECRETISH(k) && !s.env.includes(k));
     assert.deepEqual(missing, [], `${plan} → ${s.name} reads ${missing.join(",")} but is not given it`);
   }
+});
+
+test("ioReport: flags two writers of one state file, tolerates shared logs, finds unowned inputs", () => {
+  const r = ioReport({ "h/a": { reads: ["data/x.json"], writes: ["data/s.json", "data/log.jsonl"] }, "h/b": { reads: ["data/s.json"], writes: ["data/s.json", "data/log.jsonl"] } });
+  assert.deepEqual(r.multiWriter, { "data/s.json": ["h/a", "h/b"] });
+  assert.deepEqual(Object.keys(r.sharedLog), ["data/log.jsonl"]);
+  assert.deepEqual(r.unowned, { "data/x.json": 1 });
 });

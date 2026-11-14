@@ -63,3 +63,21 @@ export function alerting(h, steps, defAfter) {
   return steps.filter((s) => h[s.name] && h[s.name].streak >= (s.alertAfter ?? defAfter))
     .map((s) => ({ step: s.name, streak: h[s.name].streak, err: h[s.name].lastError }));
 }
+
+// Data map from measured IO. multiWriter = a file two machines both write (one silently overwrites the other's truth).
+// unowned = read by a machine but written by no traced step (owner outside the runner, or dead input = machine reads stale).
+// sharedLog = append-only logs (.jsonl) with several writers are normal; JSON state with several writers is not.
+export function ioReport(io) {
+  const writers = {}, readers = {};
+  for (const [step, { reads = [], writes = [] }] of Object.entries(io)) {
+    for (const f of writes) (writers[f] ??= []).push(step);
+    for (const f of reads) (readers[f] ??= []).push(step);
+  }
+  const multi = Object.entries(writers).filter(([f, w]) => w.length > 1);
+  return {
+    files: new Set([...Object.keys(writers), ...Object.keys(readers)]).size,
+    multiWriter: Object.fromEntries(multi.filter(([f]) => !f.endsWith(".jsonl"))),
+    sharedLog: Object.fromEntries(multi.filter(([f]) => f.endsWith(".jsonl"))),
+    unowned: Object.fromEntries(Object.entries(readers).filter(([f]) => !writers[f]).map(([f, r]) => [f, r.length])),
+  };
+}

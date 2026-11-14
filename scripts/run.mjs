@@ -4,8 +4,9 @@
 // Records → data/guard/runs.jsonl (30 d) + data/guard/steps.json (health per step: streak, 7-day success rate, last error).
 // A step failing `alertAfter` times in a row → one email (deduped 20 h) + the workflow run turns red (output failed=N).
 // Always exits 0 itself so the Save step still commits the records.
-import fs from "node:fs"; import { spawnSync } from "node:child_process";
-import { PLANS } from "./steps.mjs"; import { pickEnv, scrub, shouldSkip, health, alerting } from "./run-lib.mjs";
+import fs from "node:fs"; import os from "node:os"; import path from "node:path"; import { spawnSync } from "node:child_process";
+import { PLANS } from "./steps.mjs"; import { pickEnv, scrub, shouldSkip, health, alerting, ioReport } from "./run-lib.mjs";
+const TRACE = path.resolve("scripts/trace-fs.mjs"), TDIR = fs.mkdtempSync(path.join(os.tmpdir(), "io-"));
 
 const [planName, ...rest] = process.argv.slice(2);
 const plan = PLANS[planName];
@@ -23,7 +24,8 @@ for (const step of steps) {
   if (dry) { console.log(`· ${step.name}  ${step.cmd.join(" ")}  env=[${step.env.join(",")}]  ${step.timeout}s`); results.push({ at, step: step.name, status: "ok" }); continue; }
   console.log(`::group::${step.name}`);
   const t0 = Date.now();
-  const r = spawnSync(step.cmd[0], step.cmd.slice(1), { env: pickEnv(process.env, step.env), encoding: "utf8", timeout: step.timeout * 1000, maxBuffer: 32 << 20 });
+  const env = { ...pickEnv(process.env, step.env), NODE_OPTIONS: `--import=${TRACE}`, TRACE_OUT: path.join(TDIR, `${step.name}.json`) };
+  const r = spawnSync(step.cmd[0], step.cmd.slice(1), { env, encoding: "utf8", timeout: step.timeout * 1000, maxBuffer: 32 << 20 });
   const ms = Date.now() - t0;
   process.stdout.write(scrub(r.stdout, allSecrets)); process.stderr.write(scrub(r.stderr, allSecrets));
   console.log("::endgroup::");
@@ -44,6 +46,12 @@ const h = health(rows.filter((x) => x.plan === planName));
 const SF = `${D}/steps.json`; let all = {}; try { all = JSON.parse(fs.readFileSync(SF, "utf8")); } catch {}
 all[planName] = { at: new Date().toISOString(), steps: h };
 fs.writeFileSync(SF, JSON.stringify(all, null, 1));
+
+// ── measured data map: who really reads / writes each file (layer 2 is built from this, not from guesses) ──
+const IOF = `${D}/io.json`; let io = {}; try { io = JSON.parse(fs.readFileSync(IOF, "utf8")).steps || {}; } catch {}
+for (const x of results) { try { const t = JSON.parse(fs.readFileSync(path.join(TDIR, `${x.step}.json`), "utf8"));
+  io[`${planName}/${x.step}`] = { at: x.at, reads: t.reads.filter((f) => f.startsWith("data/")), writes: t.writes.filter((f) => f.startsWith("data/")) }; } catch {} }
+fs.writeFileSync(IOF, JSON.stringify({ at: new Date().toISOString(), steps: io, report: ioReport(io) }, null, 1));
 
 // ── alerts + visible red ──
 const bad = alerting(h, steps, plan.alertAfter);
