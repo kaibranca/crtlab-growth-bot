@@ -87,6 +87,10 @@ paywall + ChatGPT reads; writes `series.json` = the ONE shared user-analytics se
 change group vs a pre-change baseline, confounds incl. Google updates, learnability, self-grade of WATCH alarms; permanent
 records) · GUARD `guard/jobs` (job done + inputs true) · GUARD `guard/rot` (slow decay: runtime creep/headroom, reliability
 drift, double runs, growth to limits, minutes) · `lib/external` (Google Search Status ranking updates) · runner OUTPUT CHECK.
+**Also (11-14 PM):** ONE decision gate `core/gate` (hands + freeze + change budget + Google rollouts; handsOn/frozen wrap it) ·
+mail router (`scripts/mailguard.mjs`: urgent now, else inbox `data/engine/inbox/<workflow>.jsonl` + ONE daily email
+`core/digest` headed by the deterministic `core/brief`) · 10 theatre machines + the LLM analyst DELETED · union merge for
+shared append-only logs (`.gitattributes`).
 **Lessons (v1 + v2 mistakes — don't repeat):**
 1. Exit 0 ≠ job done: a step that doesn't rewrite its owned output is a failure (traffic exited 0 for a day after a sitemap split).
 2. A check that can't fail is theatre; a latent bug in a rarely-hit branch hides until the day it matters (guard `n` crash).
@@ -98,6 +102,9 @@ drift, double runs, growth to limits, minutes) · `lib/external` (Google Search 
 6. Measured maps have blind spots (IO tracer can't see raw-URL readers): never kill from an incomplete map.
 7. Never trust a number that looks like a win until it is decomposed (by source, by page, by question type).
 8. Bottleneck rule: if a machine emails Kai to "check", give it the evidence to decide itself (shield reads real-user networks).
+9. Missing secrets fail SILENTLY in `if (process.env.X)` code: the runner records them; jobs fails (STRIPE_READ_KEY never existed).
+10. Shared files + `-X theirs` lose rows: one writer per file, or union merge for append-only logs.
+11. Don't build what has cons: measure first (recycle: engine state was 0.4 MB — the bulk is site content, a product call).
 
 ## 8. External tools (Kai 11-14: "CRTLAB runs on proven plugins — do the same")
 Rule: a tool earns its place by closing a real gap, staying free, pinned in a lockfile, named here with its reason.
