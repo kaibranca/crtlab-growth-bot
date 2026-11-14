@@ -47,6 +47,8 @@ export const PLANS = {
     s("traffic", [...DB, "BING_API_KEY"]),
     // v2 ENGINE (engine/, ENGINE.md §6 build-new): WATCH — weekday-adjusted drop/rise detector, backtested Aug–Nov
     s("drops", [...DB, ...MAIL, "STRIPE_READ_KEY"], { cmd: ["node", "engine/watch/drops.mjs"] }),
+    // v2 LEARN: verdict per change group (accounts after vs the normal BEFORE it), confounds, learnability, WATCH self-grade
+    s("learn", [], { cmd: ["node", "engine/learn/learn.mjs"], needs: "drops" }),
     s("summary"),
   ] },
 };

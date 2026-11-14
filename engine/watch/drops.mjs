@@ -1,7 +1,7 @@
 // engine/watch/drops.mjs — WATCH loop, step 1 (v2). Daily, after the day closes. One read-only query set, no hands.
 //   in : prod analytics (ANALYTICS_DB_URL) — new accounts + real visitors per UTC day, by source · paywall funnel (wall_events,
 //        unique non-staff people) · Stripe (STRIPE_READ_KEY, read-only) — NEW buyers = a customer's first successful charge
-//   out: data/engine/drops.json (owner: daily/drops) · ledger row + email ONLY when a metric's level CHANGES
+//   out: data/engine/drops.json + data/engine/series.json (owner: daily/drops) · ledger row + email ONLY when a metric's level CHANGES
 // Method + thresholds: drops-lib.mjs (weekday-adjusted, measured dispersion, backtested Aug–Nov 2026).
 import fs from "node:fs";
 import { evaluate, gapTest } from "./drops-lib.mjs";
@@ -70,6 +70,9 @@ metrics["buyers.new"] = buyers.err ? { level: "unknown", why: buyers.err, window
 let prev = null; try { prev = JSON.parse(fs.readFileSync(OUT, "utf8")); } catch {}
 const changed = METRICS.filter((m) => (prev?.metrics?.[m]?.level ?? "normal") !== metrics[m].level && ["drop", "watch", "rise", "normal"].includes(metrics[m].level));
 fs.mkdirSync("data/engine", { recursive: true });
+// ONE reader of user analytics, many consumers: the daily outcome series (no buyers — public repo) for LEARN and any machine
+// that needs "what did users do", so every machine uses the same definitions (real visitor, source mapping) instead of its own SQL.
+fs.writeFileSync("data/engine/series.json", JSON.stringify({ at: new Date().toISOString(), from: since, end, series }));
 const pub = { ...metrics, "buyers.new": { level: metrics["buyers.new"].level, p: metrics["buyers.new"].p ?? null, why: metrics["buyers.new"].why } }; // public repo: no buyer counts
 fs.writeFileSync(OUT, JSON.stringify({ at: new Date().toISOString(), end, method: "weekday-adjusted 4-week baseline, robust dispersion, windows 3+7 d; buyers = gap test vs the 56-day rate before the last buyer", metrics: pub }, null, 1));
 
