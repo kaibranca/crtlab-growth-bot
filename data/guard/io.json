@@ -1,15 +1,15 @@
 {
- "at": "2026-11-14T04:19:36.835Z",
+ "at": "2026-11-14T05:20:18.002Z",
  "steps": {
   "hourly/aicrawl": {
-   "at": "2026-11-14T04:17:46.522Z",
+   "at": "2026-11-14T05:17:52.977Z",
    "reads": [],
    "writes": [
     "data/aicrawl/<month>.jsonl"
    ]
   },
   "hourly/deploy-watch": {
-   "at": "2026-11-14T04:17:46.854Z",
+   "at": "2026-11-14T05:17:53.427Z",
    "reads": [
     "data/machines/humans.json",
     "data/mobile/build.txt"
@@ -20,7 +20,7 @@
    ]
   },
   "hourly/works": {
-   "at": "2026-11-14T04:17:47.372Z",
+   "at": "2026-11-14T05:17:53.999Z",
    "reads": [
     "data/ai/submitted.json",
     "data/google/plan.json",
@@ -34,7 +34,7 @@
    ]
   },
   "hourly/ai-pull": {
-   "at": "2026-11-14T04:17:49.621Z",
+   "at": "2026-11-14T05:17:58.087Z",
    "reads": [
     "data/ai/.backfill-first-touch"
    ],
@@ -44,7 +44,7 @@
    ]
   },
   "hourly/ai-eyes": {
-   "at": "2026-11-14T04:17:50.019Z",
+   "at": "2026-11-14T05:17:58.631Z",
    "reads": [
     "data/ai/plan.json",
     "data/ai/submitted.json"
@@ -56,7 +56,7 @@
    ]
   },
   "hourly/recommend": {
-   "at": "2026-11-14T04:18:01.150Z",
+   "at": "2026-11-14T05:18:10.500Z",
    "reads": [
     "data/radar/answers.jsonl",
     "data/radar/plan.json",
@@ -68,13 +68,14 @@
    ]
   },
   "hourly/ai-machine": {
-   "at": "2026-11-14T04:18:01.188Z",
+   "at": "2026-11-14T05:18:10.530Z",
    "reads": [
     "data/ai/changes.jsonl",
     "data/ai/clicks-hourly.json",
     "data/ai/clicks.json",
     "data/ai/edge.json",
     "data/ai/index.json",
+    "data/ai/surges.jsonl",
     "data/ai/truth.json",
     "data/aicrawl/<month>.jsonl",
     "data/events/upcoming.json",
@@ -97,13 +98,12 @@
     "data/ai/runs.jsonl",
     "data/ai/score.jsonl",
     "data/ai/submitted.json",
-    "data/ai/surges.jsonl",
     "data/world/llms.jsonl",
     "data/world/sends.jsonl"
    ]
   },
   "hourly/bandit": {
-   "at": "2026-11-14T04:18:03.044Z",
+   "at": "2026-11-14T05:18:11.588Z",
    "reads": [
     "data/ai/clicks.json",
     "data/aicrawl/<month>.jsonl",
@@ -114,14 +114,14 @@
    ]
   },
   "hourly/ai-truth": {
-   "at": "2026-11-14T04:18:04.160Z",
+   "at": "2026-11-14T05:18:13.296Z",
    "reads": [
     "data/ai/truth.json"
    ],
    "writes": []
   },
   "hourly/timeline": {
-   "at": "2026-11-14T04:18:04.202Z",
+   "at": "2026-11-14T05:18:13.328Z",
    "reads": [
     "data/google/sitemaps.json",
     "data/guard/status.json",
@@ -134,7 +134,7 @@
    ]
   },
   "hourly/guard": {
-   "at": "2026-11-14T04:18:04.627Z",
+   "at": "2026-11-14T05:18:13.829Z",
    "reads": [
     "data/ai",
     "data/ai/bandit.json",
@@ -224,21 +224,21 @@
    ]
   },
   "hourly/minutes": {
-   "at": "2026-11-14T04:18:04.713Z",
+   "at": "2026-11-14T05:18:13.895Z",
    "reads": [],
    "writes": [
     "data/guard/minutes.json"
    ]
   },
   "hourly/load-alert": {
-   "at": "2026-11-14T04:18:05.775Z",
+   "at": "2026-11-14T05:18:15.039Z",
    "reads": [],
    "writes": [
     "data/load/<month>.jsonl"
    ]
   },
   "hourly/shield": {
-   "at": "2026-11-14T04:18:06.094Z",
+   "at": "2026-11-14T05:18:15.447Z",
    "reads": [
     "data/ai/clicks-hourly.json",
     "data/machines/hands.json",
@@ -249,14 +249,14 @@
    ]
   },
   "hourly/watchdog": {
-   "at": "2026-11-14T04:18:07.578Z",
+   "at": "2026-11-14T05:18:16.257Z",
    "reads": [],
    "writes": [
     "data/watchdog/<month>.jsonl"
    ]
   },
   "hourly/upcoming": {
-   "at": "2026-11-14T04:18:10.386Z",
+   "at": "2026-11-14T05:18:21.442Z",
    "reads": [
     "data/events/au-cpi-<date>.json",
     "data/events/au-jobs-<date>.json",
@@ -293,7 +293,7 @@
    "writes": []
   },
   "hourly/indicators": {
-   "at": "2026-11-14T04:18:15.901Z",
+   "at": "2026-11-14T05:18:27.997Z",
    "reads": [
     "data/indicators/au-ai-group-manufacturing-index.json",
     "data/indicators/au-australia-aig-construction-index-aig-construction-index.json",
@@ -610,7 +610,6 @@
     "data/indicators/jp-bank-lending-yoy.json",
     "data/indicators/jp-broad-money.json",
     "data/indicators/jp-bsi-large-manufacturing-qoq.json",
-    "data/indicators/jp-capacity-utilization-mom.json",
     "data/indicators/jp-capital-spending-yoy.json",
     "data/indicators/jp-chain-store-sales-yoy.json",
     "data/indicators/jp-coincident-index-jp-coincident-index.json",
@@ -641,8 +640,6 @@
     "data/indicators/jp-imports-yoy.json",
     "data/indicators/jp-industrial-production-forecast-1-month-ahead.json",
     "data/indicators/jp-industrial-production-forecast-2-months-ahead.json",
-    "data/indicators/jp-industrial-production-mom.json",
-    "data/indicators/jp-industrial-production-yoy.json",
     "data/indicators/jp-inflation-rate-ex-all-food-and-energy-mom.json",
     "data/indicators/jp-inflation-rate-ex-all-food-and-energy-yoy.json",
     "data/indicators/jp-inflation-rate-ex-food-and-energy-yoy.json",
@@ -1054,10 +1051,14 @@
     "data/indicators/us-wholesale-inventories-mom.json",
     "data/indicators/us-wholesale-sales-mom.json"
    ],
-   "writes": []
+   "writes": [
+    "data/indicators/jp-capacity-utilization-mom.json",
+    "data/indicators/jp-industrial-production-mom.json",
+    "data/indicators/jp-industrial-production-yoy.json"
+   ]
   },
   "hourly/live-news": {
-   "at": "2026-11-14T04:18:19.034Z",
+   "at": "2026-11-14T05:18:31.771Z",
    "reads": [
     "data/events/index.json",
     "data/events/upcoming.json",
@@ -1066,14 +1067,14 @@
    "writes": []
   },
   "hourly/headlines": {
-   "at": "2026-11-14T04:18:19.075Z",
+   "at": "2026-11-14T05:18:31.806Z",
    "reads": [
     "data/events/headlines.json"
    ],
    "writes": []
   },
   "hourly/indexnow": {
-   "at": "2026-11-14T04:18:19.990Z",
+   "at": "2026-11-14T05:18:33.152Z",
    "reads": [],
    "writes": [
     "data/indexnow-sent.json",
@@ -1081,7 +1082,7 @@
    ]
   },
   "hourly/cost": {
-   "at": "2026-11-14T04:18:20.296Z",
+   "at": "2026-11-14T05:18:33.553Z",
    "reads": [
     "data/cost/deploys.jsonl",
     "data/cost/levers-seed.json",
@@ -1096,14 +1097,14 @@
    ]
   },
   "hourly/humans": {
-   "at": "2026-11-14T04:18:21.917Z",
+   "at": "2026-11-14T05:18:35.041Z",
    "reads": [],
    "writes": [
     "data/machines/humans.json"
    ]
   },
   "hourly/outcomes": {
-   "at": "2026-11-14T04:18:23.336Z",
+   "at": "2026-11-14T05:18:37.357Z",
    "reads": [
     "data/ai/score.jsonl",
     "data/cost/plan.json",
@@ -1121,7 +1122,7 @@
    ]
   },
   "hourly/supervisor": {
-   "at": "2026-11-14T04:18:25.219Z",
+   "at": "2026-11-14T05:18:40.462Z",
    "reads": [
     "data/ai/edge.json",
     "data/ai/lessons.json",
@@ -1134,7 +1135,6 @@
     "data/events/react/index.json",
     "data/health.json",
     "data/indexnow.jsonl",
-    "data/machines/alerted.json",
     "data/machines/ecosystem.json",
     "data/machines/ledger.jsonl",
     "data/machines/mistakes.jsonl",
@@ -1147,13 +1147,15 @@
     "data/shield.json"
    ],
    "writes": [
+    "data/machines/alerted.json",
     "data/machines/lastgreen.json",
+    "data/machines/mail.json",
     "data/machines/rhythm.json",
     "data/machines/status.json"
    ]
   },
   "hourly/peaks": {
-   "at": "2026-11-14T04:19:36.596Z",
+   "at": "2026-11-14T05:20:17.830Z",
    "reads": [
     "data/ai/clicks.json"
    ],
@@ -1162,7 +1164,7 @@
    ]
   },
   "hourly/world": {
-   "at": "2026-11-14T04:19:36.639Z",
+   "at": "2026-11-14T05:20:17.863Z",
    "reads": [
     "data/ai/clicks.json",
     "data/aicrawl/<month>.jsonl",
@@ -1173,7 +1175,7 @@
    ]
   },
   "hourly/summary": {
-   "at": "2026-11-14T04:19:36.721Z",
+   "at": "2026-11-14T05:20:17.922Z",
    "reads": [
     "data/ai/plan.json",
     "data/ai/runs.jsonl",
@@ -1221,6 +1223,7 @@
    "data/radar/plan.json": 4,
    "data/radar/questions.json": 2,
    "data/ai/changes.jsonl": 1,
+   "data/ai/surges.jsonl": 1,
    "data/ai/truth.json": 4,
    "data/events/upcoming.json": 3,
    "data/machines/hands.json": 4,
@@ -1246,7 +1249,6 @@
    "data/guard/steps.json": 1,
    "data/machines": 1,
    "data/machines/activity.json": 1,
-   "data/machines/alerted.json": 2,
    "data/machines/build-queue.json": 1,
    "data/machines/ecosystem.json": 2,
    "data/machines/experiments.json": 1,
@@ -1259,7 +1261,6 @@
    "data/machines/knob-registry.json": 1,
    "data/machines/knobs.json": 1,
    "data/machines/knowledge.json": 1,
-   "data/machines/mail.json": 1,
    "data/machines/ranks.json": 1,
    "data/machines/seen.json": 1,
    "data/machines/self.json": 1,
@@ -1624,7 +1625,6 @@
    "data/indicators/jp-bank-lending-yoy.json": 1,
    "data/indicators/jp-broad-money.json": 1,
    "data/indicators/jp-bsi-large-manufacturing-qoq.json": 1,
-   "data/indicators/jp-capacity-utilization-mom.json": 1,
    "data/indicators/jp-capital-spending-yoy.json": 1,
    "data/indicators/jp-chain-store-sales-yoy.json": 1,
    "data/indicators/jp-coincident-index-jp-coincident-index.json": 1,
@@ -1655,8 +1655,6 @@
    "data/indicators/jp-imports-yoy.json": 1,
    "data/indicators/jp-industrial-production-forecast-1-month-ahead.json": 1,
    "data/indicators/jp-industrial-production-forecast-2-months-ahead.json": 1,
-   "data/indicators/jp-industrial-production-mom.json": 1,
-   "data/indicators/jp-industrial-production-yoy.json": 1,
    "data/indicators/jp-inflation-rate-ex-all-food-and-energy-mom.json": 1,
    "data/indicators/jp-inflation-rate-ex-all-food-and-energy-yoy.json": 1,
    "data/indicators/jp-inflation-rate-ex-food-and-energy-yoy.json": 1,

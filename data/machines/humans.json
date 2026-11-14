@@ -1,21 +1,21 @@
 {
- "at": "2026-11-14T04:18:23.323Z",
+ "at": "2026-11-14T05:18:37.327Z",
  "selfCheck": {
   "devices": [
    {
     "dev": "desktop",
-    "raw24": 89,
-    "beat24": 0.494,
-    "beatNormal": 0.575,
-    "stay24": 0.303,
-    "stayNormal": 0.261
+    "raw24": 82,
+    "beat24": 0.463,
+    "beatNormal": 0.576,
+    "stay24": 0.317,
+    "stayNormal": 0.26
    },
    {
     "dev": "mobile",
-    "raw24": 28,
-    "beat24": 0.5,
-    "beatNormal": 0.353,
-    "stay24": 0.571,
+    "raw24": 27,
+    "beat24": 0.481,
+    "beatNormal": 0.354,
+    "stay24": 0.556,
     "stayNormal": 0.471
    }
   ],
@@ -27,8 +27,8 @@
   "window": "3h",
   "visitors": {
    "now": 3,
-   "normal": 4.4,
-   "ratio": 0.68,
+   "normal": 4.1,
+   "ratio": 0.72,
    "z": -0.5
   },
   "signups": {
@@ -37,46 +37,65 @@
    "ratio": 1.27,
    "z": 0.3
   },
-  "riding": []
+  "riding": [
+   {
+    "dim": "landing",
+    "seg": "home",
+    "now": 3,
+    "normal": 1.2,
+    "ratio": 2.47,
+    "z": 1.4,
+    "gain": 1.8
+   }
+  ]
  },
  "visitors": {
-  "now": 43,
-  "normal": 37.1,
-  "ratio": 1.16,
-  "z": 0.7
+  "now": 41,
+  "normal": 37.3,
+  "ratio": 1.1,
+  "z": 0.5
  },
  "rawVisitors": {
-  "now": 117,
-  "normal": 125.5,
-  "ratio": 0.93,
+  "now": 109,
+  "normal": 126.4,
+  "ratio": 0.86,
   "z": -0.1
  },
  "signups": {
   "now": 15,
-  "normal": 16.4,
+  "normal": 16.3,
   "ratio": 0.92,
   "z": -0.2
  },
  "state": "normal",
  "why": [
-  "landing /backtest pages: 4 vs ~6.8/day",
+  "landing /backtest pages: 3 vs ~6.9/day",
+  "source AI answers: 4 vs ~6.8/day",
   "source Google: 1 vs ~3.7/day",
-  "source AI answers: 5 vs ~6.7/day",
-  "landing chart: 4 vs ~5.6/day"
+  "device desktop: 26 vs ~27.8/day"
  ],
  "gainers": [
-  "source Direct: 32 vs ~23/day",
-  "landing home: 25 vs ~17.4/day",
-  "device mobile: 16 vs ~8.6/day"
+  "landing home: 26 vs ~17.4/day",
+  "source Direct: 31 vs ~23/day",
+  "device mobile: 15 vs ~8.6/day"
  ],
  "segments": [
   {
    "dim": "landing",
    "seg": "/backtest pages",
+   "now": 3,
+   "normal": 6.9,
+   "ratio": 0.44,
+   "z": -1,
+   "gap": -3.9
+  },
+  {
+   "dim": "source",
+   "seg": "AI answers",
    "now": 4,
    "normal": 6.8,
    "ratio": 0.59,
-   "z": -0.7,
+   "z": -1.2,
    "gap": -2.8
   },
   {
@@ -85,17 +104,17 @@
    "now": 1,
    "normal": 3.7,
    "ratio": 0.27,
-   "z": -1.2,
+   "z": -1.1,
    "gap": -2.7
   },
   {
-   "dim": "source",
-   "seg": "AI answers",
-   "now": 5,
-   "normal": 6.7,
-   "ratio": 0.74,
-   "z": -0.7,
-   "gap": -1.7
+   "dim": "device",
+   "seg": "desktop",
+   "now": 26,
+   "normal": 27.8,
+   "ratio": 0.94,
+   "z": -0.2,
+   "gap": -1.8
   },
   {
    "dim": "landing",
@@ -116,15 +135,6 @@
    "gap": -0.8
   },
   {
-   "dim": "device",
-   "seg": "desktop",
-   "now": 27,
-   "normal": 27.7,
-   "ratio": 0.97,
-   "z": -0.1,
-   "gap": -0.7
-  },
-  {
    "dim": "landing",
    "seg": "other pages",
    "now": 3,
@@ -143,49 +153,49 @@
    "gap": -0.6
   },
   {
+   "dim": "country",
+   "seg": "IN",
+   "now": 6,
+   "normal": 5.7,
+   "ratio": 1.05,
+   "z": 0.1,
+   "gap": 0.3
+  },
+  {
    "dim": "source",
    "seg": "Bing",
    "now": 3,
-   "normal": 2.5,
-   "ratio": 1.2,
-   "z": 0.3,
-   "gap": 0.5
-  },
-  {
-   "dim": "country",
-   "seg": "IN",
-   "now": 7,
-   "normal": 5.6,
-   "ratio": 1.24,
-   "z": 0.4,
-   "gap": 1.4
+   "normal": 2.6,
+   "ratio": 1.17,
+   "z": 0.2,
+   "gap": 0.4
   },
   {
    "dim": "device",
    "seg": "mobile",
-   "now": 16,
+   "now": 15,
    "normal": 8.6,
-   "ratio": 1.87,
-   "z": 2.2,
-   "gap": 7.4
-  },
-  {
-   "dim": "landing",
-   "seg": "home",
-   "now": 25,
-   "normal": 17.4,
-   "ratio": 1.43,
-   "z": 1.2,
-   "gap": 7.6
+   "ratio": 1.74,
+   "z": 1.7,
+   "gap": 6.4
   },
   {
    "dim": "source",
    "seg": "Direct",
-   "now": 32,
+   "now": 31,
    "normal": 23,
-   "ratio": 1.39,
+   "ratio": 1.35,
    "z": 1.5,
-   "gap": 9
+   "gap": 8
+  },
+  {
+   "dim": "landing",
+   "seg": "home",
+   "now": 26,
+   "normal": 17.4,
+   "ratio": 1.5,
+   "z": 1.5,
+   "gap": 8.6
   }
  ]
 }
