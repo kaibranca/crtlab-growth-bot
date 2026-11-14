@@ -75,9 +75,29 @@ Scaling multiplies everything, the bad included, so the constraints live in the 
 1. Measured data map (`io.json`) → one writer per state file, owners for unowned inputs
 2. Hands gate on every remaining production hand: Bing / IndexNow sends, sitemap submit, reels post, emails, cron worker
 3. `engine/` loops, fresh: Guard (incl. cost) → Data → Search+AI → Conversion → Social; delete each replaced script
+   (started 11-14: WATCH, LEARN, GUARD jobs+rot — next: rebuild the AI analyst on v2 files with "no causal claim without a
+   LEARN verdict"; map external readers before deleting steps)
 4. Decision core with real statistics (§3)
 5. /machine rebuilt as a plain dashboard on the new data (site, deploy window, admin page)
 6. Delete theatre code (already OFF 11-14)
+
+## 7b. v2 so far + lessons (11-14) — read before building; each version must learn from the last
+**Built (engine/):** WATCH `watch/drops` (weekday-adjusted levels + WHERE by landing page + buyers gap test from Stripe +
+paywall + ChatGPT reads; writes `series.json` = the ONE shared user-analytics series) · LEARN `learn/learn` (verdict per
+change group vs a pre-change baseline, confounds incl. Google updates, learnability, self-grade of WATCH alarms; permanent
+records) · GUARD `guard/jobs` (job done + inputs true) · GUARD `guard/rot` (slow decay: runtime creep/headroom, reliability
+drift, double runs, growth to limits, minutes) · `lib/external` (Google Search Status ranking updates) · runner OUTPUT CHECK.
+**Lessons (v1 + v2 mistakes — don't repeat):**
+1. Exit 0 ≠ job done: a step that doesn't rewrite its owned output is a failure (traffic exited 0 for a day after a sitemap split).
+2. A check that can't fail is theatre; a latent bug in a rarely-hit branch hides until the day it matters (guard `n` crash).
+3. Truth of inputs before decisions: attribution was ~67% blind for 40 days (render-order bug); the radar's prior leaked
+   brand answers into every cluster (fake 8× "win"). Reconcile every input with an independent source.
+4. Learnability first: ~300 traffic-facing commits on 75 of ~136 days → no change since July was ever judgeable alone.
+   Space traffic changes (≥ 7 d apart) or nothing can be learned. Outside updates (Google core/spam) confound too.
+5. Baselines from BEFORE the change only; a short dip must not confirm its own alarm; the rate before a gap, not during it.
+6. Measured maps have blind spots (IO tracer can't see raw-URL readers): never kill from an incomplete map.
+7. Never trust a number that looks like a win until it is decomposed (by source, by page, by question type).
+8. Bottleneck rule: if a machine emails Kai to "check", give it the evidence to decide itself (shield reads real-user networks).
 
 ## 8. External tools (Kai 11-14: "CRTLAB runs on proven plugins — do the same")
 Rule: a tool earns its place by closing a real gap, staying free, pinned in a lockfile, named here with its reason.
