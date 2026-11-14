@@ -50,13 +50,17 @@ if (!inv.some((x) => x.day === today)) {
   if (y && row.main != null && Math.abs(row.main - y.main) > y.main * .1) alerts.push([`guard-sitemap-${today}`, `GUARD: main sitemap moved ${y.main} → ${row.main} URLs in a day. Sitemap churn confuses Google — check which machine did it.`]);
   if (w && tot(row) - tot(w) > 150) alerts.push([`guard-pages-${today}`, `GUARD: ${tot(row) - tot(w)} new URLs in 7 days (${tot(w)} → ${tot(row)}). Mass auto pages = Google scaled-content risk.`]);
 }
-// ── broken files: a machine file that doesn't parse silently switches its readers off (11-14: values.json was invalid for 4 h —
-// the AI analyst read NO values). Every JSON the machines read is checked hourly; a broken one emails at once.
-const broken = [];
+// ── data contracts (layer 2): every file decisions depend on is checked hourly for exists · parses · shape · fresh.
+// Any other machine JSON is at least parse-checked (11-14: values.json was broken 4 h and the analyst read NO values).
+const { check } = await import("./store.mjs"), { CONTRACTS } = await import("./contracts.mjs");
+const contracts = Object.fromEntries(CONTRACTS.map((c) => { const r = check(c); return [c.name, { kind: r.kind, detail: r.detail || null, ageH: r.ageH != null ? +r.ageH.toFixed(1) : null }]; }));
+const badC = Object.entries(contracts).filter(([, r]) => r.kind !== "ok" && !(n === "freeze" && r.kind === "missing"));
+for (const [n, r] of badC) alerts.push([`contract-${n}-${r.kind}`, `GUARD: data contract "${n}" is ${r.kind.toUpperCase()}${r.detail ? " (" + r.detail + ")" : ""}. Machines reading it must not decide from it until fixed.`]);
+const contracted = new Set(CONTRACTS.map((c) => c.path)), broken = [];
 for (const dir of ["data/machines", "data/ai", "data/works", "data/reels", "data/guard", "data/radar", "data/google"]) { if (!fs.existsSync(dir)) continue;
-  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith(".json"))) { try { JSON.parse(fs.readFileSync(`${dir}/${f}`, "utf8")); } catch (e) { broken.push(`${dir}/${f}`); } } }
+  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith(".json") && !contracted.has(`${dir}/${x}`))) { try { JSON.parse(fs.readFileSync(`${dir}/${f}`, "utf8")); } catch { broken.push(`${dir}/${f}`); } } }
 if (broken.length) alerts.push([`guard-broken-${broken.join(",").slice(0, 80)}`, `GUARD: ${broken.length} machine file(s) are BROKEN JSON — every machine reading them is running blind: ${broken.join(", ")}`]);
-const st = { at: new Date().toISOString(), budget: { used: spend.length, of: BUDGET, days: BUDGET_DAYS, changes: spend.slice(-8), llmsRotations: changes.length - spend.length }, frozen: frozenNow ? fz.until : null, inventory: inv.at(-1) || null, broken, alerts: alerts.map((a) => a[1]) };
+const st = { at: new Date().toISOString(), budget: { used: spend.length, of: BUDGET, days: BUDGET_DAYS, changes: spend.slice(-8), llmsRotations: changes.length - spend.length }, frozen: frozenNow ? fz.until : null, inventory: inv.at(-1) || null, contracts, broken, alerts: alerts.map((a) => a[1]) };
 fs.writeFileSync(`${D}/status.json`, JSON.stringify(st, null, 1));
 console.log("guard:", JSON.stringify(st.budget), "frozen", st.frozen, "inventory", JSON.stringify(st.inventory));
 if (alerts.length) { try { await (await import("../reels/engine/alert.mjs")).send(alerts, "CRTLAB guard"); } catch (e) { console.log(String(e).slice(0, 120)); } }

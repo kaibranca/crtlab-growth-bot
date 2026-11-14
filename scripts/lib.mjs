@@ -1,10 +1,16 @@
 import "./mailguard.mjs"; // every bot mail under one day budget (Resend free 100/day is shared with the site)
 // shared helpers for the growth bot jobs (Node 20, no dependencies)
-import fs from "node:fs";
+import fs from "node:fs"; import { check } from "./store.mjs"; import { C } from "./contracts.mjs";
 export const SITE = "https://crtlab.pro";
 // TRAFFIC FREEZE (11-14, Kai: "make sure all machines don't make edits that confuse / stall anything traffic-wise"): while
 // data/machines/freeze.json is active, machines with hands on landing pages / sitemap / llms.txt HOLD their last state.
-export const frozen = (hold) => { try { const f = JSON.parse(fs.readFileSync("data/machines/freeze.json", "utf8")); return Date.now() < Date.parse(f.until) && (!hold || hold in (f.holds || {})); } catch { return false; } };
+// FAILS CLOSED (11-14): a broken / wrong-shape freeze file means HOLD (the old version returned false = every machine
+// un-frozen). Only a missing file means no freeze. The guard alerts on the broken file within the hour.
+export const frozen = (hold, r = check(C.freeze)) => {
+  if (r.kind === "missing") return false;
+  if (r.kind !== "ok") return true;
+  return Date.now() < Date.parse(r.data.until) && (!hold || hold in r.data.holds);
+};
 export const now = () => new Date();
 export const month = (d = now()) => d.toISOString().slice(0, 7);
 export const append = (file, obj) => { fs.mkdirSync(file.split("/").slice(0, -1).join("/"), { recursive: true }); fs.appendFileSync(file, JSON.stringify(obj) + "\n"); };
