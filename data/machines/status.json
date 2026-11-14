@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T11:20:15.295Z",
+ "at": "2026-11-14T12:19:53.310Z",
  "ok": 66,
  "total": 66,
  "hurting": [
@@ -21,9 +21,9 @@
    "learnedH": 1,
    "kpi": {
     "label": "AI clicks / week",
-    "now": 45,
-    "before": 39,
-    "change": 0.15
+    "now": 38,
+    "before": 40,
+    "change": -0.05
    }
   },
   {
@@ -35,9 +35,9 @@
    "learnedH": 1,
    "kpi": {
     "label": "AI accounts / week",
-    "now": 23,
-    "before": 30,
-    "change": -0.23
+    "now": 16,
+    "before": 34,
+    "change": -0.53
    }
   },
   {
@@ -53,7 +53,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 2,
+   "lastRunH": 3,
    "everyH": 6,
    "learnedH": 6,
    "kpi": {
@@ -66,7 +66,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 3.3,
+   "lastRunH": 4.3,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -78,7 +78,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 4.6,
+   "lastRunH": 5.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": null
@@ -87,7 +87,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 4.6,
+   "lastRunH": 5.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -99,7 +99,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 4.6,
+   "lastRunH": 5.6,
    "everyH": 24,
    "learnedH": 2.93,
    "kpi": null
@@ -108,7 +108,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 4.6,
+   "lastRunH": 5.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -120,7 +120,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 1.6,
+   "lastRunH": 2.6,
    "everyH": 3,
    "learnedH": 3,
    "kpi": null
@@ -138,7 +138,7 @@
    "id": "indexnow",
    "name": "IndexNow",
    "state": "ok",
-   "lastRunH": 0,
+   "lastRunH": 1,
    "everyH": 2.7,
    "learnedH": 2.66,
    "kpi": null
@@ -907,13 +907,7 @@
    "move": "climbing",
    "what": "/news/ppi-retail-sales-claims-2026-10-15",
    "why": "129 reads in 3 days vs ~2",
-   "z": 89.7
-  },
-  {
-   "move": "surge",
-   "what": "/news/ppi-retail-sales-claims-2026-10-15",
-   "why": "114 AI reads in 24 h vs ~1.8/day",
-   "z": 84.5
+   "z": 89.9
   },
   {
    "move": "climbing",
@@ -928,22 +922,10 @@
    "z": 62.3
   },
   {
-   "move": "surge",
-   "what": "/news/ppi-claims-2026-09-10",
-   "why": "58 AI reads in 24 h vs ~0.9/day",
-   "z": 60.8
-  },
-  {
    "move": "climbing",
    "what": "/news/claims/gold",
    "why": "58 reads in 3 days vs ~0.9",
    "z": 60.2
-  },
-  {
-   "move": "climbing",
-   "what": "/tools/position-size-calculator",
-   "why": "55 reads in 3 days vs ~0.9",
-   "z": 57
   },
   {
    "move": "climbing",
@@ -952,22 +934,40 @@
    "z": 57
   },
   {
-   "move": "surge",
-   "what": "/news/ppi/gold",
-   "why": "115 AI reads in 24 h vs ~6.1/day",
-   "z": 44.1
-  },
-  {
    "move": "climbing",
    "what": "/news/ppi/gold",
-   "why": "129 reads in 3 days vs ~17.7",
-   "z": 26.4
+   "why": "128 reads in 3 days vs ~18",
+   "z": 26
   },
   {
    "move": "climbing",
    "what": "/economic-calendar/us-ppi-mom",
-   "why": "54 reads in 3 days vs ~4.9",
+   "why": "54 reads in 3 days vs ~4.8",
    "z": 22.3
+  },
+  {
+   "move": "climbing",
+   "what": "/news/ppi",
+   "why": "22 reads in 3 days vs ~1.1",
+   "z": 19.5
+  },
+  {
+   "move": "climbing",
+   "what": "/economic-calendar/us-core-ppi-mom",
+   "why": "26 reads in 3 days vs ~2.9",
+   "z": 13.7
+  },
+  {
+   "move": "climbing",
+   "what": "/news/ppi-2026-07-15",
+   "why": "12 reads in 3 days vs ~0.9",
+   "z": 11.7
+  },
+  {
+   "move": "climbing",
+   "what": "/news/ppi-2026-05-13",
+   "why": "12 reads in 3 days vs ~0.9",
+   "z": 11.7
   }
  ],
  "ledger": [

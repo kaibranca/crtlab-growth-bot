@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T11:17:57.635Z",
+ "at": "2026-11-14T12:17:50.459Z",
  "northStar": {
   "metric": "accounts / week (worth: account 1, replayed +0.5, paid +10)",
   "now": 138,
@@ -177,9 +177,9 @@
     "v": 138
    }
   ],
-  "last24": 23,
+  "last24": 21,
   "realVisitorShare": 0.61,
-  "botRowsDropped": 2863,
+  "botRowsDropped": 2864,
   "perDay": 20,
   "sd": 11.2,
   "floor": 8.8,
@@ -189,7 +189,7 @@
   "today": 12,
   "zeroDays28": 0,
   "bySource28": {
-   "direct": 332,
+   "direct": 329,
    "chatgpt": 129,
    "google": 31,
    "search": 18,
@@ -205,7 +205,7 @@
    "path": "/backtest",
    "fam": "/backtest",
    "acc28": 87,
-   "v28": 243,
+   "v28": 241,
    "rate": 27.67,
    "mult": 1.56
   },
@@ -213,7 +213,7 @@
    "path": "/backtest-gold",
    "fam": "/backtest-<market>",
    "acc28": 21,
-   "v28": 114,
+   "v28": 112,
    "rate": 5.29,
    "mult": 3.25
   },
@@ -244,15 +244,15 @@
  ],
  "explore": [
   {
-   "path": "/market-structure-backtester",
+   "path": "/liquidity-sweep-backtester",
    "fam": "/<concept>-backtesting",
    "acc28": 1,
-   "v28": 2,
-   "conf": 0.17,
+   "v28": 1,
+   "conf": 0.09,
    "mult": 1.45
   },
   {
-   "path": "/liquidity-sweep-backtester",
+   "path": "/ict-silver-bullet-backtester",
    "fam": "/<concept>-backtesting",
    "acc28": 1,
    "v28": 1,
@@ -265,12 +265,12 @@
    "fam": "/",
    "pages": 1,
    "landed": 1,
-   "visitors90": 3024,
+   "visitors90": 3028,
    "accounts90": 963,
-   "accounts28": 287,
-   "accounts7": 48,
+   "accounts28": 284,
+   "accounts7": 46,
    "paid90": 6,
-   "worthPerPageWeek": 72.42,
+   "worthPerPageWeek": 71.837,
    "mult": 3,
    "tier": "WIN",
    "sources90": {
@@ -621,7 +621,7 @@
   "/backtest-<market>": 1.92,
   "/backtest": 3,
   "/tools/<x>": 0.9,
-  "(chart)": 2.56,
+  "(chart)": 2.48,
   "/reference/<x>": 0.4,
   "/blog/<x>": 0.4,
   "/<page>": 0.44,
@@ -641,8 +641,8 @@
   "/footprint-chart-backtesting": 3.25,
   "/tools/crt-statistics": 3.25,
   "/backtest-nas100": 1.56,
-  "/market-structure-backtester": 1.45,
-  "/liquidity-sweep-backtester": 1.45
+  "/liquidity-sweep-backtester": 1.45,
+  "/ict-silver-bullet-backtester": 1.45
  },
  "queue": [
   {
@@ -735,7 +735,7 @@
    },
    {
     "pair": "GBPUSD",
-    "users": 26
+    "users": 27
    },
    {
     "pair": "USDJPY",
@@ -786,7 +786,7 @@
   },
   "wastedShare": 0.87,
   "aligned": false,
-  "at": "2026-11-14T11:17:57.635Z",
+  "at": "2026-11-14T12:17:50.459Z",
   "say": "87% of the last 7 days' Bing sends went to WEAK/DEAD families (210 of 242)"
  },
  "cycles": {
