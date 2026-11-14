@@ -3,7 +3,7 @@ on:
   # was schedule 40 6 * * *: now started by the Cloudflare cron worker (cron-worker/worker.js). GitHub's own schedule drops runs and doubled them (11-09).
   workflow_dispatch:
     inputs:
-      only: { description: "run only these steps (comma list, e.g. drops,learn) — no radar/device-qa/analyst dispatch", required: false, default: "" }
+      only: { description: "run only these steps (comma list, e.g. drops,learn) — no radar/device-qa dispatch", required: false, default: "" }
 concurrency: { group: data, cancel-in-progress: false }
 permissions: { contents: write, actions: write }
 jobs:
@@ -36,10 +36,6 @@ jobs:
       - name: Save
         if: always()
         run: bash scripts/push.sh "daily $(date -u +%FT%H:%M)"
-      - name: AI analyst (after this run's data is pushed, so it reads today's numbers)
-        if: ${{ !inputs.only }}
-        continue-on-error: true  # fire-and-forget trigger; the dispatched workflow reports its own result
-        run: 'curl -sf -o /dev/null -w "analyst.yml dispatch %{http_code}\n" -X POST -H "Authorization: Bearer ${{ github.token }}" -H "Accept: application/vnd.github+json" https://api.github.com/repos/${{ github.repository }}/actions/workflows/analyst.yml/dispatches -d "{\"ref\":\"main\"}"'
       - name: Red if a machine keeps failing
         if: steps.run.outputs.failed != '0'
         run: echo "::error::${{ steps.run.outputs.failed }} machine(s) failing repeatedly — see the step table" && exit 1

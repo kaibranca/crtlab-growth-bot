@@ -41,7 +41,7 @@ for (const step of steps) {
   const status = r.error?.code === "ETIMEDOUT" ? "timeout" : r.status === 0 && !missed.length ? "ok" : "fail";
   const err = status === "ok" ? null : missed.length ? `exit 0 but did not write ${missed.join(", ")} (owned output)` : scrub((r.stderr || r.error?.message || `exit ${r.status}`).trim().split("\n").slice(-4).join(" | "), allSecrets).slice(0, 400);
   const noEnv = missingEnv(step.env, process.env); // names only — never values
-  results.push({ at, plan: planName, step: step.name, status, ms, code: r.status, err, ...(noEnv.length ? { missingEnv: noEnv } : {}) });
+  results.push({ at, plan: planName, step: step.name, status, ms, code: r.status, err, ...(noEnv.length ? { missingEnv: noEnv } : {}), ...(only ? { partial: true } : {}) }); // partial = a manual --only run
   console.log(`${status === "ok" ? "✓" : "✗"} ${step.name} ${status} ${(ms / 1000).toFixed(1)}s${err ? "  " + err : ""}`);
 }
 if (dry) process.exit(0);

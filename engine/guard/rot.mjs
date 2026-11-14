@@ -18,7 +18,7 @@ const prev = J(OUT) ?? {};
 const timeouts = {}; for (const [p, v] of Object.entries(PLANS)) for (const s of v.steps) timeouts[`${p}/${s.name}`] = s.timeout;
 const checks = [...R.durationRot(rows, timeouts, NOW), ...R.reliabilityRot(rows, NOW)];
 for (const plan of Object.keys(PLANS)) { // a run = consecutive rows of one plan; a new run starts after a > 10 min gap
-  const rs = rows.filter((r) => r.plan === plan).sort((a, b) => a.at.localeCompare(b.at)), starts = [];
+  const rs = rows.filter((r) => r.plan === plan && !r.partial).sort((a, b) => a.at.localeCompare(b.at)), starts = []; // manual --only runs aren't double dispatch
   for (let i = 0; i < rs.length; i++) if (!i || Date.parse(rs[i].at) - Date.parse(rs[i - 1].at) > 10 * 6e4) starts.push(rs[i].at);
   const d = R.doubleRuns(starts, plan, NOW, { slotMin: plan === "daily" ? 600 : 50 }); if (d) checks.push(d);
 }
