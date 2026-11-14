@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T03:30:00.103Z",
+ "updated": "2026-11-14T03:41:58.152Z",
  "watchdog": {
   "up24h": 100,
   "up7d": 99.28,
@@ -492,6 +492,12 @@
  },
  "activity": [
   {
+   "at": "2026-11-14T03:41:47.726Z",
+   "job": "health",
+   "ok": true,
+   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
+  },
+  {
    "at": "2026-11-14T03:28:15.957Z",
    "job": "watchdog",
    "ok": true,
@@ -615,13 +621,7 @@
    "at": "2026-11-14T00:56:17.010Z",
    "job": "reels",
    "ok": true,
-   "text": "BREAKOUT \"OB ENTRY\" 5960 plays (22.2× normal) → champion formula, lock-in 7 days"
-  },
-  {
-   "at": "2026-11-14T00:41:45.837Z",
-   "job": "health",
-   "ok": true,
-   "text": "✓ database size · ✓ signups flowing · ✓ visitors vs last week · ✓ payments · ✓ nightly backup · ✓ market data fresh · ✓ AI radar"
+   "text": "BREAKOUT \"OB ENTRY\" 5963 plays (22.3× normal) → champion formula, lock-in 7 days"
   },
   {
    "at": "2026-11-14T00:18:15.700Z",
@@ -1079,7 +1079,7 @@
   ]
  },
  "health": {
-  "at": "2026-11-14T00:41:45.837Z",
+  "at": "2026-11-14T03:41:47.726Z",
   "alerts": [],
   "checks": [
    {
@@ -1105,7 +1105,7 @@
    {
     "name": "nightly backup",
     "ok": true,
-    "note": "22h old · 34.1 MB"
+    "note": "1h old · 34.7 MB"
    },
    {
     "name": "market data fresh",
@@ -1115,7 +1115,7 @@
    {
     "name": "AI radar",
     "ok": true,
-    "note": "18h ago · asked 6/6"
+    "note": "21h ago · asked 6/6"
    }
   ],
   "db": {
@@ -1144,8 +1144,8 @@
    ]
   },
   "backup": {
-   "at": "2026-11-13T03:02:03.824Z",
-   "mb": 34.1,
+   "at": "2026-11-14T03:03:49.840Z",
+   "mb": 34.7,
    "count": 30
   },
   "data": {
@@ -1155,22 +1155,22 @@
    "home": {
     "kb": 2609,
     "scripts": 24,
-    "ttfbMs": 161
+    "ttfbMs": 208
    },
    "backtest": {
-    "kb": 1449,
+    "kb": 1448,
     "scripts": 13,
-    "ttfbMs": 192
+    "ttfbMs": 308
    },
    "chart app": {
     "kb": 2609,
     "scripts": 24,
-    "ttfbMs": 363
+    "ttfbMs": 593
    },
    "statistics": {
-    "kb": 1213,
+    "kb": 1212,
     "scripts": 14,
-    "ttfbMs": 157
+    "ttfbMs": 217
    }
   },
   "heavier": []
@@ -3657,7 +3657,7 @@
    ]
   },
   "devices": {
-   "at": "2026-11-14T03:18:19.057Z",
+   "at": "2026-11-14T03:28:19.129Z",
    "checked": 24,
    "confirmed": [
     {
@@ -3877,7 +3877,7 @@
    "ig": 12,
    "fb": 12
   },
-  "views7d": 11360,
+  "views7d": 11371,
   "site7d": 0,
   "signups7d": 0,
   "champion": {
@@ -3889,8 +3889,8 @@
    "track": "281",
    "id": "1461633655300997",
    "plat": "fb",
-   "views": 5960,
-   "x": 22.2,
+   "views": 5963,
+   "x": 22.3,
    "from": "fb 1461633655300997",
    "at": "2026-11-14T00:56:17.010Z"
   },
@@ -3926,7 +3926,7 @@
     "plat": "fb",
     "title": "POV CPI DROPPED",
     "mk": "SP500",
-    "views": 256,
+    "views": 258,
     "site": 0,
     "link": "https://www.facebook.com/reel/1125049417042533/"
    },
@@ -3944,7 +3944,7 @@
     "plat": "fb",
     "title": "OB ENTRY",
     "mk": "XAGUSD",
-    "views": 5960,
+    "views": 5963,
     "site": 0,
     "link": "https://www.facebook.com/reel/1461633655300997/"
    },
@@ -3971,7 +3971,7 @@
     "plat": "fb",
     "title": "NY OPEN OR TRAP?",
     "mk": "XAUUSD",
-    "views": 723,
+    "views": 729,
     "site": 0,
     "link": "https://www.facebook.com/reel/2177046699844359/"
    }
