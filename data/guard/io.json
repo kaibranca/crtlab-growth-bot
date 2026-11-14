@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T15:20:03.913Z",
+ "at": "2026-11-14T15:21:56.330Z",
  "steps": {
   "hourly/aicrawl": {
    "at": "2026-11-14T15:17:48.020Z",
@@ -2555,10 +2555,31 @@
     "data/engine/rot.json",
     "data/machines/ledger.jsonl"
    ]
+  },
+  "daily/drops": {
+   "at": "2026-11-14T15:21:52.775Z",
+   "reads": [
+    "data/aicrawl",
+    "data/aicrawl/<month>.jsonl"
+   ],
+   "writes": [
+    "data/engine/drops.json",
+    "data/engine/series.json"
+   ]
+  },
+  "daily/learn": {
+   "at": "2026-11-14T15:21:55.903Z",
+   "reads": [
+    "data/engine/series.json",
+    "data/machines/timeline.json"
+   ],
+   "writes": [
+    "data/engine/learn.json"
+   ]
   }
  },
  "report": {
-  "files": 1145,
+  "files": 1146,
   "multiWriter": {
    "data/reels/alerted.json": [
     "hourly/guard",
@@ -2598,9 +2619,6 @@
    "data/ai": 1,
    "data/ai/llms.json": 2,
    "data/deploys.json": 1,
-   "data/engine/drops.json": 3,
-   "data/engine/learn.json": 1,
-   "data/engine/series.json": 1,
    "data/google": 1,
    "data/guard": 1,
    "data/guard/inventory.jsonl": 2,
@@ -3651,7 +3669,8 @@
    "data/traffic/modes.jsonl": 1,
    "data/traffic/pages.json": 1,
    "data/traffic/redirects.json": 1,
-   "data/traffic/score.jsonl": 1
+   "data/traffic/score.jsonl": 1,
+   "data/aicrawl": 1
   }
  }
 }

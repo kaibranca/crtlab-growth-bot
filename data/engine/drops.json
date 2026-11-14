@@ -1,7 +1,71 @@
 {
- "at": "2026-11-14T13:09:15.131Z",
+ "at": "2026-11-14T15:21:55.850Z",
  "end": "2026-11-13",
- "method": "weekday-adjusted 4-week baseline, robust dispersion, windows 3+7 d",
+ "method": "weekday-adjusted 4-week baseline, robust dispersion, windows 3+7 d; buyers = gap test vs the 56-day rate before the last buyer",
+ "google": [
+  {
+   "begin": "2026-11-10T18:06:00+00:00",
+   "end": null,
+   "what": "November 2026 core update"
+  }
+ ],
+ "why": {
+  "accounts.chatgpt": {
+   "net": -73.5,
+   "losers": [
+    {
+     "page": "/",
+     "recent": 8,
+     "expected": 51.5,
+     "delta": -43.5,
+     "ratio": 0.16,
+     "share": 0.59
+    },
+    {
+     "page": "/backtest",
+     "recent": 13,
+     "expected": 54.5,
+     "delta": -41.5,
+     "ratio": 0.24,
+     "share": 0.56
+    },
+    {
+     "page": "/auth/done",
+     "recent": 0,
+     "expected": 3.5,
+     "delta": -3.5,
+     "ratio": 0,
+     "share": 0.05
+    }
+   ],
+   "gainers": [
+    {
+     "page": "/footprint-chart-backtesting",
+     "recent": 7,
+     "expected": 0,
+     "delta": 7,
+     "ratio": null,
+     "share": -0.1
+    },
+    {
+     "page": "(31 small pages)",
+     "recent": 19,
+     "expected": 13.5,
+     "delta": 5.5,
+     "ratio": 1.41,
+     "share": -0.07
+    },
+    {
+     "page": "/tools/crt-statistics",
+     "recent": 3,
+     "expected": 0.5,
+     "delta": 2.5,
+     "ratio": 6,
+     "share": -0.03
+    }
+   ]
+  }
+ },
  "metrics": {
   "accounts": {
    "level": "normal",
@@ -119,7 +183,7 @@
   },
   "visitors": {
    "level": "watch",
-   "phi": 44.29,
+   "phi": 45.1,
    "windows": [
     {
      "end": "2026-11-13",
@@ -127,18 +191,18 @@
      "observed": 126,
      "expected": 235.5,
      "ratio": 0.54,
-     "z": -0.96,
-     "p": 0.1688,
+     "z": -0.95,
+     "p": 0.171,
      "level": "normal"
     },
     {
      "end": "2026-11-13",
      "w": 7,
      "observed": 343,
-     "expected": 592,
+     "expected": 592.5,
      "ratio": 0.58,
-     "z": -1.38,
-     "p": 0.0845,
+     "z": -1.37,
+     "p": 0.0861,
      "level": "watch"
     }
    ]
@@ -199,6 +263,68 @@
    "level": "unknown",
    "phi": null,
    "windows": []
+  },
+  "paywall.seen": {
+   "level": "normal",
+   "phi": 6.33,
+   "windows": [
+    {
+     "end": "2026-11-13",
+     "w": 3,
+     "observed": 34,
+     "expected": 36.5,
+     "ratio": 0.93,
+     "z": -0.15,
+     "p": 0.4415,
+     "level": "normal"
+    },
+    {
+     "end": "2026-11-13",
+     "w": 7,
+     "observed": 107,
+     "expected": 87.5,
+     "ratio": 1.22,
+     "z": 0.74,
+     "p": 0.7707,
+     "level": "normal"
+    }
+   ]
+  },
+  "paywall.packs": {
+   "level": "normal",
+   "phi": 2.2,
+   "windows": [
+    {
+     "end": "2026-11-13",
+     "w": 3,
+     "observed": 11,
+     "expected": 13.5,
+     "ratio": 0.81,
+     "z": -0.41,
+     "p": 0.3407,
+     "level": "normal"
+    },
+    {
+     "end": "2026-11-13",
+     "w": 7,
+     "observed": 37,
+     "expected": 41,
+     "ratio": 0.9,
+     "z": -0.38,
+     "p": 0.3531,
+     "level": "normal"
+    }
+   ]
+  },
+  "reads.chatgpt": {
+   "level": "unknown",
+   "phi": null,
+   "windows": []
+  },
+  "buyers.new": {
+   "level": "unknown",
+   "p": null,
+   "why": "no STRIPE_READ_KEY"
   }
  }
 }

@@ -1,0 +1,326 @@
+{
+ "at": "2026-11-14T15:21:56.321Z",
+ "end": "2026-11-13",
+ "method": "after-change window (7/14 d) vs same-weekday trimmed normal from BEFORE the group's first change; groups = changes ≤ 6 d apart; helped/hurt need z ±1.64 AND ±15%",
+ "learnability": {
+  "groups": 1,
+  "judged": 0,
+  "clean": 0,
+  "share": null
+ },
+ "lessons": {
+  "areas": {},
+  "confounded": {
+   "groups": 0,
+   "changes": 0,
+   "hurt": 0
+  }
+ },
+ "groups": [
+  {
+   "day0": "2026-11-10",
+   "last": "2026-11-14",
+   "n": 13,
+   "clean": false,
+   "state": "pending",
+   "windows": [
+    {
+     "w": 7,
+     "state": "pending",
+     "due": "2026-11-21"
+    },
+    {
+     "w": 14,
+     "state": "pending",
+     "due": "2026-11-28"
+    }
+   ],
+   "changes": [
+    {
+     "at": "2026-11-10T01:49:57.000Z",
+     "where": "hooks",
+     "what": "hooks.json"
+    },
+    {
+     "at": "2026-11-12T01:14:43.000Z",
+     "where": "hooks",
+     "what": "hooks.json"
+    },
+    {
+     "at": "2026-11-12T02:36:54.000Z",
+     "where": "hooks",
+     "what": "hooks.json"
+    },
+    {
+     "at": "2026-11-12T22:55:44.000Z",
+     "where": "app other /backtest*",
+     "what": "Chart fixes: fullscreen surfaces, replay-TF blink, POC text + footprint POC colour (Kai)"
+    },
+    {
+     "at": "2026-11-12T22:55:44.000Z",
+     "where": "hooks",
+     "what": "site deploy [app other /backtest*] Chart fixes: fullscreen surfaces, replay-TF blink,"
+    },
+    {
+     "at": "2026-11-13T13:10:58.000Z",
+     "where": "/backtest*",
+     "what": "/backtest: free + \"no signup\" back in the snippet and lead, prices off the meta description (still on the page)"
+    },
+    {
+     "at": "2026-11-13T13:10:58.000Z",
+     "where": "hooks",
+     "what": "site deploy [/backtest*] /backtest: free + \"no signup\" back in the snippet "
+    },
+    {
+     "at": "2026-11-13T21:34:23.000Z",
+     "where": "indexing other",
+     "what": "WORKS on the site: main sitemap = page families that bring accounts; DEAD families → /sitemap-archive.xml"
+    },
+    {
+     "at": "2026-11-13T21:34:23.000Z",
+     "where": "hooks",
+     "what": "site deploy [indexing other] WORKS on the site: main sitemap = page families th"
+    },
+    {
+     "at": "2026-11-13T22:15:56.000Z",
+     "where": "sitemap",
+     "what": "plan.json"
+    },
+    {
+     "at": "2026-11-14T01:17:26.000Z",
+     "where": "hooks",
+     "what": "hooks.json"
+    },
+    {
+     "at": "2026-11-14T01:19:53.000Z",
+     "where": "indexing",
+     "what": "Google-only noindex on the 5 dead auto page families (2,492 pages, 0 accounts in 90 d)"
+    },
+    {
+     "at": "2026-11-14T01:19:53.000Z",
+     "where": "hooks",
+     "what": "site deploy [indexing] Google-only noindex on the 5 dead auto page famili"
+    }
+   ],
+   "detail": {
+    "accounts.google": {
+     "state": "pending",
+     "ratio": null,
+     "z": null
+    },
+    "accounts.chatgpt": {
+     "state": "pending",
+     "ratio": null,
+     "z": null
+    },
+    "paywall.packs": {
+     "state": "pending",
+     "ratio": null,
+     "z": null
+    }
+   },
+   "external": [
+    "November 2026 core update"
+   ]
+  }
+ ],
+ "grade": {
+  "accounts": {
+   "graded": 0,
+   "confirmed": 0,
+   "pending": 1,
+   "precision": null,
+   "enough": false
+  },
+  "accounts.google": {
+   "graded": 0,
+   "confirmed": 0,
+   "pending": 1,
+   "precision": null,
+   "enough": false
+  },
+  "accounts.chatgpt": {
+   "graded": 0,
+   "confirmed": 0,
+   "pending": 2,
+   "precision": null,
+   "enough": false
+  },
+  "accounts.direct": {
+   "graded": 0,
+   "confirmed": 0,
+   "pending": 1,
+   "precision": null,
+   "enough": false
+  },
+  "visitors": {
+   "graded": 0,
+   "confirmed": 0,
+   "pending": 2,
+   "precision": null,
+   "enough": false
+  },
+  "visitors.google": {
+   "graded": 0,
+   "confirmed": 0,
+   "pending": 1,
+   "precision": null,
+   "enough": false
+  }
+ },
+ "alarms": {
+  "accounts|2026-10-30": {
+   "metric": "accounts",
+   "day": "2026-10-30",
+   "level": "watch",
+   "state": "pending",
+   "ratio": null
+  },
+  "accounts.google|2026-10-30": {
+   "metric": "accounts.google",
+   "day": "2026-10-30",
+   "level": "watch",
+   "state": "pending",
+   "ratio": null
+  },
+  "accounts.chatgpt|2026-10-31": {
+   "metric": "accounts.chatgpt",
+   "day": "2026-10-31",
+   "level": "watch",
+   "state": "pending",
+   "ratio": null
+  },
+  "accounts.chatgpt|2026-11-11": {
+   "metric": "accounts.chatgpt",
+   "day": "2026-11-11",
+   "level": "watch",
+   "state": "pending",
+   "ratio": null
+  },
+  "accounts.direct|2026-11-01": {
+   "metric": "accounts.direct",
+   "day": "2026-11-01",
+   "level": "watch",
+   "state": "pending",
+   "ratio": null
+  },
+  "visitors|2026-11-01": {
+   "metric": "visitors",
+   "day": "2026-11-01",
+   "level": "watch",
+   "state": "pending",
+   "ratio": null
+  },
+  "visitors|2026-11-12": {
+   "metric": "visitors",
+   "day": "2026-11-12",
+   "level": "watch",
+   "state": "pending",
+   "ratio": null
+  },
+  "visitors.google|2026-11-13": {
+   "metric": "visitors.google",
+   "day": "2026-11-13",
+   "level": "drop",
+   "state": "pending",
+   "ratio": null
+  }
+ },
+ "external": [
+  {
+   "begin": "2026-11-10T18:06:00+00:00",
+   "end": null,
+   "what": "November 2026 core update"
+  },
+  {
+   "begin": "2026-09-24T16:15:00+00:00",
+   "end": "2026-10-08T08:00:00+00:00",
+   "what": "September 2026 spam update"
+  },
+  {
+   "begin": "2026-08-18T16:27:00+00:00",
+   "end": "2026-08-21T08:49:00+00:00",
+   "what": "August 2026 spam update"
+  }
+ ],
+ "changes": [
+  {
+   "at": "2026-11-10T01:49:57.000Z",
+   "kind": "machine-change",
+   "where": "hooks",
+   "what": "hooks.json"
+  },
+  {
+   "at": "2026-11-12T01:14:43.000Z",
+   "kind": "machine-change",
+   "where": "hooks",
+   "what": "hooks.json"
+  },
+  {
+   "at": "2026-11-12T02:36:54.000Z",
+   "kind": "machine-change",
+   "where": "hooks",
+   "what": "hooks.json"
+  },
+  {
+   "at": "2026-11-12T22:55:44.000Z",
+   "kind": "site-deploy",
+   "where": "app other /backtest*",
+   "what": "Chart fixes: fullscreen surfaces, replay-TF blink, POC text + footprint POC colour (Kai)"
+  },
+  {
+   "at": "2026-11-12T22:55:44.000Z",
+   "kind": "machine-change",
+   "where": "hooks",
+   "what": "site deploy [app other /backtest*] Chart fixes: fullscreen surfaces, replay-TF blink,"
+  },
+  {
+   "at": "2026-11-13T13:10:58.000Z",
+   "kind": "site-deploy",
+   "where": "/backtest*",
+   "what": "/backtest: free + \"no signup\" back in the snippet and lead, prices off the meta description (still on the page)"
+  },
+  {
+   "at": "2026-11-13T13:10:58.000Z",
+   "kind": "machine-change",
+   "where": "hooks",
+   "what": "site deploy [/backtest*] /backtest: free + \"no signup\" back in the snippet "
+  },
+  {
+   "at": "2026-11-13T21:34:23.000Z",
+   "kind": "site-deploy",
+   "where": "indexing other",
+   "what": "WORKS on the site: main sitemap = page families that bring accounts; DEAD families → /sitemap-archive.xml"
+  },
+  {
+   "at": "2026-11-13T21:34:23.000Z",
+   "kind": "machine-change",
+   "where": "hooks",
+   "what": "site deploy [indexing other] WORKS on the site: main sitemap = page families th"
+  },
+  {
+   "at": "2026-11-13T22:15:56.000Z",
+   "kind": "machine-change",
+   "where": "sitemap",
+   "what": "plan.json"
+  },
+  {
+   "at": "2026-11-14T01:17:26.000Z",
+   "kind": "machine-change",
+   "where": "hooks",
+   "what": "hooks.json"
+  },
+  {
+   "at": "2026-11-14T01:19:53.000Z",
+   "kind": "site-deploy",
+   "where": "indexing",
+   "what": "Google-only noindex on the 5 dead auto page families (2,492 pages, 0 accounts in 90 d)"
+  },
+  {
+   "at": "2026-11-14T01:19:53.000Z",
+   "kind": "machine-change",
+   "where": "hooks",
+   "what": "site deploy [indexing] Google-only noindex on the 5 dead auto page famili"
+  }
+ ]
+}
