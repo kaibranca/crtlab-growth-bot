@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T14:19:57.189Z",
+ "at": "2026-11-14T15:20:03.484Z",
  "ok": 66,
  "total": 66,
  "hurting": [
@@ -53,7 +53,7 @@
    "id": "truth",
    "name": "Truth gate",
    "state": "ok",
-   "lastRunH": 5,
+   "lastRunH": 0,
    "everyH": 6,
    "learnedH": 6,
    "kpi": {
@@ -66,7 +66,7 @@
    "id": "factory",
    "name": "Reaction factory",
    "state": "ok",
-   "lastRunH": 6.3,
+   "lastRunH": 7.3,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -78,7 +78,7 @@
    "id": "behaviour",
    "name": "Behaviour machine",
    "state": "ok",
-   "lastRunH": 7.6,
+   "lastRunH": 8.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": null
@@ -87,7 +87,7 @@
    "id": "radar",
    "name": "AI radar",
    "state": "ok",
-   "lastRunH": 7.6,
+   "lastRunH": 8.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -99,7 +99,7 @@
    "id": "devices",
    "name": "Device QA",
    "state": "ok",
-   "lastRunH": 7.6,
+   "lastRunH": 8.6,
    "everyH": 24,
    "learnedH": 2.93,
    "kpi": null
@@ -108,7 +108,7 @@
    "id": "mentions",
    "name": "Mentions machine",
    "state": "ok",
-   "lastRunH": 7.6,
+   "lastRunH": 8.6,
    "everyH": 24,
    "learnedH": null,
    "kpi": {
@@ -120,7 +120,7 @@
    "id": "health",
    "name": "Health + watchdog",
    "state": "ok",
-   "lastRunH": 1.6,
+   "lastRunH": 2.6,
    "everyH": 3,
    "learnedH": 3,
    "kpi": null
@@ -138,7 +138,7 @@
    "id": "indexnow",
    "name": "IndexNow",
    "state": "ok",
-   "lastRunH": 3,
+   "lastRunH": 4,
    "everyH": 2.7,
    "learnedH": 2.66,
    "kpi": null
@@ -907,7 +907,7 @@
    "move": "climbing",
    "what": "/news/ppi-retail-sales-claims-2026-10-15",
    "why": "132 reads in 3 days vs ~2",
-   "z": 92.4
+   "z": 92.6
   },
   {
    "move": "climbing",
@@ -936,20 +936,20 @@
   {
    "move": "climbing",
    "what": "/news/ppi/gold",
-   "why": "130 reads in 3 days vs ~18.1",
-   "z": 26.3
+   "why": "130 reads in 3 days vs ~18",
+   "z": 26.4
   },
   {
    "move": "climbing",
    "what": "/economic-calendar/us-ppi-mom",
-   "why": "53 reads in 3 days vs ~5.1",
-   "z": 21.2
+   "why": "52 reads in 3 days vs ~5.4",
+   "z": 20.2
   },
   {
    "move": "climbing",
    "what": "/news/ppi",
    "why": "22 reads in 3 days vs ~1.1",
-   "z": 19.6
+   "z": 19.7
   },
   {
    "move": "climbing",
@@ -971,6 +971,34 @@
   }
  ],
  "ledger": [
+  {
+   "at": "2026-11-14T15:18:16.762Z",
+   "key": "rot|minutes|warn|2026-11-14",
+   "machine": "rot",
+   "kind": "loss",
+   "what": "GitHub minutes pace: WARN — pace 64.7/day > allowance 61.6/day (projected 1553 > 1500)"
+  },
+  {
+   "at": "2026-11-14T15:18:16.762Z",
+   "key": "rot|double|hourly|warn|2026-11-14",
+   "machine": "rot",
+   "kind": "loss",
+   "what": "hourly runs once per slot: WARN — 1 extra run(s) < 50 min apart in 48 h (double dispatch = races + waste)"
+  },
+  {
+   "at": "2026-11-14T15:18:16.762Z",
+   "key": "rot|dur|hourly/supervisor|warn|2026-11-14",
+   "machine": "rot",
+   "kind": "loss",
+   "what": "hourly/supervisor runtime: WARN — p95 104 s = 70% of its 150 s limit"
+  },
+  {
+   "at": "2026-11-14T15:18:14.919Z",
+   "key": "jobs|truth-buyers|fail",
+   "machine": "jobs",
+   "kind": "loss",
+   "what": "new buyers are measured: FAIL — buyers unknown — metric missing"
+  },
   {
    "at": "2026-11-14T14:19:57.189Z",
    "key": "mistake|hourly|2026-11-14",
@@ -1152,34 +1180,6 @@
    "machine": "ai",
    "kind": "surge",
    "what": "/news/ppi-retail-sales-claims-2026-10-15 surged (117 vs 1.4/day)"
-  },
-  {
-   "at": "2026-11-14T00:17:53.135Z",
-   "key": "works|audit|2026-11-14",
-   "machine": "works",
-   "kind": "loss",
-   "what": "MISALIGNED: 87% of the last 7 days' Bing sends went to WEAK/DEAD families (192 of 220) — effort is going where accounts don't come from"
-  },
-  {
-   "at": "2026-11-13T22:13:49.210Z",
-   "key": "works|audit|2026-11-13",
-   "machine": "works",
-   "kind": "loss",
-   "what": "MISALIGNED: 87% of the last 7 days' Bing sends went to WEAK/DEAD families (192 of 220) — effort is going where accounts don't come from"
-  },
-  {
-   "at": "2026-11-13T21:40:31.387Z",
-   "key": "works|bin|/answers/<x>|2026-11-13",
-   "machine": "works",
-   "kind": "lesson",
-   "what": "BINNED /answers/<x>: 17 pages in the sitemap, 3 landing visitors and 0 worth in 90 d; Google indexed 0%"
-  },
-  {
-   "at": "2026-11-13T21:40:31.387Z",
-   "key": "works|bin|/recap/<x>|2026-11-13",
-   "machine": "works",
-   "kind": "lesson",
-   "what": "BINNED /recap/<x>: 36 landing pages, 0 visitors, 0 worth in 90 d — no new pages, Bing priority ×0.3 until it produces accounts"
   }
  ],
  "fix": [
@@ -1189,11 +1189,11 @@
  "mistakes": [
   {
    "where": "hourly",
-   "n": 1,
+   "n": 2,
    "last": "run failure",
-   "at": "2026-11-14T13:20:15Z",
+   "at": "2026-11-14T14:20:04Z",
    "repeating": false,
-   "url": "https://github.com/kaibranca/crtlab-growth-bot/actions/runs/43599021529"
+   "url": "https://github.com/kaibranca/crtlab-growth-bot/actions/runs/43604094533"
   }
  ]
 }

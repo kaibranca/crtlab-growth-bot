@@ -133,3 +133,7 @@
 {"at":"2026-11-14T13:09:15.132Z","key":"drops|visitors|2026-11-13","machine":"drops","kind":"loss","what":"visitors: WATCH — 7 d 343 vs 592 normal (×0.58, z -1.38)"}
 {"at":"2026-11-14T13:09:15.132Z","key":"drops|visitors.google|2026-11-13","machine":"drops","kind":"loss","what":"visitors.google: DROP — 3 d 5 vs 11.5 normal (×0.43, z -1.64)"}
 {"at":"2026-11-14T14:19:57.189Z","key":"mistake|hourly|2026-11-14","machine":"supervisor","kind":"mistake","what":"hourly: run failure"}
+{"at":"2026-11-14T15:18:14.919Z","key":"jobs|truth-buyers|fail","machine":"jobs","kind":"loss","what":"new buyers are measured: FAIL — buyers unknown — metric missing"}
+{"at":"2026-11-14T15:18:16.762Z","key":"rot|dur|hourly/supervisor|warn|2026-11-14","machine":"rot","kind":"loss","what":"hourly/supervisor runtime: WARN — p95 104 s = 70% of its 150 s limit"}
+{"at":"2026-11-14T15:18:16.762Z","key":"rot|double|hourly|warn|2026-11-14","machine":"rot","kind":"loss","what":"hourly runs once per slot: WARN — 1 extra run(s) < 50 min apart in 48 h (double dispatch = races + waste)"}
+{"at":"2026-11-14T15:18:16.762Z","key":"rot|minutes|warn|2026-11-14","machine":"rot","kind":"loss","what":"GitHub minutes pace: WARN — pace 64.7/day > allowance 61.6/day (projected 1553 > 1500)"}

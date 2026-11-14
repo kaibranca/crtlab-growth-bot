@@ -1,0 +1,50 @@
+{
+ "at": "2026-11-14T15:18:16.762Z",
+ "checks": [
+  {
+   "id": "dur|hourly/supervisor",
+   "what": "hourly/supervisor runtime",
+   "state": "warn",
+   "detail": "p95 104 s = 70% of its 150 s limit"
+  },
+  {
+   "id": "double|hourly",
+   "what": "hourly runs once per slot",
+   "state": "warn",
+   "detail": "1 extra run(s) < 50 min apart in 48 h (double dispatch = races + waste)"
+  },
+  {
+   "id": "grow|repo",
+   "what": "repo size (GitHub)",
+   "state": "learning",
+   "detail": "19.3 MB now; 1/7 days of history for a trend"
+  },
+  {
+   "id": "grow|data",
+   "what": "tracked data/ size",
+   "state": "learning",
+   "detail": "42.1 MB now; 1/7 days of history for a trend"
+  },
+  {
+   "id": "grow|file",
+   "what": "largest file (data/aicrawl/2026-11.jsonl)",
+   "state": "learning",
+   "detail": "1.21 MB now; 1/7 days of history for a trend"
+  },
+  {
+   "id": "minutes",
+   "what": "GitHub minutes pace",
+   "state": "warn",
+   "detail": "pace 64.7/day > allowance 61.6/day (projected 1553 > 1500)"
+  }
+ ],
+ "hist": [
+  {
+   "day": "2026-11-14",
+   "repoMB": 19.3,
+   "dataMB": 42.1,
+   "maxFileMB": 1.21,
+   "maxFile": "data/aicrawl/2026-11.jsonl"
+  }
+ ]
+}

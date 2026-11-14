@@ -1,10 +1,10 @@
 {
- "at": "2026-11-14T14:18:10.400Z",
+ "at": "2026-11-14T15:18:14.919Z",
  "summary": {
   "ok": 7,
-  "fail": 1,
+  "fail": 2,
   "unknown": 0,
-  "of": 8
+  "of": 9
  },
  "checks": [
   {
@@ -23,7 +23,7 @@
    "id": "indexnow",
    "job": "IndexNow submits",
    "state": "ok",
-   "detail": "39 URLs accepted in 24 h"
+   "detail": "36 URLs accepted in 24 h"
   },
   {
    "id": "sitemap",
@@ -35,13 +35,19 @@
    "id": "core",
    "job": "engine core",
    "state": "ok",
-   "detail": "hourly 1.0 h, daily 7.6 h ago"
+   "detail": "hourly 1.0 h, daily 8.6 h ago"
+  },
+  {
+   "id": "truth-buyers",
+   "job": "new buyers are measured",
+   "state": "fail",
+   "detail": "buyers unknown — metric missing"
   },
   {
    "id": "truth-db-live",
    "job": "analytics DB is live",
    "state": "ok",
-   "detail": "newest guest row 0.2 h old"
+   "detail": "newest guest row 0.0 h old"
   },
   {
    "id": "truth-north-star",
@@ -53,7 +59,7 @@
    "id": "truth-attribution",
    "job": "visitor sources are known",
    "state": "fail",
-   "detail": "67% of real visitors have no source (direct/none) — per-source visitor numbers are blind"
+   "detail": "68% of real visitors have no source (direct/none) — per-source visitor numbers are blind"
   }
  ]
 }

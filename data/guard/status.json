@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T12:18:07.064Z",
+ "at": "2026-11-14T15:18:14.619Z",
  "budget": {
   "used": 4,
   "of": 1,
@@ -67,16 +67,41 @@
    "ageH": 0
   },
   "traffic-plan": {
-   "kind": "ok",
-   "detail": null,
-   "ageH": 29.6
+   "kind": "stale",
+   "detail": "32.6 h old (max 30 h)",
+   "ageH": 32.6
   },
   "google-plan": {
    "kind": "ok",
    "detail": null,
-   "ageH": 5.6
+   "ageH": 8.6
   },
   "steps": {
+   "kind": "ok",
+   "detail": null,
+   "ageH": 1
+  },
+  "drops": {
+   "kind": "ok",
+   "detail": null,
+   "ageH": 2.1
+  },
+  "series": {
+   "kind": "missing",
+   "detail": null,
+   "ageH": null
+  },
+  "learn": {
+   "kind": "missing",
+   "detail": null,
+   "ageH": null
+  },
+  "rot": {
+   "kind": "missing",
+   "detail": null,
+   "ageH": null
+  },
+  "jobs": {
    "kind": "ok",
    "detail": null,
    "ageH": 1
@@ -88,5 +113,10 @@
   }
  },
  "broken": [],
- "alerts": []
+ "alerts": [
+  "GUARD: data contract \"traffic-plan\" is STALE (32.6 h old (max 30 h)). Machines reading it must not decide from it until fixed.",
+  "GUARD: data contract \"series\" is MISSING. Machines reading it must not decide from it until fixed.",
+  "GUARD: data contract \"learn\" is MISSING. Machines reading it must not decide from it until fixed.",
+  "GUARD: data contract \"rot\" is MISSING. Machines reading it must not decide from it until fixed."
+ ]
 }

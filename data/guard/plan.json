@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T14:19:57.461Z",
+ "at": "2026-11-14T15:20:03.921Z",
  "hourly": [
   {
    "name": "aicrawl",
@@ -108,6 +108,17 @@
    "off": false
   },
   {
+   "name": "rot",
+   "env": [
+    "GH_TOKEN",
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
    "name": "minutes",
    "env": [
     "GH_WATCH_TOKEN",
@@ -139,7 +150,8 @@
     "OPS_KEY",
     "RESEND_API_KEY",
     "ALERT_TO",
-    "ALERT_FROM"
+    "ALERT_FROM",
+    "ANALYTICS_DB_URL"
    ],
    "needs": null,
    "off": false
@@ -430,9 +442,16 @@
     "ANALYTICS_DB_URL",
     "RESEND_API_KEY",
     "ALERT_TO",
-    "ALERT_FROM"
+    "ALERT_FROM",
+    "STRIPE_READ_KEY"
    ],
    "needs": null,
+   "off": false
+  },
+  {
+   "name": "learn",
+   "env": [],
+   "needs": "drops",
    "off": false
   },
   {
