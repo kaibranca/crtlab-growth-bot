@@ -1,0 +1,423 @@
+{
+ "at": "2026-11-14T02:33:22.600Z",
+ "hourly": [
+  {
+   "name": "aicrawl",
+   "env": [
+    "OPS_KEY"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "deploy-watch",
+   "env": [
+    "GH_TOKEN",
+    "GH_WATCH_TOKEN",
+    "RAILWAY_API_TOKEN",
+    "RAILWAY_PROJECT_ID"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "works",
+   "env": [
+    "ANALYTICS_DB_URL"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "ai-pull",
+   "env": [
+    "OPS_KEY"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "ai-eyes",
+   "env": [
+    "BING_API_KEY",
+    "CF_API_TOKEN",
+    "CF_ZONE_ID"
+   ],
+   "needs": "ai-pull",
+   "off": false
+  },
+  {
+   "name": "recommend",
+   "env": [],
+   "needs": "ai-eyes",
+   "off": false
+  },
+  {
+   "name": "ai-machine",
+   "env": [
+    "BING_API_KEY"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "bandit",
+   "env": [
+    "ANALYTICS_DB_URL"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "ai-truth",
+   "env": [
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "timeline",
+   "env": [
+    "GH_WATCH_TOKEN"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "guard",
+   "env": [
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "minutes",
+   "env": [
+    "GH_WATCH_TOKEN",
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "load-alert",
+   "env": [
+    "OPS_KEY",
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "shield",
+   "env": [
+    "CF_API_TOKEN",
+    "CF_ZONE_ID",
+    "CF_ACCOUNT_ID",
+    "CF_BAN_LIST",
+    "OPS_KEY",
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "watchdog",
+   "env": [],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "upcoming",
+   "env": [],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "indicators",
+   "env": [],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "live-news",
+   "env": [],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "headlines",
+   "env": [],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "indexnow",
+   "env": [],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "cost",
+   "env": [
+    "OPS_KEY",
+    "RAILWAY_API_TOKEN",
+    "RAILWAY_PROJECT_TOKEN",
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "humans",
+   "env": [
+    "ANALYTICS_DB_URL"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "outcomes",
+   "env": [
+    "ANALYTICS_DB_URL"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "supervisor",
+   "env": [
+    "GH_TOKEN",
+    "GH_WATCH_TOKEN",
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "peaks",
+   "env": [],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "fixer",
+   "env": [
+    "GH_WATCH_TOKEN"
+   ],
+   "needs": null,
+   "off": true
+  },
+  {
+   "name": "world",
+   "env": [],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "executive",
+   "env": [],
+   "needs": null,
+   "off": true
+  },
+  {
+   "name": "upgrades",
+   "env": [
+    "GH_TOKEN"
+   ],
+   "needs": null,
+   "off": true
+  },
+  {
+   "name": "tuner",
+   "env": [],
+   "needs": null,
+   "off": true
+  },
+  {
+   "name": "iq",
+   "env": [
+    "GH_TOKEN"
+   ],
+   "needs": null,
+   "off": true
+  },
+  {
+   "name": "self",
+   "env": [],
+   "needs": null,
+   "off": true
+  },
+  {
+   "name": "core",
+   "env": [
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": true
+  },
+  {
+   "name": "traffic-core",
+   "env": [],
+   "needs": null,
+   "off": true
+  },
+  {
+   "name": "brains",
+   "env": [
+    "ANALYTICS_DB_URL",
+    "CF_ACCOUNT_ID",
+    "CF_API_TOKEN",
+    "GH_TOKEN",
+    "GH_WATCH_TOKEN"
+   ],
+   "needs": null,
+   "off": true
+  },
+  {
+   "name": "memory",
+   "env": [],
+   "needs": null,
+   "off": true
+  },
+  {
+   "name": "summary",
+   "env": [],
+   "needs": null,
+   "off": false
+  }
+ ],
+ "daily": [
+  {
+   "name": "deps-audit",
+   "env": [],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "upcoming",
+   "env": [],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "failures",
+   "env": [
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "cal-history",
+   "env": [],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "indexnow",
+   "env": [],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "behaviour",
+   "env": [
+    "OPS_KEY",
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "leak",
+   "env": [
+    "OPS_KEY"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "mentions",
+   "env": [
+    "ANALYTICS_DB_URL",
+    "BING_API_KEY",
+    "OPENAI_API_KEY",
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "google",
+   "env": [
+    "GSC_SA_JSON"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "expiry",
+   "env": [
+    "GH_WATCH_TOKEN",
+    "CF_API_TOKEN",
+    "CF_ACCOUNT_ID",
+    "META_PAGE_TOKEN",
+    "META_APP_ID",
+    "META_APP_SECRET",
+    "RESEND_API_KEY",
+    "ALERT_TO",
+    "ALERT_FROM"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "gsc-sitemap",
+   "env": [
+    "GSC_SA_JSON"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "traffic",
+   "env": [
+    "ANALYTICS_DB_URL",
+    "BING_API_KEY"
+   ],
+   "needs": null,
+   "off": false
+  },
+  {
+   "name": "summary",
+   "env": [],
+   "needs": null,
+   "off": false
+  }
+ ]
+}

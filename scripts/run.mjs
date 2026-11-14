@@ -8,7 +8,13 @@ import fs from "node:fs"; import os from "node:os"; import path from "node:path"
 import { PLANS } from "./steps.mjs"; import { pickEnv, scrub, shouldSkip, health, alerting, ioReport } from "./run-lib.mjs";
 const TRACE = path.resolve("scripts/trace-fs.mjs"), TDIR = fs.mkdtempSync(path.join(os.tmpdir(), "io-"));
 
+// the plan as data (names only, no values): which machines exist, what outside systems each is given — the /machine web reads it
+function writePlanMap() {
+  const out = Object.fromEntries(Object.entries(PLANS).map(([p, x]) => [p, x.steps.map((s) => ({ name: s.name, env: s.env, needs: s.needs ?? null, off: !!s.off }))]));
+  fs.mkdirSync("data/guard", { recursive: true }); fs.writeFileSync("data/guard/plan.json", JSON.stringify({ at: new Date().toISOString(), ...out }, null, 1));
+}
 const [planName, ...rest] = process.argv.slice(2);
+if (planName === "--plan-map") { writePlanMap(); process.exit(0); }
 const plan = PLANS[planName];
 if (!plan) { console.error(`unknown plan "${planName}" — one of: ${Object.keys(PLANS).join(", ")}`); process.exit(2); }
 const dry = rest.includes("--dry");
@@ -52,6 +58,7 @@ const IOF = `${D}/io.json`; let io = {}; try { io = JSON.parse(fs.readFileSync(I
 for (const x of results) { try { const t = JSON.parse(fs.readFileSync(path.join(TDIR, `${x.step}.json`), "utf8"));
   io[`${planName}/${x.step}`] = { at: x.at, reads: t.reads.filter((f) => f.startsWith("data/")), writes: t.writes.filter((f) => f.startsWith("data/")) }; } catch {} }
 fs.writeFileSync(IOF, JSON.stringify({ at: new Date().toISOString(), steps: io, report: ioReport(io) }, null, 1));
+writePlanMap();
 
 // ── alerts + visible red ──
 const bad = alerting(h, steps, plan.alertAfter);
