@@ -109,6 +109,7 @@ if (men && (men.sources?.length ?? 0) < 5) fix.push("word of mouth is near zero 
 // Each mistake is counted per step over 7 days (data/machines/mistakes.jsonl), so a one-off is "once", a repeat is "REPEATING".
 const mistakes = [];
 /** newest SUCCESSFUL run per workflow name (11-11): a failure followed by a green run of the same workflow is fixed, not "repeating" */
+const SN = "data/machines/supervisor-seen.json", SEEN = (() => { try { return JSON.parse(fs.readFileSync(SN, "utf8")); } catch { return {}; } })();
 const LG = "data/machines/lastgreen.json", lastGreen = (() => { try { return JSON.parse(fs.readFileSync(LG, "utf8")); } catch { return {}; } })(); // remembered between runs
 const REPO = process.env.GITHUB_REPOSITORY || "kaibranca/crtlab-growth-bot", GH = { accept: "application/vnd.github+json", ...(process.env.GH_TOKEN ? { authorization: `Bearer ${process.env.GH_TOKEN}` } : {}) };
 // 11-11: the daily data pull lives in crtlab-backtester — it failed 3× on 11-10 and 11-11 and the supervisor never saw it
@@ -124,8 +125,16 @@ for (const [REPO, GH] of WATCH) try {
   for (const run of (r.workflow_runs ?? []).filter((w) => w.status === "completed")) {
     if (run.conclusion === "success" && (!lastGreen[run.name] || run.updated_at > lastGreen[run.name])) lastGreen[run.name] = run.updated_at;
     if (run.conclusion === "success") { // a green run can still hide a quietly failed step
+      // 11-14: this re-fetched the jobs of EVERY green run in 26 h, one by one, every hour (reels post every 10 min →
+      // 150+ calls, 82 s of a 126 s hourly, max 104 s of a 150 s limit). A finished run never changes: check it ONCE,
+      // remember what was found, replay it while the run is inside the 26 h window.
+      const key = String(run.id);
+      if (SEEN[key]) { mistakes.push(...SEEN[key].m); continue; }
       const jb = await fetch(run.jobs_url, { headers: GH }).then((x) => x.json()).catch(() => ({}));
+      if (!Array.isArray(jb.jobs)) continue; // not readable now → try again next hour, never mark it seen
+      const before = mistakes.length;
       for (const j of jb.jobs ?? []) for (const st of j.steps ?? []) if (st.conclusion === "failure") mistakes.push({ where: `${run.name} → ${st.name}`, what: "step failed (run continued)", at: st.completed_at ?? run.updated_at, url: run.html_url });
+      SEEN[key] = { at: run.updated_at, m: mistakes.slice(before) };
     } else if (run.conclusion !== "cancelled" && run.conclusion !== "skipped") mistakes.push({ where: run.name, what: `run ${run.conclusion}`, at: run.updated_at, url: run.html_url });
   }
 } catch (e) { mistakes.push({ where: "supervisor", what: `could not read GitHub runs (${REPO.split("/")[1]}): ` + String(e).slice(0, 80), at: new Date().toISOString() }); }
@@ -147,6 +156,8 @@ for (const l of men?.log ?? []) mistakes.push({ where: "Mentions machine", what:
 const MK = "data/machines/mistakes.jsonl", seenM = new Set(readLines(MK).map((m) => m.where + "|" + m.at));
 for (const m of mistakes) if (!seenM.has(m.where + "|" + m.at)) append(MK, m);
 fs.writeFileSync(LG, JSON.stringify(lastGreen));
+for (const [k, v] of Object.entries(SEEN)) if (Date.parse(v.at) < NOW - 30 * H) delete SEEN[k]; // window is 26 h
+fs.writeFileSync(SN, JSON.stringify(SEEN));
 const week = readLines(MK).filter((m) => NOW - Date.parse(m.at) < 7 * DAY && !(lastGreen[m.where] && m.at < lastGreen[m.where])), per = {};
 for (const m of week) (per[m.where] ??= []).push(m);
 for (const m of mistakeRowsExtra) { (per[m.where] ??= []).push(m); fix.push(`${m.where} failed its run: ${m.what}`); }
