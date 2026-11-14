@@ -58,3 +58,23 @@ Scaling multiplies everything, the bad included, so the constraints live in the 
    pages, real users or legit bots.
 5. No new machine without: the decision it makes, the number it moves, how it is judged, what it replaces.
 6. Delete > add. Merge duplicates. Engine work never changes a page Google/ChatGPT reads during a freeze.
+
+## 6. Build rules for the rebuild (Kai 11-14)
+
+- **New, not refined.** Loops are written fresh in `engine/` under this spec only. Old scripts are evidence of what worked
+  (data pull, reels posting, works ranking, shield basics) — read for lessons, never copied, never their rules.
+  The day a loop replaces an old script, the old script and its step are deleted. Nothing old and new run the same job.
+- **Emergency stops on old code are allowed** (11-14: hands gate, fail-closed freeze, theatre inputs neutralised, crawler-safe
+  bans) — they keep the live app safe until the replacement exists. They are not the rebuild.
+- **Backend cost as low as possible, never by risking the live app.** Cost is a hard target of the Guard loop: Railway
+  memory/egress per service measured, waste found (cache bloat, deploy count, idle services, heavy queries), fixes proposed
+  with expected saving + load headroom, applied only inside deploy windows with a rollback. No self-applied memory caps
+  without headroom proof (11-14: a 1.1 GB hard cap was one run away from live web).
+
+## 7. Work list (live order)
+1. Measured data map (`io.json`) → one writer per state file, owners for unowned inputs
+2. Hands gate on every remaining production hand: Bing / IndexNow sends, sitemap submit, reels post, emails, cron worker
+3. `engine/` loops, fresh: Guard (incl. cost) → Data → Search+AI → Conversion → Social; delete each replaced script
+4. Decision core with real statistics (§3)
+5. /machine rebuilt as a plain dashboard on the new data (site, deploy window, admin page)
+6. Delete theatre code (already OFF 11-14)
