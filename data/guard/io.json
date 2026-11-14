@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T06:19:38.572Z",
+ "at": "2026-11-14T06:43:14.694Z",
  "steps": {
   "hourly/aicrawl": {
    "at": "2026-11-14T06:17:47.290Z",
@@ -1206,44 +1206,228 @@
    "writes": [
     "data/summary.json"
    ]
+  },
+  "daily/deps-audit": {
+   "at": "2026-11-14T06:40:52.918Z",
+   "reads": [],
+   "writes": [
+    "data/security/deps.json"
+   ]
+  },
+  "daily/upcoming": {
+   "at": "2026-11-14T06:40:53.143Z",
+   "reads": [
+    "data/events/au-cpi-<date>.json",
+    "data/events/au-jobs-<date>.json",
+    "data/events/boe-<date>.json",
+    "data/events/boj-<date>.json",
+    "data/events/claims-<date>.json",
+    "data/events/claims-retail-sales-<date>.json",
+    "data/events/cpi-<date>.json",
+    "data/events/ecb-<date>.json",
+    "data/events/ez-cpi-<date>.json",
+    "data/events/fomc-<date>.json",
+    "data/events/gdp-<date>.json",
+    "data/events/gdp-claims-<date>.json",
+    "data/events/gdp-pce-<date>.json",
+    "data/events/index.json",
+    "data/events/ism-<date>.json",
+    "data/events/ism-jolts-<date>.json",
+    "data/events/jolts-<date>.json",
+    "data/events/jolts-ism-<date>.json",
+    "data/events/nfp-<date>.json",
+    "data/events/pce-<date>.json",
+    "data/events/pce-gdp-<date>.json",
+    "data/events/ppi-<date>.json",
+    "data/events/ppi-claims-<date>.json",
+    "data/events/ppi-retail-sales-<date>.json",
+    "data/events/ppi-retail-sales-claims-<date>.json",
+    "data/events/rba-<date>.json",
+    "data/events/retail-sales-<date>.json",
+    "data/events/retail-sales-claims-<date>.json",
+    "data/events/uk-cpi-<date>.json",
+    "data/events/uk-jobs-<date>.json",
+    "data/events/upcoming.json"
+   ],
+   "writes": []
+  },
+  "daily/failures": {
+   "at": "2026-11-14T06:41:01.763Z",
+   "reads": [
+    "data/ai/actions.jsonl",
+    "data/ai/hooks.json",
+    "data/google/plan.json",
+    "data/machines/ledger.jsonl",
+    "data/radar/actions.jsonl",
+    "data/reels/log.jsonl",
+    "data/reels/metrics.json",
+    "data/works/plan.json"
+   ],
+   "writes": [
+    "data/guard/failures.json",
+    "data/guard/retire.json"
+   ]
+  },
+  "daily/cal-history": {
+   "at": "2026-11-14T06:41:01.795Z",
+   "reads": [
+    "data/events/history.json"
+   ],
+   "writes": []
+  },
+  "daily/indexnow": {
+   "at": "2026-11-14T06:41:03.225Z",
+   "reads": [],
+   "writes": [
+    "data/indexnow-sent.json",
+    "data/indexnow-state.json"
+   ]
+  },
+  "daily/behaviour": {
+   "at": "2026-11-14T06:41:03.675Z",
+   "reads": [
+    "data/behaviour/alerts.jsonl",
+    "data/behaviour/days"
+   ],
+   "writes": [
+    "data/behaviour/days/<date>.json",
+    "data/behaviour/plan.json",
+    "data/behaviour/runs.jsonl"
+   ]
+  },
+  "daily/leak": {
+   "at": "2026-11-14T06:41:05.446Z",
+   "reads": [],
+   "writes": [
+    "data/leak/plan.json",
+    "data/leak/score.jsonl",
+    "data/machines/self/leak.json"
+   ]
+  },
+  "daily/mentions": {
+   "at": "2026-11-14T06:41:05.877Z",
+   "reads": [
+    "data/mentions/mentions.jsonl"
+   ],
+   "writes": [
+    "data/mentions/plan.json",
+    "data/mentions/referrers.json",
+    "data/mentions/score.jsonl",
+    "data/mentions/state.json"
+   ]
+  },
+  "daily/google": {
+   "at": "2026-11-14T06:41:08.274Z",
+   "reads": [],
+   "writes": [
+    "data/google/days.jsonl",
+    "data/google/index.json",
+    "data/google/plan.json"
+   ]
+  },
+  "daily/expiry": {
+   "at": "2026-11-14T06:43:12.223Z",
+   "reads": [],
+   "writes": [
+    "data/machines/expiry.json"
+   ]
+  },
+  "daily/gsc-sitemap": {
+   "at": "2026-11-14T06:43:13.252Z",
+   "reads": [
+    "data/machines/hands.json"
+   ],
+   "writes": [
+    "data/google/sitemaps.json"
+   ]
+  },
+  "daily/traffic": {
+   "at": "2026-11-14T06:43:14.202Z",
+   "reads": [
+    "data/traffic/plan.json",
+    "data/traffic/state.json"
+   ],
+   "writes": []
+  },
+  "daily/summary": {
+   "at": "2026-11-14T06:43:14.602Z",
+   "reads": [
+    "data/ai/plan.json",
+    "data/ai/runs.jsonl",
+    "data/ai/score.jsonl",
+    "data/aicrawl/<month>.jsonl",
+    "data/behaviour/plan.json",
+    "data/bing-weekly.jsonl",
+    "data/gaps.json",
+    "data/gsc-weekly.jsonl",
+    "data/health.json",
+    "data/indexnow.jsonl",
+    "data/linkcheck.json",
+    "data/machines/status.json",
+    "data/mentions/plan.json",
+    "data/mobile/report.json",
+    "data/radar/plan.json",
+    "data/radar/score.jsonl",
+    "data/recap-runs.jsonl",
+    "data/reels",
+    "data/reels/champion.json",
+    "data/reels/live.json",
+    "data/reels/log.jsonl",
+    "data/reels/metrics.json",
+    "data/reels/plan-<date>.json",
+    "data/seo-changes.jsonl",
+    "data/shield.json",
+    "data/watchdog/<month>.jsonl"
+   ],
+   "writes": [
+    "data/summary.json"
+   ]
   }
  },
  "report": {
-  "files": 922,
-  "multiWriter": {},
+  "files": 938,
+  "multiWriter": {
+   "data/indexnow-sent.json": [
+    "hourly/indexnow",
+    "daily/indexnow"
+   ],
+   "data/indexnow-state.json": [
+    "hourly/indexnow",
+    "daily/indexnow"
+   ],
+   "data/summary.json": [
+    "hourly/summary",
+    "daily/summary"
+   ]
+  },
   "sharedLog": {},
   "unowned": {
    "data/mobile/build.txt": 1,
-   "data/google/plan.json": 2,
    "data/machines/freeze.json": 5,
    "data/works/cycles.jsonl": 1,
    "data/ai/.backfill-first-touch": 1,
    "data/radar/answers.jsonl": 1,
-   "data/radar/plan.json": 4,
+   "data/radar/plan.json": 5,
    "data/radar/questions.json": 2,
    "data/ai/changes.jsonl": 1,
    "data/ai/surges.jsonl": 1,
    "data/ai/truth.json": 4,
-   "data/events/upcoming.json": 3,
-   "data/machines/hands.json": 4,
-   "data/machines/ledger.jsonl": 4,
+   "data/events/upcoming.json": 4,
+   "data/machines/hands.json": 5,
+   "data/machines/ledger.jsonl": 5,
    "data/radar/boost.json": 2,
    "data/world/credit.json": 2,
    "data/world/forecast.json": 1,
-   "data/google/sitemaps.json": 2,
-   "data/reels/log.jsonl": 2,
+   "data/reels/log.jsonl": 4,
    "data/ai": 1,
    "data/ai/llms.json": 1,
    "data/deploys.json": 1,
    "data/google": 1,
-   "data/google/index.json": 1,
    "data/guard": 1,
-   "data/guard/failures.json": 1,
    "data/guard/inventory.jsonl": 1,
    "data/guard/io.json": 1,
    "data/guard/last-run.json": 1,
    "data/guard/plan.json": 1,
-   "data/guard/retire.json": 1,
    "data/guard/run-history.json": 1,
    "data/guard/steps.json": 1,
    "data/machines": 1,
@@ -1252,7 +1436,6 @@
    "data/machines/build-queue.json": 1,
    "data/machines/ecosystem.json": 2,
    "data/machines/experiments.json": 1,
-   "data/machines/expiry.json": 1,
    "data/machines/fixer.json": 2,
    "data/machines/history.json": 1,
    "data/machines/iq-machines.json": 1,
@@ -1271,46 +1454,46 @@
    "data/radar": 1,
    "data/radar/gaps.json": 1,
    "data/radar/state.json": 1,
-   "data/reels": 2,
+   "data/reels": 3,
    "data/reels/alerted.json": 1,
    "data/reels/brain.json": 1,
-   "data/reels/champion.json": 2,
-   "data/reels/live.json": 2,
-   "data/reels/metrics.json": 2,
-   "data/reels/plan-<date>.json": 2,
+   "data/reels/champion.json": 3,
+   "data/reels/live.json": 3,
+   "data/reels/metrics.json": 4,
+   "data/reels/plan-<date>.json": 3,
    "data/reels/status.json": 1,
-   "data/traffic/plan.json": 1,
+   "data/traffic/plan.json": 2,
    "data/works": 1,
-   "data/events/au-cpi-<date>.json": 1,
-   "data/events/au-jobs-<date>.json": 1,
-   "data/events/boe-<date>.json": 1,
-   "data/events/boj-<date>.json": 1,
-   "data/events/claims-<date>.json": 1,
-   "data/events/claims-retail-sales-<date>.json": 1,
-   "data/events/cpi-<date>.json": 1,
-   "data/events/ecb-<date>.json": 1,
-   "data/events/ez-cpi-<date>.json": 1,
-   "data/events/fomc-<date>.json": 1,
-   "data/events/gdp-<date>.json": 1,
-   "data/events/gdp-claims-<date>.json": 1,
-   "data/events/gdp-pce-<date>.json": 1,
-   "data/events/index.json": 2,
-   "data/events/ism-<date>.json": 1,
-   "data/events/ism-jolts-<date>.json": 1,
-   "data/events/jolts-<date>.json": 1,
-   "data/events/jolts-ism-<date>.json": 1,
-   "data/events/nfp-<date>.json": 1,
-   "data/events/pce-<date>.json": 1,
-   "data/events/pce-gdp-<date>.json": 1,
-   "data/events/ppi-<date>.json": 1,
-   "data/events/ppi-claims-<date>.json": 1,
-   "data/events/ppi-retail-sales-<date>.json": 1,
-   "data/events/ppi-retail-sales-claims-<date>.json": 1,
-   "data/events/rba-<date>.json": 1,
-   "data/events/retail-sales-<date>.json": 1,
-   "data/events/retail-sales-claims-<date>.json": 1,
-   "data/events/uk-cpi-<date>.json": 1,
-   "data/events/uk-jobs-<date>.json": 1,
+   "data/events/au-cpi-<date>.json": 2,
+   "data/events/au-jobs-<date>.json": 2,
+   "data/events/boe-<date>.json": 2,
+   "data/events/boj-<date>.json": 2,
+   "data/events/claims-<date>.json": 2,
+   "data/events/claims-retail-sales-<date>.json": 2,
+   "data/events/cpi-<date>.json": 2,
+   "data/events/ecb-<date>.json": 2,
+   "data/events/ez-cpi-<date>.json": 2,
+   "data/events/fomc-<date>.json": 2,
+   "data/events/gdp-<date>.json": 2,
+   "data/events/gdp-claims-<date>.json": 2,
+   "data/events/gdp-pce-<date>.json": 2,
+   "data/events/index.json": 3,
+   "data/events/ism-<date>.json": 2,
+   "data/events/ism-jolts-<date>.json": 2,
+   "data/events/jolts-<date>.json": 2,
+   "data/events/jolts-ism-<date>.json": 2,
+   "data/events/nfp-<date>.json": 2,
+   "data/events/pce-<date>.json": 2,
+   "data/events/pce-gdp-<date>.json": 2,
+   "data/events/ppi-<date>.json": 2,
+   "data/events/ppi-claims-<date>.json": 2,
+   "data/events/ppi-retail-sales-<date>.json": 2,
+   "data/events/ppi-retail-sales-claims-<date>.json": 2,
+   "data/events/rba-<date>.json": 2,
+   "data/events/retail-sales-<date>.json": 2,
+   "data/events/retail-sales-claims-<date>.json": 2,
+   "data/events/uk-cpi-<date>.json": 2,
+   "data/events/uk-jobs-<date>.json": 2,
    "data/indicators/au-ai-group-manufacturing-index.json": 1,
    "data/indicators/au-australia-aig-construction-index-aig-construction-index.json": 1,
    "data/indicators/au-australia-building-permits-building-approvals.json": 1,
@@ -2071,23 +2254,27 @@
    "data/events/headlines.json": 1,
    "data/cost/deploys.jsonl": 1,
    "data/cost/levers-seed.json": 1,
-   "data/indexnow.jsonl": 3,
+   "data/indexnow.jsonl": 4,
    "data/machines/outcomes.jsonl": 1,
-   "data/behaviour/plan.json": 2,
    "data/brains/index.json": 1,
    "data/events/react/index.json": 1,
-   "data/health.json": 2,
+   "data/health.json": 3,
    "data/machines/mistakes.jsonl": 1,
-   "data/mentions/plan.json": 2,
-   "data/mentions/score.jsonl": 1,
-   "data/mobile/report.json": 2,
-   "data/recap-runs.jsonl": 2,
-   "data/bing-weekly.jsonl": 1,
-   "data/gaps.json": 1,
-   "data/gsc-weekly.jsonl": 1,
-   "data/linkcheck.json": 1,
-   "data/radar/score.jsonl": 1,
-   "data/seo-changes.jsonl": 1
+   "data/mobile/report.json": 3,
+   "data/recap-runs.jsonl": 3,
+   "data/bing-weekly.jsonl": 2,
+   "data/gaps.json": 2,
+   "data/gsc-weekly.jsonl": 2,
+   "data/linkcheck.json": 2,
+   "data/radar/score.jsonl": 2,
+   "data/seo-changes.jsonl": 2,
+   "data/ai/actions.jsonl": 1,
+   "data/radar/actions.jsonl": 1,
+   "data/events/history.json": 1,
+   "data/behaviour/alerts.jsonl": 1,
+   "data/behaviour/days": 1,
+   "data/mentions/mentions.jsonl": 1,
+   "data/traffic/state.json": 1
   }
  }
 }
