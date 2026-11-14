@@ -52,8 +52,5 @@ export function rewrite(q, cur, prev = {}) {
 }
 
 // KNOBS (11-12): a machine's constant, self-tuning. `knob(id, default, { ladder, kpi, owner, what })` returns today's value
-// from the tuner (data/machines/knobs.json → active) and REGISTERS the knob (data/machines/knob-registry.json) the first time a
-// machine runs with it — the tuner (scripts/tuner.mjs) then experiments on it forever. Any new constant written this way
-// joins the loop by itself.
 // 11-14: the tuner is retired (unvalidated self-tuning). A knob is its designed default until the decision core owns it.
 export function knob(id, def) { return def; }

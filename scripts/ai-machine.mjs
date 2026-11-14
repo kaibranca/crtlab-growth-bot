@@ -25,7 +25,7 @@ import { SITE, readLines, append, month, knob } from "./lib.mjs";
 
 const DAY = 86400000, HALF = 14, NOW = Date.now();
 const iso = (t) => new Date(t).toISOString().slice(0, 10);
-// SELF-TUNING KNOBS (scripts/tuner.mjs): today's value of a constant the tuner is experimenting on
+// KNOBS: a constant's designed default (11-14: the tuner was retired; lib.mjs knob() returns the default)
 const KNOB = (id, d, meta) => knob(id, d, meta); // lib.mjs: reads the tuner's value + registers the knob
 const w = (dayIso) => Math.pow(0.5, (NOW - Date.parse(dayIso + "T12:00:00Z")) / DAY / HALF); // recency weight
 const LIVE = /^(ChatGPT-User|Claude-User|Perplexity-User)$/, INDEXER = /^(OAI-SearchBot|PerplexityBot|Claude-SearchBot|Bingbot)$/;
@@ -214,7 +214,7 @@ const sisKeys = (p) => { const s = p.split("/").filter(Boolean);
   const m = /^[a-z0-9]+-(.+)$/.exec(s[0] ?? ""); if (s.length === 1 && family(p) === "/<market>-<concept>" && m) return [`*-${m[1]}`];
   return []; };
 const sisMatch = (k, q) => (k.startsWith("/news/*/") ? /^\/news\/[^/]+\/[^/]+$/.test(q) && q.endsWith("/" + k.slice(8)) : k.startsWith("*-") ? q.split("/").length === 2 && q.endsWith(k.slice(1)) && family(q) === "/<market>-<concept>" : q.startsWith(k));
-// ECOSYSTEM MODE (scripts/core.mjs, data/machines/mode.json — learned, bounded parameters): SURGE = reach more sisters and
+// ECOSYSTEM MODE (retired 11-14 with core.mjs — mode.json deleted, inputs neutral): SURGE = reach more sisters and
 // let urgent sends take more of the day; DIP = RECOVERY, the proven winners are re-sent first. Normal = the defaults.
 // 11-14 THEATRE RETIRED (ENGINE.md): mode / lock-in / executive / tuner / branch inputs were unvalidated self-made signals (surge precision 0.31,
 // lock-in stuck on for hours). Decisions use measured inputs only. Neutral constants keep the code path until the loop rewrite.
@@ -367,7 +367,7 @@ const rank = (a, b) => urgent(b) - urgent(a) || b.value - a.value;
 const exploit = [...queue].sort(rank);
 const seenFam = new Set(), explore = [];
 for (const q of [...queue].sort((a, b) => a.conf - b.conf || (Math.sin(a.p.length * 7 + NOW / DAY) - Math.sin(b.p.length * 7 + NOW / DAY)))) if (!seenFam.has(q.fam)) { seenFam.add(q.fam); explore.push({ ...q, why: q.why + " · explore" }); }
-// CURIOSITY (scripts/self.mjs): when the traffic engine's IQ stalls it explores harder — 15 % × curiosity (≤ ×1.6 → 24 %)
+// CURIOSITY (retired 11-14 with self.mjs — neutral): when the traffic engine's IQ stalls it explores harder — 15 % × curiosity (≤ ×1.6 → 24 %)
 const CUR = 1;
 const pick = (n) => { const nX = Math.round(n * KNOB("ai.exploreShare", 0.15, { ladder: [0.08, 0.12, 0.15, 0.2, 0.27, 0.35], owner: "ai", what: "share of Bing sends spent exploring pages the machine knows least about" }) * CUR), out = [], used = new Set();
   for (const q of exploit) { if (out.length >= n - nX) break; out.push(q); used.add(q.p); }
@@ -415,7 +415,7 @@ const verdicts = changes.map((c) => {
 });
 
 // VERDICTS EARN RANK (11-11): a change judged at 14 days becomes a ledger WIN / LOSS (once per change), so the machines that
-// make changes that work rank up and get more authority (core.mjs EARNED RANK). "No clear change" stays a lesson, not a loss.
+// make changes that work rank up and get more authority (EARNED RANK — core.mjs retired 11-14). "No clear change" stays a lesson, not a loss.
 { const LG = "data/machines/ledger.jsonl", seenK = new Set(readLines(LG).map((l) => l.key));
   for (const v of verdicts) { if (!v.after || (NOW - Date.parse(v.at)) / DAY < 14) continue;
     const key = `verdict|${v.at}|${v.family ?? v.path}`; if (seenK.has(key)) continue;

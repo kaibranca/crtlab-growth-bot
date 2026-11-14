@@ -31,10 +31,9 @@ export const PLANS = {
     s("cost", ["OPS_KEY", "RAILWAY_API_TOKEN", "RAILWAY_PROJECT_TOKEN", ...MAIL]),
     s("humans", DB), s("outcomes", DB),
     s("supervisor", ["GH_TOKEN", "GH_WATCH_TOKEN", ...MAIL]),
-    // META / THEATRE — OFF 11-14 (ENGINE.md: self-scores, modes, tuner drove no measured result). Code deleted after the /machine rebuild.
-    s("peaks"), s("fixer", ["GH_WATCH_TOKEN"], { off: true }), s("world"), s("executive", [], { off: true }), s("upgrades", ["GH_TOKEN"], { off: true }), s("tuner", [], { off: true }),
-    s("iq", ["GH_TOKEN"], { off: true }), s("self", [], { off: true }), s("core", MAIL, { off: true }), s("traffic-core", [], { off: true }),
-    s("brains", [...DB, "CF_ACCOUNT_ID", "CF_API_TOKEN", "GH_TOKEN", "GH_WATCH_TOKEN"], { off: true }), s("memory", [], { off: true }),
+    // 11-14: the 10 META / THEATRE steps (fixer, executive, upgrades, tuner, iq, self, core, traffic-core, brains, memory) were
+    // DELETED with their code — self-scores and modes drove no measured result (ENGINE.md §7b). The v2 engine replaces them.
+    s("peaks"), s("world"),
     s("summary", [], { alertAfter: 1 }),
   ] },
   daily: { alertAfter: 1, steps: [
