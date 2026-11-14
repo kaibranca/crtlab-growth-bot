@@ -64,3 +64,11 @@ test("secrets: a running step missing a required secret fails; optional and skip
   assert.equal(L.checkSecrets(st(["STRIPE_READ_KEY"], "skipped"), opt).state, "ok");
   assert.equal(L.checkSecrets(null, opt).state, "unknown");
 });
+
+test("AI price truth: wrong price claims fail; other wrong claims don't; stale radar = unknown", () => {
+  const now = Date.parse("2026-11-14T12:00Z"), at = "2026-11-14T06:41Z";
+  assert.equal(L.checkAiPrice({ at, wrong: [{ what: "It claims CRTLAB is paid-only with a 10,000-candle free sample" }] }, now).state, "fail");
+  assert.equal(L.checkAiPrice({ at, wrong: [{ what: "It says the data covers 30 markets" }] }, now).state, "ok");
+  assert.equal(L.checkAiPrice({ at, wrong: [] }, now).state, "ok");
+  assert.equal(L.checkAiPrice({ at: "2026-11-12T06:41Z", wrong: [] }, now).state, "unknown");
+});

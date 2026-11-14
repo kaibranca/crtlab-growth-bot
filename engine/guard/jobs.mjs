@@ -20,6 +20,7 @@ const checks = [
   L.checkSitemap(sitemaps, NOW),
   L.checkCore(J("data/guard/steps.json"), NOW),
   L.checkBuyers(J("data/engine/drops.json"), NOW),
+  L.checkAiPrice(J("data/radar/plan.json"), NOW),
   L.checkSecrets(J("data/guard/steps.json"), (await import("../../scripts/run-lib.mjs")).OPTIONAL_ENV),
 ];
 

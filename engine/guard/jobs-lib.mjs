@@ -105,6 +105,17 @@ export function checkSecrets(steps, optional) {
     : res("truth-secrets", "every machine has its secrets", "ok", "all declared secrets present");
 }
 
+// What AI assistants TELL buyers about CRTLAB's price (radar asks ChatGPT daily, with web search). 11-14: live pages say
+// "2,000 free every day, no card", ChatGPT answered "paid only, 10,000-candle free sample" from a stale snapshot of the
+// 10-24 → 11-06 paid-only copy — that answer kills the "free backtesting" recommendation. Red until the answers are right.
+export function checkAiPrice(plan, now) {
+  if (!plan?.at) return res("ai-price", "AI states CRTLAB's real price", "unknown", "no radar plan");
+  if (now - Date.parse(plan.at) > 36 * 36e5) return res("ai-price", "AI states CRTLAB's real price", "unknown", `radar ${Math.round((now - Date.parse(plan.at)) / 36e5)} h old`);
+  const bad = (plan.wrong ?? []).filter((w) => /paid|free|price|sample|candles|\$/i.test(w.what ?? ""));
+  return bad.length ? res("ai-price", "AI states CRTLAB's real price", "fail", `${bad.length} answer(s) wrong today: ${bad.map((w) => w.what).join(" · ").slice(0, 220)}`)
+    : res("ai-price", "AI states CRTLAB's real price", "ok", "no price errors in today's answers");
+}
+
 export function summarise(checks) {
   const fail = checks.filter((c) => c.state === "fail"), unknown = checks.filter((c) => c.state === "unknown");
   return { ok: checks.length - fail.length - unknown.length, fail: fail.length, unknown: unknown.length, of: checks.length };
